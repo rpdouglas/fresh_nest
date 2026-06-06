@@ -18,6 +18,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | **E06** | Instant Quote Calculator | P0 | Travis, Sophie, Gallagher | Completed ✅ |
 | **E07** | Services Grid | P0 | All | Completed ✅ |
 | **E08** | Recurring Cleaning Section | P0 | Travis, Diane, Margaret, Sophie | Completed ✅ |
+| **E09** | Before/After Gallery | P0 | Sophie, Margaret, Gallagher | Completed ✅ |
 
 ---
 
@@ -36,6 +37,19 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   * [src/index.css](file:///workspaces/fresh_nest/src/index.css)
   * [src/lib/utils.ts](file:///workspaces/fresh_nest/src/lib/utils.ts)
   * [src/types/index.ts](file:///workspaces/fresh_nest/src/types/index.ts)
+
+#### E09 — Before/After Gallery
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-06)
+* **Key Assets:**
+  * [src/lib/galleryData.ts](file:///workspaces/fresh_nest/src/lib/galleryData.ts)
+  * [src/components/ui/GalleryImage.tsx](file:///workspaces/fresh_nest/src/components/ui/GalleryImage.tsx)
+  * [src/components/ui/Lightbox.tsx](file:///workspaces/fresh_nest/src/components/ui/Lightbox.tsx)
+  * [src/components/home/GalleryPreview.tsx](file:///workspaces/fresh_nest/src/components/home/GalleryPreview.tsx)
+  * [src/pages/Gallery.tsx](file:///workspaces/fresh_nest/src/pages/Gallery.tsx)
+  * [src/App.tsx](file:///workspaces/fresh_nest/src/App.tsx)
+  * [src/pages/Home.tsx](file:///workspaces/fresh_nest/src/pages/Home.tsx)
+* **Close Report:** [E09-close-2026-06-06.md](file:///workspaces/fresh_nest/docs/reports/E09-close-2026-06-06.md)
 
 #### E08 — Recurring Cleaning Section
 * **Owner:** Dev Team

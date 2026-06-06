@@ -78,6 +78,30 @@
       "description": "Programmes de nettoyage sur mesure pour bureaux, commerces et établissements d'affaires. Horaires flexibles, tarifs sur volume et gestion de compte dédiée."
     }
   },
+  "gallery": {
+    "ariaLabel":       "Photos avant et après le nettoyage",
+    "pageHeading":     "Nos réalisations",
+    "pageSubhead":     "Des résultats réels de notre équipe — avant et après chaque nettoyage.",
+    "previewHeading":  "Avant & Après",
+    "previewSubhead":  "Découvrez la différence Fresh Nest.",
+    "viewAll":         "Voir toute la galerie",
+    "beforeLabel":     "Avant",
+    "afterLabel":      "Après",
+    "beforeAlt":       "Avant : {{service}}",
+    "afterAlt":        "Après : {{service}}",
+    "closeLabel":      "Fermer la photo",
+    "prevLabel":       "Photo précédente",
+    "nextLabel":       "Photo suivante",
+    "photoComingSoon": "Photo à venir",
+    "ctaHeading":      "Prêt à voir ces résultats dans votre maison ?",
+    "pairs": {
+      "kitchenDeep":      { "caption": "Nettoyage en profondeur de la cuisine — Cornwall, ON" },
+      "airbnbTurnover":   { "caption": "Rotation Airbnb — bord du Saint-Laurent" },
+      "bathroomDeep":     { "caption": "Nettoyage en profondeur de la salle de bain — Cornwall, ON" },
+      "moveoutFull":      { "caption": "Nettoyage de déménagement complet — Long Sault, ON" },
+      "postconstruction": { "caption": "Nettoyage post-construction — Cornwall, ON" }
+    }
+  },
   "recurring": {
     "ariaLabel":      "Forfaits de nettoyage récurrents et tarifs",
     "sectionHeading": "Économisez à chaque nettoyage",

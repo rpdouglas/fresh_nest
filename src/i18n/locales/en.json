@@ -78,6 +78,30 @@
       "description": "Tailored cleaning programs for offices, retail, and business facilities. Flexible scheduling, volume pricing, and dedicated account management."
     }
   },
+  "gallery": {
+    "ariaLabel":       "Before and after cleaning photos",
+    "pageHeading":     "Our Work",
+    "pageSubhead":     "Real results from our team — before and after every clean.",
+    "previewHeading":  "Before & After",
+    "previewSubhead":  "See the Fresh Nest difference.",
+    "viewAll":         "View Full Gallery",
+    "beforeLabel":     "Before",
+    "afterLabel":      "After",
+    "beforeAlt":       "Before: {{service}}",
+    "afterAlt":        "After: {{service}}",
+    "closeLabel":      "Close photo",
+    "prevLabel":       "Previous photo",
+    "nextLabel":       "Next photo",
+    "photoComingSoon": "Photo coming soon",
+    "ctaHeading":      "Ready to see these results in your home?",
+    "pairs": {
+      "kitchenDeep":      { "caption": "Kitchen deep clean — Cornwall, ON" },
+      "airbnbTurnover":   { "caption": "Airbnb turnover — St. Lawrence waterfront" },
+      "bathroomDeep":     { "caption": "Bathroom deep clean — Cornwall, ON" },
+      "moveoutFull":      { "caption": "Full move-out clean — Long Sault, ON" },
+      "postconstruction": { "caption": "Post-construction clean — Cornwall, ON" }
+    }
+  },
   "recurring": {
     "ariaLabel":      "Recurring cleaning plans and pricing",
     "sectionHeading": "Save on Every Clean",
