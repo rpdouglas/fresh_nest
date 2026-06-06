@@ -1,0 +1,23 @@
+{
+  "ignorePatterns": [
+    {
+      "pattern": "^https://lilypad-freshnest\\.web\\.app"
+    },
+    {
+      "pattern": "^https://freshnest-aa51e\\.web\\.app"
+    },
+    {
+      "pattern": "^https://console\\.firebase\\.google\\.com"
+    },
+    {
+      "pattern": "^https://console\\.cloud\\.google\\.com"
+    },
+    {
+      "pattern": "^file://"
+    }
+  ],
+  "retryOn429": true,
+  "retryCount": 3,
+  "fallbackRetryDelay": "30s",
+  "aliveStatusCodes": [200, 206]
+}
