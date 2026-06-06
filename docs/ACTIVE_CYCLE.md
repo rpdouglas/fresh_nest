@@ -16,6 +16,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | **E04** | Hero Section (Bilingual) | P0 | Travis, Sophie, Margaret | Completed ✅ |
 | **E05** | Trust Bar Section | P0 | Diane, Margaret, Gallagher | Completed ✅ |
 | **E06** | Instant Quote Calculator | P0 | Travis, Sophie, Gallagher | Completed ✅ |
+| **E07** | Services Grid | P0 | All | Completed ✅ |
 
 ---
 
@@ -34,6 +35,16 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   * [src/index.css](file:///workspaces/fresh_nest/src/index.css)
   * [src/lib/utils.ts](file:///workspaces/fresh_nest/src/lib/utils.ts)
   * [src/types/index.ts](file:///workspaces/fresh_nest/src/types/index.ts)
+
+#### E07 — Services Grid
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-06)
+* **Key Assets:**
+  * [src/components/home/ServicesGrid.tsx](file:///workspaces/fresh_nest/src/components/home/ServicesGrid.tsx)
+  * [src/pages/Home.tsx](file:///workspaces/fresh_nest/src/pages/Home.tsx)
+  * [src/i18n/locales/en.json](file:///workspaces/fresh_nest/src/i18n/locales/en.json)
+  * [src/i18n/locales/fr.json](file:///workspaces/fresh_nest/src/i18n/locales/fr.json)
+* **Close Report:** [E07-close-2026-06-06.md](file:///workspaces/fresh_nest/docs/reports/E07-close-2026-06-06.md)
 
 #### E06 — Instant Quote Calculator
 * **Owner:** Dev Team

@@ -47,6 +47,37 @@
     "commercialBody":  "Commercial cleaning rates are tailored to your space and schedule. Contact us for a free assessment.",
     "commercialCta":   "Contact Us for a Quote"
   },
+  "services": {
+    "ariaLabel":      "Our cleaning services",
+    "sectionHeading": "Our Services",
+    "sectionSubhead": "Professional cleaning for every need — residential, rental, and commercial. Proudly serving Cornwall and surrounding communities.",
+    "bookNow":        "Book Now",
+    "bookAriaLabel":  "Book {{service}}",
+    "standard": {
+      "title":       "Standard Cleaning",
+      "description": "Regular maintenance cleaning to keep your home fresh. Ideal for weekly or biweekly visits — counters, floors, bathrooms, and living areas."
+    },
+    "deep": {
+      "title":       "Deep Clean",
+      "description": "A thorough top-to-bottom clean including baseboards, inside appliances, and hard-to-reach areas. Perfect for a seasonal reset or first-time clean."
+    },
+    "moveout": {
+      "title":       "Move-Out Cleaning",
+      "description": "Leave your old home spotless for the next owners or your landlord's inspection. We handle every surface so you get your deposit back."
+    },
+    "postconstruction": {
+      "title":       "Post-Construction",
+      "description": "Construction dust and debris require specialist attention. We safely remove fine particles, adhesive residue, and packaging from every surface."
+    },
+    "airbnb": {
+      "title":       "Airbnb Turnover",
+      "description": "Fast, reliable turnovers between guest stays — typically completed in the 11am–3pm window. Linen change, sanitize, and guest-ready staging included."
+    },
+    "commercial": {
+      "title":       "Commercial Cleaning",
+      "description": "Tailored cleaning programs for offices, retail, and business facilities. Flexible scheduling, volume pricing, and dedicated account management."
+    }
+  },
   "welcome": "Welcome to Fresh Nest Co.",
   "tagline": "Cleaning & Organizing Services",
   "phone": "(613) 935-3555",
