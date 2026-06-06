@@ -47,6 +47,37 @@
     "commercialBody":  "Les tarifs de nettoyage commercial sont adaptés à votre espace et à votre horaire. Contactez-nous pour une évaluation gratuite.",
     "commercialCta":   "Nous contacter pour un devis"
   },
+  "services": {
+    "ariaLabel":      "Nos services de nettoyage",
+    "sectionHeading": "Nos services",
+    "sectionSubhead": "Un nettoyage professionnel pour chaque besoin — résidentiel, locatif et commercial. Fièrement au service de Cornwall et des communautés environnantes.",
+    "bookNow":        "Réserver",
+    "bookAriaLabel":  "Réserver {{service}}",
+    "standard": {
+      "title":       "Nettoyage standard",
+      "description": "Un entretien régulier pour garder votre maison impeccable. Idéal pour des visites hebdomadaires ou bimensuelles — comptoirs, planchers, salles de bain et pièces communes."
+    },
+    "deep": {
+      "title":       "Nettoyage en profondeur",
+      "description": "Un nettoyage complet de fond en comble : plinthes, intérieur des appareils et zones difficiles d'accès. Parfait pour une remise à neuf saisonnière."
+    },
+    "moveout": {
+      "title":       "Nettoyage de déménagement",
+      "description": "Laissez votre ancien logement impeccable pour l'inspection du propriétaire. Nous prenons soin de chaque surface pour que vous récupériez votre dépôt."
+    },
+    "postconstruction": {
+      "title":       "Post-construction",
+      "description": "La poussière et les débris de construction exigent une attention spécialisée. Nous éliminons les particules fines, résidus d'adhésifs et emballages sur toutes les surfaces."
+    },
+    "airbnb": {
+      "title":       "Rotation Airbnb",
+      "description": "Des rotations rapides et fiables entre les séjours — généralement effectuées dans le créneau 11h–15h. Changement de literie, désinfection et mise en scène pour les invités inclus."
+    },
+    "commercial": {
+      "title":       "Nettoyage commercial",
+      "description": "Programmes de nettoyage sur mesure pour bureaux, commerces et établissements d'affaires. Horaires flexibles, tarifs sur volume et gestion de compte dédiée."
+    }
+  },
   "welcome": "Bienvenue chez Fresh Nest Co.",
   "tagline": "Services de nettoyage et d'organisation",
   "phone": "(613) 935-3555",
