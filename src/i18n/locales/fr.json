@@ -12,6 +12,41 @@
     "rating":     "4,9 / 5 Note Google",
     "bilingual":  "Service bilingue"
   },
+  "quote": {
+    "ariaLabel":       "Calculateur de devis instantané",
+    "sectionHeading":  "Obtenez un devis instantané",
+    "sectionSubhead":  "Tarifs transparents pour Cornwall et les communautés avoisinantes. Aucun engagement requis.",
+    "sizeLabel":       "Superficie du logement",
+    "serviceLabel":    "Type de service",
+    "frequencyLabel":  "À quelle fréquence ?",
+    "size": {
+      "apartment":        "Appartement",
+      "1-2bed":           "1–2 ch.",
+      "3-4bed":           "3–4 ch.",
+      "5plus":            "5+ ch.",
+      "commercial":       "Commercial"
+    },
+    "service": {
+      "standard":         "Standard",
+      "deep":             "En profondeur",
+      "moveout":          "Déménagement",
+      "postconstruction": "Post-construction",
+      "airbnb":           "Airbnb"
+    },
+    "frequency": {
+      "one-time":         "Une fois",
+      "weekly":           "Hebdomadaire",
+      "biweekly":         "Aux deux semaines",
+      "monthly":          "Mensuel"
+    },
+    "discountBadge":   "{{pct}} % de rabais",
+    "startingAt":      "À partir de {{price}} $",
+    "typicallyRange":  "Généralement {{min}} $–{{max}} $",
+    "bookNowCta":      "Réservez maintenant",
+    "commercialTitle": "Devis personnalisé pour votre entreprise",
+    "commercialBody":  "Les tarifs de nettoyage commercial sont adaptés à votre espace et à votre horaire. Contactez-nous pour une évaluation gratuite.",
+    "commercialCta":   "Nous contacter pour un devis"
+  },
   "welcome": "Bienvenue chez Fresh Nest Co.",
   "tagline": "Services de nettoyage et d'organisation",
   "phone": "(613) 935-3555",
