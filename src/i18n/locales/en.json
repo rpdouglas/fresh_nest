@@ -1,12 +1,60 @@
 {
   "welcome": "Welcome to Fresh Nest Co.",
   "tagline": "Cleaning & Organizing Services",
+  "phone": "(613) 935-3555",
   "nav": {
     "home": "Home",
     "services": "Services",
     "locations": "Locations",
     "pricing": "Pricing",
     "faq": "FAQ",
-    "booking": "Book Now"
+    "booking": "Book Now",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "skipToContent": "Skip to main content"
+  },
+  "footer": {
+    "tagline": "Professional cleaning and organizing services for Cornwall, Akwesasne, and surrounding communities.",
+    "services": "Services",
+    "locations": "Service Areas",
+    "company": "Company",
+    "contact": "Contact Us",
+    "standardCleaning": "Standard Cleaning",
+    "deepCleaning": "Deep Cleaning",
+    "moveOutCleaning": "Move-Out Cleaning",
+    "airbnbTurnover": "Airbnb Turnover",
+    "postConstruction": "Post-Construction",
+    "commercialCleaning": "Commercial Cleaning",
+    "cornwallON": "Cornwall, ON",
+    "akwesasne": "Akwesasne",
+    "snyeQC": "Snye, QC",
+    "longSault": "Long Sault",
+    "morrisburg": "Morrisburg",
+    "aboutUs": "About Us",
+    "gallery": "Photo Gallery",
+    "reviews": "Reviews",
+    "careers": "Careers",
+    "privacy": "Privacy Policy",
+    "hours": "Hours",
+    "hoursValue": "Mon–Sat: 8am–6pm",
+    "email": "hello@freshnestco.ca",
+    "copyright": "© {{year}} Fresh Nest Co. All rights reserved.",
+    "bilingual": "Service available in English & French",
+    "insured": "Fully insured & bonded"
+  },
+  "lang": {
+    "toggle": "FR",
+    "current": "EN",
+    "switchTo": "Switch to French"
+  },
+  "common": {
+    "bookNow": "Book Now",
+    "learnMore": "Learn More",
+    "getQuote": "Get a Free Quote",
+    "callUs": "Call Us",
+    "loading": "Loading...",
+    "error": "Something went wrong. Please try again.",
+    "required": "Required",
+    "optional": "Optional"
   }
 }

@@ -1,1 +1,1 @@
-{"root":["./src/App.tsx","./src/main.tsx","./src/i18n/index.ts","./src/lib/firebase.ts","./src/lib/utils.ts","./src/types/index.ts"],"version":"6.0.3"}
+{"root":["./src/App.tsx","./src/main.tsx","./src/components/layout/Footer.tsx","./src/components/layout/Layout.tsx","./src/components/layout/Navbar.tsx","./src/hooks/useScrolled.ts","./src/i18n/index.ts","./src/lib/firebase.ts","./src/lib/utils.ts","./src/pages/Home.tsx","./src/pages/PlaceholderPage.tsx","./src/types/index.ts"],"version":"6.0.3"}
