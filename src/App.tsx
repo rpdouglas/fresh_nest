@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Layout from '@/components/layout/Layout'
 import Home from '@/pages/Home'
+import Gallery from '@/pages/Gallery'
 import PlaceholderPage from '@/pages/PlaceholderPage'
 
 /**
@@ -177,12 +178,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'gallery',
-        element: (
-          <PlaceholderPage
-            titleKey="footer.gallery"
-            epicNote="Before/After Gallery — built in E09."
-          />
-        ),
+        element: <Gallery />,
       },
       {
         path: 'booking',
