@@ -25,6 +25,6 @@ jobs:
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          projectId: rpd-pawn-shop
+          projectId: freshnest-aa51e
           target: freshnest-dev
           expires: 7d

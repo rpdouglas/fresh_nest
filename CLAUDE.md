@@ -37,7 +37,7 @@ THIS IS TAILWIND v3. NOT v4.
 - Border radius for brand elements: rounded (4px) — not rounded-lg
 
 ## Firebase Architecture
-- Project: rpd-pawn-shop
+- Project: freshnest-aa51e
 - Production DB: (default) · Dev DB: freshnest-dev
 - DB routing: VITE_FIRESTORE_DB_ID — already wired in src/lib/firebase.ts
 - Never hardcode database IDs anywhere except src/lib/firebase.ts
