@@ -4,6 +4,7 @@ import QuoteCalculator from '@/components/home/QuoteCalculator'
 import ServicesGrid from '@/components/home/ServicesGrid'
 import RecurringCTA from '@/components/home/RecurringCTA'
 import GalleryPreview from '@/components/home/GalleryPreview'
+import HowItWorks from '@/components/home/HowItWorks'
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <ServicesGrid />
       <RecurringCTA />
       <GalleryPreview />
+      <HowItWorks />
     </>
   )
 }

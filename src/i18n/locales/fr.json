@@ -102,6 +102,20 @@
       "postconstruction": { "caption": "Nettoyage post-construction — Cornwall, ON" }
     }
   },
+  "howItWorks": {
+    "ariaLabel":      "Comment fonctionne le processus de réservation",
+    "sectionHeading": "Comment ça marche",
+    "sectionSubhead": "De la réservation à une maison impeccable — quatre étapes simples.",
+    "step1Title":     "Réservez en ligne",
+    "step1Desc":      "Choisissez votre service, la superficie de votre logement et votre date de préférence. Aucun compte requis — moins de 3 minutes.",
+    "step2Title":     "Nous confirmons",
+    "step2Desc":      "Vous recevrez notre confirmation dans les 24 heures avec le nom de votre nettoyeur attitré et votre créneau d'arrivée.",
+    "step3Title":     "Nous nettoyons",
+    "step3Desc":      "Votre nettoyeur attitré arrive à l'heure et suit une liste de contrôle détaillée adaptée à votre maison.",
+    "step4Title":     "Profitez",
+    "step4Desc":      "Nous vous envoyons un avis d'achèvement à la fin. Satisfaction garantie — nous corrigeons tout oubli.",
+    "faqLink":        "Des questions ? Consultez notre FAQ"
+  },
   "recurring": {
     "ariaLabel":      "Forfaits de nettoyage récurrents et tarifs",
     "sectionHeading": "Économisez à chaque nettoyage",
