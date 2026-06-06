@@ -3,6 +3,15 @@
     "headline": "Professional Cleaning & Organizing",
     "subhead": "Serving Cornwall, Akwesasne, Snye & surrounding communities."
   },
+  "trustBar": {
+    "ariaLabel": "Trust and quality indicators",
+    "insured":    "Insured & Bonded",
+    "background": "Background-Checked Staff",
+    "eco":        "Eco-Friendly Products",
+    "guarantee":  "Satisfaction Guarantee",
+    "rating":     "4.9 / 5 Google Rating",
+    "bilingual":  "Bilingual Service"
+  },
   "welcome": "Welcome to Fresh Nest Co.",
   "tagline": "Cleaning & Organizing Services",
   "phone": "(613) 935-3555",
