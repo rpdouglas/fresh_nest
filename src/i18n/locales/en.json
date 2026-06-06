@@ -102,6 +102,20 @@
       "postconstruction": { "caption": "Post-construction clean — Cornwall, ON" }
     }
   },
+  "howItWorks": {
+    "ariaLabel":      "How the booking process works",
+    "sectionHeading": "How It Works",
+    "sectionSubhead": "From booking to a beautifully clean home — four simple steps.",
+    "step1Title":     "Book Online",
+    "step1Desc":      "Choose your service, property size, and preferred date. No account required — takes under 3 minutes.",
+    "step2Title":     "We Confirm",
+    "step2Desc":      "You'll hear from us within 24 hours with your assigned cleaner's name and your arrival window.",
+    "step3Title":     "We Clean",
+    "step3Desc":      "Your dedicated cleaner arrives on time and follows a detailed checklist tailored to your home.",
+    "step4Title":     "You Relax",
+    "step4Desc":      "We send a completion notice when finished. Satisfaction guaranteed — we make it right if anything's missed.",
+    "faqLink":        "Have questions? See our FAQ"
+  },
   "recurring": {
     "ariaLabel":      "Recurring cleaning plans and pricing",
     "sectionHeading": "Save on Every Clean",
