@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "rpd-pawn-shop"
+  },
+  "targets": {
+    "rpd-pawn-shop": {
+      "hosting": {
+        "freshnest-prod": [
+          "lilypad-freshnest"
+        ],
+        "freshnest-dev": [
+          "lilypad-freshnest-dev"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

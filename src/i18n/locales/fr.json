@@ -1,0 +1,12 @@
+{
+  "welcome": "Bienvenue chez Fresh Nest Co.",
+  "tagline": "Services de nettoyage et d'organisation",
+  "nav": {
+    "home": "Accueil",
+    "services": "Services",
+    "locations": "Emplacements",
+    "pricing": "Tarifs",
+    "faq": "FAQ",
+    "booking": "Réserver"
+  }
+}
