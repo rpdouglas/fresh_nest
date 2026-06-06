@@ -12,6 +12,41 @@
     "rating":     "4.9 / 5 Google Rating",
     "bilingual":  "Bilingual Service"
   },
+  "quote": {
+    "ariaLabel":       "Instant quote calculator",
+    "sectionHeading":  "Get an Instant Quote",
+    "sectionSubhead":  "Transparent pricing for Cornwall and surrounding communities. No commitment required.",
+    "sizeLabel":       "Property Size",
+    "serviceLabel":    "Service Type",
+    "frequencyLabel":  "How Often?",
+    "size": {
+      "apartment":        "Apartment",
+      "1-2bed":           "1–2 Bed",
+      "3-4bed":           "3–4 Bed",
+      "5plus":            "5+ Bed",
+      "commercial":       "Commercial"
+    },
+    "service": {
+      "standard":         "Standard",
+      "deep":             "Deep",
+      "moveout":          "Move-Out",
+      "postconstruction": "Post-Construction",
+      "airbnb":           "Airbnb"
+    },
+    "frequency": {
+      "one-time":         "One-Time",
+      "weekly":           "Weekly",
+      "biweekly":         "Biweekly",
+      "monthly":          "Monthly"
+    },
+    "discountBadge":   "{{pct}}% off",
+    "startingAt":      "Starting at ${{price}}",
+    "typicallyRange":  "Typically ${{min}}–${{max}}",
+    "bookNowCta":      "Book Now",
+    "commercialTitle": "Custom Quote for Your Business",
+    "commercialBody":  "Commercial cleaning rates are tailored to your space and schedule. Contact us for a free assessment.",
+    "commercialCta":   "Contact Us for a Quote"
+  },
   "welcome": "Welcome to Fresh Nest Co.",
   "tagline": "Cleaning & Organizing Services",
   "phone": "(613) 935-3555",
