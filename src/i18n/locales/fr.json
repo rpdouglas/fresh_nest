@@ -1,12 +1,60 @@
 {
   "welcome": "Bienvenue chez Fresh Nest Co.",
   "tagline": "Services de nettoyage et d'organisation",
+  "phone": "(613) 935-3555",
   "nav": {
     "home": "Accueil",
     "services": "Services",
-    "locations": "Emplacements",
+    "locations": "Secteurs desservis",
     "pricing": "Tarifs",
     "faq": "FAQ",
-    "booking": "Réserver"
+    "booking": "Réservez maintenant",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "skipToContent": "Passer au contenu principal"
+  },
+  "footer": {
+    "tagline": "Services professionnels de nettoyage et d'organisation pour Cornwall, Akwesasne et les communautés environnantes.",
+    "services": "Services",
+    "locations": "Zones desservies",
+    "company": "Entreprise",
+    "contact": "Contactez-nous",
+    "standardCleaning": "Nettoyage standard",
+    "deepCleaning": "Nettoyage en profondeur",
+    "moveOutCleaning": "Nettoyage de déménagement",
+    "airbnbTurnover": "Rotation Airbnb",
+    "postConstruction": "Post-construction",
+    "commercialCleaning": "Nettoyage commercial",
+    "cornwallON": "Cornwall, ON",
+    "akwesasne": "Akwesasne",
+    "snyeQC": "Snye, QC",
+    "longSault": "Long Sault",
+    "morrisburg": "Morrisburg",
+    "aboutUs": "À propos",
+    "gallery": "Galerie photo",
+    "reviews": "Avis clients",
+    "careers": "Carrières",
+    "privacy": "Politique de confidentialité",
+    "hours": "Heures d'ouverture",
+    "hoursValue": "Lun–Sam : 8h–18h",
+    "email": "hello@freshnestco.ca",
+    "copyright": "© {{year}} Fresh Nest Co. Tous droits réservés.",
+    "bilingual": "Service disponible en anglais et en français",
+    "insured": "Entièrement assuré et cautionné"
+  },
+  "lang": {
+    "toggle": "EN",
+    "current": "FR",
+    "switchTo": "Passer à l'anglais"
+  },
+  "common": {
+    "bookNow": "Réservez maintenant",
+    "learnMore": "En savoir plus",
+    "getQuote": "Obtenir un devis gratuit",
+    "callUs": "Appelez-nous",
+    "loading": "Chargement…",
+    "error": "Une erreur s'est produite. Veuillez réessayer.",
+    "required": "Obligatoire",
+    "optional": "Facultatif"
   }
 }
