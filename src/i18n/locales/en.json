@@ -78,6 +78,20 @@
       "description": "Tailored cleaning programs for offices, retail, and business facilities. Flexible scheduling, volume pricing, and dedicated account management."
     }
   },
+  "recurring": {
+    "ariaLabel":      "Recurring cleaning plans and pricing",
+    "sectionHeading": "Save on Every Clean",
+    "sectionSubhead": "Book a recurring schedule and save up to 20% — no contracts, cancel anytime.",
+    "mostPopular":    "Most Popular",
+    "discountBadge":  "{{pct}}% off",
+    "bookCta":        "Book {{freq}}",
+    "bookAriaLabel":  "Book {{freq}} cleaning",
+    "tagline": {
+      "weekly":    "Perfect for busy households. Your home, consistently fresh, every week.",
+      "biweekly":  "Set it and forget it. The most popular option — fresh every two weeks.",
+      "monthly":   "Flexible recurring clean. Great for lower-traffic homes or seasonal top-ups."
+    }
+  },
   "welcome": "Welcome to Fresh Nest Co.",
   "tagline": "Cleaning & Organizing Services",
   "phone": "(613) 935-3555",

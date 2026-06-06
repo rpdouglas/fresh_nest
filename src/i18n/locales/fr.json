@@ -78,6 +78,20 @@
       "description": "Programmes de nettoyage sur mesure pour bureaux, commerces et établissements d'affaires. Horaires flexibles, tarifs sur volume et gestion de compte dédiée."
     }
   },
+  "recurring": {
+    "ariaLabel":      "Forfaits de nettoyage récurrents et tarifs",
+    "sectionHeading": "Économisez à chaque nettoyage",
+    "sectionSubhead": "Réservez un nettoyage récurrent et économisez jusqu'à 20 % — sans contrat, annulation à tout moment.",
+    "mostPopular":    "Le plus populaire",
+    "discountBadge":  "{{pct}} % de rabais",
+    "bookCta":        "Réserver — {{freq}}",
+    "bookAriaLabel":  "Réserver un nettoyage {{freq}}",
+    "tagline": {
+      "weekly":    "Idéal pour les foyers actifs. Votre maison, toujours impeccable, chaque semaine.",
+      "biweekly":  "Réservez et oubliez. L'option la plus populaire — propre aux deux semaines.",
+      "monthly":   "Nettoyage récurrent flexible. Idéal pour les maisons moins fréquentées ou les remises à neuf saisonnières."
+    }
+  },
   "welcome": "Bienvenue chez Fresh Nest Co.",
   "tagline": "Services de nettoyage et d'organisation",
   "phone": "(613) 935-3555",
