@@ -1,6 +1,6 @@
-# Fresh Nest Co. — Master Project Plan v2
+# Fresh Nest Co. — Master Project Plan v2.1
 ### The Complete Reference Document · Persona-Driven Edition
-**Version:** 2.0 · **Date:** June 2025  
+**Version:** 2.1 · **Date:** June 2025  
 **Stack:** React 19 · TypeScript · Vite · Tailwind CSS v3 · Firebase · TanStack Query  
 **Methodology:** Persona-Driven Development · Docs-as-Code · Antigravity CLI · Preview Channel CI/CD  
 **Region:** Cornwall ON · Akwesasne · Snye QC · Long Sault · Morrisburg  
@@ -8,9 +8,11 @@
 
 ---
 
-## What Changed in v2
+## What Changed in v2.1
 
-This version incorporates the complete persona suite from `FreshNestCo_BuildPlan_v2.docx`. Every epic, every acceptance criterion, every feature, and every AI agent instruction is now grounded in one of six named, research-backed personas. The site architecture has been expanded to multi-page (from single-page scroll), the Firestore schema is extended, the epic map is updated to 34 epics, and the CLAUDE.md contract now embeds persona-based development rules that every AI agent must follow.
+**v2.1 (current):** Phases A and B (infrastructure + scaffold) are complete. All logo and icon assets have been generated, audited, and deployed to the correct paths. This version adds the complete Image & Asset Awareness contract to the AI agent governance system, introduces `docs/image-assets-inventory.md` as a governed doc (same authority as `firestore-schema.md`), adds the `Asset_Auditor` subagent to the Phase B roster, updates the docs-as-code read-list and Phase C close checklist to include asset inventory maintenance, and patches the B16 Step 0 checklist to reflect the completed asset deployment.
+
+**v2 (prior):** Incorporated the complete persona suite from `FreshNestCo_BuildPlan_v2.docx`. Site architecture expanded to multi-page, Firestore schema extended, epic map updated to 34 epics, CLAUDE.md embedded persona-based development rules.
 
 **Persona-based development** means no feature is built without a named persona driving it, no acceptance criterion is written without a persona test, and no AI agent generates code without first reading `docs/PERSONAS.md` and identifying which persona the current epic serves.
 
@@ -730,6 +732,13 @@ jobs:
 [ ] docs/ directory structure complete (Part C)
 [ ] First commit pushed; production deploy succeeded
 [ ] lilypad-freshnest.web.app loads in browser
+[ ] public/icons/ contains all favicon and PWA icons (32 files)
+[ ] public/images/og-image-1200x630.jpg exists and is a real JPEG (not PNG-in-JPG)
+[ ] public/site.webmanifest references correct icon paths
+[ ] src/assets/ contains all logo variants (navbar, hero, footer, circle sizes)
+[ ] docs/image-assets-inventory.md committed and up to date
+[ ] index.html head-tags are complete (favicons, OG, Twitter, PWA meta)
+[ ] Lighthouse PWA audit passes (no missing icons, valid manifest)
 ```
 
 ---
@@ -1021,7 +1030,8 @@ fresh_nest/
 │       ├── firebase-deploy.yml
 │       └── docs-check.yml
 ├── docs/
-│   ├── firestore-schema.md       ← ABSOLUTE AI LAW
+│   ├── firestore-schema.md       ← ABSOLUTE AI LAW: all DB fields
+│   ├── image-assets-inventory.md ← ABSOLUTE AI LAW: all image/icon assets
 │   ├── design-system.md          ← Versioned token reference
 │   ├── PERSONAS.md               ← Full persona profiles (human-defined, AI reads only)
 │   ├── EPICS.md                  ← Macro roadmap

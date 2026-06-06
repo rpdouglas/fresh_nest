@@ -1,9 +1,9 @@
 {
   "projects": {
-    "default": "rpd-pawn-shop"
+    "default": "freshnest-aa51e"
   },
   "targets": {
-    "rpd-pawn-shop": {
+    "freshnest-aa51e": {
       "hosting": {
         "freshnest-prod": [
           "lilypad-freshnest"
