@@ -157,6 +157,57 @@
     "ratingAriaLabel": "Note de 5,0 sur 5 — basé sur plus de 80 avis",
     "starAriaLabel":   "{{rating}} sur {{max}} étoiles"
   },
+  "locations": {
+    "ariaLabel":       "Zones desservies",
+    "servicesHeading": "Services disponibles ici",
+    "mapLabel":        "Carte de {{location}}",
+    "bookCta":         "Réserver un nettoyage à {{location}}",
+    "bookAriaLabel":   "Réserver un nettoyage à {{location}}",
+    "overview": {
+      "pageTitle":     "Zones desservies | Fresh Nest Co.",
+      "metaDesc":      "Fresh Nest Co. dessert Cornwall ON, Akwesasne, Snye QC, Long Sault et Morrisburg. Services de nettoyage professionnels bilingues.",
+      "heading":       "Nos zones desservies",
+      "subhead":       "Nous desservons fièrement Cornwall et les communautés environnantes — notamment Akwesasne, Snye QC, Long Sault et Morrisburg.",
+      "viewLocation":  "Voir les détails →"
+    },
+    "cornwallOn": {
+      "pageTitle":     "Nettoyage professionnel à Cornwall, ON | Fresh Nest Co.",
+      "metaDesc":      "Fresh Nest Co. offre des services de nettoyage bilingues à Cornwall, ON — standard, en profondeur, déménagement, post-construction, rotation Airbnb et commercial.",
+      "heading":       "Services de nettoyage à Cornwall, ON",
+      "subhead":       "L'équipe de nettoyage bilingue de confiance à Cornwall — résidentiel, commercial et Airbnb.",
+      "description":   "Fresh Nest Co. est basé à Cornwall et dessert l'ensemble de la ville, incluant les secteurs est et ouest, le bord de l'eau et les quartiers résidentiels avoisinants. Nous offrons le nettoyage standard, en profondeur, de déménagement, post-construction, la rotation Airbnb et le nettoyage commercial — en anglais et en français."
+    },
+    "akwesasne": {
+      "pageTitle":     "Nettoyage professionnel à Akwesasne | Fresh Nest Co.",
+      "metaDesc":      "Fresh Nest Co. dessert Akwesasne, incluant l'île de Cornwall. Nous traversons le pont international Seaway — nettoyage standard, en profondeur et de déménagement disponibles.",
+      "heading":       "Services de nettoyage à Akwesasne",
+      "subhead":       "Nous desservons l'ensemble de la communauté d'Akwesasne — incluant l'île de Cornwall.",
+      "description":   "Nous traversons le pont international Seaway pour desservir l'île de Cornwall et la communauté d'Akwesasne. Nettoyage standard, en profondeur, de déménagement et post-construction disponibles. Veuillez indiquer votre adresse sur l'île et les instructions d'accès dans les notes de réservation.",
+      "islandNote":    "Nous desservons l'île de Cornwall — nous traversons le pont. Veuillez indiquer votre adresse sur l'île et les instructions d'accès dans les notes de réservation."
+    },
+    "snyeQc": {
+      "pageTitle":     "Nettoyage professionnel à Snye, QC | Fresh Nest Co.",
+      "metaDesc":      "Fresh Nest Co. dessert Snye, Québec — côté québécois d'Akwesasne. Service bilingue, produits écologiques. Standard, en profondeur et déménagement.",
+      "heading":       "Services de nettoyage à Snye, QC",
+      "subhead":       "Nous desservons Akwesasne, côté Québec, incluant Snye.",
+      "description":   "Fresh Nest Co. se déplace au-delà de la frontière provinciale pour desservir les clients à Snye et du côté québécois d'Akwesasne. Nous utilisons des produits écologiques et sûrs pour les bébés sur tous nos nettoyages. Nettoyage standard, en profondeur et de déménagement disponibles. Service entièrement bilingue — réservez en français ou en anglais.",
+      "borderNote":    "Nous servons Akwesasne, côté Québec (Snye) — nous traversons la frontière provinciale. Produits écologiques et sûrs pour les bébés utilisés à chaque nettoyage."
+    },
+    "longSault": {
+      "pageTitle":     "Nettoyage professionnel à Long Sault, ON | Fresh Nest Co.",
+      "metaDesc":      "Fresh Nest Co. dessert Long Sault et South Stormont, ON. Nettoyage résidentiel professionnel et rotation Airbnb.",
+      "heading":       "Services de nettoyage à Long Sault",
+      "subhead":       "Desservant Long Sault et South Stormont — incluant les propriétés Airbnb en bord de l'eau.",
+      "description":   "Les résidents de Long Sault et South Stormont comptent sur Fresh Nest Co. pour un nettoyage résidentiel fiable. Nous desservons également les propriétés Airbnb et les chalets en bord du Saint-Laurent. Nettoyage standard, en profondeur, de déménagement et rotation Airbnb disponibles."
+    },
+    "morrisburg": {
+      "pageTitle":     "Nettoyage professionnel à Morrisburg, ON | Fresh Nest Co.",
+      "metaDesc":      "Fresh Nest Co. dessert Morrisburg et South Dundas, ON. Nettoyage résidentiel professionnel — standard, en profondeur et déménagement.",
+      "heading":       "Services de nettoyage à Morrisburg",
+      "subhead":       "Desservant Morrisburg et le comté de South Dundas.",
+      "description":   "Morrisburg et la région de South Dundas environnante font partie de notre zone de service régulière. Nettoyage standard, en profondeur et de déménagement disponibles. Contactez-nous pour confirmer la disponibilité pour votre adresse spécifique."
+    }
+  },
   "welcome": "Bienvenue chez Fresh Nest Co.",
   "tagline": "Services de nettoyage et d'organisation",
   "phone": "(613) 935-3555",

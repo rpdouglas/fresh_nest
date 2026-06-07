@@ -157,6 +157,57 @@
     "ratingAriaLabel": "Rated 5.0 out of 5 — based on 80 or more reviews",
     "starAriaLabel":   "{{rating}} out of {{max}} stars"
   },
+  "locations": {
+    "ariaLabel":       "Service areas",
+    "servicesHeading": "Services Available Here",
+    "mapLabel":        "Map of {{location}}",
+    "bookCta":         "Book a Cleaning in {{location}}",
+    "bookAriaLabel":   "Book a cleaning in {{location}}",
+    "overview": {
+      "pageTitle":     "Service Areas | Fresh Nest Co.",
+      "metaDesc":      "Fresh Nest Co. serves Cornwall ON, Akwesasne, Snye QC, Long Sault, and Morrisburg. Professional bilingual cleaning services.",
+      "heading":       "Our Service Areas",
+      "subhead":       "We proudly serve Cornwall and surrounding communities — including Akwesasne, Snye QC, Long Sault, and Morrisburg.",
+      "viewLocation":  "View details →"
+    },
+    "cornwallOn": {
+      "pageTitle":     "Professional Cleaning in Cornwall, ON | Fresh Nest Co.",
+      "metaDesc":      "Fresh Nest Co. offers bilingual professional cleaning in Cornwall, ON — standard, deep, move-out, post-construction, Airbnb turnover, and commercial.",
+      "heading":       "Cleaning Services in Cornwall, ON",
+      "subhead":       "Cornwall's trusted bilingual cleaning team — residential, commercial, and Airbnb.",
+      "description":   "Fresh Nest Co. is based in Cornwall and serves the full city including the east and west ends, the waterfront, and surrounding residential neighbourhoods. We offer standard, deep, move-out, post-construction, Airbnb turnover, and commercial cleaning — all in English and French."
+    },
+    "akwesasne": {
+      "pageTitle":     "Professional Cleaning in Akwesasne | Fresh Nest Co.",
+      "metaDesc":      "Fresh Nest Co. serves Akwesasne including Cornwall Island. We cross the Seaway International Bridge — standard, deep, and move-out cleaning available.",
+      "heading":       "Cleaning Services in Akwesasne",
+      "subhead":       "We serve the full Akwesasne community — including Cornwall Island.",
+      "description":   "We cross the Seaway International Bridge to serve Cornwall Island and the broader Akwesasne community. Standard, deep clean, move-out, and post-construction cleans available. Please include your island address and any access instructions in your booking notes.",
+      "islandNote":    "We serve Cornwall Island — we cross the bridge. Please include your island address and any access instructions in your booking notes."
+    },
+    "snyeQc": {
+      "pageTitle":     "Professional Cleaning in Snye, QC | Fresh Nest Co.",
+      "metaDesc":      "Fresh Nest Co. serves Snye, Quebec — on the Quebec side of Akwesasne. Bilingual, eco-friendly cleaning. Standard, deep, and move-out.",
+      "heading":       "Cleaning Services in Snye, QC",
+      "subhead":       "We serve the Quebec side of Akwesasne, including Snye.",
+      "description":   "Fresh Nest Co. travels across the provincial border to serve clients in Snye and the Quebec side of Akwesasne. We use eco-friendly, baby-safe products on all cleans. Standard, deep clean, and move-out cleaning available. Fully bilingual service — book in French or English.",
+      "borderNote":    "We serve Akwesasne, Quebec side (Snye) — we cross the provincial border. Eco-friendly, baby-safe products used on every clean."
+    },
+    "longSault": {
+      "pageTitle":     "Professional Cleaning in Long Sault, ON | Fresh Nest Co.",
+      "metaDesc":      "Fresh Nest Co. serves Long Sault and South Stormont, ON. Professional residential and Airbnb turnover cleaning.",
+      "heading":       "Cleaning Services in Long Sault",
+      "subhead":       "Serving Long Sault and South Stormont — including waterfront Airbnb properties.",
+      "description":   "Long Sault and South Stormont residents count on Fresh Nest Co. for reliable residential cleaning. We also serve waterfront Airbnb and cottage properties in the area. Standard, deep clean, move-out, and Airbnb turnover cleaning available."
+    },
+    "morrisburg": {
+      "pageTitle":     "Professional Cleaning in Morrisburg, ON | Fresh Nest Co.",
+      "metaDesc":      "Fresh Nest Co. serves Morrisburg and South Dundas, ON. Professional residential cleaning — standard, deep, and move-out.",
+      "heading":       "Cleaning Services in Morrisburg",
+      "subhead":       "Serving Morrisburg and South Dundas County.",
+      "description":   "Morrisburg and the surrounding South Dundas area are within our regular service zone. Standard, deep clean, and move-out cleaning available. Contact us to confirm scheduling for your specific address."
+    }
+  },
   "welcome": "Welcome to Fresh Nest Co.",
   "tagline": "Cleaning & Organizing Services",
   "phone": "(613) 935-3555",
