@@ -26,6 +26,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | **E14** | FAQ Page | P0 | All | Completed ✅ |
 | **E15** | Multi-Step Booking Form | P0 | Travis, Margaret, Sophie, Kahnawà:ke | Completed ✅ |
 | **E16** | Firestore Booking Integration | P0 | All | Completed ✅ |
+| **E17** | Cloud Functions Bilingual Email | P0 | Diane, Travis, All | Completed ✅ |
 
 ---
 
@@ -44,6 +45,19 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   * [src/index.css](file:///workspaces/fresh_nest/src/index.css)
   * [src/lib/utils.ts](file:///workspaces/fresh_nest/src/lib/utils.ts)
   * [src/types/index.ts](file:///workspaces/fresh_nest/src/types/index.ts)
+
+#### E17 — Cloud Functions Bilingual Email
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-07)
+* **Strategy:** 1 — Firebase Functions v2 + Resend SDK (approved by human)
+* **Key Assets:**
+  * [functions/src/index.ts](file:///workspaces/fresh_nest/functions/src/index.ts)
+  * [functions/src/sendEmail.ts](file:///workspaces/fresh_nest/functions/src/sendEmail.ts)
+  * [functions/src/emailTemplates.ts](file:///workspaces/fresh_nest/functions/src/emailTemplates.ts)
+  * [functions/package.json](file:///workspaces/fresh_nest/functions/package.json)
+  * [functions/tsconfig.json](file:///workspaces/fresh_nest/functions/tsconfig.json)
+  * [firebase.json](file:///workspaces/fresh_nest/firebase.json)
+* **Close Report:** [E17-close-2026-06-07.md](file:///workspaces/fresh_nest/docs/reports/E17-close-2026-06-07.md)
 
 #### E16 — Firestore Booking Integration
 * **Owner:** Dev Team
