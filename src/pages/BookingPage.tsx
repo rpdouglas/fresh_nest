@@ -4,6 +4,7 @@ import { useForm, FormProvider, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import { bookingFormSchema, BookingFormData, STEP_FIELDS } from '@/lib/bookingSchema'
+import { submitBooking, detectLeadSource } from '@/lib/firestore'
 import StepIndicator from '@/components/booking/StepIndicator'
 import BookingStep1 from '@/components/booking/BookingStep1'
 import BookingStep2 from '@/components/booking/BookingStep2'
@@ -57,10 +58,12 @@ function buildDefaults(params: URLSearchParams): Partial<BookingFormData> {
 }
 
 export default function BookingPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const [step, setStep] = useState(0)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const source = detectLeadSource(searchParams)
 
   const methods = useForm<BookingFormData>({
     resolver: zodResolver(bookingFormSchema) as Resolver<BookingFormData>,
@@ -95,9 +98,15 @@ export default function BookingPage() {
 
   const handleBack = () => setStep((s) => s - 1)
 
-  const onSubmit = () => {
-    // E16 replaces this stub with the Firestore addDoc write
-    navigate('/thank-you')
+  const onSubmit = async (data: BookingFormData) => {
+    setSubmitError(null)
+    try {
+      const lang = i18n.language === 'fr' ? 'fr' : 'en'
+      await submitBooking(data, lang, source)
+      navigate('/thank-you')
+    } catch {
+      setSubmitError(t('booking.errors.submit'))
+    }
   }
 
   return (
@@ -122,7 +131,7 @@ export default function BookingPage() {
               {step === 0 && <BookingStep1 onNext={handleNext} />}
               {step === 1 && <BookingStep2 onNext={handleNext} onBack={handleBack} />}
               {step === 2 && <BookingStep3 onNext={handleNext} onBack={handleBack} />}
-              {step === 3 && <BookingStep4 onBack={handleBack} onSetStep={setStep} />}
+              {step === 3 && <BookingStep4 onBack={handleBack} onSetStep={setStep} submitError={submitError} />}
             </form>
           </FormProvider>
         </div>

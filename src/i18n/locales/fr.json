@@ -301,7 +301,8 @@
       "email":     "Veuillez entrer une adresse courriel valide.",
       "phone":     "Veuillez entrer un numéro de téléphone valide (minimum 10 chiffres).",
       "minLength": "Ce champ est trop court.",
-      "date":      "Veuillez sélectionner une date."
+      "date":      "Veuillez sélectionner une date.",
+      "submit":    "Une erreur s'est produite lors de l'enregistrement. Veuillez réessayer ou nous appeler :"
     },
     "review": {
       "heading":  "Vérifiez votre réservation",

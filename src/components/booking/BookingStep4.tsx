@@ -6,9 +6,10 @@ import type { BookingFormData } from '@/lib/bookingSchema'
 interface Props {
   onBack: () => void
   onSetStep: (step: number) => void
+  submitError?: string | null
 }
 
-export default function BookingStep4({ onBack, onSetStep }: Props) {
+export default function BookingStep4({ onBack, onSetStep, submitError }: Props) {
   const { t } = useTranslation()
   const { register, getValues, formState: { isSubmitting } } = useFormContext<BookingFormData>()
   const values = getValues()
@@ -148,6 +149,15 @@ export default function BookingStep4({ onBack, onSetStep }: Props) {
           </label>
         </div>
       </div>
+
+      {submitError && (
+        <div role="alert" className="mt-4 bg-red-50 border border-red-300 rounded p-4 font-body text-base text-red-700">
+          {submitError}{' '}
+          <a href="tel:+16139353555" className="font-medium underline text-red-700">
+            {t('phone')}
+          </a>
+        </div>
+      )}
 
       <div className="mt-6 flex justify-between">
         <button
