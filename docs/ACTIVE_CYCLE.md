@@ -24,6 +24,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | **E12** | Reviews Section | P0 | All | Completed ✅ |
 | **E13** | Service Areas + /locations/* | P0 | Kahnawà:ke, Sophie, Travis, Diane | Completed ✅ |
 | **E14** | FAQ Page | P0 | All | Completed ✅ |
+| **E15** | Multi-Step Booking Form | P0 | Travis, Margaret, Sophie, Kahnawà:ke | Completed ✅ |
 
 ---
 
@@ -42,6 +43,23 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   * [src/index.css](file:///workspaces/fresh_nest/src/index.css)
   * [src/lib/utils.ts](file:///workspaces/fresh_nest/src/lib/utils.ts)
   * [src/types/index.ts](file:///workspaces/fresh_nest/src/types/index.ts)
+
+#### E15 — Multi-Step Booking Form
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-07)
+* **Strategy:** 2 — 4-step wizard with RHF FormProvider (approved by human)
+* **Key Assets:**
+  * [src/lib/bookingSchema.ts](file:///workspaces/fresh_nest/src/lib/bookingSchema.ts)
+  * [src/components/booking/StepIndicator.tsx](file:///workspaces/fresh_nest/src/components/booking/StepIndicator.tsx)
+  * [src/components/booking/BookingStep1.tsx](file:///workspaces/fresh_nest/src/components/booking/BookingStep1.tsx)
+  * [src/components/booking/BookingStep2.tsx](file:///workspaces/fresh_nest/src/components/booking/BookingStep2.tsx)
+  * [src/components/booking/BookingStep3.tsx](file:///workspaces/fresh_nest/src/components/booking/BookingStep3.tsx)
+  * [src/components/booking/BookingStep4.tsx](file:///workspaces/fresh_nest/src/components/booking/BookingStep4.tsx)
+  * [src/pages/BookingPage.tsx](file:///workspaces/fresh_nest/src/pages/BookingPage.tsx)
+  * [src/App.tsx](file:///workspaces/fresh_nest/src/App.tsx)
+  * [src/i18n/locales/en.json](file:///workspaces/fresh_nest/src/i18n/locales/en.json)
+  * [src/i18n/locales/fr.json](file:///workspaces/fresh_nest/src/i18n/locales/fr.json)
+* **Close Report:** [E15-close-2026-06-07.md](file:///workspaces/fresh_nest/docs/reports/E15-close-2026-06-07.md)
 
 #### E14 — FAQ Page
 * **Owner:** Dev Team

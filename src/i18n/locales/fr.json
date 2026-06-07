@@ -208,6 +208,112 @@
       "description":   "Morrisburg et la région de South Dundas environnante font partie de notre zone de service régulière. Nettoyage standard, en profondeur et de déménagement disponibles. Contactez-nous pour confirmer la disponibilité pour votre adresse spécifique."
     }
   },
+  "booking": {
+    "pageTitle":   "Réserver un nettoyage | Fresh Nest Co.",
+    "metaDesc":    "Réservez des services de nettoyage professionnel en ligne. Réservation rapide et bilingue pour Cornwall, Akwesasne, Snye QC, Long Sault et Morrisburg.",
+    "heading":     "Réserver un nettoyage",
+    "subhead":     "Quatre étapes rapides — environ 3 minutes sur votre téléphone.",
+    "progress":    "Étape {{current}} sur {{total}}",
+    "next":        "Suivant",
+    "back":        "Retour",
+    "submit":      "Confirmer la réservation",
+    "submitting":  "Envoi en cours…",
+    "step1Title":  "Quel type de nettoyage ?",
+    "step2Title":  "Quand souhaitez-vous notre visite ?",
+    "step3Title":  "Vos coordonnées",
+    "step4Title":  "Vérifiez votre réservation",
+    "airbnbNote":  "Les rotations Airbnb incluent le changement de literie, le réapprovisionnement des articles de toilette et les photos de dommages. Généralement effectuées dans le créneau 11h–15h.",
+    "fields": {
+      "serviceType": { "label": "Type de service" },
+      "propertyType": {
+        "label": "Taille de la propriété",
+        "options": {
+          "apartment":  "Appartement / Condo",
+          "1-2bed":     "Maison 1–2 chambres",
+          "3-4bed":     "Maison 3–4 chambres",
+          "5+bed":      "Maison 5+ chambres",
+          "commercial": "Propriété commerciale"
+        }
+      },
+      "bedrooms":  { "label": "Chambres",       "decrease": "Réduire les chambres",       "increase": "Augmenter les chambres"       },
+      "bathrooms": { "label": "Salles de bain",  "decrease": "Réduire les salles de bain", "increase": "Augmenter les salles de bain" },
+      "pets": {
+        "label": "Nous avons des animaux à la maison",
+        "hint":  "Nous utilisons des produits écologiques et sûrs pour les animaux comme standard."
+      },
+      "frequency": {
+        "label": "Fréquence de nettoyage",
+        "options": {
+          "one-time":  "Une seule fois",
+          "weekly":    "Hebdomadaire",
+          "biweekly":  "Aux deux semaines",
+          "monthly":   "Mensuel"
+        },
+        "discounts": {
+          "weekly":   "Économisez 20 %",
+          "biweekly": "Économisez 15 %",
+          "monthly":  "Économisez 10 %"
+        }
+      },
+      "preferredDate": {
+        "label": "Date préférée",
+        "hint":  "Nous confirmerons la disponibilité dans les 24 heures."
+      },
+      "squareFootage": {
+        "label":       "Superficie",
+        "optional":    "(facultatif)",
+        "placeholder": "p. ex. 1400"
+      },
+      "addOns": {
+        "label": "Options supplémentaires (facultatif)",
+        "options": {
+          "oven":      "Intérieur du four",
+          "fridge":    "Intérieur du réfrigérateur",
+          "windows":   "Fenêtres intérieures",
+          "laundry":   "Lessive (lavage + pliage)",
+          "petHair":   "Traitement poils d'animaux",
+          "basement":  "Sous-sol"
+        }
+      },
+      "firstName":        { "label": "Prénom",              "placeholder": "Prénom"                                                     },
+      "lastName":         { "label": "Nom",                 "placeholder": "Nom"                                                        },
+      "email":            { "label": "Adresse courriel",    "placeholder": "vous@exemple.com"                                           },
+      "phone":            { "label": "Numéro de téléphone", "placeholder": "(613) 000-0000"                                             },
+      "address": {
+        "label":       "Adresse du service",
+        "placeholder": "123 rue Principale, Cornwall ON",
+        "hint":        "Incluez l'adresse de l'île ou les informations de passage frontalier si applicable."
+      },
+      "preferredCleaner": {
+        "label":       "Nettoyeur préféré (facultatif)",
+        "placeholder": "ex. Ryan D. — laissez vide pour être assigné"
+      },
+      "notes": {
+        "label":       "Instructions spéciales (facultatif)",
+        "placeholder": "Adresse de l'île / info traversée du pont, code d'accès, allergies, zones à cibler…"
+      },
+      "marketingConsent": {
+        "label": "J'accepte de recevoir des courriels promotionnels de Fresh Nest Co. Je peux me désabonner à tout moment."
+      }
+    },
+    "errors": {
+      "required":  "Ce champ est obligatoire.",
+      "email":     "Veuillez entrer une adresse courriel valide.",
+      "phone":     "Veuillez entrer un numéro de téléphone valide (minimum 10 chiffres).",
+      "minLength": "Ce champ est trop court.",
+      "date":      "Veuillez sélectionner une date."
+    },
+    "review": {
+      "heading":  "Vérifiez votre réservation",
+      "service":  "Service",
+      "property": "Propriété",
+      "schedule": "Horaire",
+      "contact":  "Coordonnées",
+      "addOns":   "Options",
+      "notes":    "Notes",
+      "edit":     "Modifier"
+    }
+  },
   "faq": {
     "pageTitle": "FAQ | Fresh Nest Co.",
     "metaDesc":  "Questions fréquentes sur les services de nettoyage de Fresh Nest Co. à Cornwall, Akwesasne, Snye QC, Long Sault et Morrisburg.",

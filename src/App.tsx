@@ -7,6 +7,7 @@ import { CORNWALL_ON, AKWESASNE, SNYE_QC, LONG_SAULT, MORRISBURG } from '@/lib/l
 import LocationPage from '@/pages/LocationPage'
 import LocationsOverview from '@/pages/LocationsOverview'
 import FaqPage from '@/pages/FaqPage'
+import BookingPage from '@/pages/BookingPage'
 
 /**
  * React Router v6 browser router.
@@ -133,12 +134,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'booking',
-        element: (
-          <PlaceholderPage
-            titleKey="nav.booking"
-            epicNote="Multi-step booking form — built in E15."
-          />
-        ),
+        element: <BookingPage />,
       },
       {
         path: 'thank-you',

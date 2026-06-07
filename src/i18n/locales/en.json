@@ -208,6 +208,112 @@
       "description":   "Morrisburg and the surrounding South Dundas area are within our regular service zone. Standard, deep clean, and move-out cleaning available. Contact us to confirm scheduling for your specific address."
     }
   },
+  "booking": {
+    "pageTitle":   "Book a Cleaning | Fresh Nest Co.",
+    "metaDesc":    "Book professional cleaning services online. Fast, bilingual booking for Cornwall, Akwesasne, Snye QC, Long Sault, and Morrisburg.",
+    "heading":     "Book a Cleaning",
+    "subhead":     "Four quick steps — takes about 3 minutes on your phone.",
+    "progress":    "Step {{current}} of {{total}}",
+    "next":        "Next",
+    "back":        "Back",
+    "submit":      "Confirm Booking",
+    "submitting":  "Submitting…",
+    "step1Title":  "What type of cleaning?",
+    "step2Title":  "When would you like us?",
+    "step3Title":  "Your contact details",
+    "step4Title":  "Review your booking",
+    "airbnbNote":  "Airbnb turnovers include linen change, toiletry restocking, and damage photos. Typically completed in the 11am–3pm window.",
+    "fields": {
+      "serviceType": { "label": "Service type" },
+      "propertyType": {
+        "label": "Property size",
+        "options": {
+          "apartment":  "Apartment / Condo",
+          "1-2bed":     "1–2 Bedroom Home",
+          "3-4bed":     "3–4 Bedroom Home",
+          "5+bed":      "5+ Bedroom Home",
+          "commercial": "Commercial Property"
+        }
+      },
+      "bedrooms":  { "label": "Bedrooms",  "decrease": "Decrease bedrooms",  "increase": "Increase bedrooms"  },
+      "bathrooms": { "label": "Bathrooms", "decrease": "Decrease bathrooms", "increase": "Increase bathrooms" },
+      "pets": {
+        "label": "We have pets at home",
+        "hint":  "We use pet-safe, eco-friendly products as standard."
+      },
+      "frequency": {
+        "label": "Cleaning frequency",
+        "options": {
+          "one-time":  "One-time",
+          "weekly":    "Weekly",
+          "biweekly":  "Every two weeks",
+          "monthly":   "Monthly"
+        },
+        "discounts": {
+          "weekly":   "Save 20%",
+          "biweekly": "Save 15%",
+          "monthly":  "Save 10%"
+        }
+      },
+      "preferredDate": {
+        "label": "Preferred date",
+        "hint":  "We'll confirm availability within 24 hours."
+      },
+      "squareFootage": {
+        "label":       "Square footage",
+        "optional":    "(optional)",
+        "placeholder": "e.g. 1400"
+      },
+      "addOns": {
+        "label": "Add-ons (optional)",
+        "options": {
+          "oven":      "Inside oven",
+          "fridge":    "Inside fridge",
+          "windows":   "Interior windows",
+          "laundry":   "Laundry (wash + fold)",
+          "petHair":   "Pet hair treatment",
+          "basement":  "Basement"
+        }
+      },
+      "firstName":        { "label": "First name",     "placeholder": "First name"                                   },
+      "lastName":         { "label": "Last name",      "placeholder": "Last name"                                    },
+      "email":            { "label": "Email address",  "placeholder": "you@example.com"                              },
+      "phone":            { "label": "Phone number",   "placeholder": "(613) 000-0000"                               },
+      "address": {
+        "label":       "Service address",
+        "placeholder": "123 Main St, Cornwall ON",
+        "hint":        "Include island address or bridge crossing notes if applicable."
+      },
+      "preferredCleaner": {
+        "label":       "Preferred cleaner (optional)",
+        "placeholder": "e.g. Ryan D. — leave blank to be assigned"
+      },
+      "notes": {
+        "label":       "Special instructions (optional)",
+        "placeholder": "Island address / bridge crossing info, gate code, allergies, areas of focus…"
+      },
+      "marketingConsent": {
+        "label": "I agree to receive promotional emails from Fresh Nest Co. I can unsubscribe at any time."
+      }
+    },
+    "errors": {
+      "required":  "This field is required.",
+      "email":     "Please enter a valid email address.",
+      "phone":     "Please enter a valid phone number (minimum 10 digits).",
+      "minLength": "This field is too short.",
+      "date":      "Please select a date."
+    },
+    "review": {
+      "heading":  "Review your booking",
+      "service":  "Service",
+      "property": "Property",
+      "schedule": "Schedule",
+      "contact":  "Contact",
+      "addOns":   "Add-ons",
+      "notes":    "Notes",
+      "edit":     "Edit"
+    }
+  },
   "faq": {
     "pageTitle": "FAQ | Fresh Nest Co.",
     "metaDesc":  "Frequently asked questions about Fresh Nest Co. cleaning services in Cornwall, Akwesasne, Snye QC, Long Sault, and Morrisburg.",
