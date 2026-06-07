@@ -130,6 +130,23 @@
       "monthly":   "Nettoyage récurrent flexible. Idéal pour les maisons moins fréquentées ou les remises à neuf saisonnières."
     }
   },
+  "team": {
+    "ariaLabel":       "Rencontrez l'équipe de nettoyage Fresh Nest Co.",
+    "sectionHeading":  "Rencontrez votre équipe",
+    "sectionSubhead":  "Des personnes réelles qui se soucient de votre maison.",
+    "assignmentNote":  "Nous attribuons le même nettoyeur attitré à votre domicile — à chaque visite, sans exception. Demandez votre nettoyeur préféré lors de la réservation.",
+    "photoAlt":        "Photo de {{name}}",
+    "members": {
+      "ryan": {
+        "role": "Propriétaire et nettoyeur principal",
+        "bio":  "Ryan a fondé Fresh Nest Co. pour offrir un service de nettoyage professionnel et fiable à Cornwall et aux communautés environnantes. Il supervise personnellement chaque réservation et veille à ce que votre maison soit entretenue selon les plus hauts standards."
+      },
+      "cleanerPlaceholder": {
+        "role": "Spécialiste en nettoyage",
+        "bio":  "Notre équipe s'agrandit. Les profils réels des nettoyeurs — avec photos et biographies — seront ajoutés avant le lancement."
+      }
+    }
+  },
   "welcome": "Bienvenue chez Fresh Nest Co.",
   "tagline": "Services de nettoyage et d'organisation",
   "phone": "(613) 935-3555",
