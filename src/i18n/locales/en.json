@@ -208,6 +208,24 @@
       "description":   "Morrisburg and the surrounding South Dundas area are within our regular service zone. Standard, deep clean, and move-out cleaning available. Contact us to confirm scheduling for your specific address."
     }
   },
+  "faq": {
+    "pageTitle": "FAQ | Fresh Nest Co.",
+    "metaDesc":  "Frequently asked questions about Fresh Nest Co. cleaning services in Cornwall, Akwesasne, Snye QC, Long Sault, and Morrisburg.",
+    "heading":   "Frequently Asked Questions",
+    "subhead":   "Quick answers about booking, services, and what to expect.",
+    "ctaHeading": "Still have questions?",
+    "ctaSubhead": "We're happy to help — call us or book online.",
+    "item1":  { "q": "Do I need to be home during the clean?",                "a": "No, you don't need to be home. Many of our clients provide a key or entry code. We follow your access instructions and lock up securely when we leave." },
+    "item2":  { "q": "Do you use eco-friendly, pet-safe products?",           "a": "Yes. We use plant-based, non-toxic cleaning products that are safe for children and pets. If you have specific sensitivities or product preferences, just let us know at booking." },
+    "item3":  { "q": "Will I get the same cleaner every time?",               "a": "Yes — we assign you a dedicated cleaner whenever possible. Consistency matters for trust and quality, so we make it a priority for recurring clients." },
+    "item4":  { "q": "Do you serve Cornwall Island / Akwesasne?",             "a": "Yes, we cross the bridge to Cornwall Island and serve the Akwesasne community. Please mention your address when booking so we can confirm scheduling." },
+    "item5":  { "q": "Do you travel to Snye, QC?",                           "a": "Yes, we travel to Snye on the Quebec side of Akwesasne. We use eco-friendly, pet-safe products — important for families along the river. Mention your Snye address at booking." },
+    "item6":  { "q": "What's included in the Airbnb turnover package?",      "a": "Our Airbnb turnover includes a full clean, linen change, restocking of toiletries, and damage-documentation photos. Turnovers are typically completed in the 11am–3pm window to meet check-in deadlines." },
+    "item7":  { "q": "Can I reschedule or cancel my booking?",               "a": "Yes — we ask for at least 24 hours' notice to reschedule or cancel without a fee. For same-day cancellations, a short-notice fee may apply." },
+    "item8":  { "q": "Are you insured and bonded?",                          "a": "Yes, Fresh Nest Co. is fully insured and bonded. You can book with confidence knowing your home and belongings are protected." },
+    "item9":  { "q": "What if I'm not happy with the clean?",                "a": "We offer a 24-hour satisfaction guarantee. If something was missed, contact us within 24 hours and we'll return to make it right at no extra charge." },
+    "item10": { "q": "What payment methods do you accept?",                  "a": "We accept Interac e-Transfer, major credit cards, and cash. Payment is due on the day of service unless you have a recurring plan." }
+  },
   "welcome": "Welcome to Fresh Nest Co.",
   "tagline": "Cleaning & Organizing Services",
   "phone": "(613) 935-3555",

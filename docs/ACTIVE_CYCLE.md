@@ -23,6 +23,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | **E11** | Meet Your Team | P0 | Diane, Margaret, Kahnawà:ke | Completed ✅ |
 | **E12** | Reviews Section | P0 | All | Completed ✅ |
 | **E13** | Service Areas + /locations/* | P0 | Kahnawà:ke, Sophie, Travis, Diane | Completed ✅ |
+| **E14** | FAQ Page | P0 | All | Completed ✅ |
 
 ---
 
@@ -41,6 +42,16 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   * [src/index.css](file:///workspaces/fresh_nest/src/index.css)
   * [src/lib/utils.ts](file:///workspaces/fresh_nest/src/lib/utils.ts)
   * [src/types/index.ts](file:///workspaces/fresh_nest/src/types/index.ts)
+
+#### E14 — FAQ Page
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-07)
+* **Key Assets:**
+  * [src/pages/FaqPage.tsx](file:///workspaces/fresh_nest/src/pages/FaqPage.tsx)
+  * [src/App.tsx](file:///workspaces/fresh_nest/src/App.tsx)
+  * [src/i18n/locales/en.json](file:///workspaces/fresh_nest/src/i18n/locales/en.json)
+  * [src/i18n/locales/fr.json](file:///workspaces/fresh_nest/src/i18n/locales/fr.json)
+* **Close Report:** [E14-close-2026-06-07.md](file:///workspaces/fresh_nest/docs/reports/E14-close-2026-06-07.md)
 
 #### E13 — Service Areas + /locations/* Pages
 * **Owner:** Dev Team

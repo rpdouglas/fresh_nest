@@ -208,6 +208,24 @@
       "description":   "Morrisburg et la région de South Dundas environnante font partie de notre zone de service régulière. Nettoyage standard, en profondeur et de déménagement disponibles. Contactez-nous pour confirmer la disponibilité pour votre adresse spécifique."
     }
   },
+  "faq": {
+    "pageTitle": "FAQ | Fresh Nest Co.",
+    "metaDesc":  "Questions fréquentes sur les services de nettoyage de Fresh Nest Co. à Cornwall, Akwesasne, Snye QC, Long Sault et Morrisburg.",
+    "heading":   "Questions fréquentes",
+    "subhead":   "Réponses rapides sur la réservation, les services et à quoi s'attendre.",
+    "ctaHeading": "Vous avez d'autres questions ?",
+    "ctaSubhead": "Nous sommes là pour vous aider — appelez-nous ou réservez en ligne.",
+    "item1":  { "q": "Dois-je être présent pendant le nettoyage ?",                       "a": "Non, vous n'avez pas besoin d'être à la maison. Beaucoup de nos clients nous laissent une clé ou un code d'accès. Nous suivons vos instructions et verrouillons soigneusement à notre départ." },
+    "item2":  { "q": "Utilisez-vous des produits écologiques et sûrs pour les animaux ?", "a": "Oui. Nous utilisons des produits de nettoyage à base végétale et non toxiques, sûrs pour les enfants et les animaux. Si vous avez des sensibilités particulières ou des préférences de produits, faites-le nous savoir lors de la réservation." },
+    "item3":  { "q": "Aurai-je le même nettoyeur à chaque visite ?",                      "a": "Oui — nous vous assignons un nettoyeur attitré dans la mesure du possible. La constance est essentielle pour la confiance et la qualité, et nous en faisons une priorité pour les clients réguliers." },
+    "item4":  { "q": "Desservez-vous l'île de Cornwall / Akwesasne ?",                    "a": "Oui, nous traversons le pont pour aller sur l'île de Cornwall et desservir la communauté d'Akwesasne. Mentionnez votre adresse lors de la réservation afin que nous puissions confirmer l'horaire." },
+    "item5":  { "q": "Vous déplacez-vous à Snye, QC ?",                                  "a": "Oui, nous nous déplaçons à Snye du côté québécois d'Akwesasne. Nous utilisons des produits écologiques et sûrs pour les animaux — important pour les familles riveraines. Mentionnez votre adresse de Snye lors de la réservation." },
+    "item6":  { "q": "Qu'est-ce qui est inclus dans le forfait rotation Airbnb ?",        "a": "Notre forfait rotation Airbnb comprend un nettoyage complet, le changement de literie, le réapprovisionnement des articles de toilette et des photos de documentation des dommages. Les rotations sont généralement effectuées dans le créneau 11h–15h pour respecter les horaires d'arrivée." },
+    "item7":  { "q": "Puis-je reporter ou annuler ma réservation ?",                      "a": "Oui — nous demandons un préavis d'au moins 24 heures pour reporter ou annuler sans frais. Pour les annulations le jour même, des frais de courte notice peuvent s'appliquer." },
+    "item8":  { "q": "Êtes-vous assurés et cautionnés ?",                                "a": "Oui, Fresh Nest Co. est pleinement assurée et cautionnée. Vous pouvez réserver en toute confiance, sachant que votre domicile et vos biens sont protégés." },
+    "item9":  { "q": "Que se passe-t-il si je ne suis pas satisfait du nettoyage ?",      "a": "Nous offrons une garantie de satisfaction de 24 heures. Si quelque chose a été oublié, contactez-nous dans les 24 heures et nous reviendrons corriger la situation sans frais supplémentaires." },
+    "item10": { "q": "Quels modes de paiement acceptez-vous ?",                           "a": "Nous acceptons le virement Interac, les principales cartes de crédit et l'argent comptant. Le paiement est dû le jour du service, sauf si vous avez un forfait récurrent." }
+  },
   "welcome": "Bienvenue chez Fresh Nest Co.",
   "tagline": "Services de nettoyage et d'organisation",
   "phone": "(613) 935-3555",

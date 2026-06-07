@@ -6,6 +6,7 @@ import PlaceholderPage from '@/pages/PlaceholderPage'
 import { CORNWALL_ON, AKWESASNE, SNYE_QC, LONG_SAULT, MORRISBURG } from '@/lib/locationData'
 import LocationPage from '@/pages/LocationPage'
 import LocationsOverview from '@/pages/LocationsOverview'
+import FaqPage from '@/pages/FaqPage'
 
 /**
  * React Router v6 browser router.
@@ -124,12 +125,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'faq',
-        element: (
-          <PlaceholderPage
-            titleKey="nav.faq"
-            epicNote="FAQ page — built in E14."
-          />
-        ),
+        element: <FaqPage />,
       },
       {
         path: 'gallery',
