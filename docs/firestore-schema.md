@@ -32,6 +32,9 @@ Stores residential, commercial, and Airbnb cleaning reservations.
 | `photoConfirmation` | `boolean` | ✅ | `true` if photos are required upon completion |
 | `fsmAppointmentId` | `string \| null` | ❌ | Sync identifier for field service management software (Phase 6) |
 | `createdAt` | `Timestamp` | ✅ | Firestore Server Timestamp |
+| `marketingConsent` | `boolean` | ❌ | CASL: `true` if client opted in to marketing emails. Omitted entirely (not `null`) when false. |
+| `consentTimestamp` | `Timestamp` | ❌ | CASL: Server timestamp of marketing consent. Present only when `marketingConsent === true`. |
+| `consentMethod` | `string` | ❌ | CASL: `'booking-form-v2'`. Present only when `marketingConsent === true`. |
 
 ---
 

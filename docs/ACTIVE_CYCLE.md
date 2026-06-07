@@ -25,6 +25,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | **E13** | Service Areas + /locations/* | P0 | Kahnawà:ke, Sophie, Travis, Diane | Completed ✅ |
 | **E14** | FAQ Page | P0 | All | Completed ✅ |
 | **E15** | Multi-Step Booking Form | P0 | Travis, Margaret, Sophie, Kahnawà:ke | Completed ✅ |
+| **E16** | Firestore Booking Integration | P0 | All | Completed ✅ |
 
 ---
 
@@ -43,6 +44,19 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   * [src/index.css](file:///workspaces/fresh_nest/src/index.css)
   * [src/lib/utils.ts](file:///workspaces/fresh_nest/src/lib/utils.ts)
   * [src/types/index.ts](file:///workspaces/fresh_nest/src/types/index.ts)
+
+#### E16 — Firestore Booking Integration
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-07)
+* **Strategy:** 1 — Service function in `src/lib/firestore.ts` (approved by human)
+* **Key Assets:**
+  * [src/lib/firestore.ts](file:///workspaces/fresh_nest/src/lib/firestore.ts)
+  * [src/pages/BookingPage.tsx](file:///workspaces/fresh_nest/src/pages/BookingPage.tsx)
+  * [src/components/booking/BookingStep4.tsx](file:///workspaces/fresh_nest/src/components/booking/BookingStep4.tsx)
+  * [src/i18n/locales/en.json](file:///workspaces/fresh_nest/src/i18n/locales/en.json)
+  * [src/i18n/locales/fr.json](file:///workspaces/fresh_nest/src/i18n/locales/fr.json)
+  * [docs/firestore-schema.md](file:///workspaces/fresh_nest/docs/firestore-schema.md)
+* **Close Report:** [E16-close-2026-06-07.md](file:///workspaces/fresh_nest/docs/reports/E16-close-2026-06-07.md)
 
 #### E15 — Multi-Step Booking Form
 * **Owner:** Dev Team

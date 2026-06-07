@@ -301,7 +301,8 @@
       "email":     "Please enter a valid email address.",
       "phone":     "Please enter a valid phone number (minimum 10 digits).",
       "minLength": "This field is too short.",
-      "date":      "Please select a date."
+      "date":      "Please select a date.",
+      "submit":    "Something went wrong saving your booking. Please try again or call us:"
     },
     "review": {
       "heading":  "Review your booking",
