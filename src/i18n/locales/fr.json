@@ -147,6 +147,16 @@
       }
     }
   },
+  "reviews": {
+    "ariaLabel":       "Avis des clients",
+    "sectionHeading":  "Ce que disent nos clients",
+    "sectionSubhead":  "Des avis réels de clients partout à Cornwall et dans les communautés environnantes.",
+    "ratingHeading":   "5,0",
+    "ratingStars":     "★★★★★",
+    "ratingBasis":     "Basé sur 80+ avis",
+    "ratingAriaLabel": "Note de 5,0 sur 5 — basé sur plus de 80 avis",
+    "starAriaLabel":   "{{rating}} sur {{max}} étoiles"
+  },
   "welcome": "Bienvenue chez Fresh Nest Co.",
   "tagline": "Services de nettoyage et d'organisation",
   "phone": "(613) 935-3555",

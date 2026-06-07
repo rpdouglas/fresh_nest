@@ -6,6 +6,7 @@ import RecurringCTA from '@/components/home/RecurringCTA'
 import GalleryPreview from '@/components/home/GalleryPreview'
 import HowItWorks from '@/components/home/HowItWorks'
 import MeetTheTeam from '@/components/home/MeetTheTeam'
+import Reviews from '@/components/home/Reviews'
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
       <GalleryPreview />
       <HowItWorks />
       <MeetTheTeam />
+      <Reviews />
     </>
   )
 }
