@@ -3,6 +3,9 @@ import Layout from '@/components/layout/Layout'
 import Home from '@/pages/Home'
 import Gallery from '@/pages/Gallery'
 import PlaceholderPage from '@/pages/PlaceholderPage'
+import { CORNWALL_ON, AKWESASNE, SNYE_QC, LONG_SAULT, MORRISBURG } from '@/lib/locationData'
+import LocationPage from '@/pages/LocationPage'
+import LocationsOverview from '@/pages/LocationsOverview'
 
 /**
  * React Router v6 browser router.
@@ -102,60 +105,12 @@ const router = createBrowserRouter([
       },
 
       // ── Locations ──
-      {
-        path: 'locations',
-        element: (
-          <PlaceholderPage
-            titleKey="footer.locations"
-            epicNote="Service areas overview — built in E13."
-          />
-        ),
-      },
-      {
-        path: 'locations/cornwall',
-        element: (
-          <PlaceholderPage
-            titleKey="footer.cornwallON"
-            epicNote="Cornwall, ON location page — built in E13."
-          />
-        ),
-      },
-      {
-        path: 'locations/akwesasne',
-        element: (
-          <PlaceholderPage
-            titleKey="footer.akwesasne"
-            epicNote="Akwesasne / Cornwall Island location page — built in E13. (Kahnawà:ke P4)"
-          />
-        ),
-      },
-      {
-        path: 'locations/snye-qc',
-        element: (
-          <PlaceholderPage
-            titleKey="footer.snyeQC"
-            epicNote="Snye, QC (Akwesasne Quebec side) location page — built in E13. (Sophie P5)"
-          />
-        ),
-      },
-      {
-        path: 'locations/long-sault',
-        element: (
-          <PlaceholderPage
-            titleKey="footer.longSault"
-            epicNote="Long Sault location page — built in E13."
-          />
-        ),
-      },
-      {
-        path: 'locations/morrisburg',
-        element: (
-          <PlaceholderPage
-            titleKey="footer.morrisburg"
-            epicNote="Morrisburg location page — built in E13."
-          />
-        ),
-      },
+      { path: 'locations',             element: <LocationsOverview /> },
+      { path: 'locations/cornwall-on', element: <LocationPage config={CORNWALL_ON} /> },
+      { path: 'locations/akwesasne',   element: <LocationPage config={AKWESASNE} /> },
+      { path: 'locations/snye-qc',     element: <LocationPage config={SNYE_QC} /> },
+      { path: 'locations/long-sault',  element: <LocationPage config={LONG_SAULT} /> },
+      { path: 'locations/morrisburg',  element: <LocationPage config={MORRISBURG} /> },
 
       // ── Phase 2–3 pages ──
       {
