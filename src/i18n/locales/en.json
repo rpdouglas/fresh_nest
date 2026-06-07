@@ -130,6 +130,23 @@
       "monthly":   "Flexible recurring clean. Great for lower-traffic homes or seasonal top-ups."
     }
   },
+  "team": {
+    "ariaLabel":       "Meet the Fresh Nest Co. cleaning team",
+    "sectionHeading":  "Meet Your Team",
+    "sectionSubhead":  "Real people who care about your home.",
+    "assignmentNote":  "We assign the same dedicated cleaner to your home — every visit, every time. Request your preferred cleaner when booking.",
+    "photoAlt":        "Photo of {{name}}",
+    "members": {
+      "ryan": {
+        "role": "Owner & Lead Cleaner",
+        "bio":  "Ryan founded Fresh Nest Co. to bring professional, reliable cleaning to Cornwall and surrounding communities. He personally manages every booking and ensures your home is cared for to the highest standard."
+      },
+      "cleanerPlaceholder": {
+        "role": "Cleaning Specialist",
+        "bio":  "Our team is growing. Real cleaner profiles — with photos and bios — will be added before launch."
+      }
+    }
+  },
   "welcome": "Welcome to Fresh Nest Co.",
   "tagline": "Cleaning & Organizing Services",
   "phone": "(613) 935-3555",

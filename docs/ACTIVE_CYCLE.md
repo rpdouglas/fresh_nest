@@ -20,6 +20,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | **E08** | Recurring Cleaning Section | P0 | Travis, Diane, Margaret, Sophie | Completed ✅ |
 | **E09** | Before/After Gallery | P0 | Sophie, Margaret, Gallagher | Completed ✅ |
 | **E10** | How It Works | P0 | Margaret, Diane, Kahnawà:ke | Completed ✅ |
+| **E11** | Meet Your Team | P0 | Diane, Margaret, Kahnawà:ke | Completed ✅ |
 
 ---
 
@@ -38,6 +39,17 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   * [src/index.css](file:///workspaces/fresh_nest/src/index.css)
   * [src/lib/utils.ts](file:///workspaces/fresh_nest/src/lib/utils.ts)
   * [src/types/index.ts](file:///workspaces/fresh_nest/src/types/index.ts)
+
+#### E11 — Meet Your Team
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-07)
+* **Key Assets:**
+  * [src/components/ui/TeamAvatar.tsx](file:///workspaces/fresh_nest/src/components/ui/TeamAvatar.tsx)
+  * [src/components/home/MeetTheTeam.tsx](file:///workspaces/fresh_nest/src/components/home/MeetTheTeam.tsx)
+  * [src/pages/Home.tsx](file:///workspaces/fresh_nest/src/pages/Home.tsx)
+  * [src/i18n/locales/en.json](file:///workspaces/fresh_nest/src/i18n/locales/en.json)
+  * [src/i18n/locales/fr.json](file:///workspaces/fresh_nest/src/i18n/locales/fr.json)
+* **Close Report:** [E11-close-2026-06-07.md](file:///workspaces/fresh_nest/docs/reports/E11-close-2026-06-07.md)
 
 #### E10 — How It Works
 * **Owner:** Dev Team
