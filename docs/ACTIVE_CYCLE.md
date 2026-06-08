@@ -27,6 +27,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | **E15** | Multi-Step Booking Form | P0 | Travis, Margaret, Sophie, Kahnawà:ke | Completed ✅ |
 | **E16** | Firestore Booking Integration | P0 | All | Completed ✅ |
 | **E17** | Cloud Functions Bilingual Email | P0 | Diane, Travis, All | Completed ✅ |
+| **E18** | SMS Confirmation + Reminders | P0 | Travis, Margaret | Completed ✅ |
 
 ---
 
@@ -45,6 +46,18 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   * [src/index.css](file:///workspaces/fresh_nest/src/index.css)
   * [src/lib/utils.ts](file:///workspaces/fresh_nest/src/lib/utils.ts)
   * [src/types/index.ts](file:///workspaces/fresh_nest/src/types/index.ts)
+
+#### E18 — SMS Confirmation + Reminders
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-08)
+* **Strategy:** 1 — Twilio + Daily Cloud Scheduler (approved by human)
+* **Key Assets:**
+  * [functions/src/smsTemplates.ts](file:///workspaces/fresh_nest/functions/src/smsTemplates.ts)
+  * [functions/src/sendSms.ts](file:///workspaces/fresh_nest/functions/src/sendSms.ts)
+  * [functions/src/index.ts](file:///workspaces/fresh_nest/functions/src/index.ts)
+  * [functions/package.json](file:///workspaces/fresh_nest/functions/package.json)
+  * [functions/tsconfig.json](file:///workspaces/fresh_nest/functions/tsconfig.json)
+* **Close Report:** [E18-close-2026-06-08.md](file:///workspaces/fresh_nest/docs/reports/E18-close-2026-06-08.md)
 
 #### E17 — Cloud Functions Bilingual Email
 * **Owner:** Dev Team
