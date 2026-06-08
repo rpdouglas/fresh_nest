@@ -8,6 +8,7 @@ import LocationPage from '@/pages/LocationPage'
 import LocationsOverview from '@/pages/LocationsOverview'
 import FaqPage from '@/pages/FaqPage'
 import BookingPage from '@/pages/BookingPage'
+import PricingPage from '@/pages/PricingPage'
 
 /**
  * React Router v6 browser router.
@@ -115,15 +116,7 @@ const router = createBrowserRouter([
       { path: 'locations/morrisburg',  element: <LocationPage config={MORRISBURG} /> },
 
       // ── Phase 2–3 pages ──
-      {
-        path: 'pricing',
-        element: (
-          <PlaceholderPage
-            titleKey="nav.pricing"
-            epicNote="Pricing page — built in E19."
-          />
-        ),
-      },
+      { path: 'pricing', element: <PricingPage /> },
       {
         path: 'faq',
         element: <FaqPage />,

@@ -28,6 +28,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | **E16** | Firestore Booking Integration | P0 | All | Completed ✅ |
 | **E17** | Cloud Functions Bilingual Email | P0 | Diane, Travis, All | Completed ✅ |
 | **E18** | SMS Confirmation + Reminders | P0 | Travis, Margaret | Completed ✅ |
+| **E19** | /pricing Page | P0 | Travis, Margaret, Diane | Completed ✅ |
 
 ---
 
@@ -46,6 +47,17 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   * [src/index.css](file:///workspaces/fresh_nest/src/index.css)
   * [src/lib/utils.ts](file:///workspaces/fresh_nest/src/lib/utils.ts)
   * [src/types/index.ts](file:///workspaces/fresh_nest/src/types/index.ts)
+
+#### E19 — /pricing Page
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-08)
+* **Strategy:** 1 — Static Service Cards + Embedded Quote Calculator (approved by human)
+* **Key Assets:**
+  * [src/pages/PricingPage.tsx](file:///workspaces/fresh_nest/src/pages/PricingPage.tsx)
+  * [src/App.tsx](file:///workspaces/fresh_nest/src/App.tsx)
+  * [src/i18n/locales/en.json](file:///workspaces/fresh_nest/src/i18n/locales/en.json)
+  * [src/i18n/locales/fr.json](file:///workspaces/fresh_nest/src/i18n/locales/fr.json)
+* **Close Report:** [E19-close-2026-06-08.md](file:///workspaces/fresh_nest/docs/reports/E19-close-2026-06-08.md)
 
 #### E18 — SMS Confirmation + Reminders
 * **Owner:** Dev Team
