@@ -413,5 +413,73 @@
     "error": "Une erreur s'est produite. Veuillez réessayer.",
     "required": "Obligatoire",
     "optional": "Facultatif"
+  },
+  "airbnbPage": {
+    "meta": {
+      "title": "Nettoyage de remise en état Airbnb — Fresh Nest Co.",
+      "description": "Nettoyage de remise en état Airbnb le jour même, de 11h à 15h. Changement de literie, documentation des dégâts et mise en scène pour les hôtes de la région du Saint-Laurent."
+    },
+    "hero": {
+      "heading":  "Nettoyage de remise en état Airbnb",
+      "subhead":  "Remises en état fiables le jour même, de 11h à 15h. Documentation photographique. Prêt pour les voyageurs, à chaque fois.",
+      "cta":      "Demander un compte commercial",
+      "backLink": "← Retour aux services",
+      "imgAlt":   "Chambre en bord du Saint-Laurent prête pour les voyageurs Airbnb, avec literie fraîche"
+    },
+    "included": {
+      "heading":    "Ce qui est inclus dans chaque remise en état",
+      "fullClean":  "Nettoyage complet de la propriété — toutes les pièces",
+      "linen":      "Changement de literie et de serviettes",
+      "toiletries": "Vérification du réapprovisionnement des articles de toilette",
+      "photos":     "Documentation photographique horodatée des dégâts",
+      "staging":    "Mise en scène prête pour les voyageurs",
+      "window":     "Terminé entre 11h et 15h"
+    },
+    "howItWorks": {
+      "heading":    "Comment ça fonctionne",
+      "step1Title": "Réservez votre créneau",
+      "step1Desc":  "Sélectionnez votre date de remise en état. Nous confirmons la disponibilité le jour même dans les 2 heures.",
+      "step2Title": "Nous nettoyons et documentons",
+      "step2Desc":  "Votre propriété est nettoyée, mise en scène et photographiée. Les photos vous sont envoyées le jour même.",
+      "step3Title": "Les voyageurs arrivent prêts",
+      "step3Desc":  "L’enregistrement se déroule comme prévu. Sans stress de dernière minute."
+    },
+    "trust": {
+      "heading": "Pourquoi les hôtes choisissent Fresh Nest",
+      "stat1":   "40+",
+      "label1":  "Remises en état effectuées par année",
+      "stat2":   "11h–15h",
+      "label2":  "Créneau de remise en état garanti",
+      "stat3":   "100 %",
+      "label3":  "Documentation photographique à chaque nettoyage"
+    },
+    "pricing": {
+      "heading":  "Tarifs transparents pour la remise en état",
+      "starting": "À partir de {{min}} $ par remise en état",
+      "volume":   "Tarifs de volume disponibles pour 4+ remises en état par mois",
+      "cta":      "Voir les tarifs complets"
+    },
+    "form": {
+      "heading":          "Demander un compte commercial",
+      "subhead":          "Configurez une planification prioritaire, des tarifs de volume et des remises en état documentées pour votre propriété.",
+      "firstName":        "Prénom",
+      "lastName":         "Nom de famille",
+      "email":            "Adresse courriel",
+      "phone":            "Numéro de téléphone",
+      "propertyName":     "Nom ou adresse de la propriété",
+      "monthlyTurnovers": "Nombre estimé de remises en état par mois",
+      "preferredWindow":  "Créneau de nettoyage préféré",
+      "window11am3pm":    "11h–15h (remise en état standard)",
+      "windowFlexible":   "Flexible",
+      "windowMorning":    "Matin (avant 12h)",
+      "windowAfternoon":  "Après-midi (12h–17h)",
+      "notes":            "Notes supplémentaires",
+      "notesPlaceholder": "Adresse de la propriété, codes d’accès, emplacement de la literie ou instructions spéciales",
+      "consent":          "J’accepte de recevoir des mises à jour de service de Fresh Nest Co. (facultatif)",
+      "submit":           "Soumettre la demande",
+      "submitting":       "Envoi en cours…",
+      "successHeading":   "Merci, {{name}}.",
+      "successBody":      "Nous examinerons votre demande et vous contacterons dans les 24 heures pour configurer votre compte commercial."
+    }
   }
 }

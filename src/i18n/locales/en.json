@@ -413,5 +413,73 @@
     "error": "Something went wrong. Please try again.",
     "required": "Required",
     "optional": "Optional"
+  },
+  "airbnbPage": {
+    "meta": {
+      "title": "Airbnb Turnover Cleaning — Fresh Nest Co.",
+      "description": "Same-day Airbnb turnover cleaning in the 11am\u20133pm window. Linen changeover, damage documentation, and guest-ready staging for St. Lawrence region hosts."
+    },
+    "hero": {
+      "heading":  "Airbnb Turnover Cleaning",
+      "subhead":  "Reliable same-day turnovers in the 11am\u20133pm window. Damage-documented. Guest-ready, every time.",
+      "cta":      "Request a Commercial Account",
+      "backLink": "\u2190 Back to Services",
+      "imgAlt":   "Airbnb-ready waterfront bedroom with fresh linens and St. Lawrence River view"
+    },
+    "included": {
+      "heading":    "What\u2019s Included in Every Turnover",
+      "fullClean":  "Full property clean \u2014 all rooms",
+      "linen":      "Linen and towel changeover",
+      "toiletries": "Toiletry restocking check",
+      "photos":     "Timestamped damage photo documentation",
+      "staging":    "Guest-ready staging",
+      "window":     "Completed within the 11am\u20133pm window"
+    },
+    "howItWorks": {
+      "heading":   "How It Works",
+      "step1Title": "Book Your Window",
+      "step1Desc":  "Select your turnover date. We confirm same-day availability within 2 hours.",
+      "step2Title": "We Clean \u0026 Document",
+      "step2Desc":  "Your property is cleaned, staged, and photographed. Photos sent to you same day.",
+      "step3Title": "Guests Arrive Ready",
+      "step3Desc":  "Check-in happens on schedule. No last-minute scrambles."
+    },
+    "trust": {
+      "heading": "Why Hosts Choose Fresh Nest",
+      "stat1":   "40+",
+      "label1":  "Turnovers completed annually",
+      "stat2":   "11am\u20133pm",
+      "label2":  "Guaranteed turnover window",
+      "stat3":   "100%",
+      "label3":  "Damage photo documentation on every clean"
+    },
+    "pricing": {
+      "heading":  "Transparent Turnover Pricing",
+      "starting": "Starting from ${{min}} per turnover",
+      "volume":   "Volume pricing available for 4+ turnovers per month",
+      "cta":      "See Full Pricing"
+    },
+    "form": {
+      "heading":          "Request a Commercial Account",
+      "subhead":          "Set up priority scheduling, volume pricing, and documented turnovers for your property.",
+      "firstName":        "First Name",
+      "lastName":         "Last Name",
+      "email":            "Email Address",
+      "phone":            "Phone Number",
+      "propertyName":     "Property Name or Address",
+      "monthlyTurnovers": "Estimated Monthly Turnovers",
+      "preferredWindow":  "Preferred Cleaning Window",
+      "window11am3pm":    "11am\u20133pm (standard turnover)",
+      "windowFlexible":   "Flexible",
+      "windowMorning":    "Morning (before 12pm)",
+      "windowAfternoon":  "Afternoon (12pm\u20135pm)",
+      "notes":            "Additional Notes",
+      "notesPlaceholder": "Property address, gate codes, linen storage location, or special instructions",
+      "consent":          "I agree to receive service updates from Fresh Nest Co. (optional)",
+      "submit":           "Submit Inquiry",
+      "submitting":       "Submitting\u2026",
+      "successHeading":   "Thank you, {{name}}.",
+      "successBody":      "We\u2019ll review your inquiry and contact you within 24 hours to set up your commercial account."
+    }
   }
 }

@@ -29,6 +29,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | **E17** | Cloud Functions Bilingual Email | P0 | Diane, Travis, All | Completed ✅ |
 | **E18** | SMS Confirmation + Reminders | P0 | Travis, Margaret | Completed ✅ |
 | **E19** | /pricing Page | P0 | Travis, Margaret, Diane | Completed ✅ |
+| **E20** | /services/airbnb-turnover | P0 | P6 Gallagher | Completed ✅ |
 
 ---
 
@@ -47,6 +48,20 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   * [src/index.css](file:///workspaces/fresh_nest/src/index.css)
   * [src/lib/utils.ts](file:///workspaces/fresh_nest/src/lib/utils.ts)
   * [src/types/index.ts](file:///workspaces/fresh_nest/src/types/index.ts)
+
+#### E20 — /services/airbnb-turnover
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-08)
+* **Strategy:** 1 — Single strategy (all decisions resolved in /grill-me interview)
+* **Persona test:** P6 Gallagher — all 7 acceptance criteria verified
+* **Key Assets:**
+  * [src/pages/AirbnbTurnoverPage.tsx](file:///workspaces/fresh_nest/src/pages/AirbnbTurnoverPage.tsx)
+  * [src/App.tsx](file:///workspaces/fresh_nest/src/App.tsx)
+  * [src/i18n/locales/en.json](file:///workspaces/fresh_nest/src/i18n/locales/en.json)
+  * [src/i18n/locales/fr.json](file:///workspaces/fresh_nest/src/i18n/locales/fr.json)
+  * [public/images/airbnb-hero.jpg](file:///workspaces/fresh_nest/public/images/airbnb-hero.jpg)
+  * [docs/plans/e20_PLAN.md](file:///workspaces/fresh_nest/docs/plans/e20_PLAN.md)
+* **Close Report:** [E20-close-2026-06-08.md](file:///workspaces/fresh_nest/docs/reports/E20-close-2026-06-08.md)
 
 #### E19 — /pricing Page
 * **Owner:** Dev Team

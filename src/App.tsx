@@ -9,6 +9,7 @@ import LocationsOverview from '@/pages/LocationsOverview'
 import FaqPage from '@/pages/FaqPage'
 import BookingPage from '@/pages/BookingPage'
 import PricingPage from '@/pages/PricingPage'
+import AirbnbTurnoverPage from '@/pages/AirbnbTurnoverPage'
 
 /**
  * React Router v6 browser router.
@@ -54,12 +55,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'services/airbnb-turnover',
-        element: (
-          <PlaceholderPage
-            titleKey="footer.airbnbTurnover"
-            epicNote="Airbnb Turnover service page — built in E20."
-          />
-        ),
+        element: <AirbnbTurnoverPage />,
       },
       {
         path: 'services/standard-cleaning',
