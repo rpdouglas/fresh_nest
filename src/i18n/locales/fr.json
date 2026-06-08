@@ -376,6 +376,29 @@
     "bilingual": "Service disponible en anglais et en français",
     "insured": "Entièrement assuré et cautionné"
   },
+  "pricing": {
+    "pageTitle": "Tarifs | Fresh Nest Co.",
+    "hero": {
+      "title":    "Tarifs transparents",
+      "subtitle": "Aucun frais caché. Aucun devis requis. Réservez en quelques minutes."
+    },
+    "services": {
+      "heading":    "Tarifs par service",
+      "reference":  "Prix indiqués pour une maison de 1 à 2 chambres, nettoyage ponctuel.",
+      "commercial": "Devis personnalisé"
+    },
+    "frequency": {
+      "heading": "Économisez avec un nettoyage récurrent",
+      "cta":     "Sélectionnez votre fréquence dans la calculatrice ci-dessous pour voir votre prix réduit."
+    },
+    "cta": {
+      "heading": "Prêt à réserver ?",
+      "button":  "Réserver un nettoyage"
+    },
+    "price": {
+      "range": "{{min}} $–{{max}} $"
+    }
+  },
   "lang": {
     "toggle": "EN",
     "current": "FR",

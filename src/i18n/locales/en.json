@@ -376,6 +376,29 @@
     "bilingual": "Service available in English & French",
     "insured": "Fully insured & bonded"
   },
+  "pricing": {
+    "pageTitle": "Pricing | Fresh Nest Co.",
+    "hero": {
+      "title":    "Transparent Pricing",
+      "subtitle": "No hidden fees. No quotes required. Book in minutes."
+    },
+    "services": {
+      "heading":    "Service Pricing",
+      "reference":  "Prices shown for a 1–2 bedroom home, one-time clean.",
+      "commercial": "Custom quote"
+    },
+    "frequency": {
+      "heading": "Save with a recurring schedule",
+      "cta":     "Select your frequency in the calculator below to see your discounted price."
+    },
+    "cta": {
+      "heading": "Ready to book?",
+      "button":  "Book a Clean"
+    },
+    "price": {
+      "range": "${{min}}–${{max}}"
+    }
+  },
   "lang": {
     "toggle": "FR",
     "current": "EN",
