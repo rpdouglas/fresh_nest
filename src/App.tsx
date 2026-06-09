@@ -10,6 +10,9 @@ import FaqPage from '@/pages/FaqPage'
 import BookingPage from '@/pages/BookingPage'
 import PricingPage from '@/pages/PricingPage'
 import AirbnbTurnoverPage from '@/pages/AirbnbTurnoverPage'
+import ServicePage from '@/pages/ServicePage'
+import ServicesOverview from '@/pages/ServicesOverview'
+import { SERVICE_CONFIG_MAP } from '@/lib/serviceData'
 
 /**
  * React Router v6 browser router.
@@ -44,64 +47,13 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
 
       // ── Services ──
-      {
-        path: 'services',
-        element: (
-          <PlaceholderPage
-            titleKey="footer.services"
-            epicNote="Services grid — built in E07."
-          />
-        ),
-      },
-      {
-        path: 'services/airbnb-turnover',
-        element: <AirbnbTurnoverPage />,
-      },
-      {
-        path: 'services/standard-cleaning',
-        element: (
-          <PlaceholderPage
-            titleKey="footer.standardCleaning"
-            epicNote="Standard Cleaning service page — built in E21."
-          />
-        ),
-      },
-      {
-        path: 'services/deep-cleaning',
-        element: (
-          <PlaceholderPage
-            titleKey="footer.deepCleaning"
-            epicNote="Deep Cleaning service page — built in E21."
-          />
-        ),
-      },
-      {
-        path: 'services/move-out-cleaning',
-        element: (
-          <PlaceholderPage
-            titleKey="footer.moveOutCleaning"
-            epicNote="Move-Out Cleaning service page — built in E21."
-          />
-        ),
-      },
-      {
-        path: 'services/post-construction',
-        element: (
-          <PlaceholderPage
-            titleKey="footer.postConstruction"
-            epicNote="Post-Construction service page — built in E21."
-          />
-        ),
-      },
-      {
-        path: 'services/commercial-cleaning',
-        element: (
-          <PlaceholderPage
-            titleKey="footer.commercialCleaning"
-            epicNote="Commercial Cleaning service page — built in E21."
-          />
-        ),
-      },
+      { path: 'services',                    element: <ServicesOverview /> },
+      { path: 'services/airbnb-turnover',    element: <AirbnbTurnoverPage /> },
+      { path: 'services/standard-cleaning',  element: <ServicePage config={SERVICE_CONFIG_MAP.standard} /> },
+      { path: 'services/deep-cleaning',      element: <ServicePage config={SERVICE_CONFIG_MAP.deep} /> },
+      { path: 'services/move-out-cleaning',  element: <ServicePage config={SERVICE_CONFIG_MAP.moveout} /> },
+      { path: 'services/post-construction',  element: <ServicePage config={SERVICE_CONFIG_MAP.postconstruction} /> },
+      { path: 'services/commercial-cleaning', element: <ServicePage config={SERVICE_CONFIG_MAP.commercial} /> },
 
       // ── Locations ──
       { path: 'locations',             element: <LocationsOverview /> },

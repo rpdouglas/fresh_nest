@@ -481,5 +481,109 @@
       "successHeading":   "Merci, {{name}}.",
       "successBody":      "Nous examinerons votre demande et vous contacterons dans les 24 heures pour configurer votre compte commercial."
     }
+  },
+  "servicePage": {
+    "backLink": "← Retour aux services",
+    "bookCta": "Réserver ce service",
+    "bookBanner": "Prêt à réserver votre {{service}} ?",
+    "bookBannerCta": "Réserver maintenant",
+    "pricingHeading": "Tarifs transparents",
+    "pricingStarting": "À partir de {{min}} $ pour un logement de 1–2 chambres",
+    "pricingCta": "Voir les tarifs complets",
+    "customPricingHeading": "Tarification personnalisée pour votre entreprise",
+    "customPricingBody": "Les tarifs de nettoyage commercial sont adaptés à votre espace, votre équipe et votre horaire. Contactez-nous pour une évaluation gratuite sur place.",
+    "customPricingCta": "Réserver une consultation",
+    "overview": {
+      "heading": "Nos services de nettoyage",
+      "subhead": "Services de nettoyage professionnels et bilingues à Cornwall, Akwesasne, Snye QC et dans les communautés environnantes."
+    },
+    "common": {
+      "includedHeading": "Ce qui est inclus",
+      "howItWorksHeading": "Comment ça fonctionne",
+      "trustHeading": "Pourquoi choisir Fresh Nest",
+      "step1Title": "Réservez en ligne",
+      "step1Desc": "Choisissez votre service, votre date et la taille de votre maison. Confirmation en moins de 2 minutes.",
+      "step2Title": "Nous nettoyons",
+      "step2Desc": "Votre préposé attitré arrive à l'heure et suit une liste de vérification cohérente.",
+      "step3Title": "Vous profitez",
+      "step3Desc": "Rentrez chez vous dans un espace frais. Écrivez-nous si quelque chose doit être retouché.",
+      "trust1Stat": "4,9 / 5",
+      "trust1Label": "Note Google de clients vérifiés",
+      "trust2Stat": "100 %",
+      "trust2Label": "Personnel assuré, cautionné et vérifié",
+      "trust3Stat": "FR / EN",
+      "trust3Label": "Service bilingue dans toute notre zone de service"
+    },
+    "standard": {
+      "hero": {
+        "heading": "Nettoyage régulier",
+        "subhead": "Un nettoyage régulier et constant pour garder votre maison fraîche. Aucune préparation requise."
+      },
+      "included": {
+        "floors": "Aspiration et lavage de tous les planchers",
+        "kitchen": "Comptoirs, surfaces et évier de cuisine",
+        "bathrooms": "Nettoyage et désinfection des salles de bain",
+        "dusting": "Dépoussiérage des surfaces et zones accessibles",
+        "trash": "Vidage des poubelles et bacs de recyclage",
+        "beds": "Faire les lits (avec votre literie propre)"
+      }
+    },
+    "deep": {
+      "hero": {
+        "heading": "Grand nettoyage",
+        "subhead": "Une remise à zéro complète qui atteint les endroits que le nettoyage régulier ne touche jamais."
+      },
+      "included": {
+        "everything": "Tout ce qui est inclus dans notre nettoyage régulier",
+        "appliances": "Intérieur du four, du réfrigérateur et du micro-ondes",
+        "cabinets": "Intérieur et extérieur des armoires de cuisine",
+        "baseboards": "Plinthes et cadres de portes",
+        "windowSills": "Rebords de fenêtres, rails et bords",
+        "fixtures": "Luminaires, ventilateurs de plafond et grilles de ventilation",
+        "grout": "Récurage des joints dans les salles de bain et la cuisine"
+      }
+    },
+    "moveout": {
+      "hero": {
+        "heading": "Nettoyage de déménagement",
+        "subhead": "Laissez votre ancienne maison impeccable pour récupérer votre dépôt — et passer à autre chose sereinement."
+      },
+      "included": {
+        "allRooms": "Nettoyage complet de toutes les pièces et placards",
+        "appliances": "Intérieur de tous les appareils (four, réfrigérateur, lave-vaisselle)",
+        "cupboards": "Intérieur de toutes les armoires, tiroirs et cabinets",
+        "behindAppliances": "Nettoyage derrière et sous les appareils",
+        "windowsDoorsFrames": "Fenêtres, cadres de portes et plinthes",
+        "checklistWalkthrough": "Liste de vérification finale incluse"
+      }
+    },
+    "postconstruction": {
+      "hero": {
+        "heading": "Nettoyage post-construction",
+        "subhead": "La poussière de construction est partout — nous l'éliminons en toute sécurité avant votre emménagement."
+      },
+      "included": {
+        "dustRemoval": "Élimination de la fine poussière sur toutes les surfaces",
+        "hepaVacuum": "Aspiration HEPA dans toute la propriété",
+        "adhesiveRemoval": "Élimination des résidus d'adhésif et d'étiquettes",
+        "windows": "Nettoyage des vitres et surfaces vitrées (intérieur)",
+        "vents": "Grilles de ventilation, luminaires et prises électriques",
+        "debrisRemoval": "Élimination finale des débris et emballages"
+      }
+    },
+    "commercial": {
+      "hero": {
+        "heading": "Nettoyage commercial",
+        "subhead": "Nettoyage professionnel et constant pour les bureaux, commerces et installations de la région."
+      },
+      "included": {
+        "officeSpaces": "Nettoyage des bureaux et espaces de travail",
+        "washrooms": "Désinfection et réapprovisionnement des salles de bain",
+        "commonAreas": "Aires communes, hall d'entrée et salles de repos",
+        "floorCare": "Aspiration, lavage et entretien des planchers",
+        "wasteRemoval": "Enlèvement des ordures et recyclage",
+        "flexibleScheduling": "Disponibilité en dehors des heures et les fins de semaine"
+      }
+    }
   }
 }

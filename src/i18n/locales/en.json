@@ -481,5 +481,109 @@
       "successHeading":   "Thank you, {{name}}.",
       "successBody":      "We\u2019ll review your inquiry and contact you within 24 hours to set up your commercial account."
     }
+  },
+  "servicePage": {
+    "backLink": "\u2190 Back to Services",
+    "bookCta": "Book This Service",
+    "bookBanner": "Ready to book your {{service}}?",
+    "bookBannerCta": "Book Now",
+    "pricingHeading": "Transparent Pricing",
+    "pricingStarting": "Starting from ${{min}} for a 1\u20132 bedroom home",
+    "pricingCta": "See Full Pricing",
+    "customPricingHeading": "Custom Pricing for Your Business",
+    "customPricingBody": "Commercial cleaning rates are tailored to your space, team size, and schedule. Contact us for a free on-site assessment.",
+    "customPricingCta": "Book a Consultation",
+    "overview": {
+      "heading": "Our Cleaning Services",
+      "subhead": "Professional, bilingual cleaning across Cornwall, Akwesasne, Snye QC, and surrounding communities."
+    },
+    "common": {
+      "includedHeading": "What\u2019s Included",
+      "howItWorksHeading": "How It Works",
+      "trustHeading": "Why Choose Fresh Nest",
+      "step1Title": "Book Online",
+      "step1Desc": "Choose your service, date, and home size. Confirmation in under 2 minutes.",
+      "step2Title": "We Clean",
+      "step2Desc": "Your assigned cleaner arrives on time and works through a consistent checklist.",
+      "step3Title": "You Enjoy",
+      "step3Desc": "Arrive home to a fresh space. Message us if anything needs attention.",
+      "trust1Stat": "4.9\u2009/\u20095",
+      "trust1Label": "Google rating from verified clients",
+      "trust2Stat": "100%",
+      "trust2Label": "Insured, bonded, and background-checked staff",
+      "trust3Stat": "EN\u2009/\u2009FR",
+      "trust3Label": "Bilingual service across our full service area"
+    },
+    "standard": {
+      "hero": {
+        "heading": "Standard Cleaning",
+        "subhead": "Regular, consistent cleaning to keep your home fresh. No prep work needed \u2014 just let us in."
+      },
+      "included": {
+        "floors": "Vacuuming and mopping all floors",
+        "kitchen": "Kitchen counters, surfaces, and sink",
+        "bathrooms": "Bathroom cleaning and sanitizing",
+        "dusting": "Dusting surfaces and accessible areas",
+        "trash": "Emptying trash and recycling bins",
+        "beds": "Making beds (fresh linen, if provided)"
+      }
+    },
+    "deep": {
+      "hero": {
+        "heading": "Deep Clean",
+        "subhead": "A top-to-bottom reset that reaches the areas regular cleaning never touches."
+      },
+      "included": {
+        "everything": "Everything in our Standard Cleaning",
+        "appliances": "Inside oven, fridge, and microwave",
+        "cabinets": "Interior and exterior of kitchen cabinets",
+        "baseboards": "Baseboards and door frames",
+        "windowSills": "Window sills, tracks, and ledges",
+        "fixtures": "Light fixtures, ceiling fans, and vents",
+        "grout": "Grout scrubbing in bathrooms and kitchen"
+      }
+    },
+    "moveout": {
+      "hero": {
+        "heading": "Move-Out Cleaning",
+        "subhead": "Leave your old home spotless so you get your deposit back \u2014 and move on with confidence."
+      },
+      "included": {
+        "allRooms": "Full clean of all rooms and closets",
+        "appliances": "Inside all appliances (oven, fridge, dishwasher)",
+        "cupboards": "Inside all cupboards, drawers, and cabinets",
+        "behindAppliances": "Cleaning behind and under appliances",
+        "windowsDoorsFrames": "Windows, door frames, and baseboards",
+        "checklistWalkthrough": "Final walkthrough checklist included"
+      }
+    },
+    "postconstruction": {
+      "hero": {
+        "heading": "Post-Construction Cleaning",
+        "subhead": "Construction dust is everywhere \u2014 we remove it safely before you move in."
+      },
+      "included": {
+        "dustRemoval": "Fine dust removal from all surfaces",
+        "hepaVacuum": "HEPA vacuuming throughout",
+        "adhesiveRemoval": "Sticker, adhesive, and label residue removal",
+        "windows": "Window and glass cleaning (inside)",
+        "vents": "Vent covers, light fixtures, and outlets",
+        "debrisRemoval": "Final debris and packaging removal"
+      }
+    },
+    "commercial": {
+      "hero": {
+        "heading": "Commercial Cleaning",
+        "subhead": "Consistent, professional cleaning for offices, retail, and business facilities in the region."
+      },
+      "included": {
+        "officeSpaces": "Office and workspace cleaning",
+        "washrooms": "Washroom sanitizing and restocking",
+        "commonAreas": "Common areas, lobby, and break rooms",
+        "floorCare": "Vacuuming, mopping, and floor care",
+        "wasteRemoval": "Waste removal and recycling",
+        "flexibleScheduling": "After-hours and weekend scheduling available"
+      }
+    }
   }
 }
