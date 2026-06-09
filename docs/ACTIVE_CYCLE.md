@@ -30,6 +30,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | **E18** | SMS Confirmation + Reminders | P0 | Travis, Margaret | Completed ✅ |
 | **E19** | /pricing Page | P0 | Travis, Margaret, Diane | Completed ✅ |
 | **E20** | /services/airbnb-turnover | P0 | P6 Gallagher | Completed ✅ |
+| **E21** | /services/* Individual Pages | P1 | P2 Travis, P3 Margaret, P1 Diane, P6 Gallagher | Completed ✅ |
 
 ---
 
@@ -48,6 +49,20 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   * [src/index.css](file:///workspaces/fresh_nest/src/index.css)
   * [src/lib/utils.ts](file:///workspaces/fresh_nest/src/lib/utils.ts)
   * [src/types/index.ts](file:///workspaces/fresh_nest/src/types/index.ts)
+
+#### E21 — /services/* Individual Pages
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-09)
+* **Strategy:** 1 — Shared ServicePage.tsx template + serviceData.ts config (LocationPage pattern)
+* **Persona tests:** P2 Travis, P3 Margaret, P1 Diane, P6 Gallagher — all 4 acceptance criteria verified
+* **Key Assets:**
+  * [src/lib/serviceData.ts](file:///workspaces/fresh_nest/src/lib/serviceData.ts)
+  * [src/pages/ServicePage.tsx](file:///workspaces/fresh_nest/src/pages/ServicePage.tsx)
+  * [src/pages/ServicesOverview.tsx](file:///workspaces/fresh_nest/src/pages/ServicesOverview.tsx)
+  * [src/App.tsx](file:///workspaces/fresh_nest/src/App.tsx)
+  * [src/i18n/locales/en.json](file:///workspaces/fresh_nest/src/i18n/locales/en.json)
+  * [src/i18n/locales/fr.json](file:///workspaces/fresh_nest/src/i18n/locales/fr.json)
+* **Close Report:** [E21-close-2026-06-09.md](file:///workspaces/fresh_nest/docs/reports/E21-close-2026-06-09.md)
 
 #### E20 — /services/airbnb-turnover
 * **Owner:** Dev Team
