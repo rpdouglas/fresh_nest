@@ -18,6 +18,7 @@
 
 ## After You Book
 
+- After submitting, you are taken to a **confirmation page** at `/thank-you` showing your name, service type, preferred date, frequency, and a booking reference number. Save or screenshot this page — the details are not available after you navigate away.
 - You will receive an **email confirmation** within 60 seconds. (French clients receive French-language confirmations.)
 - You will receive an **SMS confirmation** to your mobile number within 60 seconds.
 - A team member will confirm your booking within 24 hours.
