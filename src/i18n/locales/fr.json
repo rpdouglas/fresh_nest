@@ -585,5 +585,29 @@
         "flexibleScheduling": "Disponibilité en dehors des heures et les fins de semaine"
       }
     }
+  },
+  "thankYou": {
+    "meta": {
+      "title": "Réservation confirmée — Fresh Nest Co.",
+      "description": "Votre réservation de nettoyage Fresh Nest Co. est confirmée. Consultez votre courriel pour les détails."
+    },
+    "heading":        "C'est réservé, {{name}} !",
+    "subhead":        "Votre réservation est confirmée. Un courriel de confirmation est en route vers {{email}}.",
+    "genericHeading": "Votre réservation est confirmée !",
+    "genericSubhead": "Consultez votre boîte de réception pour les détails de votre réservation.",
+    "summaryHeading": "Résumé de la réservation",
+    "referenceLabel": "Numéro de référence",
+    "serviceLabel":   "Service",
+    "dateLabel":      "Date préférée",
+    "frequencyLabel": "Fréquence",
+    "nextHeading":    "La suite",
+    "step1Title": "Courriel de confirmation envoyé",
+    "step1Desc":  "Vérifiez votre boîte de réception — les détails de votre réservation sont en route.",
+    "step2Title": "Nous confirmons votre préposé",
+    "step2Desc":  "Nous assignerons votre préposé et confirmerons les détails dans les 24 heures.",
+    "step3Title": "Votre préposé arrive",
+    "step3Desc":  "Le jour de votre réservation, votre préposé arrive à l'heure, prêt à travailler.",
+    "ctaServices": "Explorer nos services",
+    "ctaHome":     "Retour à l'accueil"
   }
 }

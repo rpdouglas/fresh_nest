@@ -585,5 +585,29 @@
         "flexibleScheduling": "After-hours and weekend scheduling available"
       }
     }
+  },
+  "thankYou": {
+    "meta": {
+      "title": "Booking Confirmed — Fresh Nest Co.",
+      "description": "Your Fresh Nest Co. cleaning booking is confirmed. Check your email for details."
+    },
+    "heading":        "You're booked, {{name}}!",
+    "subhead":        "Your booking is confirmed. A confirmation email is on its way to {{email}}.",
+    "genericHeading": "Your booking is confirmed!",
+    "genericSubhead": "Check your inbox for your booking confirmation details.",
+    "summaryHeading": "Booking Summary",
+    "referenceLabel": "Booking reference",
+    "serviceLabel":   "Service",
+    "dateLabel":      "Preferred date",
+    "frequencyLabel": "Frequency",
+    "nextHeading":    "What Happens Next",
+    "step1Title": "Confirmation email sent",
+    "step1Desc":  "Check your inbox — your booking details are on their way.",
+    "step2Title": "We confirm your cleaner",
+    "step2Desc":  "We'll assign your cleaner and confirm the details within 24 hours.",
+    "step3Title": "Your cleaner arrives",
+    "step3Desc":  "On the day of your booking, your cleaner arrives on time, ready to work.",
+    "ctaServices": "Explore Our Services",
+    "ctaHome":     "Return Home"
   }
 }

@@ -102,8 +102,17 @@ export default function BookingPage() {
     setSubmitError(null)
     try {
       const lang = i18n.language === 'fr' ? 'fr' : 'en'
-      await submitBooking(data, lang, source)
-      navigate('/thank-you')
+      const bookingId = await submitBooking(data, lang, source)
+      navigate('/thank-you', {
+        state: {
+          firstName:     data.firstName,
+          email:         data.email,
+          serviceType:   data.serviceType,
+          preferredDate: data.preferredDate,
+          frequency:     data.frequency,
+          bookingId,
+        },
+      })
     } catch {
       setSubmitError(t('booking.errors.submit'))
     }

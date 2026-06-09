@@ -13,6 +13,7 @@ import AirbnbTurnoverPage from '@/pages/AirbnbTurnoverPage'
 import ServicePage from '@/pages/ServicePage'
 import ServicesOverview from '@/pages/ServicesOverview'
 import { SERVICE_CONFIG_MAP } from '@/lib/serviceData'
+import ThankYouPage from '@/pages/ThankYouPage'
 
 /**
  * React Router v6 browser router.
@@ -79,12 +80,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'thank-you',
-        element: (
-          <PlaceholderPage
-            titleKey="common.bookNow"
-            epicNote="Thank You / confirmation page — built in E22."
-          />
-        ),
+        element: <ThankYouPage />,
       },
       {
         path: 'about',

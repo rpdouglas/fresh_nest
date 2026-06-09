@@ -31,6 +31,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | **E19** | /pricing Page | P0 | Travis, Margaret, Diane | Completed ✅ |
 | **E20** | /services/airbnb-turnover | P0 | P6 Gallagher | Completed ✅ |
 | **E21** | /services/* Individual Pages | P1 | P2 Travis, P3 Margaret, P1 Diane, P6 Gallagher | Completed ✅ |
+| **E22** | /thank-you Confirmation Page | P0 | P2 Travis, P1 Diane | Completed ✅ |
 
 ---
 
@@ -63,6 +64,19 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   * [src/i18n/locales/en.json](file:///workspaces/fresh_nest/src/i18n/locales/en.json)
   * [src/i18n/locales/fr.json](file:///workspaces/fresh_nest/src/i18n/locales/fr.json)
 * **Close Report:** [E21-close-2026-06-09.md](file:///workspaces/fresh_nest/docs/reports/E21-close-2026-06-09.md)
+
+#### E22 — /thank-you Confirmation Page
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-09)
+* **Strategy:** B — React Router state summary (in-memory, COMPLIANCE.md compliant, graceful refresh degradation)
+* **Persona tests:** P2 Travis, P1 Diane — all 7 acceptance criteria verified
+* **Key Assets:**
+  * [src/pages/ThankYouPage.tsx](file:///workspaces/fresh_nest/src/pages/ThankYouPage.tsx)
+  * [src/pages/BookingPage.tsx](file:///workspaces/fresh_nest/src/pages/BookingPage.tsx)
+  * [src/App.tsx](file:///workspaces/fresh_nest/src/App.tsx)
+  * [src/i18n/locales/en.json](file:///workspaces/fresh_nest/src/i18n/locales/en.json)
+  * [src/i18n/locales/fr.json](file:///workspaces/fresh_nest/src/i18n/locales/fr.json)
+* **Close Report:** [E22-close-2026-06-09.md](file:///workspaces/fresh_nest/docs/reports/E22-close-2026-06-09.md)
 
 #### E20 — /services/airbnb-turnover
 * **Owner:** Dev Team
