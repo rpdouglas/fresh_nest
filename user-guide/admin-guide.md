@@ -1,6 +1,6 @@
 # Admin Guide — Fresh Nest Co.
-**For:** Ryan (Owner/Admin)  
-**Updated:** 2026-06-06
+**For:** Lauren (Owner/Admin)  
+**Updated:** 2026-06-10
 
 ---
 

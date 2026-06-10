@@ -14,20 +14,20 @@ interface TeamMember {
 
 const TEAM_MEMBERS: TeamMember[] = [
   {
-    id: 'ryan',
-    name: 'Ryan D.',
-    roleKey: 'team.members.ryan.role',
-    bioKey: 'team.members.ryan.bio',
-    initials: 'R',
-    photoSrc: null,
+    id: 'lauren',
+    name: 'Lauren S.',
+    roleKey: 'team.members.lauren.role',
+    bioKey: 'team.members.lauren.bio',
+    initials: 'L',
+    photoSrc: '/images/team/lauren.png',
   },
   {
-    id: 'cleaner-1',
-    name: 'Cleaner Name',
-    roleKey: 'team.members.cleanerPlaceholder.role',
-    bioKey: 'team.members.cleanerPlaceholder.bio',
-    initials: '',
-    photoSrc: null,
+    id: 'sarah',
+    name: 'Sarah M.',
+    roleKey: 'team.members.sarah.role',
+    bioKey: 'team.members.sarah.bio',
+    initials: 'S',
+    photoSrc: '/images/team/sarah.png',
   },
 ]
 
@@ -68,7 +68,7 @@ export default function MeetTheTeam() {
           variants={fadeUp}
           className="mb-10"
         >
-          <div className="flex items-start gap-4 bg-slate-pale border border-sand rounded p-5">
+          <div className="flex items-start gap-4 bg-slate-pale border border-sand rounded p-6">
             <div className="shrink-0 mt-0.5" aria-hidden="true">
               <svg
                 viewBox="0 0 24 24"
@@ -113,8 +113,8 @@ export default function MeetTheTeam() {
                     initials={member.initials}
                   />
                 </div>
-                <div className="p-5">
-                  <h3 className="font-sub text-xl text-charcoal mb-1">{member.name}</h3>
+                <div className="p-6">
+                  <h3 className="font-sub text-2xl text-charcoal mb-1">{member.name}</h3>
                   <p className="font-body text-sm font-medium text-slate-brand mb-3">
                     {t(member.roleKey)}
                   </p>

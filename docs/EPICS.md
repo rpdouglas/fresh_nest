@@ -1,10 +1,10 @@
 # Fresh Nest Co. — Epic Index
 
-**Last Updated:** 2026-06-06  
+**Last Updated:** 2026-06-10  
 **Total Epics:** 34  
-**Completed:** 26 (E01-E26, excluding E27)  
+**Completed:** 27 (E01-E27)  
 **In Progress:** 0  
-**Not Started:** 8
+**Not Started:** 7
 
 ---
 
@@ -78,7 +78,7 @@
 | E24 | Meta Tags + Bilingual Page Titles | P0 | All (SEO) | ✅ Completed |
 | E25 | WCAG AA Accessibility Audit | P0 | P3 Margaret | ✅ Completed |
 | E26 | Analytics Stack | P1 | All (Business) | ✅ Completed |
-| E27 | Real Photography | P1 | P5 Sophie, P6 Gallagher | ⬜ Not Started |
+| E27 | Real Photography | P1 | P5 Sophie, P6 Gallagher | ✅ Completed |
 
 ---
 
@@ -114,10 +114,10 @@
 | Phase 1 — Foundation | 6 | 6 | 0 | 0 |
 | Phase 2 — Content | 8 | 8 | 0 | 0 |
 | Phase 3 — Booking Engine | 8 | 8 | 0 | 0 |
-| Phase 4 — SEO & Accessibility | 5 | 4 | 0 | 1 |
+| Phase 4 — SEO & Accessibility | 5 | 5 | 0 | 0 |
 | Phase 5 — Admin & Auth | 4 | 0 | 0 | 4 |
 | Phase 6 — Post-Launch | 3 | 0 | 0 | 3 |
-| **Total** | **34** | **26** | **0** | **8** |
+| **Total** | **34** | **27** | **0** | **7** |
 
 ---
 

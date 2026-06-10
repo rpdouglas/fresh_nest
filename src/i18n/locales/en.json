@@ -158,13 +158,13 @@
     "assignmentNote": "We assign the same dedicated cleaner to your home — every visit, every time. Request your preferred cleaner when booking.",
     "photoAlt": "Photo of {{name}}",
     "members": {
-      "ryan": {
-        "role": "Owner & Lead Cleaner",
-        "bio": "Ryan founded Fresh Nest Co. to bring professional, reliable cleaning to Cornwall and surrounding communities. He personally manages every booking and ensures your home is cared for to the highest standard."
+      "lauren": {
+        "role": "Owner & Founder",
+        "bio": "Lauren founded Fresh Nest Co. to bring professional, reliable, and personalized cleaning to Cornwall and surrounding communities. Bubbly and meticulous, she ensures your home is cared for with a warm, bohemian touch."
       },
-      "cleanerPlaceholder": {
-        "role": "Cleaning Specialist",
-        "bio": "Our team is growing. Real cleaner profiles — with photos and bios — will be added before launch."
+      "sarah": {
+        "role": "Lead Professional Cleaner",
+        "bio": "Sarah has over 5 years of residential cleaning experience and loves making spaces feel peaceful and organized. She is our primary cleaner for deep cleaning and recurring clients."
       }
     }
   },
@@ -329,7 +329,7 @@
       },
       "preferredCleaner": {
         "label": "Preferred cleaner (optional)",
-        "placeholder": "e.g. Ryan D. — leave blank to be assigned"
+        "placeholder": "e.g. Lauren S. — leave blank to be assigned"
       },
       "notes": {
         "label": "Special instructions (optional)",

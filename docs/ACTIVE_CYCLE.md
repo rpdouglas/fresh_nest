@@ -34,10 +34,23 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | **E22** | /thank-you Confirmation Page | P0 | P2 Travis, P1 Diane | Completed ✅ |
 | **E25** | WCAG AA Accessibility Audit | P0 | Dev Team | Completed ✅ |
 | **E26** | Analytics Stack | P0 | Dev Team | Completed ✅ |
+| **E27** | Real Photography | P1 | P5 Sophie, P6 Gallagher | Completed ✅ |
 
 ---
 
 ### Epic Log
+
+#### E27 — Real Photography
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-10)
+* **Strategy:** 1 — Local Generated High-End Realistic Photography (approved by human)
+* **Persona tests:** P5 Sophie, P6 Gallagher, P1 Diane, P3 Margaret
+* **Key Assets:**
+  * [src/lib/galleryData.ts](file:///workspaces/fresh_nest/src/lib/galleryData.ts)
+  * [src/components/home/MeetTheTeam.tsx](file:///workspaces/fresh_nest/src/components/home/MeetTheTeam.tsx)
+  * [src/components/ui/GalleryImage.tsx](file:///workspaces/fresh_nest/src/components/ui/GalleryImage.tsx)
+  * [src/components/ui/TeamAvatar.tsx](file:///workspaces/fresh_nest/src/components/ui/TeamAvatar.tsx)
+* **Close Report:** [E27-close-2026-06-10.md](file:///workspaces/fresh_nest/docs/reports/E27-close-2026-06-10.md)
 
 #### E26 — Analytics Stack
 * **Owner:** Dev Team
