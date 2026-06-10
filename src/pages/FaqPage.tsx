@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
+import JsonLd from '@/components/seo/JsonLd'
+import { getFaqSchema } from '@/lib/seo'
 
 interface FaqItem {
   id: string
@@ -25,6 +27,7 @@ const FAQ_ITEMS: FaqItem[] = [
 export default function FaqPage() {
   const { t } = useTranslation()
   const [openItems, setOpenItems] = useState<Set<number>>(new Set())
+  const faqSchema = getFaqSchema(t)
 
   const toggle = (i: number) => {
     setOpenItems(prev => {
@@ -40,6 +43,7 @@ export default function FaqPage() {
 
   return (
     <>
+      <JsonLd schema={faqSchema} />
       <title>{t('faq.pageTitle')}</title>
       <meta name="description" content={t('faq.metaDesc')} />
 

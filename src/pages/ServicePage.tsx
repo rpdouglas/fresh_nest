@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import type { ServiceConfig } from '@/lib/serviceData'
 import { calculateQuote } from '@/lib/quotePricing'
+import JsonLd from '@/components/seo/JsonLd'
+import { getServiceSchema } from '@/lib/seo'
 
 // ─── Animation variant ────────────────────────────────────────────────────────
 const fadeUp = {
@@ -42,9 +44,11 @@ export default function ServicePage({ config }: Props) {
     priceResult && priceResult.type === 'range' ? priceResult.min : null
 
   const pageTitle = t(`${k}.hero.heading`)
+  const serviceSchema = getServiceSchema(config.key, t)
 
   return (
     <main id="main-content">
+      <JsonLd schema={serviceSchema} />
       <title>{pageTitle} — Fresh Nest Co.</title>
       <meta name="description" content={t(`${k}.hero.subhead`)} />
 

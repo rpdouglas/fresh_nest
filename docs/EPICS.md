@@ -74,7 +74,7 @@
 
 | Epic ID | Name | Priority | Primary Persona(s) | Status |
 |---|---|---|---|---|
-| E23 | JSON-LD Schema | P0 | All (SEO) | ⬜ Not Started |
+| E23 | JSON-LD Schema | P0 | All (SEO) | ✅ Completed |
 | E24 | Meta Tags + Bilingual Page Titles | P0 | All (SEO) | ⬜ Not Started |
 | E25 | WCAG AA Accessibility Audit | P0 | P3 Margaret | ⬜ Not Started |
 | E26 | Analytics Stack | P1 | All (Business) | ⬜ Not Started |
@@ -114,10 +114,10 @@
 | Phase 1 — Foundation | 6 | 2 | 0 | 4 |
 | Phase 2 — Content | 8 | 0 | 0 | 8 |
 | Phase 3 — Booking Engine | 8 | 0 | 0 | 8 |
-| Phase 4 — SEO & Accessibility | 5 | 0 | 0 | 5 |
+| Phase 4 — SEO & Accessibility | 5 | 1 | 0 | 4 |
 | Phase 5 — Admin & Auth | 4 | 0 | 0 | 4 |
 | Phase 6 — Post-Launch | 3 | 0 | 0 | 3 |
-| **Total** | **34** | **2** | **0** | **32** |
+| **Total** | **34** | **3** | **0** | **31** |
 
 ---
 
