@@ -11,7 +11,11 @@ i18n
     resources: { en: { translation: en }, fr: { translation: fr } },
     fallbackLng: 'en',
     supportedLngs: ['en', 'fr'],
-    detection: { order: ['localStorage', 'navigator'] },
+    detection: {
+      order: ['querystring', 'localStorage', 'navigator'],
+      lookupQuerystring: 'lang',
+      caches: ['localStorage'],
+    },
     interpolation: { escapeValue: false },
   })
 

@@ -1,6 +1,7 @@
 import { useLocation, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
+import SEO from '@/components/seo/SEO'
 
 interface ThankYouState {
   firstName:     string
@@ -33,8 +34,10 @@ export default function ThankYouPage() {
 
   return (
     <>
-      <title>{t('thankYou.meta.title')}</title>
-      <meta name="description" content={t('thankYou.meta.description')} />
+      <SEO
+        title={t('thankYou.meta.title')}
+        description={t('thankYou.meta.description')}
+      />
 
       {/* Confirmation Banner */}
       <section className="bg-slate-brand py-16 px-4 md:py-24 md:px-6 text-center">

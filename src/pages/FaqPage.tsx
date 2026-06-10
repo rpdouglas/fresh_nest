@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import JsonLd from '@/components/seo/JsonLd'
 import { getFaqSchema } from '@/lib/seo'
+import SEO from '@/components/seo/SEO'
 
 interface FaqItem {
   id: string
@@ -43,9 +44,11 @@ export default function FaqPage() {
 
   return (
     <>
+      <SEO
+        title={t('faq.pageTitle')}
+        description={t('faq.metaDesc')}
+      />
       <JsonLd schema={faqSchema} />
-      <title>{t('faq.pageTitle')}</title>
-      <meta name="description" content={t('faq.metaDesc')} />
 
       {/* Page hero */}
       <section className="bg-warm-white py-16 px-4 md:py-24 md:px-6">

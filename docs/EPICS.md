@@ -75,7 +75,7 @@
 | Epic ID | Name | Priority | Primary Persona(s) | Status |
 |---|---|---|---|---|
 | E23 | JSON-LD Schema | P0 | All (SEO) | ✅ Completed |
-| E24 | Meta Tags + Bilingual Page Titles | P0 | All (SEO) | ⬜ Not Started |
+| E24 | Meta Tags + Bilingual Page Titles | P0 | All (SEO) | ✅ Completed |
 | E25 | WCAG AA Accessibility Audit | P0 | P3 Margaret | ⬜ Not Started |
 | E26 | Analytics Stack | P1 | All (Business) | ⬜ Not Started |
 | E27 | Real Photography | P1 | P5 Sophie, P6 Gallagher | ⬜ Not Started |

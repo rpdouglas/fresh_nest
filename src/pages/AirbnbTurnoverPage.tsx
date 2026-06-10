@@ -9,6 +9,7 @@ import { calculateQuote } from '@/lib/quotePricing'
 import { submitBooking, detectLeadSource } from '@/lib/firestore'
 import JsonLd from '@/components/seo/JsonLd'
 import { getServiceSchema } from '@/lib/seo'
+import SEO from '@/components/seo/SEO'
 
 // ─── Animation variant ───────────────────────────────────────────────────────
 const fadeUp = {
@@ -140,8 +141,13 @@ export default function AirbnbTurnoverPage() {
   }
 
   return (
-    <main id="main-content">
-      <JsonLd schema={serviceSchema} />
+    <>
+      <SEO
+        title={t('airbnbPage.meta.title')}
+        description={t('airbnbPage.meta.description')}
+      />
+      <main id="main-content">
+        <JsonLd schema={serviceSchema} />
       {/* ── 1. Hero ───────────────────────────────────────────────────────── */}
       <section
         aria-labelledby="airbnb-hero-heading"
@@ -672,6 +678,7 @@ export default function AirbnbTurnoverPage() {
           </motion.div>
         </div>
       </section>
-    </main>
+      </main>
+    </>
   )
 }

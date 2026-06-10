@@ -5,6 +5,7 @@ import type { ServiceConfig } from '@/lib/serviceData'
 import { calculateQuote } from '@/lib/quotePricing'
 import JsonLd from '@/components/seo/JsonLd'
 import { getServiceSchema } from '@/lib/seo'
+import SEO from '@/components/seo/SEO'
 
 // ─── Animation variant ────────────────────────────────────────────────────────
 const fadeUp = {
@@ -47,10 +48,13 @@ export default function ServicePage({ config }: Props) {
   const serviceSchema = getServiceSchema(config.key, t)
 
   return (
-    <main id="main-content">
-      <JsonLd schema={serviceSchema} />
-      <title>{pageTitle} — Fresh Nest Co.</title>
-      <meta name="description" content={t(`${k}.hero.subhead`)} />
+    <>
+      <SEO
+        title={`${pageTitle} — Fresh Nest Co.`}
+        description={t(`${k}.hero.subhead`)}
+      />
+      <main id="main-content">
+        <JsonLd schema={serviceSchema} />
 
       {/* ── 1. Hero ───────────────────────────────────────────────────────── */}
       <section
@@ -325,5 +329,6 @@ export default function ServicePage({ config }: Props) {
         </div>
       </section>
     </main>
+    </>
   )
 }
