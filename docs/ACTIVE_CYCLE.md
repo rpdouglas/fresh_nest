@@ -37,6 +37,19 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 
 ### Epic Log
 
+#### E23 — JSON-LD Schema
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-10)
+* **Strategy:** 1 — Custom `<JsonLd>` component + centralized `seo.ts` (approved by human)
+* **Key Assets:**
+  * [src/components/seo/JsonLd.tsx](file:///workspaces/fresh_nest/src/components/seo/JsonLd.tsx)
+  * [src/lib/seo.ts](file:///workspaces/fresh_nest/src/lib/seo.ts)
+  * [src/components/layout/Layout.tsx](file:///workspaces/fresh_nest/src/components/layout/Layout.tsx)
+  * [src/pages/ServicePage.tsx](file:///workspaces/fresh_nest/src/pages/ServicePage.tsx)
+  * [src/pages/AirbnbTurnoverPage.tsx](file:///workspaces/fresh_nest/src/pages/AirbnbTurnoverPage.tsx)
+  * [src/pages/FaqPage.tsx](file:///workspaces/fresh_nest/src/pages/FaqPage.tsx)
+* **Close Report:** [E23-close-2026-06-10.md](file:///workspaces/fresh_nest/docs/reports/E23-close-2026-06-10.md)
+
 #### E01 — Infrastructure & CI/CD Setup
 * **Owner:** Ryan
 * **Status:** Completed ✅ (2026-06-06)

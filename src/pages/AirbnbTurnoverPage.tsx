@@ -7,6 +7,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { calculateQuote } from '@/lib/quotePricing'
 import { submitBooking, detectLeadSource } from '@/lib/firestore'
+import JsonLd from '@/components/seo/JsonLd'
+import { getServiceSchema } from '@/lib/seo'
 
 // ─── Animation variant ───────────────────────────────────────────────────────
 const fadeUp = {
@@ -76,6 +78,8 @@ export default function AirbnbTurnoverPage() {
   const [submittedName, setSubmittedName] = useState('')
   const [submitError, setSubmitError] = useState<string | null>(null)
 
+  const serviceSchema = getServiceSchema('airbnb', t)
+
   // Pricing teaser — use 1-2bed as reference size
   const priceResult = calculateQuote('1-2bed', 'airbnb', 'one-time')
   const priceMin = priceResult.type === 'range' ? priceResult.min : null
@@ -137,6 +141,7 @@ export default function AirbnbTurnoverPage() {
 
   return (
     <main id="main-content">
+      <JsonLd schema={serviceSchema} />
       {/* ── 1. Hero ───────────────────────────────────────────────────────── */}
       <section
         aria-labelledby="airbnb-hero-heading"
