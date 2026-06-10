@@ -701,5 +701,30 @@
     "accept": "Accepter",
     "decline": "Refuser",
     "preferences": "Préférences de cookies"
+  },
+  "admin": {
+    "meta": {
+      "title": "Portail Admin — Fresh Nest Co.",
+      "description": "Tableau de bord administratif pour la gestion des réservations."
+    },
+    "login": {
+      "heading": "Portail Admin",
+      "subhead": "Connectez-vous pour gérer les réservations, les clients et les indicateurs.",
+      "button": "Se connecter avec Google",
+      "errorTitle": "Accès refusé",
+      "errorMessage": "Votre compte ({{email}}) n'est pas autorisé à accéder à ce portail d'administration. Si vous pensez qu'il s'agit d'une erreur, veuillez contacter le développeur ou utiliser un compte autorisé.",
+      "tryAnother": "Essayer un autre compte",
+      "backToHome": "Retour à l'accueil",
+      "authFailed": "Échec de l'authentification. Veuillez réessayer."
+    },
+    "dashboard": {
+      "title": "Tableau de bord Admin",
+      "welcome": "Bon retour, {{name}}",
+      "placeholderTitle": "Tableau de bord des réservations (E29)",
+      "placeholderText": "Le tableau de bord de gestion des réservations est prévu pour le prochain jalon de développement (Épic E29). Une fois terminé, vous pourrez voir, rechercher, filtrer, replanifier et gérer tous les rendez-vous de nettoyage des clients ici.",
+      "signOut": "Se déconnecter",
+      "avatarAlt": "Avatar de l'utilisateur",
+      "fallbackName": "Administrateur"
+    }
   }
 }

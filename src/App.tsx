@@ -14,6 +14,7 @@ import ServicePage from '@/pages/ServicePage'
 import ServicesOverview from '@/pages/ServicesOverview'
 import { SERVICE_CONFIG_MAP } from '@/lib/serviceData'
 import ThankYouPage from '@/pages/ThankYouPage'
+import AdminPage from '@/pages/AdminPage'
 
 /**
  * React Router v6 browser router.
@@ -122,12 +123,7 @@ const router = createBrowserRouter([
       // ── Phase 5: Admin ──
       {
         path: 'admin',
-        element: (
-          <PlaceholderPage
-            titleKey="footer.company"
-            epicNote="Admin Dashboard — built in E28 (Phase 5, requires Firebase Auth)."
-          />
-        ),
+        element: <AdminPage />,
       },
     ],
   },
