@@ -489,7 +489,17 @@
     "loading": "Loading...",
     "error": "Something went wrong. Please try again.",
     "required": "Required",
-    "optional": "Optional"
+    "optional": "Optional",
+    "all": "All",
+    "asc": "Ascending",
+    "desc": "Descending",
+    "search": "Search",
+    "languages": {
+      "en": "EN",
+      "fr": "FR",
+      "enLong": "English",
+      "frLong": "French"
+    }
   },
   "airbnbPage": {
     "meta": {
@@ -765,7 +775,52 @@
         "leadSource": "Marketing Lead Source",
         "workflow": "Workflow Actions",
         "isAirbnb": "Airbnb Turnover Checklist",
-        "photoConf": "Photo Confirmation Required"
+        "photoConf": "Photo Confirmation Required",
+        "phone": "Phone",
+        "rooms": "Rooms",
+        "roomsValue": "{{bedrooms}} Bed / {{bathrooms}} Bath",
+        "size": "Size",
+        "sqft": "{{size}} sq. ft."
+      },
+      "tabs": {
+        "bookings": "Bookings Management",
+        "analytics": "Marketing Analytics"
+      },
+      "analytics": {
+        "title": "Marketing & Lead Source Performance",
+        "rangeLabel": "Time Range",
+        "ranges": {
+          "all": "All Time",
+          "30days": "Last 30 Days",
+          "90days": "Last 90 Days",
+          "ytd": "Year to Date (YTD)",
+          "month": "This Month"
+        },
+        "stats": {
+          "bookingsCount": "Estimated Bookings",
+          "estimatedRevenue": "Estimated Revenue",
+          "avgBookingValue": "Avg Booking Value"
+        },
+        "charts": {
+          "leadDistribution": "Lead Source Distribution (Bookings)",
+          "monthlyTrend": "Monthly Revenue & Booking Trends",
+          "revenue": "Revenue ($)",
+          "bookings": "Bookings Count"
+        },
+        "table": {
+          "channel": "Lead Source / Channel",
+          "volume": "Bookings Volume",
+          "revenue": "Estimated Revenue",
+          "avgValue": "Avg Booking Value",
+          "share": "Conversion Share"
+        }
+      },
+      "leads": {
+        "organic": "Organic Search",
+        "google": "Google Ads",
+        "referral": "Referral Program",
+        "facebook": "Facebook Ads",
+        "direct": "Direct Traffic"
       }
     }
   }
