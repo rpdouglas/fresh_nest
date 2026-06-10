@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import heroImg from '@/assets/hero.png'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -56,7 +55,7 @@ export default function Hero() {
           className="flex justify-center"
         >
           <img
-            src={heroImg}
+            src="/icons/icon-1024x1024.png"
             alt=""
             aria-hidden="true"
             className="rounded max-w-full h-auto"

@@ -2,9 +2,9 @@
 
 **Last Updated:** 2026-06-06  
 **Total Epics:** 34  
-**Completed:** 2 (E01, E02)  
+**Completed:** 26 (E01-E26, excluding E27)  
 **In Progress:** 0  
-**Not Started:** 32
+**Not Started:** 8
 
 ---
 
@@ -27,10 +27,10 @@
 |---|---|---|---|---|
 | E01 | Infrastructure & CI/CD | P0 | All | ✅ Completed |
 | E02 | Design System & Brand Tokens | P0 | All | ✅ Completed |
-| E03 | Navbar + Footer (Bilingual) | P0 | P1 Diane, P3 Margaret | ⬜ Not Started |
-| E04 | Hero Section (Bilingual) | P0 | P2 Travis, P1 Diane | ⬜ Not Started |
-| E05 | Trust Bar | P0 | P3 Margaret, P1 Diane | ⬜ Not Started |
-| E06 | Instant Quote Calculator | P0 | P2 Travis | ⬜ Not Started |
+| E03 | Navbar + Footer (Bilingual) | P0 | P1 Diane, P3 Margaret | ✅ Completed |
+| E04 | Hero Section (Bilingual) | P0 | P2 Travis, P1 Diane | ✅ Completed |
+| E05 | Trust Bar | P0 | P3 Margaret, P1 Diane | ✅ Completed |
+| E06 | Instant Quote Calculator | P0 | P2 Travis | ✅ Completed |
 
 ---
 
@@ -40,14 +40,14 @@
 
 | Epic ID | Name | Priority | Primary Persona(s) | Status |
 |---|---|---|---|---|
-| E07 | Services Grid | P0 | P2 Travis, P6 Gallagher | ⬜ Not Started |
-| E08 | Recurring Cleaning Section | P1 | P1 Diane, P3 Margaret | ⬜ Not Started |
-| E09 | Before/After Gallery | P1 | P5 Sophie, P6 Gallagher | ⬜ Not Started |
-| E10 | How It Works | P1 | P2 Travis, P3 Margaret | ⬜ Not Started |
-| E11 | Meet Your Team | P1 | P1 Diane, P3 Margaret | ⬜ Not Started |
-| E12 | Reviews Section + Firestore | P0 | P3 Margaret, P1 Diane | ⬜ Not Started |
-| E13 | Service Areas + /locations/* | P0 | P4 Kahnawà:ke, P5 Sophie | ⬜ Not Started |
-| E14 | FAQ Section + /faq | P1 | P3 Margaret, P2 Travis | ⬜ Not Started |
+| E07 | Services Grid | P0 | P2 Travis, P6 Gallagher | ✅ Completed |
+| E08 | Recurring Cleaning Section | P1 | P1 Diane, P3 Margaret | ✅ Completed |
+| E09 | Before/After Gallery | P1 | P5 Sophie, P6 Gallagher | ✅ Completed |
+| E10 | How It Works | P1 | P2 Travis, P3 Margaret | ✅ Completed |
+| E11 | Meet Your Team | P1 | P1 Diane, P3 Margaret | ✅ Completed |
+| E12 | Reviews Section + Firestore | P0 | P3 Margaret, P1 Diane | ✅ Completed |
+| E13 | Service Areas + /locations/* | P0 | P4 Kahnawà:ke, P5 Sophie | ✅ Completed |
+| E14 | FAQ Section + /faq | P1 | P3 Margaret, P2 Travis | ✅ Completed |
 
 ---
 
@@ -57,14 +57,14 @@
 
 | Epic ID | Name | Priority | Primary Persona(s) | Status |
 |---|---|---|---|---|
-| E15 | Multi-Step Booking Form | P0 | P2 Travis, P3 Margaret | ⬜ Not Started |
-| E16 | Firestore Booking Integration | P0 | All | ⬜ Not Started |
-| E17 | Cloud Functions Bilingual Email | P0 | P1 Diane, P5 Sophie | ⬜ Not Started |
-| E18 | SMS Confirmation + Reminders | P1 | P2 Travis, P4 Kahnawà:ke | ⬜ Not Started |
-| E19 | /pricing Page | P0 | P2 Travis | ⬜ Not Started |
-| E20 | /services/airbnb-turnover | P0 | P6 Gallagher | ⬜ Not Started |
-| E21 | /services/* Individual Pages | P1 | P2 Travis, P6 Gallagher | ⬜ Not Started |
-| E22 | Thank You Page | P0 | P2 Travis, P1 Diane | ⬜ Not Started |
+| E15 | Multi-Step Booking Form | P0 | P2 Travis, P3 Margaret | ✅ Completed |
+| E16 | Firestore Booking Integration | P0 | All | ✅ Completed |
+| E17 | Cloud Functions Bilingual Email | P0 | P1 Diane, P5 Sophie | ✅ Completed |
+| E18 | SMS Confirmation + Reminders | P1 | P2 Travis, P4 Kahnawà:ke | ✅ Completed |
+| E19 | /pricing Page | P0 | P2 Travis | ✅ Completed |
+| E20 | /services/airbnb-turnover | P0 | P6 Gallagher | ✅ Completed |
+| E21 | /services/* Individual Pages | P1 | P2 Travis, P6 Gallagher | ✅ Completed |
+| E22 | Thank You Page | P0 | P2 Travis, P1 Diane | ✅ Completed |
 
 ---
 
@@ -111,13 +111,13 @@
 
 | Phase | Total Epics | Completed | In Progress | Not Started |
 |---|---|---|---|---|
-| Phase 1 — Foundation | 6 | 2 | 0 | 4 |
-| Phase 2 — Content | 8 | 0 | 0 | 8 |
-| Phase 3 — Booking Engine | 8 | 0 | 0 | 8 |
-| Phase 4 — SEO & Accessibility | 5 | 1 | 0 | 4 |
+| Phase 1 — Foundation | 6 | 6 | 0 | 0 |
+| Phase 2 — Content | 8 | 8 | 0 | 0 |
+| Phase 3 — Booking Engine | 8 | 8 | 0 | 0 |
+| Phase 4 — SEO & Accessibility | 5 | 4 | 0 | 1 |
 | Phase 5 — Admin & Auth | 4 | 0 | 0 | 4 |
 | Phase 6 — Post-Launch | 3 | 0 | 0 | 3 |
-| **Total** | **34** | **3** | **0** | **31** |
+| **Total** | **34** | **26** | **0** | **8** |
 
 ---
 
