@@ -37,6 +37,29 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 
 ### Epic Log
 
+#### E24 — Meta Tags + Bilingual Page Titles
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-10)
+* **Strategy:** 1 — Reusable `<SEO>` component utilizing React 19 native metadata hoisting + bilingual `hreflang` query parameter sync (approved by human)
+* **Key Assets:**
+  * [src/components/seo/SEO.tsx](file:///workspaces/fresh_nest/src/components/seo/SEO.tsx)
+  * [src/i18n/index.ts](file:///workspaces/fresh_nest/src/i18n/index.ts)
+  * [src/pages/Home.tsx](file:///workspaces/fresh_nest/src/pages/Home.tsx)
+  * [src/pages/Gallery.tsx](file:///workspaces/fresh_nest/src/pages/Gallery.tsx)
+  * [src/pages/PricingPage.tsx](file:///workspaces/fresh_nest/src/pages/PricingPage.tsx)
+  * [src/pages/AirbnbTurnoverPage.tsx](file:///workspaces/fresh_nest/src/pages/AirbnbTurnoverPage.tsx)
+  * [src/pages/PlaceholderPage.tsx](file:///workspaces/fresh_nest/src/pages/PlaceholderPage.tsx)
+  * [src/pages/BookingPage.tsx](file:///workspaces/fresh_nest/src/pages/BookingPage.tsx)
+  * [src/pages/FaqPage.tsx](file:///workspaces/fresh_nest/src/pages/FaqPage.tsx)
+  * [src/pages/LocationPage.tsx](file:///workspaces/fresh_nest/src/pages/LocationPage.tsx)
+  * [src/pages/LocationsOverview.tsx](file:///workspaces/fresh_nest/src/pages/LocationsOverview.tsx)
+  * [src/pages/ServicePage.tsx](file:///workspaces/fresh_nest/src/pages/ServicePage.tsx)
+  * [src/pages/ServicesOverview.tsx](file:///workspaces/fresh_nest/src/pages/ServicesOverview.tsx)
+  * [src/pages/ThankYouPage.tsx](file:///workspaces/fresh_nest/src/pages/ThankYouPage.tsx)
+  * [src/i18n/locales/en.json](file:///workspaces/fresh_nest/src/i18n/locales/en.json)
+  * [src/i18n/locales/fr.json](file:///workspaces/fresh_nest/src/i18n/locales/fr.json)
+* **Close Report:** [E24-close-2026-06-10.md](file:///workspaces/fresh_nest/docs/reports/E24-close-2026-06-10.md)
+
 #### E23 — JSON-LD Schema
 * **Owner:** Dev Team
 * **Status:** Completed ✅ (2026-06-10)

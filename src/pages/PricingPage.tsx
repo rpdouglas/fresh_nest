@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import QuoteCalculator from '@/components/home/QuoteCalculator'
 import { calculateQuote, type QuoteServiceType } from '@/lib/quotePricing'
+import SEO from '@/components/seo/SEO'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -43,7 +44,12 @@ export default function PricingPage() {
   const { t } = useTranslation()
 
   return (
-    <main id="main-content">
+    <>
+      <SEO
+        title={t('pricing.meta.title')}
+        description={t('pricing.meta.description')}
+      />
+      <main id="main-content">
       {/* Hero */}
       <section className="bg-warm-white py-12 px-4 md:py-20 md:px-6">
         <div className="max-w-content mx-auto">
@@ -171,5 +177,6 @@ export default function PricingPage() {
         </div>
       </section>
     </main>
+    </>
   )
 }

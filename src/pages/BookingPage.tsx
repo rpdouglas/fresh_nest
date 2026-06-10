@@ -10,6 +10,7 @@ import BookingStep1 from '@/components/booking/BookingStep1'
 import BookingStep2 from '@/components/booking/BookingStep2'
 import BookingStep3 from '@/components/booking/BookingStep3'
 import BookingStep4 from '@/components/booking/BookingStep4'
+import SEO from '@/components/seo/SEO'
 
 function buildDefaults(params: URLSearchParams): Partial<BookingFormData> {
   const defaults: Partial<BookingFormData> = {}
@@ -120,8 +121,10 @@ export default function BookingPage() {
 
   return (
     <>
-      <title>{t('booking.pageTitle')}</title>
-      <meta name="description" content={t('booking.metaDesc')} />
+      <SEO
+        title={t('booking.pageTitle')}
+        description={t('booking.metaDesc')}
+      />
 
       <section className="bg-warm-white py-16 px-4 md:py-24 md:px-6">
         <div className="max-w-content mx-auto">

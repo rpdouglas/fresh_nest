@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 import { GALLERY_PAIRS } from '@/lib/galleryData'
 import GalleryImage from '@/components/ui/GalleryImage'
 import Lightbox from '@/components/ui/Lightbox'
+import SEO from '@/components/seo/SEO'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -39,6 +40,10 @@ export default function Gallery() {
 
   return (
     <main className="bg-warm-white py-12 px-4 md:py-20 md:px-6">
+      <SEO
+        title={t('gallery.meta.title')}
+        description={t('gallery.meta.description')}
+      />
       <div className="max-w-content mx-auto">
         {/* Page heading */}
         <motion.div

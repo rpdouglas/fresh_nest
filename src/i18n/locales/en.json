@@ -1,4 +1,11 @@
 {
+  "home": {
+    "title": "Fresh Nest Co. — Cleaning & Organizing Services | Cornwall, ON",
+    "description": "Professional cleaning and organizing for homes and businesses in Cornwall, Akwesasne, and Snye QC."
+  },
+  "placeholder": {
+    "metaDesc": "Information about {{page}} at Fresh Nest Co. serving Cornwall and surrounding areas."
+  },
   "hero": {
     "headline": "Professional Cleaning & Organizing",
     "subhead": "Serving Cornwall, Akwesasne, Snye & surrounding communities."
@@ -79,6 +86,10 @@
     }
   },
   "gallery": {
+    "meta": {
+      "title": "Before & After Photo Gallery — Fresh Nest Co.",
+      "description": "Browse our before and after cleaning photo gallery. See the results of our professional residential, deep, and Airbnb turnover cleaning."
+    },
     "ariaLabel":       "Before and after cleaning photos",
     "pageHeading":     "Our Work",
     "pageSubhead":     "Real results from our team — before and after every clean.",
@@ -377,6 +388,10 @@
     "insured": "Fully insured & bonded"
   },
   "pricing": {
+    "meta": {
+      "title": "Transparent Cleaning Pricing — Fresh Nest Co.",
+      "description": "Transparent, no-hidden-fee pricing for standard, deep, move-out, Airbnb, and commercial cleaning services."
+    },
     "pageTitle": "Pricing | Fresh Nest Co.",
     "hero": {
       "title":    "Transparent Pricing",

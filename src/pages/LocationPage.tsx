@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import type { LocationConfig } from '@/lib/locationData'
+import SEO from '@/components/seo/SEO'
 
 export default function LocationPage({ config }: { config: LocationConfig }) {
   const { t } = useTranslation()
@@ -9,8 +10,10 @@ export default function LocationPage({ config }: { config: LocationConfig }) {
 
   return (
     <>
-      <title>{t(config.pageTitleKey)}</title>
-      <meta name="description" content={t(config.metaDescKey)} />
+      <SEO
+        title={t(config.pageTitleKey)}
+        description={t(config.metaDescKey)}
+      />
 
       {/* Page hero */}
       <section className="bg-warm-white py-16 px-4 md:py-24 md:px-6">

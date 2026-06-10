@@ -2,14 +2,17 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { ALL_LOCATIONS } from '@/lib/locationData'
+import SEO from '@/components/seo/SEO'
 
 export default function LocationsOverview() {
   const { t } = useTranslation()
 
   return (
     <>
-      <title>{t('locations.overview.pageTitle')}</title>
-      <meta name="description" content={t('locations.overview.metaDesc')} />
+      <SEO
+        title={t('locations.overview.pageTitle')}
+        description={t('locations.overview.metaDesc')}
+      />
 
       <section className="bg-warm-white py-16 px-4 md:py-24 md:px-6">
         <div className="max-w-content mx-auto">

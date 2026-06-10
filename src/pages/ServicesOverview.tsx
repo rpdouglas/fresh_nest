@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import ServicesGrid from '@/components/home/ServicesGrid'
+import SEO from '@/components/seo/SEO'
 
 const fadeUp = {
   hidden:  { opacity: 0, y: 20 },
@@ -15,9 +16,12 @@ export default function ServicesOverview() {
   const { t } = useTranslation()
 
   return (
-    <main id="main-content">
-      <title>{t('servicePage.overview.heading')} — Fresh Nest Co.</title>
-      <meta name="description" content={t('servicePage.overview.subhead')} />
+    <>
+      <SEO
+        title={`${t('servicePage.overview.heading')} — Fresh Nest Co.`}
+        description={t('servicePage.overview.subhead')}
+      />
+      <main id="main-content">
 
       <section className="bg-warm-white py-16 md:py-24 px-4 md:px-6">
         <div className="max-w-content mx-auto">
@@ -44,5 +48,6 @@ export default function ServicesOverview() {
 
       <ServicesGrid />
     </main>
+    </>
   )
 }
