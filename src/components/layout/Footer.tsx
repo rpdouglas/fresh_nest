@@ -49,7 +49,7 @@ export default function Footer() {
           <div className="col-span-2 md:col-span-1">
             <Link
               to="/"
-              aria-label="Fresh Nest Co. — Home"
+              aria-label={t('a11y.homeLink')}
               className="inline-block mb-4 focus:outline-none focus:ring-2 focus:ring-slate-pale rounded"
             >
               <img
@@ -64,12 +64,12 @@ export default function Footer() {
               {t('footer.tagline')}
             </p>
             {/* Trust badges */}
-            <p className="font-body text-sm text-text-muted">{t('footer.insured')}</p>
-            <p className="font-body text-sm text-text-muted">{t('footer.bilingual')}</p>
+            <p className="font-body text-base text-text-muted">{t('footer.insured')}</p>
+            <p className="font-body text-base text-text-muted">{t('footer.bilingual')}</p>
           </div>
 
           {/* ── Col 2: Services ── */}
-          <nav aria-label="Footer services links">
+          <nav aria-label={t('a11y.footerServices')}>
             <h3 className="font-sub text-base font-medium text-warm-white mb-4 uppercase tracking-wide">
               {t('footer.services')}
             </h3>
@@ -81,7 +81,7 @@ export default function Footer() {
                     className={cn(
                       'font-body text-base text-text-muted',
                       'hover:text-slate-pale transition-colors duration-200',
-                      'min-h-[48px] md:min-h-0 flex md:inline-flex items-center',
+                      'min-h-[48px]  flex md:inline-flex items-center',
                       'focus:outline-none focus:ring-2 focus:ring-slate-pale rounded',
                     )}
                   >
@@ -93,7 +93,7 @@ export default function Footer() {
           </nav>
 
           {/* ── Col 3: Locations ── */}
-          <nav aria-label="Footer service areas links">
+          <nav aria-label={t('a11y.footerLocations')}>
             <h3 className="font-sub text-base font-medium text-warm-white mb-4 uppercase tracking-wide">
               {t('footer.locations')}
             </h3>
@@ -105,7 +105,7 @@ export default function Footer() {
                     className={cn(
                       'font-body text-base text-text-muted',
                       'hover:text-slate-pale transition-colors duration-200',
-                      'min-h-[48px] md:min-h-0 flex md:inline-flex items-center',
+                      'min-h-[48px]  flex md:inline-flex items-center',
                       'focus:outline-none focus:ring-2 focus:ring-slate-pale rounded',
                     )}
                   >
@@ -118,7 +118,7 @@ export default function Footer() {
 
           {/* ── Col 4: Company + Contact ── */}
           <div>
-            <nav aria-label="Footer company links">
+            <nav aria-label={t('a11y.footerCompany')}>
               <h3 className="font-sub text-base font-medium text-warm-white mb-4 uppercase tracking-wide">
                 {t('footer.company')}
               </h3>
@@ -130,7 +130,7 @@ export default function Footer() {
                       className={cn(
                         'font-body text-base text-text-muted',
                         'hover:text-slate-pale transition-colors duration-200',
-                        'min-h-[48px] md:min-h-0 flex md:inline-flex items-center',
+                        'min-h-[48px]  flex md:inline-flex items-center',
                         'focus:outline-none focus:ring-2 focus:ring-slate-pale rounded',
                       )}
                     >
@@ -150,11 +150,11 @@ export default function Footer() {
                 <li>
                   <a
                     href={PHONE_HREF}
-                    aria-label={`Call Fresh Nest Co. at ${PHONE_NUMBER}`}
+                    aria-label={t('a11y.callUs', { phone: PHONE_NUMBER })}
                     className={cn(
                       'font-body text-base text-text-muted',
                       'hover:text-slate-pale transition-colors duration-200',
-                      'min-h-[48px] md:min-h-0 flex md:inline-flex items-center gap-2',
+                      'min-h-[48px]  flex md:inline-flex items-center gap-2',
                       'focus:outline-none focus:ring-2 focus:ring-slate-pale rounded',
                     )}
                   >
@@ -181,7 +181,7 @@ export default function Footer() {
                     className={cn(
                       'font-body text-base text-text-muted',
                       'hover:text-slate-pale transition-colors duration-200',
-                      'min-h-[48px] md:min-h-0 flex md:inline-flex items-center',
+                      'min-h-[48px]  flex md:inline-flex items-center',
                       'focus:outline-none focus:ring-2 focus:ring-slate-pale rounded',
                     )}
                   >
@@ -205,14 +205,14 @@ export default function Footer() {
       {/* ── Bottom bar ── */}
       <div className="border-t border-charcoal/50 bg-charcoal/80">
         <div className="max-w-content mx-auto px-4 md:px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-2">
-          <p className="font-body text-sm text-text-muted text-center md:text-left">
+          <p className="font-body text-base text-text-muted text-center md:text-left">
             {t('footer.copyright', { year: CURRENT_YEAR })}
           </p>
           <Link
             to="/privacy"
             className={cn(
-              'font-body text-sm text-text-muted hover:text-slate-pale',
-              'transition-colors duration-200',
+              'font-body text-base text-text-muted hover:text-slate-pale',
+              'transition-colors duration-200 min-h-[48px] inline-flex items-center',
               'focus:outline-none focus:ring-2 focus:ring-slate-pale rounded',
             )}
           >

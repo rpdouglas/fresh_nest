@@ -3,9 +3,8 @@ import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useForm, FormProvider, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
-import { bookingFormSchema, BookingFormData, STEP_FIELDS } from '@/lib/bookingSchema'
+import { bookingFormSchema, BookingFormData } from '@/lib/bookingSchema'
 import { submitBooking, detectLeadSource } from '@/lib/firestore'
-import StepIndicator from '@/components/booking/StepIndicator'
 import BookingStep1 from '@/components/booking/BookingStep1'
 import BookingStep2 from '@/components/booking/BookingStep2'
 import BookingStep3 from '@/components/booking/BookingStep3'
@@ -62,7 +61,6 @@ export default function BookingPage() {
   const { t, i18n } = useTranslation()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const [step, setStep] = useState(0)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const source = detectLeadSource(searchParams)
 
@@ -90,14 +88,6 @@ export default function BookingPage() {
     },
     mode: 'onTouched',
   })
-
-  const handleNext = async () => {
-    const fields = STEP_FIELDS[step]
-    const valid = await methods.trigger(fields)
-    if (valid) setStep((s) => s + 1)
-  }
-
-  const handleBack = () => setStep((s) => s - 1)
 
   const onSubmit = async (data: BookingFormData) => {
     setSubmitError(null)
@@ -137,13 +127,12 @@ export default function BookingPage() {
 
       <section className="bg-cream py-10 px-4 md:py-14 md:px-6">
         <div className="max-w-2xl mx-auto">
-          <StepIndicator currentStep={step} totalSteps={4} />
           <FormProvider {...methods}>
-            <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
-              {step === 0 && <BookingStep1 onNext={handleNext} />}
-              {step === 1 && <BookingStep2 onNext={handleNext} onBack={handleBack} />}
-              {step === 2 && <BookingStep3 onNext={handleNext} onBack={handleBack} />}
-              {step === 3 && <BookingStep4 onBack={handleBack} onSetStep={setStep} submitError={submitError} />}
+            <form onSubmit={methods.handleSubmit(onSubmit)} noValidate className="space-y-8">
+              <BookingStep1 />
+              <BookingStep2 />
+              <BookingStep3 />
+              <BookingStep4 submitError={submitError} />
             </form>
           </FormProvider>
         </div>

@@ -51,13 +51,13 @@ export default function Navbar() {
         )}
       >
         <nav
-          aria-label="Main navigation"
+          aria-label={t('a11y.navMain')}
           className="max-w-content mx-auto flex items-center justify-between px-4 md:px-6 h-16 md:h-20"
         >
           {/* ── Logo ── */}
           <Link
             to="/"
-            aria-label="Fresh Nest Co. — Home"
+            aria-label={t('a11y.homeLink')}
             className="flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-slate-brand rounded"
           >
             <img
@@ -102,7 +102,7 @@ export default function Navbar() {
             {/* Phone — Margaret P3 requirement: always visible, always a tel: link */}
             <a
               href={PHONE_HREF}
-              aria-label={`Call Fresh Nest Co. at ${PHONE_NUMBER}`}
+              aria-label={t('a11y.callUs', { phone: PHONE_NUMBER })}
               className={cn(
                 'font-body text-base text-slate-brand hover:text-slate-dark',
                 'transition-colors duration-200 min-h-[48px] inline-flex items-center',
@@ -151,7 +151,7 @@ export default function Navbar() {
               onClick={toggleLanguage}
               aria-label={t('lang.switchTo')}
               className={cn(
-                'font-body text-sm font-medium text-charcoal',
+                'font-body text-base font-medium text-charcoal',
                 'border border-sand rounded px-2.5 min-h-[48px] inline-flex items-center',
                 'hover:border-slate-brand hover:text-slate-brand transition-colors duration-200',
                 'focus:outline-none focus:ring-2 focus:ring-slate-brand',
@@ -213,7 +213,7 @@ export default function Navbar() {
               id="mobile-menu"
               role="dialog"
               aria-modal="true"
-              aria-label="Mobile navigation"
+              aria-label={t('a11y.navMobile')}
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
@@ -247,7 +247,7 @@ export default function Navbar() {
                 <li className="border-t border-sand pt-3 mt-2">
                   <a
                     href={PHONE_HREF}
-                    aria-label={`Call Fresh Nest Co. at ${PHONE_NUMBER}`}
+                    aria-label={t('a11y.callUs', { phone: PHONE_NUMBER })}
                     onClick={closeMenu}
                     className={cn(
                       'font-body text-base text-slate-brand hover:text-slate-dark',

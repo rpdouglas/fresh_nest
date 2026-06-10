@@ -1,16 +1,16 @@
 # Booking Guide — Fresh Nest Co.
 **For:** Clients booking online  
-**Updated:** 2026-06-07 (E15 — live 4-step wizard)
+**Updated:** 2026-06-10 (E25 — single-page form)
 
 ---
 
 ## How to Book a Cleaning
 
 1. **Visit our booking page** at [lilypad-freshnest.web.app/booking](https://lilypad-freshnest.web.app/booking).
-2. **Step 1 — Service Details:** Select your service type (Standard, Deep, Move-Out, Airbnb, etc.) and enter your property details (bedrooms, bathrooms, pets). If you select Airbnb Turnover, a note confirms the 11am–3pm service window.
-3. **Step 2 — Schedule & Add-Ons:** Choose your preferred frequency (one-time, weekly, biweekly, monthly), your preferred date, and any optional add-ons (oven, fridge, windows, etc.).
-4. **Step 3 — Contact Info:** Enter your name, email, phone number, and full service address. Include your Cornwall Island address or bridge crossing notes if applicable. Add any special instructions (gate codes, allergies, areas of focus).
-5. **Step 4 — Review & Submit:** Confirm all your details. Click Edit next to any section to make changes. Optionally opt in to marketing emails, then submit.
+2. **Service Details:** Select your service type (Standard, Deep, Move-Out, Airbnb, etc.) and enter your property details (bedrooms, bathrooms, pets). If you select Airbnb Turnover, a note confirms the 11am–3pm service window.
+3. **Schedule & Add-Ons:** Choose your preferred frequency (one-time, weekly, biweekly, monthly), your preferred date, and any optional add-ons (oven, fridge, windows, etc.).
+4. **Contact Info:** Enter your name, email, phone number, and full service address. Include your Cornwall Island address or bridge crossing notes if applicable. Add any special instructions (gate codes, allergies, areas of focus).
+5. **Review & Submit:** Confirm all your details, optionally opt in to marketing emails, then click submit.
 
 **Tip:** If you used the Instant Quote Calculator, your property size and service type are carried forward automatically when you click "Book Now".
 

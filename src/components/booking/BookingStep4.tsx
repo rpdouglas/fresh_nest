@@ -1,15 +1,12 @@
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { motion } from 'framer-motion'
 import type { BookingFormData } from '@/lib/bookingSchema'
 
 interface Props {
-  onBack: () => void
-  onSetStep: (step: number) => void
   submitError?: string | null
 }
 
-export default function BookingStep4({ onBack, onSetStep, submitError }: Props) {
+export default function BookingStep4({ submitError }: Props) {
   const { t } = useTranslation()
   const { register, getValues, formState: { isSubmitting } } = useFormContext<BookingFormData>()
   const values = getValues()
@@ -23,11 +20,7 @@ export default function BookingStep4({ onBack, onSetStep, submitError }: Props) 
     : '—'
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-    >
+    <div>
       <div className="bg-white border border-sand rounded shadow-sm p-6 space-y-6">
         <h2 className="font-display text-3xl text-charcoal">{t('booking.step4Title')}</h2>
 
@@ -36,100 +29,58 @@ export default function BookingStep4({ onBack, onSetStep, submitError }: Props) 
           {/* Service */}
           <div className="flex items-start justify-between py-3">
             <div>
-              <p className="font-body text-sm text-text-muted">{t('booking.review.service')}</p>
+              <p className="font-body text-base text-text-muted">{t('booking.review.service')}</p>
               <p className="font-body text-base text-charcoal mt-0.5">{serviceLabel}</p>
             </div>
-            <button
-              type="button"
-              onClick={() => onSetStep(0)}
-              className="font-body text-sm text-slate-brand hover:text-slate-dark transition-colors min-h-[48px] px-2"
-            >
-              {t('booking.review.edit')}
-            </button>
           </div>
 
           {/* Property */}
           <div className="flex items-start justify-between py-3">
             <div>
-              <p className="font-body text-sm text-text-muted">{t('booking.review.property')}</p>
+              <p className="font-body text-base text-text-muted">{t('booking.review.property')}</p>
               <p className="font-body text-base text-charcoal mt-0.5">
                 {propertyLabel} — {values.bedrooms} {t('booking.fields.bedrooms.label').toLowerCase()} / {values.bathrooms} {t('booking.fields.bathrooms.label').toLowerCase()}
                 {values.pets && ` · ${t('booking.fields.pets.label')}`}
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => onSetStep(0)}
-              className="font-body text-sm text-slate-brand hover:text-slate-dark transition-colors min-h-[48px] px-2"
-            >
-              {t('booking.review.edit')}
-            </button>
           </div>
 
           {/* Schedule */}
           <div className="flex items-start justify-between py-3">
             <div>
-              <p className="font-body text-sm text-text-muted">{t('booking.review.schedule')}</p>
+              <p className="font-body text-base text-text-muted">{t('booking.review.schedule')}</p>
               <p className="font-body text-base text-charcoal mt-0.5">
                 {frequencyLabel} · {values.preferredDate}
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => onSetStep(1)}
-              className="font-body text-sm text-slate-brand hover:text-slate-dark transition-colors min-h-[48px] px-2"
-            >
-              {t('booking.review.edit')}
-            </button>
           </div>
 
           {/* Add-ons */}
           <div className="flex items-start justify-between py-3">
             <div>
-              <p className="font-body text-sm text-text-muted">{t('booking.review.addOns')}</p>
+              <p className="font-body text-base text-text-muted">{t('booking.review.addOns')}</p>
               <p className="font-body text-base text-charcoal mt-0.5">{addOnLabels}</p>
             </div>
-            <button
-              type="button"
-              onClick={() => onSetStep(1)}
-              className="font-body text-sm text-slate-brand hover:text-slate-dark transition-colors min-h-[48px] px-2"
-            >
-              {t('booking.review.edit')}
-            </button>
           </div>
 
           {/* Contact */}
           <div className="flex items-start justify-between py-3">
             <div>
-              <p className="font-body text-sm text-text-muted">{t('booking.review.contact')}</p>
+              <p className="font-body text-base text-text-muted">{t('booking.review.contact')}</p>
               <p className="font-body text-base text-charcoal mt-0.5">
                 {values.firstName} {values.lastName} · {values.email} · {values.phone}
               </p>
-              <p className="font-body text-sm text-text-muted mt-0.5">{values.address}</p>
+              <p className="font-body text-base text-text-muted mt-0.5">{values.address}</p>
             </div>
-            <button
-              type="button"
-              onClick={() => onSetStep(2)}
-              className="font-body text-sm text-slate-brand hover:text-slate-dark transition-colors min-h-[48px] px-2"
-            >
-              {t('booking.review.edit')}
-            </button>
           </div>
 
           {/* Notes */}
           {values.notes && (
             <div className="flex items-start justify-between py-3">
               <div>
-                <p className="font-body text-sm text-text-muted">{t('booking.review.notes')}</p>
+                <p className="font-body text-base text-text-muted">{t('booking.review.notes')}</p>
                 <p className="font-body text-base text-charcoal mt-0.5">{values.notes}</p>
               </div>
-              <button
-                type="button"
-                onClick={() => onSetStep(2)}
-                className="font-body text-sm text-slate-brand hover:text-slate-dark transition-colors min-h-[48px] px-2"
-              >
-                {t('booking.review.edit')}
-              </button>
             </div>
           )}
         </div>
@@ -159,16 +110,7 @@ export default function BookingStep4({ onBack, onSetStep, submitError }: Props) 
         </div>
       )}
 
-      <div className="mt-6 flex justify-between">
-        <button
-          type="button"
-          onClick={onBack}
-          className="inline-flex items-center justify-center font-body font-medium text-base
-                     border border-slate-brand text-slate-brand hover:bg-slate-pale rounded px-8 min-h-[48px]
-                     transition-colors focus:outline-none focus:ring-2 focus:ring-slate-brand"
-        >
-          {t('booking.back')}
-        </button>
+      <div className="mt-6 flex justify-end">
         <button
           type="submit"
           disabled={isSubmitting}
@@ -180,6 +122,6 @@ export default function BookingStep4({ onBack, onSetStep, submitError }: Props) 
           {isSubmitting ? t('booking.submitting') : t('booking.submit')}
         </button>
       </div>
-    </motion.div>
+    </div>
   )
 }
