@@ -16,6 +16,9 @@ export default function GalleryImage({ src, alt, className }: GalleryImageProps)
         src={src}
         alt={alt}
         className={cn('w-full h-full object-cover', className)}
+        width={400}
+        height={300}
+        loading="lazy"
       />
     )
   }
@@ -29,7 +32,7 @@ export default function GalleryImage({ src, alt, className }: GalleryImageProps)
         className,
       )}
     >
-      <span className="font-body text-xs text-text-muted">
+      <span className="font-body text-sm text-charcoal">
         {t('gallery.photoComingSoon')}
       </span>
     </div>
