@@ -701,5 +701,30 @@
     "accept": "Accept",
     "decline": "Decline",
     "preferences": "Cookie Preferences"
+  },
+  "admin": {
+    "meta": {
+      "title": "Admin Portal — Fresh Nest Co.",
+      "description": "Administrative dashboard for booking management."
+    },
+    "login": {
+      "heading": "Admin Portal",
+      "subhead": "Sign in to manage bookings, clients, and metrics.",
+      "button": "Sign in with Google",
+      "errorTitle": "Access Denied",
+      "errorMessage": "Your account ({{email}}) is not authorized to access this admin portal. If you believe this is an error, please contact the developer or use an authorized account.",
+      "tryAnother": "Try Another Account",
+      "backToHome": "Back to Home",
+      "authFailed": "Authentication failed. Please try again."
+    },
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "welcome": "Welcome back, {{name}}",
+      "placeholderTitle": "Bookings Dashboard (E29)",
+      "placeholderText": "The bookings management dashboard is scheduled for the next development milestone (Epic E29). Once complete, you will be able to view, search, filter, reschedule, and manage all client cleaning appointments here.",
+      "signOut": "Sign Out",
+      "avatarAlt": "User avatar",
+      "fallbackName": "Admin"
+    }
   }
 }

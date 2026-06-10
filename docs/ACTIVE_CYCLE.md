@@ -35,10 +35,23 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | **E25** | WCAG AA Accessibility Audit | P0 | Dev Team | Completed ✅ |
 | **E26** | Analytics Stack | P0 | Dev Team | Completed ✅ |
 | **E27** | Real Photography | P1 | P5 Sophie, P6 Gallagher | Completed ✅ |
+| **E28** | Firebase Auth + /admin | P1 | Owner | Completed ✅ |
 
 ---
 
 ### Epic Log
+
+#### E28 — Firebase Auth + /admin
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-10)
+* **Strategy:** 1 — Client-Side Allowlist with Single Route (approved by human)
+* **Persona tests:** Lauren S. (Owner), P3 Margaret (A11y)
+* **Key Assets:**
+  * [src/pages/AdminPage.tsx](file:///workspaces/fresh_nest/src/pages/AdminPage.tsx)
+  * [src/App.tsx](file:///workspaces/fresh_nest/src/App.tsx)
+  * [src/i18n/locales/en.json](file:///workspaces/fresh_nest/src/i18n/locales/en.json)
+  * [src/i18n/locales/fr.json](file:///workspaces/fresh_nest/src/i18n/locales/fr.json)
+* **Close Report:** [E28-close-2026-06-10.md](file:///workspaces/fresh_nest/docs/reports/E28-close-2026-06-10.md)
 
 #### E27 — Real Photography
 * **Owner:** Dev Team
