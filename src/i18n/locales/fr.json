@@ -489,7 +489,17 @@
     "loading": "Chargement…",
     "error": "Une erreur s'est produite. Veuillez réessayer.",
     "required": "Obligatoire",
-    "optional": "Facultatif"
+    "optional": "Facultatif",
+    "all": "Tout",
+    "asc": "Croissant",
+    "desc": "Décroissant",
+    "search": "Rechercher",
+    "languages": {
+      "en": "EN",
+      "fr": "FR",
+      "enLong": "Anglais",
+      "frLong": "Français"
+    }
   },
   "airbnbPage": {
     "meta": {
@@ -765,7 +775,52 @@
         "leadSource": "Source de piste marketing",
         "workflow": "Actions de flux de travail",
         "isAirbnb": "Liste de contrôle Airbnb",
-        "photoConf": "Confirmation photo requise"
+        "photoConf": "Confirmation photo requise",
+        "phone": "Téléphone",
+        "rooms": "Pièces",
+        "roomsValue": "{{bedrooms}} ch. / {{bathrooms}} SdB",
+        "size": "Superficie",
+        "sqft": "{{size}} pi²"
+      },
+      "tabs": {
+        "bookings": "Gestion des réservations",
+        "analytics": "Analyses marketing"
+      },
+      "analytics": {
+        "title": "Performance des sources de pistes marketing",
+        "rangeLabel": "Période",
+        "ranges": {
+          "all": "Tout temps",
+          "30days": "30 derniers jours",
+          "90days": "90 derniers jours",
+          "ytd": "Depuis le début de l'année",
+          "month": "Ce mois-ci"
+        },
+        "stats": {
+          "bookingsCount": "Réservations estimées",
+          "estimatedRevenue": "Revenu estimé",
+          "avgBookingValue": "Valeur moyenne de réservation"
+        },
+        "charts": {
+          "leadDistribution": "Distribution des sources de pistes (Réservations)",
+          "monthlyTrend": "Tendances mensuelles des revenus et réservations",
+          "revenue": "Revenu ($)",
+          "bookings": "Nombre de réservations"
+        },
+        "table": {
+          "channel": "Source de piste / Canal",
+          "volume": "Volume de réservations",
+          "revenue": "Revenu estimé",
+          "avgValue": "Valeur moyenne de réservation",
+          "share": "Part de conversion"
+        }
+      },
+      "leads": {
+        "organic": "Recherche organique",
+        "google": "Publicité Google",
+        "referral": "Programme de parrainage",
+        "facebook": "Publicité Facebook",
+        "direct": "Trafic direct"
       }
     }
   }

@@ -6,9 +6,11 @@
 
 ## Accessing the Admin Dashboard
 
-> **Phase 5 feature** — Admin dashboard with Firebase Auth will be built in Epic E28.
+Navigate to [lilypad-freshnest.web.app/admin](https://lilypad-freshnest.web.app/admin) and sign in with your authorized Google account. 
 
-Once live, navigate to [lilypad-freshnest.web.app/admin](https://lilypad-freshnest.web.app/admin) and sign in with your authorized Google account.
+The dashboard is split into two tabs:
+1. **Bookings Management:** Track and manage operational client bookings.
+2. **Marketing Analytics:** Monitor marketing lead source volumes, trends, and estimated ROI.
 
 ---
 
@@ -24,8 +26,20 @@ Once live, navigate to [lilypad-freshnest.web.app/admin](https://lilypad-freshne
 
 ### Updating a Booking
 1. Find the booking in the dashboard table.
-2. Use the **Status** dropdown to update the status.
-3. Use the **Assigned To** field to assign a cleaner by name.
+2. Click the booking row to expand the detail panel.
+3. Use the **Status** dropdown to update the status.
+4. Use the **Assigned To** field to assign a cleaner by name (or click custom to type a custom name).
+
+---
+
+## Marketing Analytics Tab
+
+Toggle to the **Marketing Analytics** tab to view marketing performance metrics:
+- **KPI Cards:** Track estimated total bookings count, estimated revenues (calculated dynamically in-memory based on property specs), and average booking values.
+- **Time Range Filter:** Filter your charts by *All Time*, *Last 30 Days*, *Last 90 Days*, *Year to Date (YTD)*, or *This Month*.
+- **Lead Source Distribution:** A visual donut chart showing booking distribution by marketing channels (organic, google ads, referrals, facebook ads, direct).
+- **Monthly Trends:** A bar chart tracking estimated revenues month-over-month.
+- **Performance Table:** Shows booking count, total estimated revenue, average value, and percentage conversion share for each lead channel.
 
 ---
 
