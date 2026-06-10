@@ -695,5 +695,11 @@
     "footerServices": "Footer services links",
     "footerLocations": "Footer service areas links",
     "footerCompany": "Footer company links"
+  },
+  "cookieBanner": {
+    "message": "We use cookies to analyze site traffic and improve your experience. By clicking 'Accept', you consent to our use of cookies.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "preferences": "Cookie Preferences"
   }
 }

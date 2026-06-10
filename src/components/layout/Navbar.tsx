@@ -3,6 +3,7 @@ import { NavLink, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { logLanguageToggled, logPhoneClicked } from '@/lib/analytics'
 import { useScrolled } from '@/hooks/useScrolled'
 import logoNavbar from '@/assets/logo-navbar-80px.png'
 import logoNavbar2x from '@/assets/logo-navbar-160px@2x.png'
@@ -18,6 +19,7 @@ export default function Navbar() {
   const toggleLanguage = useCallback(() => {
     const next = i18n.language.startsWith('fr') ? 'en' : 'fr'
     i18n.changeLanguage(next)
+    logLanguageToggled(next)
     // Persist in localStorage — i18next LanguageDetector picks this up on reload
     localStorage.setItem('i18nextLng', next)
   }, [i18n])
@@ -102,6 +104,7 @@ export default function Navbar() {
             {/* Phone — Margaret P3 requirement: always visible, always a tel: link */}
             <a
               href={PHONE_HREF}
+              onClick={() => logPhoneClicked('navbar')}
               aria-label={t('a11y.callUs', { phone: PHONE_NUMBER })}
               className={cn(
                 'font-body text-base text-slate-brand hover:text-slate-dark',
@@ -248,7 +251,10 @@ export default function Navbar() {
                   <a
                     href={PHONE_HREF}
                     aria-label={t('a11y.callUs', { phone: PHONE_NUMBER })}
-                    onClick={closeMenu}
+                    onClick={() => {
+                      logPhoneClicked('navbar')
+                      closeMenu()
+                    }}
                     className={cn(
                       'font-body text-base text-slate-brand hover:text-slate-dark',
                       'w-full px-3 min-h-[48px] flex items-center gap-2 rounded',

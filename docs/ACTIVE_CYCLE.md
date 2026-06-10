@@ -33,10 +33,20 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | **E21** | /services/* Individual Pages | P1 | P2 Travis, P3 Margaret, P1 Diane, P6 Gallagher | Completed ✅ |
 | **E22** | /thank-you Confirmation Page | P0 | P2 Travis, P1 Diane | Completed ✅ |
 | **E25** | WCAG AA Accessibility Audit | P0 | Dev Team | Completed ✅ |
+| **E26** | Analytics Stack | P0 | Dev Team | Completed ✅ |
 
 ---
 
 ### Epic Log
+
+#### E26 — Analytics Stack
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-11)
+* **Strategy:** 1 — Google Analytics 4 (GA4) + GTM integration (approved by human)
+* **Key Assets:**
+  * [src/lib/analytics.ts](file:///workspaces/fresh_nest/src/lib/analytics.ts)
+  * [src/App.tsx](file:///workspaces/fresh_nest/src/App.tsx)
+* **Close Report:** [E26-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/E26-close-2026-06-11.md)
 
 #### E25 — WCAG AA Accessibility Audit
 * **Owner:** Dev Team
