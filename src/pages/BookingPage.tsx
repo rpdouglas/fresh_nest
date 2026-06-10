@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import { useForm, FormProvider, type Resolver } from 'react-hook-form'
+import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import { bookingFormSchema, BookingFormData } from '@/lib/bookingSchema'
 import { submitBooking, detectLeadSource } from '@/lib/firestore'
+import { logBookingStarted, logBookingCompleted } from '@/lib/analytics'
 import BookingStep1 from '@/components/booking/BookingStep1'
 import BookingStep2 from '@/components/booking/BookingStep2'
 import BookingStep3 from '@/components/booking/BookingStep3'
@@ -64,8 +65,12 @@ export default function BookingPage() {
   const [submitError, setSubmitError] = useState<string | null>(null)
   const source = detectLeadSource(searchParams)
 
+  useEffect(() => {
+    logBookingStarted()
+  }, [])
+
   const methods = useForm<BookingFormData>({
-    resolver: zodResolver(bookingFormSchema) as Resolver<BookingFormData>,
+    resolver: zodResolver(bookingFormSchema),
     defaultValues: {
       serviceType:      'standard',
       propertyType:     '3-4bed',
@@ -94,6 +99,7 @@ export default function BookingPage() {
     try {
       const lang = i18n.language === 'fr' ? 'fr' : 'en'
       const bookingId = await submitBooking(data, lang, source)
+      logBookingCompleted(data.serviceType)
       navigate('/thank-you', {
         state: {
           firstName:     data.firstName,

@@ -10,6 +10,7 @@ import {
   type QuotePropertySize,
   type QuoteServiceType,
 } from '@/lib/quotePricing'
+import { logQuoteCalculated } from '@/lib/analytics'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -184,6 +185,7 @@ export default function QuoteCalculator() {
                 </p>
                 <Link
                   to={bookingHref}
+                  onClick={() => logQuoteCalculated(service, quote.min)}
                   className="inline-flex items-center bg-slate-brand text-white font-body font-medium rounded px-6 py-3 min-h-[48px] hover:bg-slate-dark transition-colors duration-200"
                 >
                   {t('quote.bookNowCta')}

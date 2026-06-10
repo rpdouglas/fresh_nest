@@ -695,5 +695,11 @@
     "footerServices": "Liens de services du pied de page",
     "footerLocations": "Liens des zones de service du pied de page",
     "footerCompany": "Liens de l'entreprise du pied de page"
+  },
+  "cookieBanner": {
+    "message": "Nous utilisons des cookies pour analyser le trafic du site et améliorer votre expérience. En cliquant sur 'Accepter', vous consentez à notre utilisation des cookies.",
+    "accept": "Accepter",
+    "decline": "Refuser",
+    "preferences": "Préférences de cookies"
   }
 }

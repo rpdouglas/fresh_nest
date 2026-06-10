@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
+import { logPhoneClicked } from '@/lib/analytics'
 import logoFooter from '@/assets/logo-footer-dark-120px.png'
 
 const PHONE_NUMBER = '(613) 935-3555'
@@ -150,6 +151,7 @@ export default function Footer() {
                 <li>
                   <a
                     href={PHONE_HREF}
+                    onClick={() => logPhoneClicked('footer')}
                     aria-label={t('a11y.callUs', { phone: PHONE_NUMBER })}
                     className={cn(
                       'font-body text-base text-text-muted',
@@ -208,16 +210,29 @@ export default function Footer() {
           <p className="font-body text-base text-text-muted text-center md:text-left">
             {t('footer.copyright', { year: CURRENT_YEAR })}
           </p>
-          <Link
-            to="/privacy"
-            className={cn(
-              'font-body text-base text-text-muted hover:text-slate-pale',
-              'transition-colors duration-200 min-h-[48px] inline-flex items-center',
-              'focus:outline-none focus:ring-2 focus:ring-slate-pale rounded',
-            )}
-          >
-            {t('footer.privacy')}
-          </Link>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent('open-cookie-banner'))}
+              className={cn(
+                'font-body text-base text-text-muted hover:text-slate-pale',
+                'transition-colors duration-200 min-h-[48px] inline-flex items-center',
+                'focus:outline-none focus:ring-2 focus:ring-slate-pale rounded',
+              )}
+            >
+              {t('cookieBanner.preferences')}
+            </button>
+            <span className="text-text-muted/30" aria-hidden="true">|</span>
+            <Link
+              to="/privacy"
+              className={cn(
+                'font-body text-base text-text-muted hover:text-slate-pale',
+                'transition-colors duration-200 min-h-[48px] inline-flex items-center',
+                'focus:outline-none focus:ring-2 focus:ring-slate-pale rounded',
+              )}
+            >
+              {t('footer.privacy')}
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

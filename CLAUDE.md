@@ -143,6 +143,7 @@ These are not aspirational — they are done conditions.
 - Data_Steward: Firestore ops vs docs/firestore-schema.md
 - Security_Auditor: firestore.rules vs docs/COMPLIANCE.md
 - Linguistic_Auditor: all UI strings use t() hook; no hardcoded EN/FR text
+- TypeScript_Strict_Enforcer: strictly enforces TypeScript types, resolving Zod schema mismatches, and fixing `tsc -b` failures without using `any` or `@ts-ignore`
 
 ## Git Rules (ABSOLUTE)
 - NEVER run git add, git commit, or git push
