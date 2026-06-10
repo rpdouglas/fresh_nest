@@ -1,7 +1,17 @@
-import { collection, addDoc, serverTimestamp, Timestamp } from 'firebase/firestore'
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  Timestamp,
+  query,
+  orderBy,
+  onSnapshot,
+  doc,
+  updateDoc,
+} from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import type { BookingFormData } from '@/lib/bookingSchema'
-import type { Language } from '@/types'
+import type { Language, Booking, BookingStatus } from '@/types'
 
 export type LeadSource = 'organic' | 'google' | 'referral' | 'facebook' | 'direct'
 
@@ -23,7 +33,7 @@ export async function submitBooking(
 ): Promise<string> {
   const { marketingConsent, ...formFields } = data
 
-  const doc: Record<string, unknown> = {
+  const docData: Record<string, unknown> = {
     ...formFields,
     language,
     leadSource:        source,
@@ -36,11 +46,37 @@ export async function submitBooking(
   }
 
   if (marketingConsent) {
-    doc.marketingConsent = true
-    doc.consentTimestamp = Timestamp.now()
-    doc.consentMethod    = 'booking-form-v2'
+    docData.marketingConsent = true
+    docData.consentTimestamp = Timestamp.now()
+    docData.consentMethod    = 'booking-form-v2'
   }
 
-  const ref = await addDoc(collection(db, 'bookings'), doc)
+  const ref = await addDoc(collection(db, 'bookings'), docData)
   return ref.id
+}
+
+export function subscribeToBookings(callback: (bookings: Booking[]) => void): () => void {
+  const q = query(collection(db, 'bookings'), orderBy('createdAt', 'desc'))
+  return onSnapshot(q, (snapshot) => {
+    const bookings: Booking[] = []
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data()
+      bookings.push({
+        id: docSnap.id,
+        ...data,
+        createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toDate() : new Date(),
+      } as Booking)
+    })
+    callback(bookings)
+  })
+}
+
+export async function updateBookingStatus(bookingId: string, status: BookingStatus): Promise<void> {
+  const docRef = doc(db, 'bookings', bookingId)
+  await updateDoc(docRef, { status })
+}
+
+export async function updateBookingAssignment(bookingId: string, cleanerName: string | null): Promise<void> {
+  const docRef = doc(db, 'bookings', bookingId)
+  await updateDoc(docRef, { assignedTo: cleanerName })
 }

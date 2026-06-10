@@ -2,9 +2,9 @@
 
 **Last Updated:** 2026-06-10  
 **Total Epics:** 34  
-**Completed:** 28 (E01-E28)  
+**Completed:** 29 (E01-E29)  
 **In Progress:** 0  
-**Not Started:** 6
+**Not Started:** 5
 
 ---
 
@@ -89,7 +89,7 @@
 | Epic ID | Name | Priority | Primary Persona(s) | Status |
 |---|---|---|---|---|
 | E28 | Firebase Auth + /admin | P1 | Owner | ✅ Completed |
-| E29 | Booking Dashboard | P1 | Owner | ⬜ Not Started |
+| E29 | Booking Dashboard | P1 | Owner | ✅ Completed |
 | E30 | Lead Source Dashboard | P2 | Owner | ⬜ Not Started |
 | E31 | Referral Program | P2 | P3 Margaret, P1 Diane | ⬜ Not Started |
 
@@ -115,9 +115,9 @@
 | Phase 2 — Content | 8 | 8 | 0 | 0 |
 | Phase 3 — Booking Engine | 8 | 8 | 0 | 0 |
 | Phase 4 — SEO & Accessibility | 5 | 5 | 0 | 0 |
-| Phase 5 — Admin & Auth | 4 | 1 | 0 | 3 |
+| Phase 5 — Admin & Auth | 4 | 2 | 0 | 2 |
 | Phase 6 — Post-Launch | 3 | 0 | 0 | 3 |
-| **Total** | **34** | **28** | **0** | **6** |
+| **Total** | **34** | **29** | **0** | **5** |
 
 ---
 

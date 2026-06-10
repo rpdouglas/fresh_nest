@@ -36,10 +36,23 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | **E26** | Analytics Stack | P0 | Dev Team | Completed ✅ |
 | **E27** | Real Photography | P1 | P5 Sophie, P6 Gallagher | Completed ✅ |
 | **E28** | Firebase Auth + /admin | P1 | Owner | Completed ✅ |
+| **E29** | Booking Dashboard | P1 | Owner | Completed ✅ |
 
 ---
 
 ### Epic Log
+
+#### E29 — Booking Dashboard
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-10)
+* **Strategy:** Real-time dashboard with filtering and collapsible rows (approved by human)
+* **Persona tests:** Owner Lauren S. (management operations), P3 Margaret (accessibility min-h-[48px] targets)
+* **Key Assets:**
+  * [src/pages/AdminPage.tsx](file:///workspaces/fresh_nest/src/pages/AdminPage.tsx)
+  * [src/lib/firestore.ts](file:///workspaces/fresh_nest/src/lib/firestore.ts)
+  * [src/i18n/locales/en.json](file:///workspaces/fresh_nest/src/i18n/locales/en.json)
+  * [src/i18n/locales/fr.json](file:///workspaces/fresh_nest/src/i18n/locales/fr.json)
+* **Close Report:** [E29-close-2026-06-10.md](file:///workspaces/fresh_nest/docs/reports/E29-close-2026-06-10.md)
 
 #### E28 — Firebase Auth + /admin
 * **Owner:** Dev Team

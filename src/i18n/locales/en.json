@@ -720,11 +720,53 @@
     "dashboard": {
       "title": "Admin Dashboard",
       "welcome": "Welcome back, {{name}}",
-      "placeholderTitle": "Bookings Dashboard (E29)",
-      "placeholderText": "The bookings management dashboard is scheduled for the next development milestone (Epic E29). Once complete, you will be able to view, search, filter, reschedule, and manage all client cleaning appointments here.",
       "signOut": "Sign Out",
       "avatarAlt": "User avatar",
-      "fallbackName": "Admin"
+      "fallbackName": "Admin",
+      "stats": {
+        "total": "Total Bookings",
+        "pending": "Pending Confirmation",
+        "confirmed": "Confirmed Schedule"
+      },
+      "filters": {
+        "status": "Booking Status",
+        "service": "Service Type",
+        "language": "Language",
+        "sortBy": "Sort By",
+        "sortOrder": "Sort Order",
+        "search": "Search by name, email, phone, or address..."
+      },
+      "table": {
+        "client": "Client Details",
+        "date": "Preferred Date",
+        "service": "Service",
+        "status": "Status",
+        "assigned": "Assigned Cleaner",
+        "noResults": "No bookings found matching your search and filter criteria."
+      },
+      "details": {
+        "unassigned": "Unassigned",
+        "address": "Service Address",
+        "property": "Property Specifications",
+        "frequency": "Frequency",
+        "pets": "Pets Present",
+        "petsYes": "Yes (Use pet-safe products)",
+        "petsNo": "No",
+        "assignHeader": "Manage Schedule & Status",
+        "customOption": "Custom / Other...",
+        "customPlaceholder": "Type custom cleaner name",
+        "customCleaner": "Custom Cleaner Name",
+        "save": "Save",
+        "addons": "Requested Extras / Add-Ons",
+        "notes": "Special Instructions",
+        "noAddons": "No extra add-ons requested.",
+        "noNotes": "No special instructions provided.",
+        "createdAt": "Submitted At",
+        "leadSource": "Marketing Lead Source",
+        "workflow": "Workflow Actions",
+        "isAirbnb": "Airbnb Turnover Checklist",
+        "photoConf": "Photo Confirmation Required"
+      }
     }
   }
 }
