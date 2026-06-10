@@ -4,6 +4,12 @@ import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, type User } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
+import {
+  subscribeToBookings,
+  updateBookingStatus,
+  updateBookingAssignment,
+} from '@/lib/firestore'
+import type { Booking, BookingStatus } from '@/types'
 import { cn } from '@/lib/utils'
 import SEO from '@/components/seo/SEO'
 
@@ -13,11 +19,29 @@ const fadeUp = {
 }
 
 export default function AdminPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [isAuthorized, setIsAuthorized] = useState(false)
   const [authError, setAuthError] = useState<string | null>(null)
+
+  // Bookings list state
+  const [bookings, setBookings] = useState<Booking[]>([])
+
+  // Collapsible rows state
+  const [expandedRowId, setExpandedRowId] = useState<string | null>(null)
+
+  // Cleaner custom names input state
+  const [customCleanerNames, setCustomCleanerNames] = useState<Record<string, string>>({})
+  const [showCustomInput, setShowCustomInput] = useState<Record<string, boolean>>({})
+
+  // Filtering states
+  const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [serviceFilter, setServiceFilter] = useState<string>('all')
+  const [languageFilter, setLanguageFilter] = useState<string>('all')
+  const [sortBy, setSortBy] = useState<'preferredDate' | 'createdAt'>('preferredDate')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+  const [searchQuery, setSearchQuery] = useState<string>('')
 
   // Listen to auth state changes
   useEffect(() => {
@@ -50,6 +74,16 @@ export default function AdminPage() {
     return () => unsubscribe()
   }, [t])
 
+  // Sync bookings in real-time once authorized
+  useEffect(() => {
+    if (user && isAuthorized) {
+      const unsubscribe = subscribeToBookings((data) => {
+        setBookings(data)
+      })
+      return () => unsubscribe()
+    }
+  }, [user, isAuthorized])
+
   const handleSignIn = async () => {
     setLoading(true)
     setAuthError(null)
@@ -74,6 +108,72 @@ export default function AdminPage() {
     }
   }
 
+  const handleStatusChange = async (bookingId: string, status: BookingStatus) => {
+    try {
+      await updateBookingStatus(bookingId, status)
+    } catch (err) {
+      console.error('Error updating status:', err)
+    }
+  }
+
+  const handleAssignmentChange = async (bookingId: string, value: string) => {
+    if (value === 'custom') {
+      setShowCustomInput((prev) => ({ ...prev, [bookingId]: true }))
+    } else {
+      setShowCustomInput((prev) => ({ ...prev, [bookingId]: false }))
+      try {
+        const cleanerName = value === 'unassigned' ? null : value
+        await updateBookingAssignment(bookingId, cleanerName)
+      } catch (err) {
+        console.error('Error updating cleaner assignment:', err)
+      }
+    }
+  }
+
+  const handleCustomCleanerSave = async (bookingId: string) => {
+    const customName = customCleanerNames[bookingId]?.trim()
+    if (!customName) return
+
+    try {
+      await updateBookingAssignment(bookingId, customName)
+      setShowCustomInput((prev) => ({ ...prev, [bookingId]: false }))
+    } catch (err) {
+      console.error('Error saving custom cleaner name:', err)
+    }
+  }
+
+  // Statistics counters
+  const totalCount = bookings.length
+  const pendingCount = bookings.filter((b) => b.status === 'pending').length
+  const confirmedCount = bookings.filter((b) => b.status === 'confirmed').length
+
+  // Filtered & Sorted Bookings
+  const filteredBookings = bookings
+    .filter((b) => {
+      const matchesStatus = statusFilter === 'all' || b.status === statusFilter
+      const matchesService = serviceFilter === 'all' || b.serviceType === serviceFilter
+      const matchesLanguage = languageFilter === 'all' || b.language === languageFilter
+
+      const fullName = `${b.firstName} ${b.lastName}`.toLowerCase()
+      const query = searchQuery.toLowerCase()
+      const matchesSearch =
+        fullName.includes(query) ||
+        b.email.toLowerCase().includes(query) ||
+        b.phone.includes(query) ||
+        b.address.toLowerCase().includes(query)
+
+      return matchesStatus && matchesService && matchesLanguage && matchesSearch
+    })
+    .sort((a, b) => {
+      const dateA = sortBy === 'preferredDate'
+        ? new Date(a.preferredDate).getTime()
+        : a.createdAt.getTime()
+      const dateB = sortBy === 'preferredDate'
+        ? new Date(b.preferredDate).getTime()
+        : b.createdAt.getTime()
+      return sortOrder === 'asc' ? dateA - dateB : dateB - dateA
+    })
+
   // Loading state
   if (loading) {
     return (
@@ -90,7 +190,7 @@ export default function AdminPage() {
     <main className="min-h-[80vh] bg-warm-white py-12 px-4 md:py-20 md:px-6">
       <SEO title={t('admin.meta.title')} description={t('admin.meta.description')} />
 
-      <div className="max-w-content mx-auto flex items-center justify-center min-h-[50vh]">
+      <div className="max-w-content mx-auto">
         <AnimatePresence mode="wait">
           {/* Access Denied View */}
           {user && !isAuthorized && (
@@ -100,7 +200,7 @@ export default function AdminPage() {
               animate="visible"
               exit="hidden"
               variants={fadeUp}
-              className="w-full max-w-md bg-white border border-sand rounded shadow-sm p-6 md:p-8"
+              className="w-full max-w-md bg-white border border-sand rounded shadow-sm p-6 md:p-8 mx-auto"
             >
               <div className="flex flex-col items-center text-center gap-6">
                 <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center shrink-0">
@@ -162,7 +262,7 @@ export default function AdminPage() {
               animate="visible"
               exit="hidden"
               variants={fadeUp}
-              className="w-full max-w-md bg-white border border-sand rounded shadow-sm p-6 md:p-8"
+              className="w-full max-w-md bg-white border border-sand rounded shadow-sm p-6 md:p-8 mx-auto"
             >
               <div className="flex flex-col items-center text-center gap-6">
                 <div className="w-16 h-16 bg-slate-pale text-slate-brand rounded-full flex items-center justify-center shrink-0">
@@ -212,7 +312,7 @@ export default function AdminPage() {
             </motion.div>
           )}
 
-          {/* Authenticated Dashboard View */}
+          {/* Authenticated Bookings Dashboard */}
           {user && isAuthorized && (
             <motion.div
               key="admin-dashboard"
@@ -233,7 +333,7 @@ export default function AdminPage() {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-4 bg-white border border-sand rounded p-3">
+                <div className="flex items-center gap-4 bg-white border border-sand rounded p-3 self-start md:self-auto">
                   {user.photoURL ? (
                     <img
                       src={user.photoURL}
@@ -250,7 +350,7 @@ export default function AdminPage() {
                   )}
 
                   <div className="text-left">
-                    <p className="font-body text-sm font-medium text-charcoal leading-none">
+                    <p className="font-body text-base font-medium text-charcoal leading-none">
                       {user.displayName || t('admin.dashboard.fallbackName')}
                     </p>
                     <p className="font-body text-sm text-text-muted mt-1">
@@ -271,31 +371,476 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Main Content Area placeholder */}
-              <div className="bg-white border border-sand rounded shadow-sm p-6 md:p-8 text-center max-w-2xl mx-auto my-6">
-                <div className="w-16 h-16 bg-slate-pale text-slate-brand rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-8 h-8"
-                  >
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                    <line x1="16" y1="2" x2="16" y2="6" />
-                    <line x1="8" y1="2" x2="8" y2="6" />
-                    <line x1="3" y1="10" x2="21" y2="10" />
-                  </svg>
+              {/* Stats Counters Panel */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-1">
+                  <span className="font-body text-sm text-text-muted">
+                    {t('admin.dashboard.stats.total')}
+                  </span>
+                  <span className="font-display text-4xl text-charcoal font-bold">
+                    {totalCount}
+                  </span>
+                </div>
+                <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-slate-brand flex flex-col gap-1">
+                  <span className="font-body text-sm text-text-muted">
+                    {t('admin.dashboard.stats.pending')}
+                  </span>
+                  <span className="font-display text-4xl text-slate-brand font-bold">
+                    {pendingCount}
+                  </span>
+                </div>
+                <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-green-500 flex flex-col gap-1">
+                  <span className="font-body text-sm text-text-muted">
+                    {t('admin.dashboard.stats.confirmed')}
+                  </span>
+                  <span className="font-display text-4xl text-green-600 font-bold">
+                    {confirmedCount}
+                  </span>
+                </div>
+              </div>
+
+              {/* Filtering Controls Bar */}
+              <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                  {/* Status filter */}
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="status-filter" className="font-body text-base text-charcoal font-medium">
+                      {t('admin.dashboard.filters.status')}
+                    </label>
+                    <select
+                      id="status-filter"
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value)}
+                      className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                    >
+                      <option value="all">{t('common.all')}</option>
+                      <option value="pending">{t('booking.status.pending')}</option>
+                      <option value="confirmed">{t('booking.status.confirmed')}</option>
+                      <option value="completed">{t('booking.status.completed')}</option>
+                      <option value="cancelled">{t('booking.status.cancelled')}</option>
+                    </select>
+                  </div>
+
+                  {/* Service Type Filter */}
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="service-filter" className="font-body text-base text-charcoal font-medium">
+                      {t('admin.dashboard.filters.service')}
+                    </label>
+                    <select
+                      id="service-filter"
+                      value={serviceFilter}
+                      onChange={(e) => setServiceFilter(e.target.value)}
+                      className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                    >
+                      <option value="all">{t('common.all')}</option>
+                      <option value="standard">{t('services.standard.title')}</option>
+                      <option value="deep">{t('services.deep.title')}</option>
+                      <option value="moveout">{t('services.moveout.title')}</option>
+                      <option value="postconstruction">{t('services.postconstruction.title')}</option>
+                      <option value="airbnb">{t('services.airbnb.title')}</option>
+                      <option value="commercial">{t('services.commercial.title')}</option>
+                    </select>
+                  </div>
+
+                  {/* Language Filter */}
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="language-filter" className="font-body text-base text-charcoal font-medium">
+                      {t('admin.dashboard.filters.language')}
+                    </label>
+                    <select
+                      id="language-filter"
+                      value={languageFilter}
+                      onChange={(e) => setLanguageFilter(e.target.value)}
+                      className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                    >
+                      <option value="all">{t('common.all')}</option>
+                      <option value="en">{t('common.languages.en')}</option>
+                      <option value="fr">{t('common.languages.fr')}</option>
+                    </select>
+                  </div>
+
+                  {/* Sort By Filter */}
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="sort-by" className="font-body text-base text-charcoal font-medium">
+                      {t('admin.dashboard.filters.sortBy')}
+                    </label>
+                    <select
+                      id="sort-by"
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value as 'preferredDate' | 'createdAt')}
+                      className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                    >
+                      <option value="preferredDate">{t('admin.dashboard.table.date')}</option>
+                      <option value="createdAt">{t('admin.dashboard.details.createdAt')}</option>
+                    </select>
+                  </div>
+
+                  {/* Sort Order Filter */}
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="sort-order" className="font-body text-base text-charcoal font-medium">
+                      {t('admin.dashboard.filters.sortOrder')}
+                    </label>
+                    <select
+                      id="sort-order"
+                      value={sortOrder}
+                      onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+                      className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                    >
+                      <option value="asc">{t('common.asc')}</option>
+                      <option value="desc">{t('common.desc')}</option>
+                    </select>
+                  </div>
                 </div>
 
-                <h2 className="font-sub text-2xl text-charcoal mb-4">
-                  {t('admin.dashboard.placeholderTitle')}
-                </h2>
-                <p className="font-body text-base text-text-muted leading-relaxed max-w-lg mx-auto">
-                  {t('admin.dashboard.placeholderText')}
-                </p>
+                {/* Search Bar */}
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="search-query" className="font-body text-base text-charcoal font-medium">
+                    {t('common.search')}
+                  </label>
+                  <input
+                    id="search-query"
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder={t('admin.dashboard.filters.search')}
+                    className="w-full border border-sand rounded px-4 py-3 min-h-[48px] font-body text-base text-charcoal focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                  />
+                </div>
+              </div>
+
+              {/* Bookings Table */}
+              <div className="bg-white border border-sand rounded shadow-sm overflow-x-auto">
+                <table className="w-full border-collapse text-left min-w-[700px]">
+                  <thead>
+                    <tr className="border-b border-sand bg-cream">
+                      <th className="p-4 font-sub text-base text-charcoal font-bold">
+                        {t('admin.dashboard.table.client')}
+                      </th>
+                      <th className="p-4 font-sub text-base text-charcoal font-bold">
+                        {t('admin.dashboard.table.date')}
+                      </th>
+                      <th className="p-4 font-sub text-base text-charcoal font-bold">
+                        {t('admin.dashboard.table.service')}
+                      </th>
+                      <th className="p-4 font-sub text-base text-charcoal font-bold">
+                        {t('admin.dashboard.table.status')}
+                      </th>
+                      <th className="p-4 font-sub text-base text-charcoal font-bold">
+                        {t('admin.dashboard.table.assigned')}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredBookings.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="p-8 text-center font-body text-base text-text-muted">
+                          {t('admin.dashboard.table.noResults')}
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredBookings.map((b) => {
+                        const isExpanded = expandedRowId === b.id
+                        const clientName = `${b.firstName} ${b.lastName}`
+                        const serviceKey = b.serviceType
+
+                        return (
+                          <>
+                            {/* Main table row */}
+                            <tr
+                              key={b.id}
+                              onClick={() => setExpandedRowId(isExpanded ? null : (b.id ?? null))}
+                              className={cn(
+                                'border-b border-sand hover:bg-warm-white transition-colors duration-150 cursor-pointer',
+                                isExpanded && 'bg-warm-white'
+                              )}
+                            >
+                              <td className="p-4 font-body text-base text-charcoal font-medium">
+                                <div className="flex flex-col">
+                                  <span>{clientName}</span>
+                                  <span className="text-sm text-text-muted font-normal">{b.email}</span>
+                                </div>
+                              </td>
+                              <td className="p-4 font-body text-base text-charcoal">
+                                {b.preferredDate}
+                              </td>
+                              <td className="p-4 font-body text-base text-charcoal capitalize">
+                                {t(`services.${serviceKey}.title`)}
+                              </td>
+                              <td className="p-4">
+                                <span
+                                  className={cn(
+                                    'inline-flex items-center px-2.5 py-0.5 rounded font-body text-sm font-medium border',
+                                    b.status === 'pending' && 'bg-yellow-50 text-yellow-800 border-yellow-200',
+                                    b.status === 'confirmed' && 'bg-green-50 text-green-800 border-green-200',
+                                    b.status === 'completed' && 'bg-blue-50 text-blue-800 border-blue-200',
+                                    b.status === 'cancelled' && 'bg-red-50 text-red-800 border-red-200'
+                                  )}
+                                >
+                                  {t(`booking.status.${b.status}`)}
+                                </span>
+                              </td>
+                              <td className="p-4 font-body text-base text-charcoal">
+                                {b.assignedTo || (
+                                  <span className="text-text-muted italic">
+                                    {t('admin.dashboard.details.unassigned')}
+                                  </span>
+                                )}
+                              </td>
+                            </tr>
+
+                            {/* Collapsible details panel */}
+                            <AnimatePresence initial={false}>
+                              {isExpanded && b.id && (
+                                <tr key={`${b.id}-details`}>
+                                  <td colSpan={5} className="p-0 border-b border-sand bg-slate-pale/30">
+                                    <motion.div
+                                      initial={{ height: 0, opacity: 0 }}
+                                      animate={{ height: 'auto', opacity: 1 }}
+                                      exit={{ height: 0, opacity: 0 }}
+                                      transition={{ duration: 0.3 }}
+                                      className="overflow-hidden p-6"
+                                    >
+                                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+                                        {/* Contact & Address Section */}
+                                        <div className="flex flex-col gap-4">
+                                          <h4 className="font-sub text-lg text-charcoal font-bold border-b border-sand pb-1.5">
+                                            {t('admin.dashboard.table.client')}
+                                          </h4>
+                                          <div className="font-body text-base text-charcoal space-y-2">
+                                            <p>
+                                              <span className="font-medium">{t('booking.fields.phone.label')}: </span>
+                                              <a href={`tel:${b.phone}`} className="text-slate-brand hover:underline min-h-[48px] inline-flex items-center">
+                                                {b.phone}
+                                              </a>
+                                            </p>
+                                            <p>
+                                              <span className="font-medium">{t('admin.dashboard.filters.language')}: </span>
+                                              {b.language === 'en' ? t('common.languages.enLong') : t('common.languages.frLong')}
+                                            </p>
+                                            <p className="pt-2">
+                                              <span className="font-medium block mb-1">
+                                                {t('admin.dashboard.details.address')}:
+                                              </span>
+                                              <span className="text-text-muted block leading-snug">
+                                                {b.address}
+                                              </span>
+                                            </p>
+                                          </div>
+                                        </div>
+
+                                        {/* Property Specifications */}
+                                        <div className="flex flex-col gap-4">
+                                          <h4 className="font-sub text-lg text-charcoal font-bold border-b border-sand pb-1.5">
+                                            {t('admin.dashboard.details.property')}
+                                          </h4>
+                                          <div className="font-body text-base text-charcoal space-y-2">
+                                            <p>
+                                              <span className="font-medium">{t('booking.fields.propertyType.label')}: </span>
+                                              {t(`booking.fields.propertyType.options.${b.propertyType}`)}
+                                            </p>
+                                            <p>
+                                              <span className="font-medium">{t('admin.dashboard.details.rooms')}: </span>
+                                              {t('admin.dashboard.details.roomsValue', { bedrooms: b.bedrooms, bathrooms: b.bathrooms })}
+                                            </p>
+                                            {b.squareFootage && (
+                                              <p>
+                                                <span className="font-medium">{t('admin.dashboard.details.size')}: </span>
+                                                {t('admin.dashboard.details.sqft', { size: b.squareFootage })}
+                                              </p>
+                                            )}
+                                            <p>
+                                              <span className="font-medium">{t('admin.dashboard.details.frequency')}: </span>
+                                              {t(`booking.fields.frequency.options.${b.frequency}`)}
+                                            </p>
+                                            <p>
+                                              <span className="font-medium">{t('admin.dashboard.details.pets')}: </span>
+                                              <span className={cn(b.pets ? 'text-amber-700 font-medium' : '')}>
+                                                {b.pets
+                                                  ? t('admin.dashboard.details.petsYes')
+                                                  : t('admin.dashboard.details.petsNo')}
+                                              </span>
+                                            </p>
+                                          </div>
+                                        </div>
+
+                                        {/* Workflow & Admin Controls */}
+                                        <div className="flex flex-col gap-4">
+                                          <h4 className="font-sub text-lg text-charcoal font-bold border-b border-sand pb-1.5">
+                                            {t('admin.dashboard.details.assignHeader')}
+                                          </h4>
+
+                                          {/* Status Update Control */}
+                                          <div className="flex flex-col gap-1.5">
+                                            <label
+                                              htmlFor={`status-select-${b.id}`}
+                                              className="font-body text-sm text-text-muted"
+                                            >
+                                              {t('admin.dashboard.details.updateStatus')}
+                                            </label>
+                                            <select
+                                              id={`status-select-${b.id}`}
+                                              value={b.status}
+                                              onChange={(e) =>
+                                                handleStatusChange(b.id!, e.target.value as BookingStatus)
+                                              }
+                                              className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-white focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                                            >
+                                              <option value="pending">{t('booking.status.pending')}</option>
+                                              <option value="confirmed">{t('booking.status.confirmed')}</option>
+                                              <option value="completed">{t('booking.status.completed')}</option>
+                                              <option value="cancelled">{t('booking.status.cancelled')}</option>
+                                            </select>
+                                          </div>
+
+                                          {/* Cleaner Assignment Control */}
+                                          <div className="flex flex-col gap-1.5 mt-1">
+                                            <label
+                                              htmlFor={`cleaner-select-${b.id}`}
+                                              className="font-body text-sm text-text-muted"
+                                            >
+                                              {t('admin.dashboard.details.assignCleaner')}
+                                            </label>
+                                            <select
+                                              id={`cleaner-select-${b.id}`}
+                                              value={
+                                                showCustomInput[b.id!]
+                                                  ? 'custom'
+                                                  : b.assignedTo === null
+                                                  ? 'unassigned'
+                                                  : b.assignedTo && ['Lauren S.', 'Sarah M.'].includes(b.assignedTo)
+                                                  ? b.assignedTo
+                                                  : 'custom'
+                                              }
+                                              onChange={(e) => handleAssignmentChange(b.id!, e.target.value)}
+                                              className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-white focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                                            >
+                                              <option value="unassigned">
+                                                {t('admin.dashboard.details.unassigned')}
+                                              </option>
+                                              <option value="Lauren S.">Lauren S.</option>
+                                              <option value="Sarah M.">Sarah M.</option>
+                                              <option value="custom">
+                                                {t('admin.dashboard.details.customOption')}
+                                              </option>
+                                            </select>
+
+                                            {/* Custom cleaner text input fallback */}
+                                            {(showCustomInput[b.id!] ||
+                                              (b.assignedTo &&
+                                                !['Lauren S.', 'Sarah M.'].includes(b.assignedTo))) && (
+                                              <div className="flex gap-2 mt-2">
+                                                <div className="flex-1">
+                                                  <input
+                                                    type="text"
+                                                    value={
+                                                      customCleanerNames[b.id!] !== undefined
+                                                        ? customCleanerNames[b.id!]
+                                                        : b.assignedTo || ''
+                                                    }
+                                                    onChange={(e) =>
+                                                      setCustomCleanerNames((prev) => ({
+                                                        ...prev,
+                                                        [b.id!]: e.target.value,
+                                                      }))
+                                                    }
+                                                    placeholder={t('admin.dashboard.details.customPlaceholder')}
+                                                    aria-label={t('admin.dashboard.details.customCleaner')}
+                                                    className="w-full border border-sand rounded px-4 py-3 min-h-[48px] font-body text-base text-charcoal bg-white focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                                                  />
+                                                </div>
+                                                <button
+                                                  onClick={() => handleCustomCleanerSave(b.id!)}
+                                                  className={cn(
+                                                    'bg-slate-brand text-white font-body font-medium rounded',
+                                                    'min-h-[48px] px-4 py-2 hover:bg-slate-dark transition-colors duration-200',
+                                                    'focus:outline-none focus:ring-2 focus:ring-slate-brand'
+                                                  )}
+                                                >
+                                                  {t('admin.dashboard.details.save')}
+                                                </button>
+                                              </div>
+                                            )}
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      {/* Sub-details (Notes, Add-ons, Workflow) */}
+                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mt-8 pt-6 border-t border-sand">
+                                        {/* Extras & Add-ons */}
+                                        <div className="flex flex-col gap-2">
+                                          <h4 className="font-sub text-lg text-charcoal font-bold">
+                                            {t('admin.dashboard.details.addons')}
+                                          </h4>
+                                          {b.addOns && b.addOns.length > 0 ? (
+                                            <div className="flex flex-wrap gap-2 mt-1">
+                                              {b.addOns.map((add) => (
+                                                <span
+                                                  key={add}
+                                                  className="bg-slate-pale text-slate-dark border border-sand px-2.5 py-1 rounded font-body text-sm font-medium"
+                                                >
+                                                  {t(`booking.fields.addOns.options.${add}`)}
+                                                </span>
+                                              ))}
+                                            </div>
+                                          ) : (
+                                            <p className="font-body text-base text-text-muted italic mt-1">
+                                              {t('admin.dashboard.details.noAddons')}
+                                            </p>
+                                          )}
+                                        </div>
+
+                                        {/* Notes Section */}
+                                        <div className="flex flex-col gap-2">
+                                          <h4 className="font-sub text-lg text-charcoal font-bold">
+                                            {t('admin.dashboard.details.notes')}
+                                          </h4>
+                                          <p className="font-body text-base text-charcoal bg-white border border-sand rounded p-3 mt-1 leading-normal whitespace-pre-line min-h-[60px]">
+                                            {b.notes?.trim() || t('admin.dashboard.details.noNotes')}
+                                          </p>
+                                        </div>
+                                      </div>
+
+                                      {/* Lead Source, Timestamps, Flags Footer */}
+                                      <div className="flex flex-wrap gap-x-8 gap-y-2 text-left mt-8 pt-4 border-t border-sand text-base font-body text-text-muted">
+                                        <p>
+                                          <span className="font-medium text-charcoal">
+                                            {t('admin.dashboard.details.createdAt')}:{' '}
+                                          </span>
+                                          {b.createdAt?.toLocaleString(i18n.language === 'fr' ? 'fr-CA' : 'en-CA')}
+                                        </p>
+                                        <p>
+                                          <span className="font-medium text-charcoal">
+                                            {t('admin.dashboard.details.leadSource')}:{' '}
+                                          </span>
+                                          <span className="capitalize">{b.leadSource}</span>
+                                        </p>
+                                        <p>
+                                          <span className="font-medium text-charcoal">
+                                            {t('admin.dashboard.details.workflow')}:{' '}
+                                          </span>
+                                          {b.isAirbnb && (
+                                            <span className="bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded mr-2">
+                                              {t('admin.dashboard.details.isAirbnb')}
+                                            </span>
+                                          )}
+                                          {b.photoConfirmation && (
+                                            <span className="bg-blue-50 text-blue-800 border border-blue-200 px-2 py-0.5 rounded">
+                                              {t('admin.dashboard.details.photoConf')}
+                                            </span>
+                                          )}
+                                        </p>
+                                      </div>
+                                    </motion.div>
+                                  </td>
+                                </tr>
+                              )}
+                            </AnimatePresence>
+                          </>
+                        )
+                      })
+                    )}
+                  </tbody>
+                </table>
               </div>
             </motion.div>
           )}

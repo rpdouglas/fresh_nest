@@ -720,11 +720,53 @@
     "dashboard": {
       "title": "Tableau de bord Admin",
       "welcome": "Bon retour, {{name}}",
-      "placeholderTitle": "Tableau de bord des réservations (E29)",
-      "placeholderText": "Le tableau de bord de gestion des réservations est prévu pour le prochain jalon de développement (Épic E29). Une fois terminé, vous pourrez voir, rechercher, filtrer, replanifier et gérer tous les rendez-vous de nettoyage des clients ici.",
       "signOut": "Se déconnecter",
       "avatarAlt": "Avatar de l'utilisateur",
-      "fallbackName": "Administrateur"
+      "fallbackName": "Administrateur",
+      "stats": {
+        "total": "Total des réservations",
+        "pending": "En attente de confirmation",
+        "confirmed": "Horaire confirmé"
+      },
+      "filters": {
+        "status": "Statut de réservation",
+        "service": "Type de service",
+        "language": "Langue",
+        "sortBy": "Trier par",
+        "sortOrder": "Ordre de tri",
+        "search": "Rechercher par nom, courriel, téléphone ou adresse..."
+      },
+      "table": {
+        "client": "Détails du client",
+        "date": "Date souhaitée",
+        "service": "Service",
+        "status": "Statut",
+        "assigned": "Nettoyeur assigné",
+        "noResults": "Aucune réservation ne correspond à vos critères de recherche et de filtrage."
+      },
+      "details": {
+        "unassigned": "Non assigné",
+        "address": "Adresse du service",
+        "property": "Spécifications de la propriété",
+        "frequency": "Fréquence",
+        "pets": "Animaux de compagnie",
+        "petsYes": "Oui (Utiliser des produits sans danger pour les animaux)",
+        "petsNo": "Non",
+        "assignHeader": "Gérer l'horaire et le statut",
+        "customOption": "Personnalisé / Autre...",
+        "customPlaceholder": "Saisir le nom du nettoyeur",
+        "customCleaner": "Nom du nettoyeur personnalisé",
+        "save": "Enregistrer",
+        "addons": "Options / Add-Ons demandés",
+        "notes": "Instructions spéciales",
+        "noAddons": "Aucune option supplémentaire demandée.",
+        "noNotes": "Aucune instruction spéciale fournie.",
+        "createdAt": "Soumis le",
+        "leadSource": "Source de piste marketing",
+        "workflow": "Actions de flux de travail",
+        "isAirbnb": "Liste de contrôle Airbnb",
+        "photoConf": "Confirmation photo requise"
+      }
     }
   }
 }
