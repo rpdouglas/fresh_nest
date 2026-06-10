@@ -32,10 +32,26 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | **E20** | /services/airbnb-turnover | P0 | P6 Gallagher | Completed ✅ |
 | **E21** | /services/* Individual Pages | P1 | P2 Travis, P3 Margaret, P1 Diane, P6 Gallagher | Completed ✅ |
 | **E22** | /thank-you Confirmation Page | P0 | P2 Travis, P1 Diane | Completed ✅ |
+| **E25** | WCAG AA Accessibility Audit | P0 | Dev Team | Completed ✅ |
 
 ---
 
 ### Epic Log
+
+#### E25 — WCAG AA Accessibility Audit
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-10)
+* **Strategy:** 1 — Comprehensive Accessibility Audit & Fix
+* **Persona tests:** P3 Margaret — All criteria tested: Single-page form, 48px touch targets, 16px min font-size, visible phone numbers with tel: link.
+* **Key Assets:**
+  * [src/pages/BookingPage.tsx](file:///workspaces/fresh_nest/src/pages/BookingPage.tsx)
+  * [src/components/booking/BookingStep1.tsx](file:///workspaces/fresh_nest/src/components/booking/BookingStep1.tsx)
+  * [src/components/booking/BookingStep2.tsx](file:///workspaces/fresh_nest/src/components/booking/BookingStep2.tsx)
+  * [src/components/booking/BookingStep3.tsx](file:///workspaces/fresh_nest/src/components/booking/BookingStep3.tsx)
+  * [src/components/booking/BookingStep4.tsx](file:///workspaces/fresh_nest/src/components/booking/BookingStep4.tsx)
+  * [src/components/layout/Navbar.tsx](file:///workspaces/fresh_nest/src/components/layout/Navbar.tsx)
+  * [src/components/layout/Footer.tsx](file:///workspaces/fresh_nest/src/components/layout/Footer.tsx)
+* **Close Report:** [E25-close-2026-06-10.md](file:///workspaces/fresh_nest/docs/reports/E25-close-2026-06-10.md)
 
 #### E24 — Meta Tags + Bilingual Page Titles
 * **Owner:** Dev Team

@@ -1,6 +1,5 @@
 import { Controller, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import type { BookingFormData } from '@/lib/bookingSchema'
 
@@ -19,21 +18,13 @@ const PROPERTY_TYPES: { value: PropertyTypeValue; labelKey: string }[] = [
   { value: 'commercial', labelKey: 'booking.fields.propertyType.options.commercial'},
 ]
 
-interface Props {
-  onNext: () => void
-}
-
-export default function BookingStep1({ onNext }: Props) {
+export default function BookingStep1() {
   const { t } = useTranslation()
   const { control, formState: { errors }, watch } = useFormContext<BookingFormData>()
   const serviceType = watch('serviceType')
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-    >
+    <div>
       <div className="bg-white border border-sand rounded shadow-sm p-6 space-y-8">
         <h2 className="font-display text-3xl text-charcoal">{t('booking.step1Title')}</h2>
 
@@ -71,7 +62,7 @@ export default function BookingStep1({ onNext }: Props) {
                       <span className="font-body text-base text-charcoal block">
                         {t(`services.${type}.title`)}
                       </span>
-                      <span className="font-body text-sm text-text-muted block leading-snug mt-0.5">
+                      <span className="font-body text-base text-text-muted block leading-snug mt-0.5">
                         {t(`services.${type}.description`)}
                       </span>
                     </div>
@@ -81,7 +72,7 @@ export default function BookingStep1({ onNext }: Props) {
             )}
           />
           {errors.serviceType && (
-            <p role="alert" className="font-body text-sm text-red-600 mt-2">
+            <p role="alert" className="font-body text-base text-red-600 mt-2">
               {t('booking.errors.required')}
             </p>
           )}
@@ -133,7 +124,7 @@ export default function BookingStep1({ onNext }: Props) {
             )}
           />
           {errors.propertyType && (
-            <p role="alert" className="font-body text-sm text-red-600 mt-2">
+            <p role="alert" className="font-body text-base text-red-600 mt-2">
               {t('booking.errors.required')}
             </p>
           )}
@@ -225,7 +216,7 @@ export default function BookingStep1({ onNext }: Props) {
                 <span className="font-body text-base text-charcoal block">
                   {t('booking.fields.pets.label')}
                 </span>
-                <span className="font-body text-sm text-text-muted block mt-0.5">
+                <span className="font-body text-base text-text-muted block mt-0.5">
                   {t('booking.fields.pets.hint')}
                 </span>
               </div>
@@ -234,17 +225,6 @@ export default function BookingStep1({ onNext }: Props) {
         />
       </div>
 
-      <div className="mt-6 flex justify-end">
-        <button
-          type="button"
-          onClick={onNext}
-          className="inline-flex items-center justify-center font-body font-medium text-base
-                     bg-slate-brand text-white hover:bg-slate-dark rounded px-8 min-h-[48px]
-                     transition-colors focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2"
-        >
-          {t('booking.next')}
-        </button>
       </div>
-    </motion.div>
   )
 }

@@ -1,6 +1,5 @@
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import type { BookingFormData } from '@/lib/bookingSchema'
 
@@ -37,12 +36,7 @@ const maxDay = new Date()
 maxDay.setDate(maxDay.getDate() + 90)
 const MAX_DATE = maxDay.toISOString().slice(0, 10)
 
-interface Props {
-  onNext: () => void
-  onBack: () => void
-}
-
-export default function BookingStep2({ onNext, onBack }: Props) {
+export default function BookingStep2() {
   const { t } = useTranslation()
   const { register, watch, setValue, formState: { errors } } = useFormContext<BookingFormData>()
   const currentFreq = watch('frequency')
@@ -56,11 +50,7 @@ export default function BookingStep2({ onNext, onBack }: Props) {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-    >
+    <div>
       <div className="bg-white border border-sand rounded shadow-sm p-6 space-y-8">
         <h2 className="font-display text-3xl text-charcoal">{t('booking.step2Title')}</h2>
 
@@ -91,7 +81,7 @@ export default function BookingStep2({ onNext, onBack }: Props) {
                   <span className="font-body text-base text-charcoal">{t(opt.labelKey)}</span>
                 </span>
                 {opt.discountKey && (
-                  <span className="font-body text-sm font-medium text-slate-brand bg-slate-pale border border-slate-brand rounded px-2 py-0.5">
+                  <span className="font-body text-base font-medium text-slate-brand bg-slate-pale border border-slate-brand rounded px-2 py-0.5">
                     {t(opt.discountKey)}
                   </span>
                 )}
@@ -99,7 +89,7 @@ export default function BookingStep2({ onNext, onBack }: Props) {
             ))}
           </div>
           {errors.frequency && (
-            <p role="alert" className="font-body text-sm text-red-600 mt-2">
+            <p role="alert" className="font-body text-base text-red-600 mt-2">
               {t('booking.errors.required')}
             </p>
           )}
@@ -126,11 +116,11 @@ export default function BookingStep2({ onNext, onBack }: Props) {
             )}
           />
           {errors.preferredDate ? (
-            <p id="preferredDate-error" role="alert" className="font-body text-sm text-red-600 mt-1">
+            <p id="preferredDate-error" role="alert" className="font-body text-base text-red-600 mt-1">
               {t('booking.errors.date')}
             </p>
           ) : (
-            <p id="preferredDate-hint" className="font-body text-sm text-text-muted mt-1">
+            <p id="preferredDate-hint" className="font-body text-base text-text-muted mt-1">
               {t('booking.fields.preferredDate.hint')}
             </p>
           )}
@@ -171,7 +161,7 @@ export default function BookingStep2({ onNext, onBack }: Props) {
         <div>
           <label htmlFor="squareFootage" className="block font-body text-base font-medium text-charcoal mb-1">
             {t('booking.fields.squareFootage.label')}
-            <span className="font-body text-sm text-text-muted ml-2">{t('booking.fields.squareFootage.optional')}</span>
+            <span className="font-body text-base text-text-muted ml-2">{t('booking.fields.squareFootage.optional')}</span>
           </label>
           <input
             id="squareFootage"
@@ -187,26 +177,6 @@ export default function BookingStep2({ onNext, onBack }: Props) {
         </div>
       </div>
 
-      <div className="mt-6 flex justify-between">
-        <button
-          type="button"
-          onClick={onBack}
-          className="inline-flex items-center justify-center font-body font-medium text-base
-                     border border-slate-brand text-slate-brand hover:bg-slate-pale rounded px-8 min-h-[48px]
-                     transition-colors focus:outline-none focus:ring-2 focus:ring-slate-brand"
-        >
-          {t('booking.back')}
-        </button>
-        <button
-          type="button"
-          onClick={onNext}
-          className="inline-flex items-center justify-center font-body font-medium text-base
-                     bg-slate-brand text-white hover:bg-slate-dark rounded px-8 min-h-[48px]
-                     transition-colors focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2"
-        >
-          {t('booking.next')}
-        </button>
       </div>
-    </motion.div>
   )
 }

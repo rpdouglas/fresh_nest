@@ -12,76 +12,76 @@
   },
   "trustBar": {
     "ariaLabel": "Trust and quality indicators",
-    "insured":    "Insured & Bonded",
+    "insured": "Insured & Bonded",
     "background": "Background-Checked Staff",
-    "eco":        "Eco-Friendly Products",
-    "guarantee":  "Satisfaction Guarantee",
-    "rating":     "4.9 / 5 Google Rating",
-    "bilingual":  "Bilingual Service"
+    "eco": "Eco-Friendly Products",
+    "guarantee": "Satisfaction Guarantee",
+    "rating": "4.9 / 5 Google Rating",
+    "bilingual": "Bilingual Service"
   },
   "quote": {
-    "ariaLabel":       "Instant quote calculator",
-    "sectionHeading":  "Get an Instant Quote",
-    "sectionSubhead":  "Transparent pricing for Cornwall and surrounding communities. No commitment required.",
-    "sizeLabel":       "Property Size",
-    "serviceLabel":    "Service Type",
-    "frequencyLabel":  "How Often?",
+    "ariaLabel": "Instant quote calculator",
+    "sectionHeading": "Get an Instant Quote",
+    "sectionSubhead": "Transparent pricing for Cornwall and surrounding communities. No commitment required.",
+    "sizeLabel": "Property Size",
+    "serviceLabel": "Service Type",
+    "frequencyLabel": "How Often?",
     "size": {
-      "apartment":        "Apartment",
-      "1-2bed":           "1–2 Bed",
-      "3-4bed":           "3–4 Bed",
-      "5plus":            "5+ Bed",
-      "commercial":       "Commercial"
+      "apartment": "Apartment",
+      "1-2bed": "1–2 Bed",
+      "3-4bed": "3–4 Bed",
+      "5plus": "5+ Bed",
+      "commercial": "Commercial"
     },
     "service": {
-      "standard":         "Standard",
-      "deep":             "Deep",
-      "moveout":          "Move-Out",
+      "standard": "Standard",
+      "deep": "Deep",
+      "moveout": "Move-Out",
       "postconstruction": "Post-Construction",
-      "airbnb":           "Airbnb"
+      "airbnb": "Airbnb"
     },
     "frequency": {
-      "one-time":         "One-Time",
-      "weekly":           "Weekly",
-      "biweekly":         "Biweekly",
-      "monthly":          "Monthly"
+      "one-time": "One-Time",
+      "weekly": "Weekly",
+      "biweekly": "Biweekly",
+      "monthly": "Monthly"
     },
-    "discountBadge":   "{{pct}}% off",
-    "startingAt":      "Starting at ${{price}}",
-    "typicallyRange":  "Typically ${{min}}–${{max}}",
-    "bookNowCta":      "Book Now",
+    "discountBadge": "{{pct}}% off",
+    "startingAt": "Starting at ${{price}}",
+    "typicallyRange": "Typically ${{min}}–${{max}}",
+    "bookNowCta": "Book Now",
     "commercialTitle": "Custom Quote for Your Business",
-    "commercialBody":  "Commercial cleaning rates are tailored to your space and schedule. Contact us for a free assessment.",
-    "commercialCta":   "Contact Us for a Quote"
+    "commercialBody": "Commercial cleaning rates are tailored to your space and schedule. Contact us for a free assessment.",
+    "commercialCta": "Contact Us for a Quote"
   },
   "services": {
-    "ariaLabel":      "Our cleaning services",
+    "ariaLabel": "Our cleaning services",
     "sectionHeading": "Our Services",
     "sectionSubhead": "Professional cleaning for every need — residential, rental, and commercial. Proudly serving Cornwall and surrounding communities.",
-    "bookNow":        "Book Now",
-    "bookAriaLabel":  "Book {{service}}",
+    "bookNow": "Book Now",
+    "bookAriaLabel": "Book {{service}}",
     "standard": {
-      "title":       "Standard Cleaning",
+      "title": "Standard Cleaning",
       "description": "Regular maintenance cleaning to keep your home fresh. Ideal for weekly or biweekly visits — counters, floors, bathrooms, and living areas."
     },
     "deep": {
-      "title":       "Deep Clean",
+      "title": "Deep Clean",
       "description": "A thorough top-to-bottom clean including baseboards, inside appliances, and hard-to-reach areas. Perfect for a seasonal reset or first-time clean."
     },
     "moveout": {
-      "title":       "Move-Out Cleaning",
+      "title": "Move-Out Cleaning",
       "description": "Leave your old home spotless for the next owners or your landlord's inspection. We handle every surface so you get your deposit back."
     },
     "postconstruction": {
-      "title":       "Post-Construction",
+      "title": "Post-Construction",
       "description": "Construction dust and debris require specialist attention. We safely remove fine particles, adhesive residue, and packaging from every surface."
     },
     "airbnb": {
-      "title":       "Airbnb Turnover",
+      "title": "Airbnb Turnover",
       "description": "Fast, reliable turnovers between guest stays — typically completed in the 11am–3pm window. Linen change, sanitize, and guest-ready staging included."
     },
     "commercial": {
-      "title":       "Commercial Cleaning",
+      "title": "Commercial Cleaning",
       "description": "Tailored cleaning programs for offices, retail, and business facilities. Flexible scheduling, volume pricing, and dedicated account management."
     }
   },
@@ -90,217 +90,249 @@
       "title": "Before & After Photo Gallery — Fresh Nest Co.",
       "description": "Browse our before and after cleaning photo gallery. See the results of our professional residential, deep, and Airbnb turnover cleaning."
     },
-    "ariaLabel":       "Before and after cleaning photos",
-    "pageHeading":     "Our Work",
-    "pageSubhead":     "Real results from our team — before and after every clean.",
-    "previewHeading":  "Before & After",
-    "previewSubhead":  "See the Fresh Nest difference.",
-    "viewAll":         "View Full Gallery",
-    "beforeLabel":     "Before",
-    "afterLabel":      "After",
-    "beforeAlt":       "Before: {{service}}",
-    "afterAlt":        "After: {{service}}",
-    "closeLabel":      "Close photo",
-    "prevLabel":       "Previous photo",
-    "nextLabel":       "Next photo",
+    "ariaLabel": "Before and after cleaning photos",
+    "pageHeading": "Our Work",
+    "pageSubhead": "Real results from our team — before and after every clean.",
+    "previewHeading": "Before & After",
+    "previewSubhead": "See the Fresh Nest difference.",
+    "viewAll": "View Full Gallery",
+    "beforeLabel": "Before",
+    "afterLabel": "After",
+    "beforeAlt": "Before: {{service}}",
+    "afterAlt": "After: {{service}}",
+    "closeLabel": "Close photo",
+    "prevLabel": "Previous photo",
+    "nextLabel": "Next photo",
     "photoComingSoon": "Photo coming soon",
-    "ctaHeading":      "Ready to see these results in your home?",
+    "ctaHeading": "Ready to see these results in your home?",
     "pairs": {
-      "kitchenDeep":      { "caption": "Kitchen deep clean — Cornwall, ON" },
-      "airbnbTurnover":   { "caption": "Airbnb turnover — St. Lawrence waterfront" },
-      "bathroomDeep":     { "caption": "Bathroom deep clean — Cornwall, ON" },
-      "moveoutFull":      { "caption": "Full move-out clean — Long Sault, ON" },
-      "postconstruction": { "caption": "Post-construction clean — Cornwall, ON" }
+      "kitchenDeep": {
+        "caption": "Kitchen deep clean — Cornwall, ON"
+      },
+      "airbnbTurnover": {
+        "caption": "Airbnb turnover — St. Lawrence waterfront"
+      },
+      "bathroomDeep": {
+        "caption": "Bathroom deep clean — Cornwall, ON"
+      },
+      "moveoutFull": {
+        "caption": "Full move-out clean — Long Sault, ON"
+      },
+      "postconstruction": {
+        "caption": "Post-construction clean — Cornwall, ON"
+      }
     }
   },
   "howItWorks": {
-    "ariaLabel":      "How the booking process works",
+    "ariaLabel": "How the booking process works",
     "sectionHeading": "How It Works",
     "sectionSubhead": "From booking to a beautifully clean home — four simple steps.",
-    "step1Title":     "Book Online",
-    "step1Desc":      "Choose your service, property size, and preferred date. No account required — takes under 3 minutes.",
-    "step2Title":     "We Confirm",
-    "step2Desc":      "You'll hear from us within 24 hours with your assigned cleaner's name and your arrival window.",
-    "step3Title":     "We Clean",
-    "step3Desc":      "Your dedicated cleaner arrives on time and follows a detailed checklist tailored to your home.",
-    "step4Title":     "You Relax",
-    "step4Desc":      "We send a completion notice when finished. Satisfaction guaranteed — we make it right if anything's missed.",
-    "faqLink":        "Have questions? See our FAQ"
+    "step1Title": "Book Online",
+    "step1Desc": "Choose your service, property size, and preferred date. No account required — takes under 3 minutes.",
+    "step2Title": "We Confirm",
+    "step2Desc": "You'll hear from us within 24 hours with your assigned cleaner's name and your arrival window.",
+    "step3Title": "We Clean",
+    "step3Desc": "Your dedicated cleaner arrives on time and follows a detailed checklist tailored to your home.",
+    "step4Title": "You Relax",
+    "step4Desc": "We send a completion notice when finished. Satisfaction guaranteed — we make it right if anything's missed.",
+    "faqLink": "Have questions? See our FAQ"
   },
   "recurring": {
-    "ariaLabel":      "Recurring cleaning plans and pricing",
+    "ariaLabel": "Recurring cleaning plans and pricing",
     "sectionHeading": "Save on Every Clean",
     "sectionSubhead": "Book a recurring schedule and save up to 20% — no contracts, cancel anytime.",
-    "mostPopular":    "Most Popular",
-    "discountBadge":  "{{pct}}% off",
-    "bookCta":        "Book {{freq}}",
-    "bookAriaLabel":  "Book {{freq}} cleaning",
+    "mostPopular": "Most Popular",
+    "discountBadge": "{{pct}}% off",
+    "bookCta": "Book {{freq}}",
+    "bookAriaLabel": "Book {{freq}} cleaning",
     "tagline": {
-      "weekly":    "Perfect for busy households. Your home, consistently fresh, every week.",
-      "biweekly":  "Set it and forget it. The most popular option — fresh every two weeks.",
-      "monthly":   "Flexible recurring clean. Great for lower-traffic homes or seasonal top-ups."
+      "weekly": "Perfect for busy households. Your home, consistently fresh, every week.",
+      "biweekly": "Set it and forget it. The most popular option — fresh every two weeks.",
+      "monthly": "Flexible recurring clean. Great for lower-traffic homes or seasonal top-ups."
     }
   },
   "team": {
-    "ariaLabel":       "Meet the Fresh Nest Co. cleaning team",
-    "sectionHeading":  "Meet Your Team",
-    "sectionSubhead":  "Real people who care about your home.",
-    "assignmentNote":  "We assign the same dedicated cleaner to your home — every visit, every time. Request your preferred cleaner when booking.",
-    "photoAlt":        "Photo of {{name}}",
+    "ariaLabel": "Meet the Fresh Nest Co. cleaning team",
+    "sectionHeading": "Meet Your Team",
+    "sectionSubhead": "Real people who care about your home.",
+    "assignmentNote": "We assign the same dedicated cleaner to your home — every visit, every time. Request your preferred cleaner when booking.",
+    "photoAlt": "Photo of {{name}}",
     "members": {
       "ryan": {
         "role": "Owner & Lead Cleaner",
-        "bio":  "Ryan founded Fresh Nest Co. to bring professional, reliable cleaning to Cornwall and surrounding communities. He personally manages every booking and ensures your home is cared for to the highest standard."
+        "bio": "Ryan founded Fresh Nest Co. to bring professional, reliable cleaning to Cornwall and surrounding communities. He personally manages every booking and ensures your home is cared for to the highest standard."
       },
       "cleanerPlaceholder": {
         "role": "Cleaning Specialist",
-        "bio":  "Our team is growing. Real cleaner profiles — with photos and bios — will be added before launch."
+        "bio": "Our team is growing. Real cleaner profiles — with photos and bios — will be added before launch."
       }
     }
   },
   "reviews": {
-    "ariaLabel":       "Customer reviews",
-    "sectionHeading":  "What Our Clients Say",
-    "sectionSubhead":  "Real reviews from real clients across Cornwall and surrounding communities.",
-    "ratingHeading":   "5.0",
-    "ratingStars":     "★★★★★",
-    "ratingBasis":     "Based on 80+ reviews",
+    "ariaLabel": "Customer reviews",
+    "sectionHeading": "What Our Clients Say",
+    "sectionSubhead": "Real reviews from real clients across Cornwall and surrounding communities.",
+    "ratingHeading": "5.0",
+    "ratingStars": "★★★★★",
+    "ratingBasis": "Based on 80+ reviews",
     "ratingAriaLabel": "Rated 5.0 out of 5 — based on 80 or more reviews",
-    "starAriaLabel":   "{{rating}} out of {{max}} stars"
+    "starAriaLabel": "{{rating}} out of {{max}} stars"
   },
   "locations": {
-    "ariaLabel":       "Service areas",
+    "ariaLabel": "Service areas",
     "servicesHeading": "Services Available Here",
-    "mapLabel":        "Map of {{location}}",
-    "bookCta":         "Book a Cleaning in {{location}}",
-    "bookAriaLabel":   "Book a cleaning in {{location}}",
+    "mapLabel": "Map of {{location}}",
+    "bookCta": "Book a Cleaning in {{location}}",
+    "bookAriaLabel": "Book a cleaning in {{location}}",
     "overview": {
-      "pageTitle":     "Service Areas | Fresh Nest Co.",
-      "metaDesc":      "Fresh Nest Co. serves Cornwall ON, Akwesasne, Snye QC, Long Sault, and Morrisburg. Professional bilingual cleaning services.",
-      "heading":       "Our Service Areas",
-      "subhead":       "We proudly serve Cornwall and surrounding communities — including Akwesasne, Snye QC, Long Sault, and Morrisburg.",
-      "viewLocation":  "View details →"
+      "pageTitle": "Service Areas | Fresh Nest Co.",
+      "metaDesc": "Fresh Nest Co. serves Cornwall ON, Akwesasne, Snye QC, Long Sault, and Morrisburg. Professional bilingual cleaning services.",
+      "heading": "Our Service Areas",
+      "subhead": "We proudly serve Cornwall and surrounding communities — including Akwesasne, Snye QC, Long Sault, and Morrisburg.",
+      "viewLocation": "View details →"
     },
     "cornwallOn": {
-      "pageTitle":     "Professional Cleaning in Cornwall, ON | Fresh Nest Co.",
-      "metaDesc":      "Fresh Nest Co. offers bilingual professional cleaning in Cornwall, ON — standard, deep, move-out, post-construction, Airbnb turnover, and commercial.",
-      "heading":       "Cleaning Services in Cornwall, ON",
-      "subhead":       "Cornwall's trusted bilingual cleaning team — residential, commercial, and Airbnb.",
-      "description":   "Fresh Nest Co. is based in Cornwall and serves the full city including the east and west ends, the waterfront, and surrounding residential neighbourhoods. We offer standard, deep, move-out, post-construction, Airbnb turnover, and commercial cleaning — all in English and French."
+      "pageTitle": "Professional Cleaning in Cornwall, ON | Fresh Nest Co.",
+      "metaDesc": "Fresh Nest Co. offers bilingual professional cleaning in Cornwall, ON — standard, deep, move-out, post-construction, Airbnb turnover, and commercial.",
+      "heading": "Cleaning Services in Cornwall, ON",
+      "subhead": "Cornwall's trusted bilingual cleaning team — residential, commercial, and Airbnb.",
+      "description": "Fresh Nest Co. is based in Cornwall and serves the full city including the east and west ends, the waterfront, and surrounding residential neighbourhoods. We offer standard, deep, move-out, post-construction, Airbnb turnover, and commercial cleaning — all in English and French."
     },
     "akwesasne": {
-      "pageTitle":     "Professional Cleaning in Akwesasne | Fresh Nest Co.",
-      "metaDesc":      "Fresh Nest Co. serves Akwesasne including Cornwall Island. We cross the Seaway International Bridge — standard, deep, and move-out cleaning available.",
-      "heading":       "Cleaning Services in Akwesasne",
-      "subhead":       "We serve the full Akwesasne community — including Cornwall Island.",
-      "description":   "We cross the Seaway International Bridge to serve Cornwall Island and the broader Akwesasne community. Standard, deep clean, move-out, and post-construction cleans available. Please include your island address and any access instructions in your booking notes.",
-      "islandNote":    "We serve Cornwall Island — we cross the bridge. Please include your island address and any access instructions in your booking notes."
+      "pageTitle": "Professional Cleaning in Akwesasne | Fresh Nest Co.",
+      "metaDesc": "Fresh Nest Co. serves Akwesasne including Cornwall Island. We cross the Seaway International Bridge — standard, deep, and move-out cleaning available.",
+      "heading": "Cleaning Services in Akwesasne",
+      "subhead": "We serve the full Akwesasne community — including Cornwall Island.",
+      "description": "We cross the Seaway International Bridge to serve Cornwall Island and the broader Akwesasne community. Standard, deep clean, move-out, and post-construction cleans available. Please include your island address and any access instructions in your booking notes.",
+      "islandNote": "We serve Cornwall Island — we cross the bridge. Please include your island address and any access instructions in your booking notes."
     },
     "snyeQc": {
-      "pageTitle":     "Professional Cleaning in Snye, QC | Fresh Nest Co.",
-      "metaDesc":      "Fresh Nest Co. serves Snye, Quebec — on the Quebec side of Akwesasne. Bilingual, eco-friendly cleaning. Standard, deep, and move-out.",
-      "heading":       "Cleaning Services in Snye, QC",
-      "subhead":       "We serve the Quebec side of Akwesasne, including Snye.",
-      "description":   "Fresh Nest Co. travels across the provincial border to serve clients in Snye and the Quebec side of Akwesasne. We use eco-friendly, baby-safe products on all cleans. Standard, deep clean, and move-out cleaning available. Fully bilingual service — book in French or English.",
-      "borderNote":    "We serve Akwesasne, Quebec side (Snye) — we cross the provincial border. Eco-friendly, baby-safe products used on every clean."
+      "pageTitle": "Professional Cleaning in Snye, QC | Fresh Nest Co.",
+      "metaDesc": "Fresh Nest Co. serves Snye, Quebec — on the Quebec side of Akwesasne. Bilingual, eco-friendly cleaning. Standard, deep, and move-out.",
+      "heading": "Cleaning Services in Snye, QC",
+      "subhead": "We serve the Quebec side of Akwesasne, including Snye.",
+      "description": "Fresh Nest Co. travels across the provincial border to serve clients in Snye and the Quebec side of Akwesasne. We use eco-friendly, baby-safe products on all cleans. Standard, deep clean, and move-out cleaning available. Fully bilingual service — book in French or English.",
+      "borderNote": "We serve Akwesasne, Quebec side (Snye) — we cross the provincial border. Eco-friendly, baby-safe products used on every clean."
     },
     "longSault": {
-      "pageTitle":     "Professional Cleaning in Long Sault, ON | Fresh Nest Co.",
-      "metaDesc":      "Fresh Nest Co. serves Long Sault and South Stormont, ON. Professional residential and Airbnb turnover cleaning.",
-      "heading":       "Cleaning Services in Long Sault",
-      "subhead":       "Serving Long Sault and South Stormont — including waterfront Airbnb properties.",
-      "description":   "Long Sault and South Stormont residents count on Fresh Nest Co. for reliable residential cleaning. We also serve waterfront Airbnb and cottage properties in the area. Standard, deep clean, move-out, and Airbnb turnover cleaning available."
+      "pageTitle": "Professional Cleaning in Long Sault, ON | Fresh Nest Co.",
+      "metaDesc": "Fresh Nest Co. serves Long Sault and South Stormont, ON. Professional residential and Airbnb turnover cleaning.",
+      "heading": "Cleaning Services in Long Sault",
+      "subhead": "Serving Long Sault and South Stormont — including waterfront Airbnb properties.",
+      "description": "Long Sault and South Stormont residents count on Fresh Nest Co. for reliable residential cleaning. We also serve waterfront Airbnb and cottage properties in the area. Standard, deep clean, move-out, and Airbnb turnover cleaning available."
     },
     "morrisburg": {
-      "pageTitle":     "Professional Cleaning in Morrisburg, ON | Fresh Nest Co.",
-      "metaDesc":      "Fresh Nest Co. serves Morrisburg and South Dundas, ON. Professional residential cleaning — standard, deep, and move-out.",
-      "heading":       "Cleaning Services in Morrisburg",
-      "subhead":       "Serving Morrisburg and South Dundas County.",
-      "description":   "Morrisburg and the surrounding South Dundas area are within our regular service zone. Standard, deep clean, and move-out cleaning available. Contact us to confirm scheduling for your specific address."
+      "pageTitle": "Professional Cleaning in Morrisburg, ON | Fresh Nest Co.",
+      "metaDesc": "Fresh Nest Co. serves Morrisburg and South Dundas, ON. Professional residential cleaning — standard, deep, and move-out.",
+      "heading": "Cleaning Services in Morrisburg",
+      "subhead": "Serving Morrisburg and South Dundas County.",
+      "description": "Morrisburg and the surrounding South Dundas area are within our regular service zone. Standard, deep clean, and move-out cleaning available. Contact us to confirm scheduling for your specific address."
     }
   },
   "booking": {
-    "pageTitle":   "Book a Cleaning | Fresh Nest Co.",
-    "metaDesc":    "Book professional cleaning services online. Fast, bilingual booking for Cornwall, Akwesasne, Snye QC, Long Sault, and Morrisburg.",
-    "heading":     "Book a Cleaning",
-    "subhead":     "Four quick steps — takes about 3 minutes on your phone.",
-    "progress":    "Step {{current}} of {{total}}",
-    "next":        "Next",
-    "back":        "Back",
-    "submit":      "Confirm Booking",
-    "submitting":  "Submitting…",
-    "step1Title":  "What type of cleaning?",
-    "step2Title":  "When would you like us?",
-    "step3Title":  "Your contact details",
-    "step4Title":  "Review your booking",
-    "airbnbNote":  "Airbnb turnovers include linen change, toiletry restocking, and damage photos. Typically completed in the 11am–3pm window.",
+    "pageTitle": "Book a Cleaning | Fresh Nest Co.",
+    "metaDesc": "Book professional cleaning services online. Fast, bilingual booking for Cornwall, Akwesasne, Snye QC, Long Sault, and Morrisburg.",
+    "heading": "Book a Cleaning",
+    "subhead": "Four quick steps — takes about 3 minutes on your phone.",
+    "progress": "Step {{current}} of {{total}}",
+    "next": "Next",
+    "back": "Back",
+    "submit": "Confirm Booking",
+    "submitting": "Submitting…",
+    "step1Title": "What type of cleaning?",
+    "step2Title": "When would you like us?",
+    "step3Title": "Your contact details",
+    "step4Title": "Review your booking",
+    "airbnbNote": "Airbnb turnovers include linen change, toiletry restocking, and damage photos. Typically completed in the 11am–3pm window.",
     "fields": {
-      "serviceType": { "label": "Service type" },
+      "serviceType": {
+        "label": "Service type"
+      },
       "propertyType": {
         "label": "Property size",
         "options": {
-          "apartment":  "Apartment / Condo",
-          "1-2bed":     "1–2 Bedroom Home",
-          "3-4bed":     "3–4 Bedroom Home",
-          "5+bed":      "5+ Bedroom Home",
+          "apartment": "Apartment / Condo",
+          "1-2bed": "1–2 Bedroom Home",
+          "3-4bed": "3–4 Bedroom Home",
+          "5+bed": "5+ Bedroom Home",
           "commercial": "Commercial Property"
         }
       },
-      "bedrooms":  { "label": "Bedrooms",  "decrease": "Decrease bedrooms",  "increase": "Increase bedrooms"  },
-      "bathrooms": { "label": "Bathrooms", "decrease": "Decrease bathrooms", "increase": "Increase bathrooms" },
+      "bedrooms": {
+        "label": "Bedrooms",
+        "decrease": "Decrease bedrooms",
+        "increase": "Increase bedrooms"
+      },
+      "bathrooms": {
+        "label": "Bathrooms",
+        "decrease": "Decrease bathrooms",
+        "increase": "Increase bathrooms"
+      },
       "pets": {
         "label": "We have pets at home",
-        "hint":  "We use pet-safe, eco-friendly products as standard."
+        "hint": "We use pet-safe, eco-friendly products as standard."
       },
       "frequency": {
         "label": "Cleaning frequency",
         "options": {
-          "one-time":  "One-time",
-          "weekly":    "Weekly",
-          "biweekly":  "Every two weeks",
-          "monthly":   "Monthly"
+          "one-time": "One-time",
+          "weekly": "Weekly",
+          "biweekly": "Every two weeks",
+          "monthly": "Monthly"
         },
         "discounts": {
-          "weekly":   "Save 20%",
+          "weekly": "Save 20%",
           "biweekly": "Save 15%",
-          "monthly":  "Save 10%"
+          "monthly": "Save 10%"
         }
       },
       "preferredDate": {
         "label": "Preferred date",
-        "hint":  "We'll confirm availability within 24 hours."
+        "hint": "We'll confirm availability within 24 hours."
       },
       "squareFootage": {
-        "label":       "Square footage",
-        "optional":    "(optional)",
+        "label": "Square footage",
+        "optional": "(optional)",
         "placeholder": "e.g. 1400"
       },
       "addOns": {
         "label": "Add-ons (optional)",
         "options": {
-          "oven":      "Inside oven",
-          "fridge":    "Inside fridge",
-          "windows":   "Interior windows",
-          "laundry":   "Laundry (wash + fold)",
-          "petHair":   "Pet hair treatment",
-          "basement":  "Basement"
+          "oven": "Inside oven",
+          "fridge": "Inside fridge",
+          "windows": "Interior windows",
+          "laundry": "Laundry (wash + fold)",
+          "petHair": "Pet hair treatment",
+          "basement": "Basement"
         }
       },
-      "firstName":        { "label": "First name",     "placeholder": "First name"                                   },
-      "lastName":         { "label": "Last name",      "placeholder": "Last name"                                    },
-      "email":            { "label": "Email address",  "placeholder": "you@example.com"                              },
-      "phone":            { "label": "Phone number",   "placeholder": "(613) 000-0000"                               },
+      "firstName": {
+        "label": "First name",
+        "placeholder": "First name"
+      },
+      "lastName": {
+        "label": "Last name",
+        "placeholder": "Last name"
+      },
+      "email": {
+        "label": "Email address",
+        "placeholder": "you@example.com"
+      },
+      "phone": {
+        "label": "Phone number",
+        "placeholder": "(613) 000-0000"
+      },
       "address": {
-        "label":       "Service address",
+        "label": "Service address",
         "placeholder": "123 Main St, Cornwall ON",
-        "hint":        "Include island address or bridge crossing notes if applicable."
+        "hint": "Include island address or bridge crossing notes if applicable."
       },
       "preferredCleaner": {
-        "label":       "Preferred cleaner (optional)",
+        "label": "Preferred cleaner (optional)",
         "placeholder": "e.g. Ryan D. — leave blank to be assigned"
       },
       "notes": {
-        "label":       "Special instructions (optional)",
+        "label": "Special instructions (optional)",
         "placeholder": "Island address / bridge crossing info, gate code, allergies, areas of focus…"
       },
       "marketingConsent": {
@@ -308,41 +340,71 @@
       }
     },
     "errors": {
-      "required":  "This field is required.",
-      "email":     "Please enter a valid email address.",
-      "phone":     "Please enter a valid phone number (minimum 10 digits).",
+      "required": "This field is required.",
+      "email": "Please enter a valid email address.",
+      "phone": "Please enter a valid phone number (minimum 10 digits).",
       "minLength": "This field is too short.",
-      "date":      "Please select a date.",
-      "submit":    "Something went wrong saving your booking. Please try again or call us:"
+      "date": "Please select a date.",
+      "submit": "Something went wrong saving your booking. Please try again or call us:"
     },
     "review": {
-      "heading":  "Review your booking",
-      "service":  "Service",
+      "heading": "Review your booking",
+      "service": "Service",
       "property": "Property",
       "schedule": "Schedule",
-      "contact":  "Contact",
-      "addOns":   "Add-ons",
-      "notes":    "Notes",
-      "edit":     "Edit"
+      "contact": "Contact",
+      "addOns": "Add-ons",
+      "notes": "Notes",
+      "edit": "Edit"
     }
   },
   "faq": {
     "pageTitle": "FAQ | Fresh Nest Co.",
-    "metaDesc":  "Frequently asked questions about Fresh Nest Co. cleaning services in Cornwall, Akwesasne, Snye QC, Long Sault, and Morrisburg.",
-    "heading":   "Frequently Asked Questions",
-    "subhead":   "Quick answers about booking, services, and what to expect.",
+    "metaDesc": "Frequently asked questions about Fresh Nest Co. cleaning services in Cornwall, Akwesasne, Snye QC, Long Sault, and Morrisburg.",
+    "heading": "Frequently Asked Questions",
+    "subhead": "Quick answers about booking, services, and what to expect.",
     "ctaHeading": "Still have questions?",
     "ctaSubhead": "We're happy to help — call us or book online.",
-    "item1":  { "q": "Do I need to be home during the clean?",                "a": "No, you don't need to be home. Many of our clients provide a key or entry code. We follow your access instructions and lock up securely when we leave." },
-    "item2":  { "q": "Do you use eco-friendly, pet-safe products?",           "a": "Yes. We use plant-based, non-toxic cleaning products that are safe for children and pets. If you have specific sensitivities or product preferences, just let us know at booking." },
-    "item3":  { "q": "Will I get the same cleaner every time?",               "a": "Yes — we assign you a dedicated cleaner whenever possible. Consistency matters for trust and quality, so we make it a priority for recurring clients." },
-    "item4":  { "q": "Do you serve Cornwall Island / Akwesasne?",             "a": "Yes, we cross the bridge to Cornwall Island and serve the Akwesasne community. Please mention your address when booking so we can confirm scheduling." },
-    "item5":  { "q": "Do you travel to Snye, QC?",                           "a": "Yes, we travel to Snye on the Quebec side of Akwesasne. We use eco-friendly, pet-safe products — important for families along the river. Mention your Snye address at booking." },
-    "item6":  { "q": "What's included in the Airbnb turnover package?",      "a": "Our Airbnb turnover includes a full clean, linen change, restocking of toiletries, and damage-documentation photos. Turnovers are typically completed in the 11am–3pm window to meet check-in deadlines." },
-    "item7":  { "q": "Can I reschedule or cancel my booking?",               "a": "Yes — we ask for at least 24 hours' notice to reschedule or cancel without a fee. For same-day cancellations, a short-notice fee may apply." },
-    "item8":  { "q": "Are you insured and bonded?",                          "a": "Yes, Fresh Nest Co. is fully insured and bonded. You can book with confidence knowing your home and belongings are protected." },
-    "item9":  { "q": "What if I'm not happy with the clean?",                "a": "We offer a 24-hour satisfaction guarantee. If something was missed, contact us within 24 hours and we'll return to make it right at no extra charge." },
-    "item10": { "q": "What payment methods do you accept?",                  "a": "We accept Interac e-Transfer, major credit cards, and cash. Payment is due on the day of service unless you have a recurring plan." }
+    "item1": {
+      "q": "Do I need to be home during the clean?",
+      "a": "No, you don't need to be home. Many of our clients provide a key or entry code. We follow your access instructions and lock up securely when we leave."
+    },
+    "item2": {
+      "q": "Do you use eco-friendly, pet-safe products?",
+      "a": "Yes. We use plant-based, non-toxic cleaning products that are safe for children and pets. If you have specific sensitivities or product preferences, just let us know at booking."
+    },
+    "item3": {
+      "q": "Will I get the same cleaner every time?",
+      "a": "Yes — we assign you a dedicated cleaner whenever possible. Consistency matters for trust and quality, so we make it a priority for recurring clients."
+    },
+    "item4": {
+      "q": "Do you serve Cornwall Island / Akwesasne?",
+      "a": "Yes, we cross the bridge to Cornwall Island and serve the Akwesasne community. Please mention your address when booking so we can confirm scheduling."
+    },
+    "item5": {
+      "q": "Do you travel to Snye, QC?",
+      "a": "Yes, we travel to Snye on the Quebec side of Akwesasne. We use eco-friendly, pet-safe products — important for families along the river. Mention your Snye address at booking."
+    },
+    "item6": {
+      "q": "What's included in the Airbnb turnover package?",
+      "a": "Our Airbnb turnover includes a full clean, linen change, restocking of toiletries, and damage-documentation photos. Turnovers are typically completed in the 11am–3pm window to meet check-in deadlines."
+    },
+    "item7": {
+      "q": "Can I reschedule or cancel my booking?",
+      "a": "Yes — we ask for at least 24 hours' notice to reschedule or cancel without a fee. For same-day cancellations, a short-notice fee may apply."
+    },
+    "item8": {
+      "q": "Are you insured and bonded?",
+      "a": "Yes, Fresh Nest Co. is fully insured and bonded. You can book with confidence knowing your home and belongings are protected."
+    },
+    "item9": {
+      "q": "What if I'm not happy with the clean?",
+      "a": "We offer a 24-hour satisfaction guarantee. If something was missed, contact us within 24 hours and we'll return to make it right at no extra charge."
+    },
+    "item10": {
+      "q": "What payment methods do you accept?",
+      "a": "We accept Interac e-Transfer, major credit cards, and cash. Payment is due on the day of service unless you have a recurring plan."
+    }
   },
   "welcome": "Welcome to Fresh Nest Co.",
   "tagline": "Cleaning & Organizing Services",
@@ -394,21 +456,21 @@
     },
     "pageTitle": "Pricing | Fresh Nest Co.",
     "hero": {
-      "title":    "Transparent Pricing",
+      "title": "Transparent Pricing",
       "subtitle": "No hidden fees. No quotes required. Book in minutes."
     },
     "services": {
-      "heading":    "Service Pricing",
-      "reference":  "Prices shown for a 1–2 bedroom home, one-time clean.",
+      "heading": "Service Pricing",
+      "reference": "Prices shown for a 1–2 bedroom home, one-time clean.",
       "commercial": "Custom quote"
     },
     "frequency": {
       "heading": "Save with a recurring schedule",
-      "cta":     "Select your frequency in the calculator below to see your discounted price."
+      "cta": "Select your frequency in the calculator below to see your discounted price."
     },
     "cta": {
       "heading": "Ready to book?",
-      "button":  "Book a Clean"
+      "button": "Book a Clean"
     },
     "price": {
       "range": "${{min}}–${{max}}"
@@ -432,78 +494,78 @@
   "airbnbPage": {
     "meta": {
       "title": "Airbnb Turnover Cleaning — Fresh Nest Co.",
-      "description": "Same-day Airbnb turnover cleaning in the 11am\u20133pm window. Linen changeover, damage documentation, and guest-ready staging for St. Lawrence region hosts."
+      "description": "Same-day Airbnb turnover cleaning in the 11am–3pm window. Linen changeover, damage documentation, and guest-ready staging for St. Lawrence region hosts."
     },
     "hero": {
-      "heading":  "Airbnb Turnover Cleaning",
-      "subhead":  "Reliable same-day turnovers in the 11am\u20133pm window. Damage-documented. Guest-ready, every time.",
-      "cta":      "Request a Commercial Account",
-      "backLink": "\u2190 Back to Services",
-      "imgAlt":   "Airbnb-ready waterfront bedroom with fresh linens and St. Lawrence River view"
+      "heading": "Airbnb Turnover Cleaning",
+      "subhead": "Reliable same-day turnovers in the 11am–3pm window. Damage-documented. Guest-ready, every time.",
+      "cta": "Request a Commercial Account",
+      "backLink": "← Back to Services",
+      "imgAlt": "Airbnb-ready waterfront bedroom with fresh linens and St. Lawrence River view"
     },
     "included": {
-      "heading":    "What\u2019s Included in Every Turnover",
-      "fullClean":  "Full property clean \u2014 all rooms",
-      "linen":      "Linen and towel changeover",
+      "heading": "What’s Included in Every Turnover",
+      "fullClean": "Full property clean — all rooms",
+      "linen": "Linen and towel changeover",
       "toiletries": "Toiletry restocking check",
-      "photos":     "Timestamped damage photo documentation",
-      "staging":    "Guest-ready staging",
-      "window":     "Completed within the 11am\u20133pm window"
+      "photos": "Timestamped damage photo documentation",
+      "staging": "Guest-ready staging",
+      "window": "Completed within the 11am–3pm window"
     },
     "howItWorks": {
-      "heading":   "How It Works",
+      "heading": "How It Works",
       "step1Title": "Book Your Window",
-      "step1Desc":  "Select your turnover date. We confirm same-day availability within 2 hours.",
-      "step2Title": "We Clean \u0026 Document",
-      "step2Desc":  "Your property is cleaned, staged, and photographed. Photos sent to you same day.",
+      "step1Desc": "Select your turnover date. We confirm same-day availability within 2 hours.",
+      "step2Title": "We Clean & Document",
+      "step2Desc": "Your property is cleaned, staged, and photographed. Photos sent to you same day.",
       "step3Title": "Guests Arrive Ready",
-      "step3Desc":  "Check-in happens on schedule. No last-minute scrambles."
+      "step3Desc": "Check-in happens on schedule. No last-minute scrambles."
     },
     "trust": {
       "heading": "Why Hosts Choose Fresh Nest",
-      "stat1":   "40+",
-      "label1":  "Turnovers completed annually",
-      "stat2":   "11am\u20133pm",
-      "label2":  "Guaranteed turnover window",
-      "stat3":   "100%",
-      "label3":  "Damage photo documentation on every clean"
+      "stat1": "40+",
+      "label1": "Turnovers completed annually",
+      "stat2": "11am–3pm",
+      "label2": "Guaranteed turnover window",
+      "stat3": "100%",
+      "label3": "Damage photo documentation on every clean"
     },
     "pricing": {
-      "heading":  "Transparent Turnover Pricing",
+      "heading": "Transparent Turnover Pricing",
       "starting": "Starting from ${{min}} per turnover",
-      "volume":   "Volume pricing available for 4+ turnovers per month",
-      "cta":      "See Full Pricing"
+      "volume": "Volume pricing available for 4+ turnovers per month",
+      "cta": "See Full Pricing"
     },
     "form": {
-      "heading":          "Request a Commercial Account",
-      "subhead":          "Set up priority scheduling, volume pricing, and documented turnovers for your property.",
-      "firstName":        "First Name",
-      "lastName":         "Last Name",
-      "email":            "Email Address",
-      "phone":            "Phone Number",
-      "propertyName":     "Property Name or Address",
+      "heading": "Request a Commercial Account",
+      "subhead": "Set up priority scheduling, volume pricing, and documented turnovers for your property.",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "propertyName": "Property Name or Address",
       "monthlyTurnovers": "Estimated Monthly Turnovers",
-      "preferredWindow":  "Preferred Cleaning Window",
-      "window11am3pm":    "11am\u20133pm (standard turnover)",
-      "windowFlexible":   "Flexible",
-      "windowMorning":    "Morning (before 12pm)",
-      "windowAfternoon":  "Afternoon (12pm\u20135pm)",
-      "notes":            "Additional Notes",
+      "preferredWindow": "Preferred Cleaning Window",
+      "window11am3pm": "11am–3pm (standard turnover)",
+      "windowFlexible": "Flexible",
+      "windowMorning": "Morning (before 12pm)",
+      "windowAfternoon": "Afternoon (12pm–5pm)",
+      "notes": "Additional Notes",
       "notesPlaceholder": "Property address, gate codes, linen storage location, or special instructions",
-      "consent":          "I agree to receive service updates from Fresh Nest Co. (optional)",
-      "submit":           "Submit Inquiry",
-      "submitting":       "Submitting\u2026",
-      "successHeading":   "Thank you, {{name}}.",
-      "successBody":      "We\u2019ll review your inquiry and contact you within 24 hours to set up your commercial account."
+      "consent": "I agree to receive service updates from Fresh Nest Co. (optional)",
+      "submit": "Submit Inquiry",
+      "submitting": "Submitting…",
+      "successHeading": "Thank you, {{name}}.",
+      "successBody": "We’ll review your inquiry and contact you within 24 hours to set up your commercial account."
     }
   },
   "servicePage": {
-    "backLink": "\u2190 Back to Services",
+    "backLink": "← Back to Services",
     "bookCta": "Book This Service",
     "bookBanner": "Ready to book your {{service}}?",
     "bookBannerCta": "Book Now",
     "pricingHeading": "Transparent Pricing",
-    "pricingStarting": "Starting from ${{min}} for a 1\u20132 bedroom home",
+    "pricingStarting": "Starting from ${{min}} for a 1–2 bedroom home",
     "pricingCta": "See Full Pricing",
     "customPricingHeading": "Custom Pricing for Your Business",
     "customPricingBody": "Commercial cleaning rates are tailored to your space, team size, and schedule. Contact us for a free on-site assessment.",
@@ -513,7 +575,7 @@
       "subhead": "Professional, bilingual cleaning across Cornwall, Akwesasne, Snye QC, and surrounding communities."
     },
     "common": {
-      "includedHeading": "What\u2019s Included",
+      "includedHeading": "What’s Included",
       "howItWorksHeading": "How It Works",
       "trustHeading": "Why Choose Fresh Nest",
       "step1Title": "Book Online",
@@ -522,17 +584,17 @@
       "step2Desc": "Your assigned cleaner arrives on time and works through a consistent checklist.",
       "step3Title": "You Enjoy",
       "step3Desc": "Arrive home to a fresh space. Message us if anything needs attention.",
-      "trust1Stat": "4.9\u2009/\u20095",
+      "trust1Stat": "4.9 / 5",
       "trust1Label": "Google rating from verified clients",
       "trust2Stat": "100%",
       "trust2Label": "Insured, bonded, and background-checked staff",
-      "trust3Stat": "EN\u2009/\u2009FR",
+      "trust3Stat": "EN / FR",
       "trust3Label": "Bilingual service across our full service area"
     },
     "standard": {
       "hero": {
         "heading": "Standard Cleaning",
-        "subhead": "Regular, consistent cleaning to keep your home fresh. No prep work needed \u2014 just let us in."
+        "subhead": "Regular, consistent cleaning to keep your home fresh. No prep work needed — just let us in."
       },
       "included": {
         "floors": "Vacuuming and mopping all floors",
@@ -561,7 +623,7 @@
     "moveout": {
       "hero": {
         "heading": "Move-Out Cleaning",
-        "subhead": "Leave your old home spotless so you get your deposit back \u2014 and move on with confidence."
+        "subhead": "Leave your old home spotless so you get your deposit back — and move on with confidence."
       },
       "included": {
         "allRooms": "Full clean of all rooms and closets",
@@ -575,7 +637,7 @@
     "postconstruction": {
       "hero": {
         "heading": "Post-Construction Cleaning",
-        "subhead": "Construction dust is everywhere \u2014 we remove it safely before you move in."
+        "subhead": "Construction dust is everywhere — we remove it safely before you move in."
       },
       "included": {
         "dustRemoval": "Fine dust removal from all surfaces",
@@ -606,23 +668,32 @@
       "title": "Booking Confirmed — Fresh Nest Co.",
       "description": "Your Fresh Nest Co. cleaning booking is confirmed. Check your email for details."
     },
-    "heading":        "You're booked, {{name}}!",
-    "subhead":        "Your booking is confirmed. A confirmation email is on its way to {{email}}.",
+    "heading": "You're booked, {{name}}!",
+    "subhead": "Your booking is confirmed. A confirmation email is on its way to {{email}}.",
     "genericHeading": "Your booking is confirmed!",
     "genericSubhead": "Check your inbox for your booking confirmation details.",
     "summaryHeading": "Booking Summary",
     "referenceLabel": "Booking reference",
-    "serviceLabel":   "Service",
-    "dateLabel":      "Preferred date",
+    "serviceLabel": "Service",
+    "dateLabel": "Preferred date",
     "frequencyLabel": "Frequency",
-    "nextHeading":    "What Happens Next",
+    "nextHeading": "What Happens Next",
     "step1Title": "Confirmation email sent",
-    "step1Desc":  "Check your inbox — your booking details are on their way.",
+    "step1Desc": "Check your inbox — your booking details are on their way.",
     "step2Title": "We confirm your cleaner",
-    "step2Desc":  "We'll assign your cleaner and confirm the details within 24 hours.",
+    "step2Desc": "We'll assign your cleaner and confirm the details within 24 hours.",
     "step3Title": "Your cleaner arrives",
-    "step3Desc":  "On the day of your booking, your cleaner arrives on time, ready to work.",
+    "step3Desc": "On the day of your booking, your cleaner arrives on time, ready to work.",
     "ctaServices": "Explore Our Services",
-    "ctaHome":     "Return Home"
+    "ctaHome": "Return Home"
+  },
+  "a11y": {
+    "navMain": "Main navigation",
+    "homeLink": "Fresh Nest Co. — Home",
+    "callUs": "Call Fresh Nest Co. at {{phone}}",
+    "navMobile": "Mobile navigation",
+    "footerServices": "Footer services links",
+    "footerLocations": "Footer service areas links",
+    "footerCompany": "Footer company links"
   }
 }
