@@ -91,7 +91,8 @@ export default function AdminPage() {
       if (currentUser) {
         // Validate against client-side allowlist environment variable
         const allowedEmails = (
-          import.meta.env.VITE_ADMIN_EMAILS || 'lauren@freshnest.co,dev@freshnest.co'
+          import.meta.env.VITE_ADMIN_EMAILS ||
+          'lauren@freshnest.co,dev@freshnest.co,rpdouglas@gmail.com,freshnestcompany2023@gmail.com'
         )
           .split(',')
           .map((email: string) => email.trim().toLowerCase())
