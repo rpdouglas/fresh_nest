@@ -18,6 +18,7 @@ This refinement epic implemented:
 5. **Colored Theme Expansion**: Applied the colored (blue `bg-slate-brand`) theme to the **Deep Clean** and **Post Construction** cards in `<ServicesGrid />` alongside the existing Commercial card.
 6. **Legibility & Font weight Enhancements**: Adjusted default body font weight app-wide in `src/index.css` to `font-normal` (400 weight instead of 300) to resolve legibility issues with DM Sans body copy. Applied `font-medium` (500 weight) to the services section subhead and the card description bodies for enhanced readability.
 7. **Book Now Button Inversion**: Styled the "Book Now" button on blue cards with a solid `bg-cream` background and `text-slate-brand` text, providing strong visual contrast, high clickability, and compliance with the brand palette.
+8. **Hero Layout Restructuring**: Positioned the birds nest watermark image behind the main headline `h1` ("Professional Cleaning & Organizing") *only*, embedded a new cozy home cleaning banner image featuring a playful nest theme (`/images/hero-nest-banner.png`) directly under the heading with a 25% black mask overlay, and restored the main company logo right under the subtitle and above the "Book Now" button.
 
 ---
 
@@ -29,7 +30,10 @@ This refinement epic implemented:
 | Update `ServicePage.tsx` to dynamically render the hero image at `opacity-30` with a gradient overlay | ✅ |
 | Refactor `Hero.tsx` to center all elements in a single-column layout | ✅ |
 | Generate and save the `nest-watermark.jpg` watercolor bird nest graphic to `/public/images/` | ✅ |
-| Embed the nest watermark behind the Hero title at 12% opacity with mix-blend-multiply | ✅ |
+| Embed the nest watermark behind the Hero title at 12% opacity | ✅ |
+| Generate and save the `hero-nest-banner.png` home banner image to `/public/images/` | ✅ |
+| Embed the banner image under the Hero title with a 25% dark overlay | ✅ |
+| Position the company logo under the subtitle and above the Book Now button | ✅ |
 | Add faint card background images in `ServicesGrid.tsx` at 15% opacity | ✅ |
 | Apply blue/colored theme to Deep Clean and Post Construction cards | ✅ |
 | Invert Book Now buttons on blue cards to solid cream-white bg | ✅ |
@@ -50,10 +54,10 @@ This refinement epic implemented:
 
 | Persona | Test | Result |
 |---|---|---|
-| **P2 Travis** | Centered Hero & Grid Cards — centered CTAs are highly touchable; clicking card components navigates cleanly to the service page. | ✅ PASS |
+| **P2 Travis** | Centered Hero & Grid Cards — centered CTAs are highly touchable; clicking card components navigates cleanly to the service page. Logo and banner are beautifully integrated into the page flow. | ✅ PASS |
 | **P3 Margaret** | Legibility and Touch Contrast — body fonts are bolded globally to normal (400) and in cards/subheads to medium (500) for clean reading. Book Now buttons on blue cards use high contrast cream-white background with a minimum 48px tap target. Focus outline is visible. | ✅ PASS |
 | **P1 Diane / P5 Sophie** | Localization — Hero title, watermark, and alt attributes translate cleanly into French with zero raw keys or hardcoded English copy. | ✅ PASS |
-| **P6 Gallagher** | Premium Branding — soft watercolor bird's nest background watermark and consistent colored card themes (Commercial, Deep, Post Construction) elevate the premium visual aesthetic. | ✅ PASS |
+| **P6 Gallagher** | Premium Branding — soft watercolor bird's nest background watermark, customized home banner image, and consistent colored card themes (Commercial, Deep, Post Construction) elevate the premium visual aesthetic. | ✅ PASS |
 
 ---
 
@@ -67,8 +71,9 @@ This refinement epic implemented:
 | `public/images/postconstruction-hero.jpg` | CREATED — Compressed hero image for Post-construction |
 | `public/images/commercial-hero.jpg` | CREATED — Compressed hero image for Commercial cleaning |
 | `public/images/nest-watermark.jpg` | CREATED — Web-optimized watercolor bird's nest background graphic |
+| `public/images/hero-nest-banner.png` | CREATED — Stylized horizontal home interior banner with nest details |
 | `src/index.css` | EDITED — Configured default body font weight to normal (400) |
-| `src/components/home/Hero.tsx` | EDITED — Centered layout and watermark image overlay |
+| `src/components/home/Hero.tsx` | EDITED — Centered layout, watermark under h1 title, nested banner, and logo under subtitle |
 | `src/pages/ServicePage.tsx` | EDITED — Dynamic hero background image overlay block |
 | `src/components/home/ServicesGrid.tsx` | EDITED — Applied color theme expansion, solid buttons, font-medium, and card link wrapping |
 | `src/i18n/locales/en.json` | EDITED — Added `imgAlt` and `viewDetailsAriaLabel` localization strings |

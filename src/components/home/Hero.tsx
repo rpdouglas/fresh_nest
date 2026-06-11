@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import logoHero from '@/assets/logo-hero-340px.png'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -16,31 +17,46 @@ export default function Hero() {
   const { t } = useTranslation()
 
   return (
-    <section className="bg-warm-white py-16 px-4 md:py-24 md:px-6 overflow-hidden relative">
-      <div className="relative max-w-3xl mx-auto text-center flex flex-col items-center gap-8 min-h-[300px] justify-center">
-        {/* Soft Translucent watermark background */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] md:w-[450px] md:h-[450px] pointer-events-none z-0">
-          <img
-            src="/images/nest-watermark.jpg"
-            alt=""
-            aria-hidden="true"
-            className="w-full h-full object-contain mix-blend-multiply"
-            style={{ opacity: 0.12 }}
-          />
-        </div>
-
+    <section className="bg-warm-white py-12 px-4 md:py-16 md:px-6 overflow-hidden relative">
+      <div className="relative max-w-4xl mx-auto text-center flex flex-col items-center gap-6 min-h-[300px] justify-center">
         <motion.div
           initial="hidden"
           animate="visible"
           variants={stagger}
-          className="relative z-10 flex flex-col items-center gap-6"
+          className="relative z-10 flex flex-col items-center gap-6 w-full"
         >
-          <motion.h1
+          {/* Main title container with nest watermark behind it */}
+          <div className="relative w-full py-4 flex items-center justify-center">
+            <div className="absolute inset-0 pointer-events-none z-0 flex items-center justify-center overflow-visible">
+              <img
+                src="/images/nest-watermark.jpg"
+                alt=""
+                aria-hidden="true"
+                className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] object-contain mix-blend-multiply"
+                style={{ opacity: 0.12 }}
+              />
+            </div>
+            <motion.h1
+              variants={fadeUp}
+              className="relative z-10 font-display text-5xl md:text-6xl text-charcoal leading-tight max-w-2xl text-center"
+            >
+              {t('hero.headline')}
+            </motion.h1>
+          </div>
+
+          {/* Banner-sized image under the heading with 25% dark overlay */}
+          <motion.div
             variants={fadeUp}
-            className="font-display text-5xl md:text-6xl text-charcoal leading-tight max-w-2xl"
+            className="relative w-full overflow-hidden rounded border border-sand shadow-sm my-2 aspect-[21/9] md:aspect-[3/1]"
           >
-            {t('hero.headline')}
-          </motion.h1>
+            <img
+              src="/images/hero-nest-banner.png"
+              alt=""
+              aria-hidden="true"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-charcoal/25 pointer-events-none" />
+          </motion.div>
 
           <motion.p
             variants={fadeUp}
@@ -48,6 +64,18 @@ export default function Hero() {
           >
             {t('hero.subhead')}
           </motion.p>
+
+          {/* Hero logo under subtitle, above Book Now button */}
+          <motion.div
+            variants={fadeUp}
+            className="w-full max-w-[200px] md:max-w-[260px] my-2"
+          >
+            <img
+              src={logoHero}
+              alt="Fresh Nest Co."
+              className="w-full h-auto object-contain mx-auto"
+            />
+          </motion.div>
 
           <motion.div variants={fadeUp} className="mt-2">
             <Link
