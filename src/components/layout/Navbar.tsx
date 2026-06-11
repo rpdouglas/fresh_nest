@@ -18,7 +18,7 @@ export default function Navbar() {
 
   const toggleLanguage = useCallback(() => {
     const next = i18n.language.startsWith('fr') ? 'en' : 'fr'
-    i18n.changeLanguage(next)
+    void i18n.changeLanguage(next)
     logLanguageToggled(next)
     // Persist in localStorage — i18next LanguageDetector picks this up on reload
     localStorage.setItem('i18nextLng', next)

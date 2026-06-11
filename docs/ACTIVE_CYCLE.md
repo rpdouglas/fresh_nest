@@ -480,3 +480,9 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 * **Status:** Completed ✅ (2026-06-11)
 * **Strategy:** Restructured the Hero main H1 title into three split lines using the Trans component. The second line ("Cleaning" in English, "Nettoyage" in French) was italicized and highlighted in brand blue (text-slate-brand), introducing an elegant visual accent.
 * **Close Report:** [hero-headline-style-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/hero-headline-style-close-2026-06-11.md)
+
+#### R16 — Enable Type-Aware ESLint Rules
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-11)
+* **Strategy:** Refactored ESLint configuration to include recommendedTypeChecked and process config/E2E files via projectService. Resolved 30 type safety bugs globally including floating promises, unsafe type destructurings, and custom Vite environment variable typings.
+* **Close Report:** [R16-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/R16-close-2026-06-11.md)

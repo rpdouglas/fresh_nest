@@ -100,7 +100,7 @@ export default function BookingPage() {
       const lang = i18n.language === 'fr' ? 'fr' : 'en'
       const bookingId = await submitBooking(data, lang, source)
       logBookingCompleted(data.serviceType)
-      navigate('/thank-you', {
+      void navigate('/thank-you', {
         state: {
           firstName:     data.firstName,
           email:         data.email,
@@ -134,7 +134,7 @@ export default function BookingPage() {
       <section className="bg-cream py-10 px-4 md:py-14 md:px-6">
         <div className="max-w-2xl mx-auto">
           <FormProvider {...methods}>
-            <form onSubmit={methods.handleSubmit(onSubmit)} noValidate className="space-y-8">
+            <form onSubmit={(e) => { void methods.handleSubmit(onSubmit)(e); }} noValidate className="space-y-8">
               <BookingStep1 />
               <BookingStep2 />
               <BookingStep3 />

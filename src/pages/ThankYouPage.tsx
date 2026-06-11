@@ -29,8 +29,8 @@ const STEPS = [
 
 export default function ThankYouPage() {
   const { t } = useTranslation()
-  const { state } = useLocation()
-  const booking = state as ThankYouState | null
+  const location = useLocation()
+  const booking = location.state as ThankYouState | null
 
   return (
     <>

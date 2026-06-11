@@ -438,7 +438,7 @@ export default function AirbnbTurnoverPage() {
               </div>
             ) : (
               <form
-                onSubmit={handleSubmit(onSubmit)}
+                onSubmit={(e) => { void handleSubmit(onSubmit)(e); }}
                 noValidate
                 aria-label={t('airbnbPage.form.heading')}
                 className="bg-white border border-sand rounded p-6 md:p-8 space-y-6"
