@@ -20,6 +20,7 @@ This refinement epic implemented:
 7. **Book Now Button Inversion**: Styled the "Book Now" button on blue cards with a solid `bg-cream` background and `text-slate-brand` text, providing strong visual contrast, high clickability, and compliance with the brand palette.
 8. **Hero Layout Restructuring**: Positioned the birds nest watermark image behind the main headline `h1` ("Professional Cleaning & Organizing") *only*, embedded a new cozy home cleaning banner image featuring a playful nest theme (`/images/hero-nest-banner.png`) directly under the heading with a 25% black mask overlay, and restored the main company logo right under the subtitle and above the "Book Now" button.
 9. **Recurring Cleaning Background Images**: Generated three stylized watercolor/pastel images representing the weekly, bi-weekly, and monthly recurring cleaning cards (featuring cozy nests, cleaning equipment, and calendar highlights). Set these images as card backgrounds at 15% opacity, and inverted the Book Now button on the bi-weekly blue card to solid cream-white to ensure visual uniformity.
+10. **How It Works Card Redesign**: Restructured the 4-step 'How It Works' section to display each step inside a stylized, full-height card that alternates background colors (Step 1 & 3: white bg; Step 2 & 4: blue bg). Generated 4 whimsical bird's nest background images (`howitworks-step1.png` to `howitworks-step4.png`) depicting the respective booking, confirmation, cleaning, and relaxation themes, placing them behind each card at 15% opacity, and removed the old horizontal connector line.
 
 ---
 
@@ -42,6 +43,9 @@ This refinement epic implemented:
 | Generate and save 3 recurring background images showing nests + calendars (`weekly-recurring.png`, `biweekly-recurring.png`, `monthly-recurring.png`) | ✅ |
 | Set recurring images as backgrounds at 15% opacity in `RecurringCTA.tsx` | ✅ |
 | Invert the Book Now button on the bi-weekly card to solid cream-white | ✅ |
+| Generate and save 4 whimsical "How It Works" step backgrounds (`howitworks-step1.png` to `howitworks-step4.png`) | ✅ |
+| Restructure steps in `HowItWorks.tsx` to display in alternating-colored cards with background images | ✅ |
+| Remove horizontal connector line from `HowItWorks.tsx` | ✅ |
 | Add `imgAlt` translations to `en.json` and `fr.json` for all 5 services | ✅ |
 | Add `viewDetailsAriaLabel` bilingual helper to `en.json` and `fr.json` | ✅ |
 | Wrap card icons in `ServicesGrid.tsx` with specific service detail page routes | ✅ |
@@ -59,9 +63,9 @@ This refinement epic implemented:
 | Persona | Test | Result |
 |---|---|---|
 | **P2 Travis** | Centered Hero & Grid Cards — centered CTAs are highly touchable; clicking card components navigates cleanly to the service page. Logo and banner are beautifully integrated into the page flow. | ✅ PASS |
-| **P3 Margaret** | Legibility and Touch Contrast — body fonts are bolded globally to normal (400) and in cards/subheads to medium (500) for clean reading. Book Now buttons on blue cards (and bi-weekly card) use high contrast cream-white background with a minimum 48px tap target. Focus outline is visible. | ✅ PASS |
+| **P3 Margaret** | Legibility and Touch Contrast — body fonts are bolded globally to normal (400) and in cards/subheads to medium (500) for clean reading. Book Now buttons on blue cards (and bi-weekly card) use high contrast cream-white background with a minimum 48px tap target. Focus outline is visible. "How It Works" step descriptions are structured in high-contrast cards. | ✅ PASS |
 | **P1 Diane / P5 Sophie** | Localization — Hero title, watermark, and alt attributes translate cleanly into French with zero raw keys or hardcoded English copy. | ✅ PASS |
-| **P6 Gallagher** | Premium Branding — soft watercolor bird's nest background watermark, customized home banner image, recurring cards with stylized illustrations, and consistent colored card themes (Commercial, Deep, Post Construction, Bi-weekly) elevate the premium visual aesthetic. | ✅ PASS |
+| **P6 Gallagher** | Premium Branding — soft watercolor bird's nest background watermark, customized home banner image, recurring cards with stylized illustrations, alternating cards in "How It Works" with custom illustrations, and consistent colored card themes (Commercial, Deep, Post Construction, Bi-weekly) elevate the premium visual aesthetic. | ✅ PASS |
 
 ---
 
@@ -79,9 +83,14 @@ This refinement epic implemented:
 | `public/images/weekly-recurring.png` | CREATED — Whimsical weekly calendar + nest illustration |
 | `public/images/biweekly-recurring.png` | CREATED — Whimsical bi-weekly calendar + nest illustration |
 | `public/images/monthly-recurring.png` | CREATED — Whimsical monthly calendar + nest illustration |
+| `public/images/howitworks-step1.png` | CREATED — Whimsical nest and calendar illustration for Step 1 |
+| `public/images/howitworks-step2.png` | CREATED — Whimsical flying bird carrying envelope for Step 2 |
+| `public/images/howitworks-step3.png` | CREATED — Whimsical nest with cleaning supplies for Step 3 |
+| `public/images/howitworks-step4.png` | CREATED — Whimsical bird sleeping in nest for Step 4 |
 | `src/index.css` | EDITED — Configured default body font weight to normal (400) |
 | `src/components/home/Hero.tsx` | EDITED — Centered layout, watermark under h1 title, nested banner, and logo under subtitle |
 | `src/components/home/RecurringCTA.tsx` | EDITED — Added background images to cards, solid cream-white button layout |
+| `src/components/home/HowItWorks.tsx` | EDITED — Render steps inside alternating colored cards with background images, remove connector line |
 | `src/pages/ServicePage.tsx` | EDITED — Dynamic hero background image overlay block |
 | `src/components/home/ServicesGrid.tsx` | EDITED — Applied color theme expansion, solid buttons, font-medium, and card link wrapping |
 | `src/i18n/locales/en.json` | EDITED — Added `imgAlt` and `viewDetailsAriaLabel` localization strings |
