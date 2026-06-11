@@ -134,65 +134,84 @@ export default function ServicesGrid() {
               <motion.div key={card.key} variants={fadeUp} className="flex">
                 <article
                   className={cn(
-                    'rounded border p-6 flex flex-col gap-4 w-full',
+                    'relative overflow-hidden rounded border p-6 flex flex-col gap-4 w-full',
                     card.inverted
                       ? 'bg-slate-brand border-slate-brand'
                       : 'bg-white border-sand shadow-sm',
                   )}
                 >
-                  <Link
-                    to={card.route}
-                    aria-label={t('services.viewDetailsAriaLabel', { service: serviceTitle })}
-                    className={cn(
-                      'w-10 h-10 flex items-center justify-center rounded transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2',
-                      card.inverted
-                        ? 'text-white hover:text-slate-light focus:ring-white'
-                        : 'text-slate-brand hover:text-slate-dark focus:ring-slate-brand',
-                    )}
-                  >
-                    <ServiceIcon serviceKey={card.key} />
-                  </Link>
+                  {/* Background Image decoration */}
+                  <div className="absolute inset-0 pointer-events-none">
+                    <img
+                      src={`/images/${card.key}-hero.jpg`}
+                      alt=""
+                      aria-hidden="true"
+                      className="w-full h-full object-cover"
+                      style={{ opacity: 0.15 }}
+                    />
+                    <div
+                      className={cn(
+                        'absolute inset-0 transition-colors duration-200',
+                        card.inverted ? 'bg-slate-brand/90' : 'bg-white/90',
+                      )}
+                    />
+                  </div>
 
-                  <h3
-                    className={cn(
-                      'font-sub text-2xl',
-                      card.inverted ? 'text-white' : 'text-charcoal',
-                    )}
-                  >
+                  <div className="relative z-10 flex flex-col gap-4 flex-1">
                     <Link
                       to={card.route}
+                      aria-label={t('services.viewDetailsAriaLabel', { service: serviceTitle })}
                       className={cn(
-                        'hover:underline rounded focus:outline-none focus:ring-2 focus:ring-offset-2',
-                        card.inverted ? 'focus:ring-white' : 'focus:ring-slate-brand'
+                        'w-10 h-10 flex items-center justify-center rounded transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2',
+                        card.inverted
+                          ? 'text-white hover:text-slate-light focus:ring-white'
+                          : 'text-slate-brand hover:text-slate-dark focus:ring-slate-brand',
                       )}
                     >
-                      {serviceTitle}
+                      <ServiceIcon serviceKey={card.key} />
                     </Link>
-                  </h3>
 
-                  <p
-                    className={cn(
-                      'font-body text-base flex-1',
-                      card.inverted ? 'text-white' : 'text-text-muted',
-                    )}
-                  >
-                    {t(card.descKey)}
-                  </p>
+                    <h3
+                      className={cn(
+                        'font-sub text-2xl',
+                        card.inverted ? 'text-white' : 'text-charcoal',
+                      )}
+                    >
+                      <Link
+                        to={card.route}
+                        className={cn(
+                          'hover:underline rounded focus:outline-none focus:ring-2 focus:ring-offset-2',
+                          card.inverted ? 'focus:ring-white' : 'focus:ring-slate-brand',
+                        )}
+                      >
+                        {serviceTitle}
+                      </Link>
+                    </h3>
 
-                  <Link
-                    to={`/booking?serviceType=${card.key}`}
-                    aria-label={t('services.bookAriaLabel', { service: serviceTitle })}
-                    className={cn(
-                      'inline-flex items-center font-body font-medium text-base rounded',
-                      'min-h-[48px] px-4 py-2 self-start transition-colors duration-200',
-                      'focus:outline-none focus:ring-2 focus:ring-offset-2',
-                      card.inverted
-                        ? 'border border-white text-white hover:bg-white hover:text-slate-brand focus:ring-white'
-                        : 'bg-slate-brand text-white hover:bg-slate-dark focus:ring-slate-brand',
-                    )}
-                  >
-                    {t('services.bookNow')} →
-                  </Link>
+                    <p
+                      className={cn(
+                        'font-body text-base flex-1',
+                        card.inverted ? 'text-white' : 'text-text-muted',
+                      )}
+                    >
+                      {t(card.descKey)}
+                    </p>
+
+                    <Link
+                      to={`/booking?serviceType=${card.key}`}
+                      aria-label={t('services.bookAriaLabel', { service: serviceTitle })}
+                      className={cn(
+                        'inline-flex items-center font-body font-medium text-base rounded',
+                        'min-h-[48px] px-4 py-2 self-start transition-colors duration-200',
+                        'focus:outline-none focus:ring-2 focus:ring-offset-2',
+                        card.inverted
+                          ? 'border border-white text-white hover:bg-white hover:text-slate-brand focus:ring-white'
+                          : 'bg-slate-brand text-white hover:bg-slate-dark focus:ring-slate-brand',
+                      )}
+                    >
+                      {t('services.bookNow')} →
+                    </Link>
+                  </div>
                 </article>
               </motion.div>
             )
