@@ -64,7 +64,7 @@ export default function HowItWorks() {
                 <motion.div key={step.number} variants={fadeUp} className="flex">
                   <article
                     className={cn(
-                      'relative overflow-hidden rounded border p-6 flex flex-col items-center text-center gap-4 w-full',
+                      'relative overflow-hidden rounded border p-6 flex flex-col items-start text-left gap-4 w-full',
                       inverted
                         ? 'bg-slate-brand border-slate-brand'
                         : 'bg-white border-sand shadow-sm',
@@ -82,32 +82,34 @@ export default function HowItWorks() {
                     </div>
 
                     {/* Content wrapper to float above background image */}
-                    <div className="relative z-10 flex flex-col items-center gap-4 flex-1">
-                      <div
-                        aria-hidden="true"
-                        className={cn(
-                          'w-12 h-12 rounded-full flex items-center justify-center font-sub text-xl shrink-0 transition-colors duration-200',
-                          inverted
-                            ? 'bg-white text-slate-brand'
-                            : 'bg-slate-brand text-white',
-                        )}
-                      >
-                        {step.number}
-                      </div>
+                    <div className="relative z-10 flex flex-col items-start gap-4 flex-1">
+                      <div className="flex items-center gap-3">
+                        <div
+                          aria-hidden="true"
+                          className={cn(
+                            'w-10 h-10 rounded-full flex items-center justify-center font-sub text-lg shrink-0 transition-colors duration-200',
+                            inverted
+                              ? 'bg-white text-slate-brand'
+                              : 'bg-slate-brand text-white',
+                          )}
+                        >
+                          {step.number}
+                        </div>
 
-                      <h3
-                        className={cn(
-                          'font-sub text-xl font-medium',
-                          inverted ? 'text-white' : 'text-charcoal',
-                        )}
-                      >
-                        {t(step.titleKey)}
-                      </h3>
+                        <h3
+                          className={cn(
+                            'font-sub text-xl',
+                            inverted ? 'text-white' : 'text-charcoal',
+                          )}
+                        >
+                          {t(step.titleKey)}
+                        </h3>
+                      </div>
 
                       <p
                         className={cn(
                           'font-body text-lg flex-1 font-bold',
-                          inverted ? 'text-white/95' : 'text-charcoal',
+                          inverted ? 'text-white' : 'text-charcoal',
                         )}
                       >
                         {t(step.descKey)}

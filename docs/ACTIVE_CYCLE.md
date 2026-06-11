@@ -456,3 +456,9 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 * **Status:** Completed ✅ (2026-06-11)
 * **Strategy:** Placed the service icon and the service name inline on the same line to save vertical space. Wrapped both elements in a single clickable group link under h3 to ensure excellent accessibility, meeting Margaret's min-h-[48px] target and improving hover transitions.
 * **Close Report:** [services-card-layout-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/services-card-layout-close-2026-06-11.md)
+
+#### How It Works Card Layout Optimization
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-11)
+* **Strategy:** Aligned the step number bubble and step title inline on a single line to save vertical space. Shrunk bubble to w-10 h-10, left-aligned step card contents to improve visual scanning, and corrected contrast on inverted descriptions to ensure full WCAG compliance.
+* **Close Report:** [how-it-works-layout-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/how-it-works-layout-close-2026-06-11.md)
