@@ -391,6 +391,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   * [src/i18n/locales/en.json](file:///workspaces/fresh_nest/src/i18n/locales/en.json)
   * [src/i18n/locales/fr.json](file:///workspaces/fresh_nest/src/i18n/locales/fr.json)
 * **Close Report:** [E06-close-2026-06-06.md](file:///workspaces/fresh_nest/docs/reports/E06-close-2026-06-06.md)
+* **Refinements (2026-06-11):** Wrapped selection sections in individual alternating color containers (white, cream, slate-pale) with custom nest cleaning background images at 25% opacity for improved step-by-step readability.
 
 #### E05 — Trust Bar Section
 * **Owner:** Dev Team
