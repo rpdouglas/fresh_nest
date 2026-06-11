@@ -67,9 +67,9 @@ All tokens are defined in `tailwind.config.js` under `theme.extend.colors`. Use 
 
 | Role | Font | Tailwind Class | Google Fonts Weights |
 |---|---|---|---|
-| Display / H1–H3 | Cormorant Garamond | `font-display` | 300, 400, 400 italic |
+| Display / H1–H3 | Cormorant Garamond | `font-display` | 300, 400, 400 italic, 600, 700, 600 italic, 700 italic |
 | Subheadings | Marcellus | `font-sub` | 400 |
-| Body / UI / CTAs | DM Sans | `font-body` | 300, 500 |
+| Body / UI / CTAs | DM Sans | `font-body` | 300, 400, 500, 600, 700 |
 
 ### Font Loading
 
@@ -79,7 +79,7 @@ Load via Google Fonts in `index.html`:
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link
-  href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,400&family=Marcellus&family=DM+Sans:wght@300;500&display=swap"
+  href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Marcellus&family=DM+Sans:wght@300;400;500;600;700&display=swap"
   rel="stylesheet"
 />
 ```
@@ -88,8 +88,8 @@ Load via Google Fonts in `index.html`:
 
 | Element | Classes | Notes |
 |---|---|---|
-| Page title / H1 | `font-display text-5xl text-charcoal` | Cormorant Garamond 400 |
-| Section heading / H2 | `font-display text-4xl text-charcoal` | Cormorant Garamond 300 |
+| Page title / H1 | `font-display text-5xl text-charcoal` | Cormorant Garamond 700 (forced bold globally in index.css) |
+| Section heading / H2 | `font-display text-4xl text-charcoal` | Cormorant Garamond 700 (forced bold globally in index.css) |
 | Card heading / H3 | `font-sub text-2xl text-charcoal` | Marcellus 400 |
 | Subheading / H4 | `font-sub text-xl text-charcoal` | Marcellus 400 |
 | Body copy | `font-body text-base text-charcoal` | DM Sans 300 — minimum 16px |

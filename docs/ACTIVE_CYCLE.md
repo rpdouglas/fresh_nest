@@ -462,3 +462,9 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 * **Status:** Completed ✅ (2026-06-11)
 * **Strategy:** Aligned the step number bubble and step title inline on a single line to save vertical space. Shrunk bubble to w-10 h-10, left-aligned step card contents to improve visual scanning, and corrected contrast on inverted descriptions to ensure full WCAG compliance.
 * **Close Report:** [how-it-works-layout-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/how-it-works-layout-close-2026-06-11.md)
+
+#### Heading Typography Bold Refinement
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-11)
+* **Strategy:** Upgraded H1 and H2 display headings globally to bold (700 weight) to balance them against the heavy body and card designs. Loaded native 600/700 font weights for Cormorant Garamond from Google Fonts to avoid browser-synthetic bolding distortions, and updated the design system.
+* **Close Report:** [heading-bold-typography-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/heading-bold-typography-close-2026-06-11.md)

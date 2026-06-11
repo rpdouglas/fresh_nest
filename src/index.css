@@ -5,4 +5,5 @@
 @layer base {
   html { font-family: 'DM Sans', sans-serif; scroll-behavior: smooth; }
   body { @apply bg-warm-white text-charcoal font-normal; }
+  h1.font-display, h2.font-display { @apply font-bold; }
 }
