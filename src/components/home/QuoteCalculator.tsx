@@ -79,7 +79,7 @@ export default function QuoteCalculator() {
           <h2 className="font-display text-4xl text-charcoal mb-3">
             {t('quote.sectionHeading')}
           </h2>
-          <p className="font-body text-lg text-text-muted font-semibold mb-8">
+          <p className="font-body text-lg text-charcoal font-bold mb-8">
             {t('quote.sectionSubhead')}
           </p>
 

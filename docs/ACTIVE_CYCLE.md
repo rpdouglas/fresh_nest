@@ -444,3 +444,9 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   * [src/i18n/locales/en.json](file:///workspaces/fresh_nest/src/i18n/locales/en.json)
   * [src/i18n/locales/fr.json](file:///workspaces/fresh_nest/src/i18n/locales/fr.json)
 * **Close Report:** [E21-E07-refinement-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/E21-E07-refinement-close-2026-06-11.md)
+
+#### Typography Contrast & Legibility Refinement
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-11)
+* **Strategy:** Upgraded card bodies and subtitles globally to font-bold (700 weight), and changed white card text color to text-charcoal for maximum high-contrast legibility.
+* **Close Report:** [typography-refinement-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/typography-refinement-close-2026-06-11.md)

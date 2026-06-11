@@ -91,7 +91,7 @@ export default function ServicePage({ config }: Props) {
             >
               {pageTitle}
             </h1>
-            <p className="font-body text-lg text-slate-pale font-semibold max-w-lg mb-8">
+            <p className="font-body text-lg text-slate-pale font-bold max-w-lg mb-8">
               {t(`${k}.hero.subhead`)}
             </p>
             <Link
@@ -142,7 +142,7 @@ export default function ServicePage({ config }: Props) {
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span className="font-body text-lg text-charcoal font-semibold">
+                <span className="font-body text-lg text-charcoal font-bold">
                   {t(`${k}.included.${item}`)}
                 </span>
               </motion.div>
@@ -181,7 +181,7 @@ export default function ServicePage({ config }: Props) {
                 <h3 className="font-display text-xl text-charcoal mb-2">
                   {t(`servicePage.common.${step.titleKey}`)}
                 </h3>
-                <p className="font-body text-lg text-text-muted font-semibold leading-relaxed">
+                <p className="font-body text-lg text-charcoal font-bold leading-relaxed">
                   {t(`servicePage.common.${step.descKey}`)}
                 </p>
               </motion.div>
@@ -217,7 +217,7 @@ export default function ServicePage({ config }: Props) {
                 <span className="font-display text-5xl text-slate-pale block mb-2">
                   {t(`servicePage.common.${signal.statKey}`)}
                 </span>
-                <p className="font-body text-lg text-slate-light font-semibold leading-relaxed">
+                <p className="font-body text-lg text-slate-pale font-bold leading-relaxed">
                   {t(`servicePage.common.${signal.labelKey}`)}
                 </p>
               </motion.div>
@@ -285,7 +285,7 @@ export default function ServicePage({ config }: Props) {
               viewport={{ once: true }}
               variants={fadeUp}
               custom={1}
-              className="font-body text-lg text-text-muted font-semibold mb-8 max-w-xl mx-auto"
+              className="font-body text-lg text-charcoal font-bold mb-8 max-w-xl mx-auto"
             >
               {t('servicePage.customPricingBody')}
             </motion.p>

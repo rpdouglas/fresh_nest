@@ -57,7 +57,7 @@ export default function PricingPage() {
             <h1 className="font-display text-5xl text-charcoal mb-4">
               {t('pricing.hero.title')}
             </h1>
-            <p className="font-body text-lg text-text-muted font-semibold max-w-xl">
+            <p className="font-body text-lg text-charcoal font-bold max-w-xl">
               {t('pricing.hero.subtitle')}
             </p>
           </motion.div>
@@ -76,7 +76,7 @@ export default function PricingPage() {
           >
             {t('pricing.services.heading')}
           </h2>
-          <p className="font-body text-lg text-text-muted font-semibold mb-8">
+          <p className="font-body text-lg text-charcoal font-bold mb-8">
             {t('pricing.services.reference')}
           </p>
 
@@ -103,7 +103,7 @@ export default function PricingPage() {
                   <p className="font-display text-3xl text-slate-brand mb-3">
                     {priceDisplay}
                   </p>
-                  <p className="font-body text-lg text-text-muted font-semibold flex-1 mb-4">
+                  <p className="font-body text-lg text-charcoal font-bold flex-1 mb-4">
                     {t(descKey)}
                   </p>
                   <Link
@@ -131,7 +131,7 @@ export default function PricingPage() {
           >
             {t('pricing.frequency.heading')}
           </h2>
-          <p className="font-body text-lg text-text-muted font-semibold mb-8">
+          <p className="font-body text-lg text-charcoal font-bold mb-8">
             {t('pricing.frequency.cta')}
           </p>
 
@@ -152,7 +152,7 @@ export default function PricingPage() {
                 )}
                 <p className="font-sub text-xl text-charcoal mb-1">{t(labelKey)}</p>
                 <p className="font-display text-3xl text-slate-brand mb-3">{t(saveKey)}</p>
-                <p className="font-body text-lg text-text-muted font-semibold">{t(taglineKey)}</p>
+                <p className="font-body text-lg text-charcoal font-bold">{t(taglineKey)}</p>
               </motion.div>
             ))}
           </div>

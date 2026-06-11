@@ -25,7 +25,7 @@ export default function LocationsOverview() {
             <h1 className="font-display text-4xl md:text-5xl text-charcoal mb-4">
               {t('locations.overview.heading')}
             </h1>
-            <p className="font-body text-lg text-text-muted font-semibold">
+            <p className="font-body text-lg text-charcoal font-bold">
               {t('locations.overview.subhead')}
             </p>
           </motion.div>
@@ -49,7 +49,7 @@ export default function LocationsOverview() {
                   <h2 className="font-sub text-xl text-charcoal mb-2">
                     {t(loc.headingKey)}
                   </h2>
-                  <p className="font-body text-lg text-text-muted font-semibold mb-4">
+                  <p className="font-body text-lg text-charcoal font-bold mb-4">
                     {t(loc.subheadKey)}
                   </p>
                   <span
