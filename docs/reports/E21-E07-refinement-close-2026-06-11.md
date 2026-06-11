@@ -12,7 +12,8 @@
 
 This refinement epic implemented:
 1. **Ghosted Hero Images**: High-end interior hero images generated with brand-curated cream, warm-white, and sand color tokens, compressed to JPEG at 85% quality to maintain fast page load speeds. They are loaded dynamically on the 5 residential/commercial service pages matching the ghosted image layout originally designed for the Airbnb page.
-2. **Accessible Routing Upgrades**: Service cards in the `<ServicesGrid />` (shared by the landing page and `/services` overview page) were updated so that clicking either the card icon or the service title heading routes the client to the specific service page. Accessibility guidelines were strictly maintained with focus states, border-radius standards, and bilingual `aria-label` attributes.
+2. **Clickable Service Cards with Ghosted Backgrounds**: Service cards in the `<ServicesGrid />` (shared by the landing page and `/services` overview page) were updated to display these ghosted service images as faint backgrounds. The images are rendered at exactly 15% opacity (50% more transparent than the 30% opacity on service page heroes) behind a 90% card-theme color overlay (white overlay for light cards, brand-blue overlay for the inverted commercial card) to ensure strong text legibility and compliance with WCAG AA.
+3. **Accessible Routing Upgrades**: The card icons and the service title headings were wrapped in router `<Link />` components pointing to the specific service page. Accessibility guidelines were strictly maintained with focus states, border-radius standards, and bilingual `aria-label` attributes.
 
 ---
 
@@ -22,6 +23,8 @@ This refinement epic implemented:
 |---|---|
 | Convert and save 5 service hero images to `/public/images/` as compressed JPEGs | ✅ |
 | Update `ServicePage.tsx` to dynamically render the hero image at `opacity-30` with a gradient overlay | ✅ |
+| Add faint card background images in `ServicesGrid.tsx` at 15% opacity | ✅ |
+| Add a 90% opacity color overlay (white/brand-blue) in `ServicesGrid.tsx` for high contrast | ✅ |
 | Add `imgAlt` translations to `en.json` and `fr.json` for all 5 services | ✅ |
 | Add `viewDetailsAriaLabel` bilingual helper to `en.json` and `fr.json` | ✅ |
 | Wrap card icons in `ServicesGrid.tsx` with specific service detail page routes | ✅ |
