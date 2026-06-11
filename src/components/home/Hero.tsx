@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { useTranslation } from 'react-i18next'
+import { useTranslation, Trans } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import logoHero from '@/assets/logo-hero-340px.png'
 
@@ -40,7 +40,13 @@ export default function Hero() {
               variants={fadeUp}
               className="relative z-10 font-display text-5xl md:text-6xl text-charcoal leading-tight max-w-2xl text-center"
             >
-              {t('hero.headline')}
+              <Trans
+                i18nKey="hero.headline"
+                components={{
+                  highlight: <span className="italic text-slate-brand" />,
+                  br: <br />
+                }}
+              />
             </motion.h1>
           </div>
 
