@@ -426,6 +426,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 * **Owner:** Dev Team
 * **Status:** Completed ✅ (2026-06-11)
 * **Key Assets:**
+  * [public/images/hero-nest-banner.png](file:///workspaces/fresh_nest/public/images/hero-nest-banner.png)
   * [src/index.css](file:///workspaces/fresh_nest/src/index.css)
   * [src/components/home/Hero.tsx](file:///workspaces/fresh_nest/src/components/home/Hero.tsx)
   * [src/pages/ServicePage.tsx](file:///workspaces/fresh_nest/src/pages/ServicePage.tsx)
