@@ -26,8 +26,8 @@ export default function LocationPage({ config }: { config: LocationConfig }) {
             <h1 className="font-display text-4xl md:text-5xl text-charcoal mb-4">
               {t(config.headingKey)}
             </h1>
-            <p className="font-body text-lg text-text-muted font-semibold mb-4">{t(config.subheadKey)}</p>
-            <p className="font-body text-lg text-charcoal font-semibold max-w-2xl leading-relaxed">
+            <p className="font-body text-lg text-charcoal font-bold mb-4">{t(config.subheadKey)}</p>
+            <p className="font-body text-lg text-charcoal font-bold max-w-2xl leading-relaxed">
               {t(config.descriptionKey)}
             </p>
           </motion.div>
@@ -54,7 +54,7 @@ export default function LocationPage({ config }: { config: LocationConfig }) {
                   <circle cx="12" cy="10" r="3" />
                 </svg>
               </div>
-              <p className="font-body text-lg text-charcoal font-semibold">{t(config.calloutKey)}</p>
+              <p className="font-body text-lg text-charcoal font-bold">{t(config.calloutKey)}</p>
             </motion.div>
           )}
         </div>

@@ -116,7 +116,7 @@ export default function ServicesGrid() {
           <h2 className="font-display text-4xl text-charcoal mb-4">
             {t('services.sectionHeading')}
           </h2>
-          <p className="font-body text-lg text-text-muted font-semibold">
+          <p className="font-body text-lg text-charcoal font-bold">
             {t('services.sectionSubhead')}
           </p>
         </motion.div>
@@ -184,8 +184,8 @@ export default function ServicesGrid() {
 
                     <p
                       className={cn(
-                        'font-body text-lg flex-1 font-semibold',
-                        card.inverted ? 'text-white' : 'text-text-muted',
+                        'font-body text-lg flex-1 font-bold',
+                        card.inverted ? 'text-white' : 'text-charcoal',
                       )}
                     >
                       {t(card.descKey)}

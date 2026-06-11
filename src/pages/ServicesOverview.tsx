@@ -39,7 +39,7 @@ export default function ServicesOverview() {
             animate="visible"
             variants={fadeUp}
             custom={1}
-            className="font-body text-lg text-text-muted font-semibold max-w-xl"
+            className="font-body text-lg text-charcoal font-bold max-w-xl"
           >
             {t('servicePage.overview.subhead')}
           </motion.p>

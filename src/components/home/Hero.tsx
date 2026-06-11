@@ -46,7 +46,7 @@ export default function Hero() {
 
           <motion.p
             variants={fadeUp}
-            className="font-body text-xl font-semibold text-text-muted max-w-xl leading-relaxed"
+            className="font-body text-xl font-bold text-charcoal max-w-xl leading-relaxed"
           >
             {t('hero.subhead')}
           </motion.p>
