@@ -33,7 +33,7 @@ export default function Hero() {
                 alt=""
                 aria-hidden="true"
                 className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] object-contain mix-blend-multiply"
-                style={{ opacity: 0.12 }}
+                style={{ opacity: 0.25 }}
               />
             </div>
             <motion.h1
@@ -43,20 +43,6 @@ export default function Hero() {
               {t('hero.headline')}
             </motion.h1>
           </div>
-
-          {/* Banner-sized image under the heading with 25% dark overlay */}
-          <motion.div
-            variants={fadeUp}
-            className="relative w-full overflow-hidden rounded border border-sand shadow-sm my-2 aspect-[21/9] md:aspect-[3/1]"
-          >
-            <img
-              src="/images/hero-nest-banner.png"
-              alt=""
-              aria-hidden="true"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-charcoal/25 pointer-events-none" />
-          </motion.div>
 
           <motion.p
             variants={fadeUp}
@@ -68,7 +54,7 @@ export default function Hero() {
           {/* Hero logo under subtitle, above Book Now button */}
           <motion.div
             variants={fadeUp}
-            className="w-full max-w-[200px] md:max-w-[260px] my-2"
+            className="w-full max-w-[280px] md:max-w-[340px] my-2"
           >
             <img
               src={logoHero}
