@@ -186,7 +186,7 @@ export default function AirbnbTurnoverPage() {
             >
               {t('airbnbPage.hero.heading')}
             </h1>
-            <p className="font-body text-base text-slate-pale max-w-lg mb-8">
+            <p className="font-body text-lg text-slate-pale font-semibold max-w-lg mb-8">
               {t('airbnbPage.hero.subhead')}
             </p>
             <a
@@ -241,7 +241,7 @@ export default function AirbnbTurnoverPage() {
                 >
                   ✓
                 </span>
-                <span className="font-body text-base text-charcoal">
+                <span className="font-body text-lg text-charcoal font-semibold">
                   {t(`airbnbPage.included.${key}`)}
                 </span>
               </motion.li>
@@ -291,7 +291,7 @@ export default function AirbnbTurnoverPage() {
                 <h3 className="font-sub text-2xl text-charcoal mb-2">
                   {t(`airbnbPage.howItWorks.${titleKey}`)}
                 </h3>
-                <p className="font-body text-base text-text-muted">
+                <p className="font-body text-lg text-text-muted font-semibold">
                   {t(`airbnbPage.howItWorks.${descKey}`)}
                 </p>
               </motion.div>
@@ -335,7 +335,7 @@ export default function AirbnbTurnoverPage() {
                 <span className="font-display text-5xl text-white mb-2">
                   {t(`airbnbPage.trust.${statKey}`)}
                 </span>
-                <span className="font-body text-base text-slate-pale">
+                <span className="font-body text-lg text-slate-pale font-semibold">
                   {t(`airbnbPage.trust.${labelKey}`)}
                 </span>
               </motion.div>
@@ -369,7 +369,7 @@ export default function AirbnbTurnoverPage() {
                 {t('airbnbPage.pricing.starting', { min: priceMin })}
               </p>
             )}
-            <p className="font-body text-base text-text-muted mb-6">
+            <p className="font-body text-lg text-text-muted font-semibold mb-6">
               {t('airbnbPage.pricing.volume')}
             </p>
             <Link
@@ -403,7 +403,7 @@ export default function AirbnbTurnoverPage() {
             >
               {t('airbnbPage.form.heading')}
             </h2>
-            <p className="font-body text-base text-text-muted mb-8">
+            <p className="font-body text-lg text-text-muted font-semibold mb-8">
               {t('airbnbPage.form.subhead')}
             </p>
           </motion.div>

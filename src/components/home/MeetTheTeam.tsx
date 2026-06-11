@@ -57,7 +57,7 @@ export default function MeetTheTeam() {
           className="mb-8"
         >
           <h2 className="font-display text-4xl text-charcoal mb-4">{t('team.sectionHeading')}</h2>
-          <p className="font-body text-base text-text-muted">{t('team.sectionSubhead')}</p>
+          <p className="font-body text-lg text-text-muted font-semibold">{t('team.sectionSubhead')}</p>
         </motion.div>
 
         {/* Consistent-assignment callout */}
@@ -82,7 +82,7 @@ export default function MeetTheTeam() {
                 <polyline points="20 6 9 17 4 12" />
               </svg>
             </div>
-            <p className="flex-1 font-body text-base text-charcoal">{t('team.assignmentNote')}</p>
+            <p className="flex-1 font-body text-lg text-charcoal font-semibold">{t('team.assignmentNote')}</p>
             <Link
               to="/booking"
               className="shrink-0 inline-flex items-center font-body font-medium text-base
@@ -118,7 +118,7 @@ export default function MeetTheTeam() {
                   <p className="font-body text-sm font-medium text-slate-brand mb-3">
                     {t(member.roleKey)}
                   </p>
-                  <p className="font-body text-base text-text-muted">{t(member.bioKey)}</p>
+                  <p className="font-body text-lg text-text-muted font-semibold">{t(member.bioKey)}</p>
                 </div>
               </article>
             </motion.div>

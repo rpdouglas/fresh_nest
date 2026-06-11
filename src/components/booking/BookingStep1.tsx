@@ -62,7 +62,7 @@ export default function BookingStep1() {
                       <span className="font-body text-base text-charcoal block">
                         {t(`services.${type}.title`)}
                       </span>
-                      <span className="font-body text-base text-text-muted block leading-snug mt-0.5">
+                      <span className="font-body text-lg text-text-muted block font-semibold leading-snug mt-0.5">
                         {t(`services.${type}.description`)}
                       </span>
                     </div>
@@ -81,7 +81,7 @@ export default function BookingStep1() {
         {/* Airbnb note */}
         {serviceType === 'airbnb' && (
           <div className="bg-slate-pale border border-sand rounded p-4">
-            <p className="font-body text-base text-charcoal">{t('booking.airbnbNote')}</p>
+            <p className="font-body text-lg text-charcoal font-semibold">{t('booking.airbnbNote')}</p>
           </div>
         )}
 
@@ -216,7 +216,7 @@ export default function BookingStep1() {
                 <span className="font-body text-base text-charcoal block">
                   {t('booking.fields.pets.label')}
                 </span>
-                <span className="font-body text-base text-text-muted block mt-0.5">
+                <span className="font-body text-lg text-text-muted block font-semibold mt-0.5">
                   {t('booking.fields.pets.hint')}
                 </span>
               </div>

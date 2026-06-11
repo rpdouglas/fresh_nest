@@ -29,16 +29,16 @@ export default function BookingStep4({ submitError }: Props) {
           {/* Service */}
           <div className="flex items-start justify-between py-3">
             <div>
-              <p className="font-body text-base text-text-muted">{t('booking.review.service')}</p>
-              <p className="font-body text-base text-charcoal mt-0.5">{serviceLabel}</p>
+              <p className="font-body text-lg text-text-muted font-semibold">{t('booking.review.service')}</p>
+              <p className="font-body text-lg text-charcoal font-semibold mt-0.5">{serviceLabel}</p>
             </div>
           </div>
 
           {/* Property */}
           <div className="flex items-start justify-between py-3">
             <div>
-              <p className="font-body text-base text-text-muted">{t('booking.review.property')}</p>
-              <p className="font-body text-base text-charcoal mt-0.5">
+              <p className="font-body text-lg text-text-muted font-semibold">{t('booking.review.property')}</p>
+              <p className="font-body text-lg text-charcoal font-semibold mt-0.5">
                 {propertyLabel} — {values.bedrooms} {t('booking.fields.bedrooms.label').toLowerCase()} / {values.bathrooms} {t('booking.fields.bathrooms.label').toLowerCase()}
                 {values.pets && ` · ${t('booking.fields.pets.label')}`}
               </p>
@@ -48,8 +48,8 @@ export default function BookingStep4({ submitError }: Props) {
           {/* Schedule */}
           <div className="flex items-start justify-between py-3">
             <div>
-              <p className="font-body text-base text-text-muted">{t('booking.review.schedule')}</p>
-              <p className="font-body text-base text-charcoal mt-0.5">
+              <p className="font-body text-lg text-text-muted font-semibold">{t('booking.review.schedule')}</p>
+              <p className="font-body text-lg text-charcoal font-semibold mt-0.5">
                 {frequencyLabel} · {values.preferredDate}
               </p>
             </div>
@@ -58,19 +58,19 @@ export default function BookingStep4({ submitError }: Props) {
           {/* Add-ons */}
           <div className="flex items-start justify-between py-3">
             <div>
-              <p className="font-body text-base text-text-muted">{t('booking.review.addOns')}</p>
-              <p className="font-body text-base text-charcoal mt-0.5">{addOnLabels}</p>
+              <p className="font-body text-lg text-text-muted font-semibold">{t('booking.review.addOns')}</p>
+              <p className="font-body text-lg text-charcoal font-semibold mt-0.5">{addOnLabels}</p>
             </div>
           </div>
 
           {/* Contact */}
           <div className="flex items-start justify-between py-3">
             <div>
-              <p className="font-body text-base text-text-muted">{t('booking.review.contact')}</p>
-              <p className="font-body text-base text-charcoal mt-0.5">
+              <p className="font-body text-lg text-text-muted font-semibold">{t('booking.review.contact')}</p>
+              <p className="font-body text-lg text-charcoal font-semibold mt-0.5">
                 {values.firstName} {values.lastName} · {values.email} · {values.phone}
               </p>
-              <p className="font-body text-base text-text-muted mt-0.5">{values.address}</p>
+              <p className="font-body text-lg text-text-muted font-semibold mt-0.5">{values.address}</p>
             </div>
           </div>
 
@@ -78,8 +78,8 @@ export default function BookingStep4({ submitError }: Props) {
           {values.notes && (
             <div className="flex items-start justify-between py-3">
               <div>
-                <p className="font-body text-base text-text-muted">{t('booking.review.notes')}</p>
-                <p className="font-body text-base text-charcoal mt-0.5">{values.notes}</p>
+                <p className="font-body text-lg text-text-muted font-semibold">{t('booking.review.notes')}</p>
+                <p className="font-body text-lg text-charcoal font-semibold mt-0.5">{values.notes}</p>
               </div>
             </div>
           )}

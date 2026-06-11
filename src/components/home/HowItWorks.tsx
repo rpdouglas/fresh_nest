@@ -45,7 +45,7 @@ export default function HowItWorks() {
           <h2 className="font-display text-4xl text-charcoal mb-4">
             {t('howItWorks.sectionHeading')}
           </h2>
-          <p className="font-body text-base text-text-muted">
+          <p className="font-body text-lg text-text-muted font-semibold">
             {t('howItWorks.sectionSubhead')}
           </p>
         </motion.div>
@@ -106,8 +106,8 @@ export default function HowItWorks() {
 
                       <p
                         className={cn(
-                          'font-body text-base flex-1',
-                          inverted ? 'text-white/90' : 'text-text-muted',
+                          'font-body text-lg flex-1 font-semibold',
+                          inverted ? 'text-white/95' : 'text-text-muted',
                         )}
                       >
                         {t(step.descKey)}

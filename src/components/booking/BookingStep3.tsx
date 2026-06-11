@@ -146,7 +146,7 @@ export default function BookingStep3() {
               {t('booking.errors.required')}
             </p>
           ) : (
-            <p id="address-hint" className="font-body text-base text-text-muted mt-1">
+            <p id="address-hint" className="font-body text-lg text-text-muted font-semibold mt-1">
               {t('booking.fields.address.hint')}
             </p>
           )}

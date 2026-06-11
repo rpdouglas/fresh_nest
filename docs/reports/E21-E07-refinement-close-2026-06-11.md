@@ -16,7 +16,7 @@ This refinement epic implemented:
 3. **Ghosted Service Card Backgrounds**: Service cards in the `<ServicesGrid />` (shared by the landing page and `/services` overview page) were updated to display their corresponding service hero images as faint backgrounds. The images are rendered at exactly `15%` opacity directly on the base card colors for maximum readability.
 4. **Accessible Routing Upgrades**: Card icons and service title headings in `<ServicesGrid />` were wrapped in router `<Link />` components pointing to the specific service page, styled with custom hover and focus rings.
 5. **Colored Theme Expansion**: Applied the colored (blue `bg-slate-brand`) theme to the **Deep Clean** and **Post Construction** cards in `<ServicesGrid />` alongside the existing Commercial card.
-6. **Legibility & Font weight Enhancements**: Adjusted default body font weight app-wide in `src/index.css` to `font-normal` (400 weight instead of 300) to resolve legibility issues with DM Sans body copy. Applied `font-medium` (500 weight) to the services section subhead and the card description bodies for enhanced readability.
+6. **Legibility & Font weight Enhancements**: Adjusted default body font weight app-wide in `src/index.css` to `font-normal` (400 weight instead of 300) to resolve legibility issues with DM Sans body copy. Loaded DM Sans weights `600` (semibold) and `700` (bold) in `index.html`, and upgraded all card bodies, section subtitles, descriptions, callouts, and booking form informational helper texts globally across the entire site to `text-lg` and `font-semibold` (600 weight) for clean reading.
 7. **Book Now Button Inversion**: Styled the "Book Now" button on blue cards with a solid `bg-cream` background and `text-slate-brand` text, providing strong visual contrast, high clickability, and compliance with the brand palette.
 8. **Hero Layout Restructuring**: Positioned the birds nest watermark image behind the main headline `h1` ("Professional Cleaning & Organizing") *only*, embedded a new cozy home cleaning banner image featuring a playful nest theme (`/images/hero-nest-banner.png`) directly under the heading with a 25% black mask overlay, and restored the main company logo right under the subtitle and above the "Book Now" button.
 9. **Recurring Cleaning Background Images**: Generated three stylized watercolor/pastel images representing the weekly, bi-weekly, and monthly recurring cleaning cards (featuring cozy nests, cleaning equipment, and calendar highlights). Set these images as card backgrounds at 15% opacity, and inverted the Book Now button on the bi-weekly blue card to solid cream-white to ensure visual uniformity.
@@ -39,7 +39,7 @@ This refinement epic implemented:
 | Add faint card background images in `ServicesGrid.tsx` at 15% opacity | ✅ |
 | Apply blue/colored theme to Deep Clean and Post Construction cards | ✅ |
 | Invert Book Now buttons on blue cards to solid cream-white bg | ✅ |
-| Bold body copy globally to normal (400) and card/section subheads to medium (500) | ✅ |
+| Load DM Sans 600/700 weights and bold card bodies, subtitles, and descriptions globally to semibold (600) | ✅ |
 | Generate and save 3 recurring background images showing nests + calendars (`weekly-recurring.png`, `biweekly-recurring.png`, `monthly-recurring.png`) | ✅ |
 | Set recurring images as backgrounds at 15% opacity in `RecurringCTA.tsx` | ✅ |
 | Invert the Book Now button on the bi-weekly card to solid cream-white | ✅ |
@@ -87,12 +87,25 @@ This refinement epic implemented:
 | `public/images/howitworks-step2.png` | CREATED — Whimsical flying bird carrying envelope for Step 2 |
 | `public/images/howitworks-step3.png` | CREATED — Whimsical nest with cleaning supplies for Step 3 |
 | `public/images/howitworks-step4.png` | CREATED — Whimsical bird sleeping in nest for Step 4 |
+| `index.html` | EDITED — Loaded DM Sans weights 600 and 700 to support native bolding |
 | `src/index.css` | EDITED — Configured default body font weight to normal (400) |
-| `src/components/home/Hero.tsx` | EDITED — Centered layout, watermark under h1 title, nested banner, and logo under subtitle |
-| `src/components/home/RecurringCTA.tsx` | EDITED — Added background images to cards, solid cream-white button layout |
-| `src/components/home/HowItWorks.tsx` | EDITED — Render steps inside alternating colored cards with background images, remove connector line |
-| `src/pages/ServicePage.tsx` | EDITED — Dynamic hero background image overlay block |
-| `src/components/home/ServicesGrid.tsx` | EDITED — Applied color theme expansion, solid buttons, font-medium, and card link wrapping |
+| `src/components/home/Hero.tsx` | EDITED — Centered layout, watermark under h1 title, nested banner, logo under subtitle, upgraded subhead to font-semibold |
+| `src/components/home/RecurringCTA.tsx` | EDITED — Added background images to cards, solid cream-white button layout, upgraded subhead and tagline to font-semibold |
+| `src/components/home/HowItWorks.tsx` | EDITED — Render steps inside alternating colored cards with background images, remove connector line, upgraded subhead and descriptions to font-semibold |
+| `src/components/home/MeetTheTeam.tsx` | EDITED — Upgraded section subhead, callout note, and bios to font-semibold |
+| `src/components/home/Reviews.tsx` | EDITED — Upgraded section subhead and card bodies to font-semibold |
+| `src/components/home/QuoteCalculator.tsx` | EDITED — Upgraded section subhead to font-semibold |
+| `src/components/home/ServicesGrid.tsx` | EDITED — Applied color theme expansion, solid buttons, card link wrapping, upgraded subhead and card descriptions to font-semibold |
+| `src/components/booking/BookingStep1.tsx` | EDITED — Upgraded service selection card descriptions, airbnb note, and pet hint to font-semibold |
+| `src/components/booking/BookingStep2.tsx` | EDITED — Upgraded preferredDate-hint to font-semibold |
+| `src/components/booking/BookingStep3.tsx` | EDITED — Upgraded address-hint to font-semibold |
+| `src/components/booking/BookingStep4.tsx` | EDITED — Upgraded review details to text-lg and font-semibold |
+| `src/pages/ServicesOverview.tsx` | EDITED — Upgraded page subhead to text-lg and font-semibold |
+| `src/pages/LocationsOverview.tsx` | EDITED — Upgraded page subhead and location card taglines to text-lg and font-semibold |
+| `src/pages/LocationPage.tsx` | EDITED — Upgraded page subhead, description, and callout text to text-lg and font-semibold |
+| `src/pages/PricingPage.tsx` | EDITED — Upgraded page subhead, card descriptions, frequency subhead, and frequency taglines to text-lg and font-semibold |
+| `src/pages/AirbnbTurnoverPage.tsx` | EDITED — Upgraded subheads, checklist items, step descriptions, and form subhead to text-lg and font-semibold |
+| `src/pages/ServicePage.tsx` | EDITED — Dynamic hero background image overlay block, upgraded subhead, included items, step descriptions, and custom pricing body to text-lg and font-semibold |
 | `src/i18n/locales/en.json` | EDITED — Added `imgAlt` and `viewDetailsAriaLabel` localization strings |
 | `src/i18n/locales/fr.json` | EDITED — Added `imgAlt` and `viewDetailsAriaLabel` French localization strings |
 

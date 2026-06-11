@@ -45,7 +45,7 @@ function ReviewCard({ review }: { review: Review }) {
                  flex flex-col gap-3"
     >
       <StarRating rating={review.rating} />
-      <p className="font-body text-base text-charcoal flex-1 leading-relaxed">{review.text}</p>
+      <p className="font-body text-lg text-charcoal flex-1 font-semibold leading-relaxed">{review.text}</p>
       <div className="pt-2 border-t border-sand">
         <p className="font-sub text-base text-charcoal">{review.name}</p>
         <p className="font-body text-sm text-text-muted">{review.location}</p>
@@ -78,7 +78,7 @@ export default function Reviews() {
         >
           <div>
             <h2 className="font-display text-4xl text-charcoal mb-2">{t('reviews.sectionHeading')}</h2>
-            <p className="font-body text-base text-text-muted">{t('reviews.sectionSubhead')}</p>
+            <p className="font-body text-lg text-text-muted font-semibold">{t('reviews.sectionSubhead')}</p>
           </div>
           {/* Rating aggregate */}
           <div
