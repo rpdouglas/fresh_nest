@@ -71,7 +71,8 @@ export default function QuoteCalculator() {
       <div className="max-w-content mx-auto">
         <motion.div
           initial="hidden"
-          animate="visible"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-50px' }}
           variants={fadeUp}
           className="max-w-2xl mx-auto"
         >

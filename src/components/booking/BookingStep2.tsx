@@ -28,15 +28,15 @@ const ADD_ON_OPTIONS: { value: AddOnValue; labelKey: string }[] = [
   { value: 'basement', labelKey: 'booking.fields.addOns.options.basement' },
 ]
 
-const tomorrow = new Date()
-tomorrow.setDate(tomorrow.getDate() + 1)
-const MIN_DATE = tomorrow.toISOString().slice(0, 10)
-
-const maxDay = new Date()
-maxDay.setDate(maxDay.getDate() + 90)
-const MAX_DATE = maxDay.toISOString().slice(0, 10)
-
 export default function BookingStep2() {
+  const tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  const MIN_DATE = tomorrow.toISOString().slice(0, 10)
+
+  const maxDay = new Date()
+  maxDay.setDate(maxDay.getDate() + 90)
+  const MAX_DATE = maxDay.toISOString().slice(0, 10)
+
   const { t } = useTranslation()
   const { register, watch, setValue, formState: { errors } } = useFormContext<BookingFormData>()
   const currentFreq = watch('frequency')

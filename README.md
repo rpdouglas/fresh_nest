@@ -1,73 +1,86 @@
-# React + TypeScript + Vite
+# Fresh Nest Co. — Cleaning & Organizing Services
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This repository contains the codebase for the **Fresh Nest Co.** cleaning services platform, serving Cornwall ON, Akwesasne, Snye QC, Long Sault, and Morrisburg.
 
-Currently, two official plugins are available:
+Live website: [lilypad-freshnest.web.app](https://lilypad-freshnest.web.app)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🛠 Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+*   **Frontend**: React 19, TypeScript (strict), Vite, Tailwind CSS v3.4.x (using token names, not Tailwind v4)
+*   **Routing**: React Router v6 (multi-page)
+*   **Form Management**: React Hook Form + Zod validation
+*   **Animations**: Framer Motion
+*   **Internationalization**: react-i18next (fully bilingual English/French)
+*   **Data & Auth**: TanStack Query v5 + Firebase (Auth, Firestore, Hosting, Cloud Functions)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📂 Codebase & Docs Reference
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Before modifying this project, please read the following guidelines:
+*   [CLAUDE.md](file:///workspaces/fresh_nest/CLAUDE.md) — Main developer context, commands, and code styling rules.
+*   [GEMINI.md](file:///workspaces/fresh_nest/GEMINI.md) — AI Agent rules and persona-based development gates.
+*   [docs/PERSONAS.md](file:///workspaces/fresh_nest/docs/PERSONAS.md) — The 6 core user personas that drive all feature acceptance criteria.
+*   [docs/firestore-schema.md](file:///workspaces/fresh_nest/docs/firestore-schema.md) — The strict datastore schema. Never write fields not defined here.
+*   [docs/design-system.md](file:///workspaces/fresh_nest/docs/design-system.md) — Brand design tokens and Tailwind configuration mapping.
+*   [docs/COMPLIANCE.md](file:///workspaces/fresh_nest/docs/COMPLIANCE.md) — Privacy rules, CASL compliance, and data practices.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## ⚙️ Environment Configuration
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The application uses the following environment variables. Local settings can be set in `.env.local` (which is gitignored).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Variable Name | Type | Purpose / Allowed Values |
+| :--- | :--- | :--- |
+| `VITE_FIREBASE_API_KEY` | `string` | Public Firebase web API key |
+| `VITE_FIREBASE_AUTH_DOMAIN` | `string` | Auth domain |
+| `VITE_FIREBASE_PROJECT_ID` | `string` | Project ID (`freshnest-aa51e`) |
+| `VITE_FIREBASE_STORAGE_BUCKET` | `string` | Storage bucket address |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | `string` | Messaging sender ID |
+| `VITE_FIREBASE_APP_ID` | `string` | Firebase Web App ID |
+| `VITE_FIREBASE_MEASUREMENT_ID` | `string` | GA4 / Analytics Measurement ID |
+| `VITE_FIRESTORE_DB_ID` | `string` | DB target: `(default)` (Prod) \| `freshnest-dev` (Dev/Test) |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+*Note: Production values are injected via GitHub Secrets in CI/CD workflows and are not committed.*
+
+---
+
+## 🗄 Database Isolation Architecture
+
+We enforce database isolation using **two separate Firestore databases** in a single Firebase project (see [ADR-002](file:///workspaces/fresh_nest/docs/decisions/ADR-002-firestore-multidb.md)):
+1.  **`(default)`** — Hosts production customer bookings and analytics.
+2.  **`freshnest-dev`** — Hosts development, staging, and PR preview channel mock data.
+
+Database connection routing is driven at build time by the `VITE_FIRESTORE_DB_ID` variable in [src/lib/firebase.ts](file:///workspaces/fresh_nest/src/lib/firebase.ts).
+
+---
+
+## 🚀 Running Locally
+
+1.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
+2.  **Run development server**:
+    ```bash
+    npm run dev
+    ```
+3.  **Run unit tests**:
+    ```bash
+    npm run test
+    ```
+4.  **Run E2E integration tests**:
+    ```bash
+    npm run test:e2e
+    ```
+5.  **Build production package**:
+    ```bash
+    npm run build
+    ```
+6.  **Run ESLint checking**:
+    ```bash
+    npm run lint
+    ```

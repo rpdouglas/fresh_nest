@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, type User } from 'firebase/auth'
-import { auth } from '@/lib/firebase'
+import { doc, getDoc } from 'firebase/firestore'
+import { auth, db } from '@/lib/firebase'
 import {
   subscribeToBookings,
   updateBookingStatus,
@@ -86,25 +87,30 @@ export default function AdminPage() {
 
   // Listen to auth state changes
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser)
       if (currentUser) {
-        // Validate against client-side allowlist environment variable
-        const allowedEmails = (
-          import.meta.env.VITE_ADMIN_EMAILS ||
-          'lauren@freshnest.co,dev@freshnest.co,rpdouglas@gmail.com,freshnestcompany2023@gmail.com'
-        )
-          .split(',')
-          .map((email: string) => email.trim().toLowerCase())
-
         const userEmail = currentUser.email?.trim().toLowerCase()
-        const authorized = userEmail ? allowedEmails.includes(userEmail) : false
-        setIsAuthorized(authorized)
+        if (userEmail) {
+          try {
+            const adminDocRef = doc(db, 'admins', userEmail)
+            const adminSnap = await getDoc(adminDocRef)
+            const authorized = adminSnap.exists()
+            setIsAuthorized(authorized)
 
-        if (!authorized) {
-          setAuthError(t('admin.login.errorMessage', { email: currentUser.email }))
+            if (!authorized) {
+              setAuthError(t('admin.login.errorMessage', { email: currentUser.email }))
+            } else {
+              setAuthError(null)
+            }
+          } catch (err) {
+            console.error('Error verifying admin authorization:', err)
+            setIsAuthorized(false)
+            setAuthError(t('admin.login.errorMessage', { email: currentUser.email }))
+          }
         } else {
-          setAuthError(null)
+          setIsAuthorized(false)
+          setAuthError(t('admin.login.authFailed'))
         }
       } else {
         setIsAuthorized(false)

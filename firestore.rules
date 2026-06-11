@@ -2,8 +2,89 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Helper: Verify if the user's Google auth email exists in the admins allowlist collection
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.token.email));
+    }
+
+    // 1. Bookings Collection
+    match /bookings/{bookingId} {
+      
+      // Public Booking Creation
+      allow create: if
+        // A. Verify presence of all required fields (18 fields matching schema)
+        request.resource.data.keys().hasAll([
+          'firstName', 'lastName', 'email', 'phone', 'language',
+          'propertyType', 'bedrooms', 'bathrooms', 'frequency', 'pets',
+          'address', 'serviceType', 'preferredDate', 'leadSource', 'status',
+          'assignedTo', 'isAirbnb', 'photoConfirmation', 'createdAt'
+        ])
+        
+        // B. Ensure types are correct
+        && request.resource.data.firstName is string && request.resource.data.firstName.size() > 0
+        && request.resource.data.lastName is string && request.resource.data.lastName.size() > 0
+        && request.resource.data.email is string && request.resource.data.email.matches('.+@.+\\..+')
+        && request.resource.data.phone is string && request.resource.data.phone.size() >= 10
+        && request.resource.data.address is string && request.resource.data.address.size() >= 5
+        && request.resource.data.bedrooms is int && request.resource.data.bedrooms >= 0
+        && request.resource.data.bathrooms is int && request.resource.data.bathrooms >= 0
+        && request.resource.data.pets is bool
+        && request.resource.data.isAirbnb is bool
+        && request.resource.data.photoConfirmation is bool
+        
+        // C. Enforce allowed values (Enums)
+        && request.resource.data.language in ['en', 'fr']
+        && request.resource.data.status == 'pending' // No customer can self-confirm
+        && request.resource.data.leadSource in ['organic', 'google', 'referral', 'facebook', 'direct']
+        && request.resource.data.frequency in ['one-time', 'weekly', 'biweekly', 'monthly']
+        && request.resource.data.serviceType in ['standard', 'deep', 'moveout', 'postconstruction', 'airbnb', 'commercial']
+        && request.resource.data.propertyType in ['apartment', '1-2bed', '3-4bed', '5+bed', 'commercial']
+        
+        // D. Validate constraints
+        && request.resource.data.preferredDate is string && request.resource.data.preferredDate.size() == 10 // YYYY-MM-DD
+        && request.resource.data.assignedTo == null // Cannot self-assign staff on create
+        && request.resource.data.createdAt == request.time // Must use server timestamp
+        
+        // E. Validate conditional/optional fields
+        && (!('marketingConsent' in request.resource.data) 
+            || (request.resource.data.marketingConsent is bool 
+                && request.resource.data.consentTimestamp is timestamp
+                && request.resource.data.consentMethod == 'booking-form-v2'))
+        && (!('addOns' in request.resource.data) || request.resource.data.addOns is list)
+        && (!('squareFootage' in request.resource.data) || request.resource.data.squareFootage is int)
+        && (!('preferredCleaner' in request.resource.data) 
+            || (request.resource.data.preferredCleaner is string || request.resource.data.preferredCleaner == null))
+        && (!('notes' in request.resource.data) || request.resource.data.notes is string);
+
+      // Admin read & update
+      allow read, update: if isAdmin();
+      
+      // Permanently deleting bookings is forbidden
+      allow delete: if false;
+    }
+
+    // 2. Admins Collection
+    match /admins/{email} {
+      // Admins can read their own whitelist document to verify authentication
+      allow read: if request.auth != null && request.auth.token.email == email;
+      // No client code can modify the allowlist
+      allow write: if false;
+    }
+
+    // 3. Reviews Collection
+    match /reviews/{reviewId} {
+      // Anyone can read approved reviews
+      allow read: if resource.data.approved == true;
+      // All writes restricted to authenticated administrators
+      allow write: if isAdmin();
+    }
+
+    // 4. Default Deny-All for other collections (e.g. staff)
     match /{document=**} {
-      allow read, write: if true;
+      allow read, write: if false;
     }
   }
 }
+

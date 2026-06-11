@@ -22,7 +22,7 @@ export default function Footer() {
   ]
 
   const locationLinks = [
-    { to: '/locations/cornwall', label: t('footer.cornwallON') },
+    { to: '/locations/cornwall-on', label: t('footer.cornwallON') },
     { to: '/locations/akwesasne', label: t('footer.akwesasne') },
     { to: '/locations/snye-qc', label: t('footer.snyeQC') },
     { to: '/locations/long-sault', label: t('footer.longSault') },
