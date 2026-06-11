@@ -85,71 +85,107 @@ export default function QuoteCalculator() {
 
           <div className="space-y-6">
             {/* Property Size */}
-            <div>
-              <p id="size-label" className="font-body text-base font-medium text-charcoal mb-2">
-                {t('quote.sizeLabel')}
-              </p>
-              <div role="group" aria-labelledby="size-label" className="flex flex-wrap gap-2">
-                {SIZE_OPTIONS.map(({ value, labelKey }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    aria-pressed={size === value}
-                    onClick={() => setSize(value)}
-                    className={btnClass(size === value)}
-                  >
-                    {t(labelKey)}
-                  </button>
-                ))}
+            <div className="relative overflow-hidden bg-white border border-sand rounded p-6">
+              {/* Background Image decoration */}
+              <div className="absolute inset-0 pointer-events-none">
+                <img
+                  src="/images/quote-size.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="w-full h-full object-cover"
+                  style={{ opacity: 0.25 }}
+                />
+              </div>
+              <div className="relative z-10">
+                <p id="size-label" className="font-body text-base font-medium text-charcoal mb-2">
+                  {t('quote.sizeLabel')}
+                </p>
+                <div role="group" aria-labelledby="size-label" className="flex flex-wrap gap-2">
+                  {SIZE_OPTIONS.map(({ value, labelKey }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      aria-pressed={size === value}
+                      onClick={() => setSize(value)}
+                      className={btnClass(size === value)}
+                    >
+                      {t(labelKey)}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Service Type */}
-            <div>
-              <p id="service-label" className="font-body text-base font-medium text-charcoal mb-2">
-                {t('quote.serviceLabel')}
-              </p>
-              <div role="group" aria-labelledby="service-label" className="flex flex-wrap gap-2">
-                {SERVICE_OPTIONS.map(({ value, labelKey }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    aria-pressed={service === value}
-                    onClick={() => setService(value)}
-                    className={btnClass(service === value)}
-                  >
-                    {t(labelKey)}
-                  </button>
-                ))}
+            <div className="relative overflow-hidden bg-cream border border-sand rounded p-6">
+              {/* Background Image decoration */}
+              <div className="absolute inset-0 pointer-events-none">
+                <img
+                  src="/images/quote-service.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="w-full h-full object-cover"
+                  style={{ opacity: 0.25 }}
+                />
+              </div>
+              <div className="relative z-10">
+                <p id="service-label" className="font-body text-base font-medium text-charcoal mb-2">
+                  {t('quote.serviceLabel')}
+                </p>
+                <div role="group" aria-labelledby="service-label" className="flex flex-wrap gap-2">
+                  {SERVICE_OPTIONS.map(({ value, labelKey }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      aria-pressed={service === value}
+                      onClick={() => setService(value)}
+                      className={btnClass(service === value)}
+                    >
+                      {t(labelKey)}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Frequency */}
-            <div>
-              <p id="freq-label" className="font-body text-base font-medium text-charcoal mb-2">
-                {t('quote.frequencyLabel')}
-              </p>
-              <div role="group" aria-labelledby="freq-label" className="flex flex-wrap gap-2">
-                {FREQUENCY_OPTIONS.map(({ value, labelKey }) => {
-                  const discount = FREQUENCY_DISCOUNT[value]
-                  const isActive = frequency === value
-                  return (
-                    <button
-                      key={value}
-                      type="button"
-                      aria-pressed={isActive}
-                      onClick={() => setFrequency(value)}
-                      className={btnClass(isActive)}
-                    >
-                      {t(labelKey)}
-                      {discount > 0 && (
-                        <span className="font-body text-sm ml-1.5 opacity-75">
-                          {t('quote.discountBadge', { pct: Math.round(discount * 100) })}
-                        </span>
-                      )}
-                    </button>
-                  )
-                })}
+            <div className="relative overflow-hidden bg-slate-pale border border-sand rounded p-6">
+              {/* Background Image decoration */}
+              <div className="absolute inset-0 pointer-events-none">
+                <img
+                  src="/images/quote-frequency.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="w-full h-full object-cover"
+                  style={{ opacity: 0.25 }}
+                />
+              </div>
+              <div className="relative z-10">
+                <p id="freq-label" className="font-body text-base font-medium text-charcoal mb-2">
+                  {t('quote.frequencyLabel')}
+                </p>
+                <div role="group" aria-labelledby="freq-label" className="flex flex-wrap gap-2">
+                  {FREQUENCY_OPTIONS.map(({ value, labelKey }) => {
+                    const discount = FREQUENCY_DISCOUNT[value]
+                    const isActive = frequency === value
+                    return (
+                      <button
+                        key={value}
+                        type="button"
+                        aria-pressed={isActive}
+                        onClick={() => setFrequency(value)}
+                        className={btnClass(isActive)}
+                      >
+                        {t(labelKey)}
+                        {discount > 0 && (
+                          <span className="font-body text-sm ml-1.5 opacity-75">
+                            {t('quote.discountBadge', { pct: Math.round(discount * 100) })}
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
             </div>
           </div>
