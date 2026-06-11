@@ -41,7 +41,30 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 
 ---
 
+### Phase R1 — Critical Security Hardening & Correctness Fixes
+| Epic | Description | Priority | Primary Persona | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **R01** | Firestore Security Rules (Production) | Critical | Diane, Travis, Margaret | Completed ✅ (2026-06-11) |
+| **R02** | Admin Authorization Server-Side Check | Critical | Ryan | Completed ✅ (2026-06-11) |
+| **R03** | Remove `.env.production` from Version Control | High | Ryan | Completed ✅ (2026-06-11) |
+| **R04** | Content-Security-Policy (CSP) Header | Medium | Ryan | Completed ✅ (2026-06-11) |
+| **R05** | Fix `MIN_DATE` / `MAX_DATE` Calculations | High | Travis, Sophie | Completed ✅ (2026-06-11) |
+| **R06** | Fix Footer Cornwall Location Link | High | Kahnawà:ke, Travis | Completed ✅ (2026-06-11) |
+| **R07** | Add Missing Booking Status i18n Keys | High | Ryan | Completed ✅ (2026-06-11) |
+| **R08** | Fix `QuoteCalculator` Animation Trigger | Medium | Travis, Sophie | Completed ✅ (2026-06-11) |
+| **R09** | Remove Stale Repository Artifacts | Low | Dev Team | Completed ✅ (2026-06-11) |
+| **R10** | Document `onDailyReminderCheck` DB Asymmetry | Medium | Ryan | Completed ✅ (2026-06-11) |
+
+---
+
 ### Epic Log
+
+#### R01 to R10 — Phase R1: Critical Security Hardening & Initial Fixes
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-11)
+* **Strategy:** Server-side auth, Git secrets isolation, CSP headers, and correct date/link/translation fixes.
+* **Persona tests:** All clients (PII protected), Travis (date boundary), Kahnawà:ke (Cornwall footer link), Ryan (server-side authorization, translations)
+* **Close Report:** [PhaseR1-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/PhaseR1-close-2026-06-11.md)
 
 #### E30 — Lead Source Dashboard
 * **Owner:** Dev Team

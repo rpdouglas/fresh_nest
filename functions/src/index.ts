@@ -59,7 +59,9 @@ export const onDailyReminderCheck = onSchedule(
     secrets:  [TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER],
   },
   async () => {
-    const db = getFirestore()
+    // Explicitly target the production database — we never send SMS reminders for test bookings
+    // in freshnest-dev. This is intentional. See docs/firestore-schema.md for DB architecture.
+    const db = getFirestore('(default)')
 
     const tomorrow = new Date()
     tomorrow.setUTCDate(tomorrow.getUTCDate() + 1)

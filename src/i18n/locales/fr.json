@@ -356,6 +356,12 @@
       "addOns": "Options",
       "notes": "Notes",
       "edit": "Modifier"
+    },
+    "status": {
+      "pending": "En attente de confirmation",
+      "confirmed": "Horaire confirmé",
+      "completed": "Terminé",
+      "cancelled": "Annulé"
     }
   },
   "faq": {

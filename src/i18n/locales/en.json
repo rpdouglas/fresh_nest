@@ -356,6 +356,12 @@
       "addOns": "Add-ons",
       "notes": "Notes",
       "edit": "Edit"
+    },
+    "status": {
+      "pending": "Pending Confirmation",
+      "confirmed": "Confirmed Schedule",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
     }
   },
   "faq": {

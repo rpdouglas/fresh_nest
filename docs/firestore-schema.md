@@ -65,3 +65,15 @@ Stores cleaner employee details and onboarding checkpoints.
 | `status` | `string` | ✅ | `'onboarding' \| 'active' \| 'inactive'` |
 | `onboardingChecklist` | `map` | ✅ | Key-value mapping of onboarding status, e.g., `{"backgroundCheck": true}` |
 | `fsmStaffId` | `string \| null` | ❌ | Field service management identifier (Phase 6) |
+
+---
+
+## 4. Database Targeting Asymmetry (Cloud Functions)
+
+### Scheduler Functions (`onDailyReminderCheck`)
+The daily scheduler function always targets the production `(default)` database explicitly:
+```typescript
+const db = getFirestore('(default)')
+```
+*   **Dev/Preview Bookings Isolation**: Bookings written to `freshnest-dev` will never trigger SMS reminders. This is by design to prevent automated tests or manual dev bookings from triggering real SMS charges or sending messages to real customers.
+
