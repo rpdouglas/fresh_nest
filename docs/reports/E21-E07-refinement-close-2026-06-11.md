@@ -15,6 +15,9 @@ This refinement epic implemented:
 2. **Cozy Nest Watermark Background**: Generated a minimalist watercolor/pastel bird's nest illustration woven with subtle green leaves and tiny cleaning tools (broom & feather duster), blending perfectly behind the centered Hero title text using a multiply blend mode and a very soft `12%` opacity to protect text readability.
 3. **Ghosted Service Card Backgrounds**: Service cards in the `<ServicesGrid />` (shared by the landing page and `/services` overview page) were updated to display their corresponding service hero images as faint backgrounds. The images are rendered at exactly `15%` opacity directly on the base card colors for maximum readability.
 4. **Accessible Routing Upgrades**: Card icons and service title headings in `<ServicesGrid />` were wrapped in router `<Link />` components pointing to the specific service page, styled with custom hover and focus rings.
+5. **Colored Theme Expansion**: Applied the colored (blue `bg-slate-brand`) theme to the **Deep Clean** and **Post Construction** cards in `<ServicesGrid />` alongside the existing Commercial card.
+6. **Legibility & Font weight Enhancements**: Adjusted default body font weight app-wide in `src/index.css` to `font-normal` (400 weight instead of 300) to resolve legibility issues with DM Sans body copy. Applied `font-medium` (500 weight) to the services section subhead and the card description bodies for enhanced readability.
+7. **Book Now Button Inversion**: Styled the "Book Now" button on blue cards with a solid `bg-cream` background and `text-slate-brand` text, providing strong visual contrast, high clickability, and compliance with the brand palette.
 
 ---
 
@@ -28,6 +31,9 @@ This refinement epic implemented:
 | Generate and save the `nest-watermark.jpg` watercolor bird nest graphic to `/public/images/` | ✅ |
 | Embed the nest watermark behind the Hero title at 12% opacity with mix-blend-multiply | ✅ |
 | Add faint card background images in `ServicesGrid.tsx` at 15% opacity | ✅ |
+| Apply blue/colored theme to Deep Clean and Post Construction cards | ✅ |
+| Invert Book Now buttons on blue cards to solid cream-white bg | ✅ |
+| Bold body copy globally to normal (400) and card/section subheads to medium (500) | ✅ |
 | Add `imgAlt` translations to `en.json` and `fr.json` for all 5 services | ✅ |
 | Add `viewDetailsAriaLabel` bilingual helper to `en.json` and `fr.json` | ✅ |
 | Wrap card icons in `ServicesGrid.tsx` with specific service detail page routes | ✅ |
@@ -45,9 +51,9 @@ This refinement epic implemented:
 | Persona | Test | Result |
 |---|---|---|
 | **P2 Travis** | Centered Hero & Grid Cards — centered CTAs are highly touchable; clicking card components navigates cleanly to the service page. | ✅ PASS |
-| **P3 Margaret** | Focus properties — links have a visible focus outline and minimum 48px tap targets. | ✅ PASS |
+| **P3 Margaret** | Legibility and Touch Contrast — body fonts are bolded globally to normal (400) and in cards/subheads to medium (500) for clean reading. Book Now buttons on blue cards use high contrast cream-white background with a minimum 48px tap target. Focus outline is visible. | ✅ PASS |
 | **P1 Diane / P5 Sophie** | Localization — Hero title, watermark, and alt attributes translate cleanly into French with zero raw keys or hardcoded English copy. | ✅ PASS |
-| **P6 Gallagher** | Premium Branding — soft watercolor bird's nest background watermark enhances the premium and high-end feel of the landing page. | ✅ PASS |
+| **P6 Gallagher** | Premium Branding — soft watercolor bird's nest background watermark and consistent colored card themes (Commercial, Deep, Post Construction) elevate the premium visual aesthetic. | ✅ PASS |
 
 ---
 
@@ -61,9 +67,10 @@ This refinement epic implemented:
 | `public/images/postconstruction-hero.jpg` | CREATED — Compressed hero image for Post-construction |
 | `public/images/commercial-hero.jpg` | CREATED — Compressed hero image for Commercial cleaning |
 | `public/images/nest-watermark.jpg` | CREATED — Web-optimized watercolor bird's nest background graphic |
+| `src/index.css` | EDITED — Configured default body font weight to normal (400) |
 | `src/components/home/Hero.tsx` | EDITED — Centered layout and watermark image overlay |
 | `src/pages/ServicePage.tsx` | EDITED — Dynamic hero background image overlay block |
-| `src/components/home/ServicesGrid.tsx` | EDITED — wrapped card icons and headings with `Link` routes |
+| `src/components/home/ServicesGrid.tsx` | EDITED — Applied color theme expansion, solid buttons, font-medium, and card link wrapping |
 | `src/i18n/locales/en.json` | EDITED — Added `imgAlt` and `viewDetailsAriaLabel` localization strings |
 | `src/i18n/locales/fr.json` | EDITED — Added `imgAlt` and `viewDetailsAriaLabel` French localization strings |
 
