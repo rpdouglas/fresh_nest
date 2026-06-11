@@ -422,10 +422,11 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   * [src/App.tsx](file:///workspaces/fresh_nest/src/App.tsx)
 * **Close Report:** [E03-close-2026-06-06.md](file:///workspaces/fresh_nest/docs/reports/E03-close-2026-06-06.md)
 
-#### E21 & E07 Refinement — Ghosted Hero Images & Clickable Service Cards
+#### E21, E07 & E04 Refinement — Centered Hero, Watermark Background & Clickable Service Cards
 * **Owner:** Dev Team
 * **Status:** Completed ✅ (2026-06-11)
 * **Key Assets:**
+  * [src/components/home/Hero.tsx](file:///workspaces/fresh_nest/src/components/home/Hero.tsx)
   * [src/pages/ServicePage.tsx](file:///workspaces/fresh_nest/src/pages/ServicePage.tsx)
   * [src/components/home/ServicesGrid.tsx](file:///workspaces/fresh_nest/src/components/home/ServicesGrid.tsx)
   * [src/i18n/locales/en.json](file:///workspaces/fresh_nest/src/i18n/locales/en.json)

@@ -1,8 +1,8 @@
-# E21 & E07 Refinement Close Report — Ghosted Hero Images & Clickable Service Cards
+# E21, E07 & E04 Refinement Close Report — Centered Hero, Watermark Background & Clickable Cards
 
 **Date:** 2026-06-11
-**Epic:** E21 & E07 Refinement
-**Primary Personas:** P2 Travis (fast booking + routing), P3 Margaret (accessibility + large targets), P1 Diane / P5 Sophie (bilingual FR/EN), P6 Gallagher (commercial styling)
+**Epic:** E21, E07 & E04 Refinements
+**Primary Personas:** P2 Travis (fast booking + layout), P3 Margaret (accessibility), P1 Diane / P5 Sophie (bilingual FR/EN + custom branding), P6 Gallagher (commercial styling)
 **Phase:** Phase 3 Refinement
 **Plan:** Resumed from compacted state / Goal directives
 
@@ -11,9 +11,10 @@
 ## Summary
 
 This refinement epic implemented:
-1. **Ghosted Hero Images**: High-end interior hero images generated with brand-curated cream, warm-white, and sand color tokens, compressed to JPEG at 85% quality to maintain fast page load speeds. They are loaded dynamically on the 5 residential/commercial service pages matching the ghosted image layout originally designed for the Airbnb page.
-2. **Clickable Service Cards with Ghosted Backgrounds**: Service cards in the `<ServicesGrid />` (shared by the landing page and `/services` overview page) were updated to display these ghosted service images as faint backgrounds. The images are rendered at exactly 15% opacity (50% more transparent than the 30% opacity on service page heroes) behind a 90% card-theme color overlay (white overlay for light cards, brand-blue overlay for the inverted commercial card) to ensure strong text legibility and compliance with WCAG AA.
-3. **Accessible Routing Upgrades**: The card icons and the service title headings were wrapped in router `<Link />` components pointing to the specific service page. Accessibility guidelines were strictly maintained with focus states, border-radius standards, and bilingual `aria-label` attributes.
+1. **Centered Hero Layout**: Refactored the homepage `Hero.tsx` from a two-column layout to a centered, single-column alignment, putting focus directly on the centered display title "Professional Cleaning & Organizing" (and its French translation).
+2. **Cozy Nest Watermark Background**: Generated a minimalist watercolor/pastel bird's nest illustration woven with subtle green leaves and tiny cleaning tools (broom & feather duster), blending perfectly behind the centered Hero title text using a multiply blend mode and a very soft `12%` opacity to protect text readability.
+3. **Ghosted Service Card Backgrounds**: Service cards in the `<ServicesGrid />` (shared by the landing page and `/services` overview page) were updated to display their corresponding service hero images as faint backgrounds. The images are rendered at exactly `15%` opacity directly on the base card colors for maximum readability.
+4. **Accessible Routing Upgrades**: Card icons and service title headings in `<ServicesGrid />` were wrapped in router `<Link />` components pointing to the specific service page, styled with custom hover and focus rings.
 
 ---
 
@@ -23,8 +24,10 @@ This refinement epic implemented:
 |---|---|
 | Convert and save 5 service hero images to `/public/images/` as compressed JPEGs | ✅ |
 | Update `ServicePage.tsx` to dynamically render the hero image at `opacity-30` with a gradient overlay | ✅ |
+| Refactor `Hero.tsx` to center all elements in a single-column layout | ✅ |
+| Generate and save the `nest-watermark.jpg` watercolor bird nest graphic to `/public/images/` | ✅ |
+| Embed the nest watermark behind the Hero title at 12% opacity with mix-blend-multiply | ✅ |
 | Add faint card background images in `ServicesGrid.tsx` at 15% opacity | ✅ |
-| Add a 90% opacity color overlay (white/brand-blue) in `ServicesGrid.tsx` for high contrast | ✅ |
 | Add `imgAlt` translations to `en.json` and `fr.json` for all 5 services | ✅ |
 | Add `viewDetailsAriaLabel` bilingual helper to `en.json` and `fr.json` | ✅ |
 | Wrap card icons in `ServicesGrid.tsx` with specific service detail page routes | ✅ |
@@ -41,10 +44,10 @@ This refinement epic implemented:
 
 | Persona | Test | Result |
 |---|---|---|
-| **P2 Travis** | Main page services cards — clicking the icon or the header redirects to the correct service page with zero friction. | ✅ PASS |
-| **P3 Margaret** | Services Grid links — all icon and header links have 48px tap targets, visible focus outline borders, and clear `aria-label` labels. | ✅ PASS |
-| **P1 Diane / P5 Sophie** | Localization — hero image alt texts and details labels are completely localized in French when switching locales, with no hardcoded strings. | ✅ PASS |
-| **P6 Gallagher** | `/services/commercial-cleaning` — renders the custom commercial hero background image with matching premium charcoal aesthetics. | ✅ PASS |
+| **P2 Travis** | Centered Hero & Grid Cards — centered CTAs are highly touchable; clicking card components navigates cleanly to the service page. | ✅ PASS |
+| **P3 Margaret** | Focus properties — links have a visible focus outline and minimum 48px tap targets. | ✅ PASS |
+| **P1 Diane / P5 Sophie** | Localization — Hero title, watermark, and alt attributes translate cleanly into French with zero raw keys or hardcoded English copy. | ✅ PASS |
+| **P6 Gallagher** | Premium Branding — soft watercolor bird's nest background watermark enhances the premium and high-end feel of the landing page. | ✅ PASS |
 
 ---
 
@@ -57,8 +60,10 @@ This refinement epic implemented:
 | `public/images/moveout-hero.jpg` | CREATED — Compressed hero image for Move-out cleaning |
 | `public/images/postconstruction-hero.jpg` | CREATED — Compressed hero image for Post-construction |
 | `public/images/commercial-hero.jpg` | CREATED — Compressed hero image for Commercial cleaning |
-| `src/pages/ServicePage.tsx` | EDITED — Integrated absolute hero image overlay block with dynamic key mapping |
-| `src/components/home/ServicesGrid.tsx` | EDITED — Wrapped card icons and headings with `Link` router components |
+| `public/images/nest-watermark.jpg` | CREATED — Web-optimized watercolor bird's nest background graphic |
+| `src/components/home/Hero.tsx` | EDITED — Centered layout and watermark image overlay |
+| `src/pages/ServicePage.tsx` | EDITED — Dynamic hero background image overlay block |
+| `src/components/home/ServicesGrid.tsx` | EDITED — wrapped card icons and headings with `Link` routes |
 | `src/i18n/locales/en.json` | EDITED — Added `imgAlt` and `viewDetailsAriaLabel` localization strings |
 | `src/i18n/locales/fr.json` | EDITED — Added `imgAlt` and `viewDetailsAriaLabel` French localization strings |
 
