@@ -24,9 +24,9 @@ interface ServiceCard {
 
 const SERVICE_CARDS: ServiceCard[] = [
   { key: 'standard',         labelKey: 'services.standard.title',         descKey: 'services.standard.description',         route: '/services/standard-cleaning',  inverted: false },
-  { key: 'deep',             labelKey: 'services.deep.title',             descKey: 'services.deep.description',             route: '/services/deep-cleaning',       inverted: false },
+  { key: 'deep',             labelKey: 'services.deep.title',             descKey: 'services.deep.description',             route: '/services/deep-cleaning',       inverted: true  },
   { key: 'moveout',          labelKey: 'services.moveout.title',          descKey: 'services.moveout.description',          route: '/services/move-out-cleaning',   inverted: false },
-  { key: 'postconstruction', labelKey: 'services.postconstruction.title', descKey: 'services.postconstruction.description', route: '/services/post-construction',   inverted: false },
+  { key: 'postconstruction', labelKey: 'services.postconstruction.title', descKey: 'services.postconstruction.description', route: '/services/post-construction',   inverted: true  },
   { key: 'airbnb',           labelKey: 'services.airbnb.title',           descKey: 'services.airbnb.description',           route: '/services/airbnb-turnover',     inverted: false },
   { key: 'commercial',       labelKey: 'services.commercial.title',       descKey: 'services.commercial.description',       route: '/services/commercial-cleaning', inverted: true  },
 ]
@@ -116,7 +116,7 @@ export default function ServicesGrid() {
           <h2 className="font-display text-4xl text-charcoal mb-4">
             {t('services.sectionHeading')}
           </h2>
-          <p className="font-body text-base text-text-muted">
+          <p className="font-body text-base text-text-muted font-medium">
             {t('services.sectionSubhead')}
           </p>
         </motion.div>
@@ -184,7 +184,7 @@ export default function ServicesGrid() {
 
                     <p
                       className={cn(
-                        'font-body text-base flex-1',
+                        'font-body text-base flex-1 font-medium',
                         card.inverted ? 'text-white' : 'text-text-muted',
                       )}
                     >
@@ -199,7 +199,7 @@ export default function ServicesGrid() {
                         'min-h-[48px] px-4 py-2 self-start transition-colors duration-200',
                         'focus:outline-none focus:ring-2 focus:ring-offset-2',
                         card.inverted
-                          ? 'border border-white text-white hover:bg-white hover:text-slate-brand focus:ring-white'
+                          ? 'bg-cream text-slate-brand hover:bg-warm-white hover:text-slate-dark focus:ring-white'
                           : 'bg-slate-brand text-white hover:bg-slate-dark focus:ring-slate-brand',
                       )}
                     >
