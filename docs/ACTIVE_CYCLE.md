@@ -450,3 +450,9 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 * **Status:** Completed ✅ (2026-06-11)
 * **Strategy:** Upgraded card bodies and subtitles globally to font-bold (700 weight), and changed white card text color to text-charcoal for maximum high-contrast legibility.
 * **Close Report:** [typography-refinement-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/typography-refinement-close-2026-06-11.md)
+
+#### Services Card Layout Optimization
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-11)
+* **Strategy:** Placed the service icon and the service name inline on the same line to save vertical space. Wrapped both elements in a single clickable group link under h3 to ensure excellent accessibility, meeting Margaret's min-h-[48px] target and improving hover transitions.
+* **Close Report:** [services-card-layout-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/services-card-layout-close-2026-06-11.md)

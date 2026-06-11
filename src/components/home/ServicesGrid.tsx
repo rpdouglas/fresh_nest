@@ -152,19 +152,6 @@ export default function ServicesGrid() {
                   </div>
 
                   <div className="relative z-10 flex flex-col gap-4 flex-1">
-                    <Link
-                      to={card.route}
-                      aria-label={t('services.viewDetailsAriaLabel', { service: serviceTitle })}
-                      className={cn(
-                        'w-10 h-10 flex items-center justify-center rounded transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2',
-                        card.inverted
-                          ? 'text-white hover:text-slate-light focus:ring-white'
-                          : 'text-slate-brand hover:text-slate-dark focus:ring-slate-brand',
-                      )}
-                    >
-                      <ServiceIcon serviceKey={card.key} />
-                    </Link>
-
                     <h3
                       className={cn(
                         'font-sub text-2xl',
@@ -174,11 +161,21 @@ export default function ServicesGrid() {
                       <Link
                         to={card.route}
                         className={cn(
-                          'hover:underline rounded focus:outline-none focus:ring-2 focus:ring-offset-2',
+                          'group flex items-center gap-3 hover:underline rounded focus:outline-none focus:ring-2 focus:ring-offset-2 min-h-[48px]',
                           card.inverted ? 'focus:ring-white' : 'focus:ring-slate-brand',
                         )}
                       >
-                        {serviceTitle}
+                        <span
+                          className={cn(
+                            'flex items-center justify-center transition-colors duration-200',
+                            card.inverted
+                              ? 'text-white group-hover:text-slate-pale'
+                              : 'text-slate-brand group-hover:text-slate-dark',
+                          )}
+                        >
+                          <ServiceIcon serviceKey={card.key} />
+                        </span>
+                        <span>{serviceTitle}</span>
                       </Link>
                     </h3>
 
