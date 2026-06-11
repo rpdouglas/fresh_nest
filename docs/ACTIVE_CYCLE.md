@@ -486,3 +486,27 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 * **Status:** Completed ✅ (2026-06-11)
 * **Strategy:** Refactored ESLint configuration to include recommendedTypeChecked and process config/E2E files via projectService. Resolved 30 type safety bugs globally including floating promises, unsafe type destructurings, and custom Vite environment variable typings.
 * **Close Report:** [R16-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/R16-close-2026-06-11.md)
+
+#### R17 — Wire @tanstack/eslint-plugin-query
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-11)
+* **Strategy:** Integrated TanStack Query flat recommended linting rules to prevent React Query anti-patterns and safeguard upcoming refactoring phases.
+* **Close Report:** [R17-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/R17-close-2026-06-11.md)
+
+#### R18 — Add Vitest Coverage Threshold
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-11)
+* **Strategy:** Configured Vitest to enforce 40% statement, line, and function coverage and 35% branch coverage using the `@vitest/coverage-v8` provider. Formally verified that the thresholds are enforced and that the current unit test suite meets these rules.
+* **Close Report:** [R18-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/R18-close-2026-06-11.md)
+
+#### R20 — Fix Analytics Singleton Test Isolation
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-11)
+* **Strategy:** Added a `_resetForTesting()` hook to `src/lib/analytics.ts` that clears the cached `analyticsInstance` singleton when in `test` mode, and executed it in `beforeEach` in `analytics.test.ts` to ensure complete mock and analytics call isolation.
+* **Close Report:** [R20-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/R20-close-2026-06-11.md)
+
+#### R19 — Booking Form E2E Coverage
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-11)
+* **Strategy:** Configured Playwright to run E2E suites across both Chromium and Firefox. Implemented comprehensive E2E tests in `e2e/booking.spec.ts` (validating full booking funnel submits, validation error triggers, and network/submission bypasses using a window-initialized mock submit handler) and `e2e/language.spec.ts` (verifying language toggles and persistent locale changes).
+* **Close Report:** [R19-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/R19-close-2026-06-11.md)

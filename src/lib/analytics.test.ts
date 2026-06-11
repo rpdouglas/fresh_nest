@@ -9,6 +9,7 @@ import {
   logQuoteCalculated,
   logPhoneClicked,
   logLanguageToggled,
+  _resetForTesting,
 } from './analytics'
 
 vi.mock('firebase/analytics', () => ({
@@ -24,8 +25,7 @@ vi.mock('./firebase', () => ({
 describe('Analytics', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    // Reset the internal instance for testing logic isn't easily reachable
-    // if initialized, so we just check behavior.
+    _resetForTesting()
   })
 
   it('initializeAnalytics initializes analytics', () => {

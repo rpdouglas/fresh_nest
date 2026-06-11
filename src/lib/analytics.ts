@@ -46,3 +46,9 @@ export const logPhoneClicked = (location: 'navbar' | 'footer' | 'other') => {
 export const logLanguageToggled = (newLanguage: string) => {
   logCustomEvent('language_toggled', { language: newLanguage })
 }
+
+export const _resetForTesting = () => {
+  if (import.meta.env.MODE === 'test') {
+    analyticsInstance = null
+  }
+}

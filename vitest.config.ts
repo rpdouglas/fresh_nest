@@ -10,5 +10,23 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     globals: true,
     exclude: [...configDefaults.exclude, 'e2e/**'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov'],
+      thresholds: {
+        lines: 40,
+        functions: 40,
+        branches: 35,
+        statements: 40,
+      },
+      exclude: [
+        'src/i18n/**',
+        'src/lib/data/**',
+        'src/types/**',
+        'src/main.tsx',
+        'src/App.tsx',
+        'dist/**',
+      ],
+    },
   },
 })

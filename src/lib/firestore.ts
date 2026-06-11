@@ -31,6 +31,9 @@ export async function submitBooking(
   language: Language,
   source: LeadSource,
 ): Promise<string> {
+  if (typeof window !== 'undefined' && window.__MOCK_SUBMIT__) {
+    return window.__MOCK_SUBMIT__(data, language, source)
+  }
   const { marketingConsent, ...formFields } = data
 
   const docData: Record<string, unknown> = {

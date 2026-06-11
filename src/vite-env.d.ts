@@ -14,3 +14,11 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv
 }
+
+interface Window {
+  __MOCK_SUBMIT__?: (
+    data: unknown,
+    language: unknown,
+    source: unknown,
+  ) => Promise<string>
+}
