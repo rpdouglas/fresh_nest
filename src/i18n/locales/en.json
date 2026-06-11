@@ -60,6 +60,7 @@
     "sectionSubhead": "Professional cleaning for every need — residential, rental, and commercial. Proudly serving Cornwall and surrounding communities.",
     "bookNow": "Book Now",
     "bookAriaLabel": "Book {{service}}",
+    "viewDetailsAriaLabel": "Learn more about {{service}}",
     "standard": {
       "title": "Standard Cleaning",
       "description": "Regular maintenance cleaning to keep your home fresh. Ideal for weekly or biweekly visits — counters, floors, bathrooms, and living areas."
@@ -610,7 +611,8 @@
     "standard": {
       "hero": {
         "heading": "Standard Cleaning",
-        "subhead": "Regular, consistent cleaning to keep your home fresh. No prep work needed — just let us in."
+        "subhead": "Regular, consistent cleaning to keep your home fresh. No prep work needed — just let us in.",
+        "imgAlt": "Bright, clean living room with vacuumed floor, sofa, and natural light"
       },
       "included": {
         "floors": "Vacuuming and mopping all floors",
@@ -624,7 +626,8 @@
     "deep": {
       "hero": {
         "heading": "Deep Clean",
-        "subhead": "A top-to-bottom reset that reaches the areas regular cleaning never touches."
+        "subhead": "A top-to-bottom reset that reaches the areas regular cleaning never touches.",
+        "imgAlt": "Immaculate kitchen with sparkling clean appliances, countertops, and tiled backsplash"
       },
       "included": {
         "everything": "Everything in our Standard Cleaning",
@@ -639,7 +642,8 @@
     "moveout": {
       "hero": {
         "heading": "Move-Out Cleaning",
-        "subhead": "Leave your old home spotless so you get your deposit back — and move on with confidence."
+        "subhead": "Leave your old home spotless so you get your deposit back — and move on with confidence.",
+        "imgAlt": "Empty and spotless dining area showing clean hardwood floors and large windows"
       },
       "included": {
         "allRooms": "Full clean of all rooms and closets",
@@ -653,7 +657,8 @@
     "postconstruction": {
       "hero": {
         "heading": "Post-Construction Cleaning",
-        "subhead": "Construction dust is everywhere — we remove it safely before you move in."
+        "subhead": "Construction dust is everywhere — we remove it safely before you move in.",
+        "imgAlt": "Freshly renovated modern space free of dust, with clean windows and sleek finishes"
       },
       "included": {
         "dustRemoval": "Fine dust removal from all surfaces",
@@ -667,7 +672,8 @@
     "commercial": {
       "hero": {
         "heading": "Commercial Cleaning",
-        "subhead": "Consistent, professional cleaning for offices, retail, and business facilities in the region."
+        "subhead": "Consistent, professional cleaning for offices, retail, and business facilities in the region.",
+        "imgAlt": "Modern, clean office workspace with tidy desks and large windows"
       },
       "included": {
         "officeSpaces": "Office and workspace cleaning",

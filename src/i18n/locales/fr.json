@@ -60,6 +60,7 @@
     "sectionSubhead": "Un nettoyage professionnel pour chaque besoin — résidentiel, locatif et commercial. Fièrement au service de Cornwall et des communautés environnantes.",
     "bookNow": "Réserver",
     "bookAriaLabel": "Réserver {{service}}",
+    "viewDetailsAriaLabel": "En savoir plus sur {{service}}",
     "standard": {
       "title": "Nettoyage standard",
       "description": "Un entretien régulier pour garder votre maison impeccable. Idéal pour des visites hebdomadaires ou bimensuelles — comptoirs, planchers, salles de bain et pièces communes."
@@ -610,7 +611,8 @@
     "standard": {
       "hero": {
         "heading": "Nettoyage régulier",
-        "subhead": "Un nettoyage régulier et constant pour garder votre maison fraîche. Aucune préparation requise."
+        "subhead": "Un nettoyage régulier et constant pour garder votre maison fraîche. Aucune préparation requise.",
+        "imgAlt": "Salon lumineux et propre avec sol aspiré, canapé et lumière naturelle"
       },
       "included": {
         "floors": "Aspiration et lavage de tous les planchers",
@@ -624,7 +626,8 @@
     "deep": {
       "hero": {
         "heading": "Grand nettoyage",
-        "subhead": "Une remise à zéro complète qui atteint les endroits que le nettoyage régulier ne touche jamais."
+        "subhead": "Une remise à zéro complète qui atteint les endroits que le nettoyage régulier ne touche jamais.",
+        "imgAlt": "Cuisine immaculée avec appareils électroménagers étincelants de propreté, comptoirs et dosseret en tuiles"
       },
       "included": {
         "everything": "Tout ce qui est inclus dans notre nettoyage régulier",
@@ -639,7 +642,8 @@
     "moveout": {
       "hero": {
         "heading": "Nettoyage de déménagement",
-        "subhead": "Laissez votre ancienne maison impeccable pour récupérer votre dépôt — et passer à autre chose sereinement."
+        "subhead": "Laissez votre ancienne maison impeccable pour récupérer votre dépôt — et passer à autre chose sereinement.",
+        "imgAlt": "Salle à manger vide et impeccable montrant des planchers de bois franc propres et de grandes fenêtres"
       },
       "included": {
         "allRooms": "Nettoyage complet de toutes les pièces et placards",
@@ -653,7 +657,8 @@
     "postconstruction": {
       "hero": {
         "heading": "Nettoyage post-construction",
-        "subhead": "La poussière de construction est partout — nous l'éliminons en toute sécurité avant votre emménagement."
+        "subhead": "La poussière de construction est partout — nous l'éliminons en toute sécurité avant votre emménagement.",
+        "imgAlt": "Espace moderne fraîchement rénové et exempt de poussière, avec des fenêtres propres et des finitions soignées"
       },
       "included": {
         "dustRemoval": "Élimination de la fine poussière sur toutes les surfaces",
@@ -667,7 +672,8 @@
     "commercial": {
       "hero": {
         "heading": "Nettoyage commercial",
-        "subhead": "Nettoyage professionnel et constant pour les bureaux, commerces et installations de la région."
+        "subhead": "Nettoyage professionnel et constant pour les bureaux, commerces et installations de la région.",
+        "imgAlt": "Espace de travail de bureau moderne et propre avec des bureaux bien rangés et de grandes fenêtres"
       },
       "included": {
         "officeSpaces": "Nettoyage des bureaux et espaces de travail",

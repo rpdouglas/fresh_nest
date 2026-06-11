@@ -59,9 +59,18 @@ export default function ServicePage({ config }: Props) {
       {/* ── 1. Hero ───────────────────────────────────────────────────────── */}
       <section
         aria-labelledby={`${config.key}-hero-heading`}
-        className="bg-charcoal relative overflow-hidden"
+        className="relative bg-charcoal overflow-hidden"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-dark to-charcoal opacity-80 pointer-events-none" />
+        {/* Hero image */}
+        <div className="absolute inset-0">
+          <img
+            src={`/images/${config.key}-hero.jpg`}
+            alt={t(`${k}.hero.imgAlt`)}
+            className="w-full h-full object-cover opacity-30"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-charcoal/90 via-charcoal/70 to-charcoal/30" />
+        </div>
+
         <div className="relative max-w-content mx-auto py-20 px-4 md:py-32 md:px-6">
           <motion.div
             initial="hidden"
