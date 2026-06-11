@@ -140,14 +140,18 @@ export default function ServicesGrid() {
                       : 'bg-white border-sand shadow-sm',
                   )}
                 >
-                  <div
+                  <Link
+                    to={card.route}
+                    aria-label={t('services.viewDetailsAriaLabel', { service: serviceTitle })}
                     className={cn(
-                      'w-10 h-10 flex items-center justify-center',
-                      card.inverted ? 'text-white' : 'text-slate-brand',
+                      'w-10 h-10 flex items-center justify-center rounded transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2',
+                      card.inverted
+                        ? 'text-white hover:text-slate-light focus:ring-white'
+                        : 'text-slate-brand hover:text-slate-dark focus:ring-slate-brand',
                     )}
                   >
                     <ServiceIcon serviceKey={card.key} />
-                  </div>
+                  </Link>
 
                   <h3
                     className={cn(
@@ -155,7 +159,15 @@ export default function ServicesGrid() {
                       card.inverted ? 'text-white' : 'text-charcoal',
                     )}
                   >
-                    {serviceTitle}
+                    <Link
+                      to={card.route}
+                      className={cn(
+                        'hover:underline rounded focus:outline-none focus:ring-2 focus:ring-offset-2',
+                        card.inverted ? 'focus:ring-white' : 'focus:ring-slate-brand'
+                      )}
+                    >
+                      {serviceTitle}
+                    </Link>
                   </h3>
 
                   <p
