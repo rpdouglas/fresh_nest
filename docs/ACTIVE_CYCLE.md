@@ -57,6 +57,17 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 
 ---
 
+### Phase 3 — Refactoring & Architecture
+| Epic | Description | Priority | Primary Persona | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **R11** | Decompose `AdminPage.tsx` Monolith | High | Owner, Dev Team | Completed ✅ (2026-06-11) |
+| **R12** | Reorganize `src/lib/` Folders | High | Dev Team | Completed ✅ (2026-06-11) |
+| **R13** | Consolidate Motion Animations | Medium | Dev Team | Completed ✅ (2026-06-11) |
+| **R14** | `ServiceIcon` Mapping Refactor | Medium | Dev Team | Completed ✅ (2026-06-11) |
+| **R15** | Wire TanStack Query to Firestore | High | Owner, Dev Team | Completed ✅ (2026-06-11) |
+
+---
+
 ### Epic Log
 
 #### R01 to R10 — Phase R1: Critical Security Hardening & Initial Fixes
@@ -510,3 +521,20 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 * **Status:** Completed ✅ (2026-06-11)
 * **Strategy:** Configured Playwright to run E2E suites across both Chromium and Firefox. Implemented comprehensive E2E tests in `e2e/booking.spec.ts` (validating full booking funnel submits, validation error triggers, and network/submission bypasses using a window-initialized mock submit handler) and `e2e/language.spec.ts` (verifying language toggles and persistent locale changes).
 * **Close Report:** [R19-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/R19-close-2026-06-11.md)
+
+#### Phase 3 — Refactoring & Architecture (R11, R12, R13, R14, R15)
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-11)
+* **Strategy:** Strategy 1 (Centralized Refactoring & Native TanStack Query)
+* **Persona tests:** Owner Lauren S. (admin dashboard layout, filtering mechanics, KPIs, Recharts graphs), Margaret S. (preserved 48px touch targets, contrast legibility, keyboard/mouse accessibility), Dev Team (improved DX, modular design, full type safety).
+* **Key Assets:**
+  * [src/pages/AdminPage.tsx](file:///workspaces/fresh_nest/src/pages/AdminPage.tsx)
+  * [src/components/admin/LoginPanel.tsx](file:///workspaces/fresh_nest/src/components/admin/LoginPanel.tsx)
+  * [src/components/admin/AccessDeniedPanel.tsx](file:///workspaces/fresh_nest/src/components/admin/AccessDeniedPanel.tsx)
+  * [src/components/admin/BookingsTable.tsx](file:///workspaces/fresh_nest/src/components/admin/BookingsTable.tsx)
+  * [src/components/admin/BookingDetailPanel.tsx](file:///workspaces/fresh_nest/src/components/admin/BookingDetailPanel.tsx)
+  * [src/components/admin/AnalyticsDashboard.tsx](file:///workspaces/fresh_nest/src/components/admin/AnalyticsDashboard.tsx)
+  * [src/components/admin/hooks/useAdminAuth.ts](file:///workspaces/fresh_nest/src/components/admin/hooks/useAdminAuth.ts)
+  * [src/components/admin/hooks/useBookings.ts](file:///workspaces/fresh_nest/src/components/admin/hooks/useBookings.ts)
+  * [src/components/admin/hooks/useAdminAnalytics.ts](file:///workspaces/fresh_nest/src/components/admin/hooks/useAdminAnalytics.ts)
+* **Close Report:** [Phase3-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/Phase3-close-2026-06-11.md)

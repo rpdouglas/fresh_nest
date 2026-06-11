@@ -2,16 +2,7 @@ import { motion } from 'framer-motion'
 import { useTranslation, Trans } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import logoHero from '@/assets/logo-hero-340px.png'
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-}
-
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.15 } },
-}
+import { fadeUp, stagger } from '@/lib/utils/animations'
 
 export default function Hero() {
   const { t } = useTranslation()

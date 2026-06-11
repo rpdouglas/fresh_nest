@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import QuoteCalculator from '@/components/home/QuoteCalculator'
-import { calculateQuote, type QuoteServiceType } from '@/lib/quotePricing'
+import { calculateQuote, type QuoteServiceType } from '@/lib/utils/quotePricing'
 import SEO from '@/components/seo/SEO'
 
 const fadeUp = {

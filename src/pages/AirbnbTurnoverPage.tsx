@@ -5,10 +5,10 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { calculateQuote } from '@/lib/quotePricing'
-import { submitBooking, detectLeadSource } from '@/lib/firestore'
+import { calculateQuote } from '@/lib/utils/quotePricing'
+import { submitBooking, detectLeadSource } from '@/lib/firebase/firestore'
 import JsonLd from '@/components/seo/JsonLd'
-import { getServiceSchema } from '@/lib/seo'
+import { getServiceSchema } from '@/lib/utils/seo'
 import SEO from '@/components/seo/SEO'
 
 // ─── Animation variant ───────────────────────────────────────────────────────

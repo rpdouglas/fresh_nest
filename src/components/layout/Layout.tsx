@@ -2,11 +2,11 @@ import { Outlet, ScrollRestoration } from 'react-router-dom'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import JsonLd from '@/components/seo/JsonLd'
-import { getLocalBusinessSchema } from '@/lib/seo'
+import { getLocalBusinessSchema } from '@/lib/utils/seo'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
-import { logCustomEvent } from '@/lib/analytics'
+import { logCustomEvent } from '@/lib/firebase/analytics'
 import CookieBanner from './CookieBanner'
 /**
  * Root layout wrapper.

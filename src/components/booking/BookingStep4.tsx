@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import type { BookingFormData } from '@/lib/bookingSchema'
+import type { BookingFormData } from '@/lib/schemas/bookingSchema'
 
 interface Props {
   submitError?: string | null

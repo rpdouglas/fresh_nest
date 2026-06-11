@@ -1,5 +1,5 @@
 import type { TFunction } from 'i18next'
-import { STATIC_REVIEWS } from './reviewsData'
+import { STATIC_REVIEWS } from '@/lib/data/reviewsData'
 
 // Types for JSON-LD schemas to ensure valid outputs
 export interface SchemaOrgObject {

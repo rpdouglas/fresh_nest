@@ -1,4 +1,4 @@
-import type { SchemaOrgObject } from '@/lib/seo'
+import type { SchemaOrgObject } from '@/lib/utils/seo'
 
 interface Props {
   schema: SchemaOrgObject

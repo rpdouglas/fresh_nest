@@ -9,8 +9,8 @@ import {
   doc,
   updateDoc,
 } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
-import type { BookingFormData } from '@/lib/bookingSchema'
+import { db } from '@/lib/firebase/firebase'
+import type { BookingFormData } from '@/lib/schemas/bookingSchema'
 import type { Language, Booking, BookingStatus } from '@/types'
 
 export type LeadSource = 'organic' | 'google' | 'referral' | 'facebook' | 'direct'

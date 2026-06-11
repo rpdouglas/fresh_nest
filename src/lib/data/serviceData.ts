@@ -1,4 +1,4 @@
-import type { QuoteServiceType } from './quotePricing'
+import type { QuoteServiceType } from '@/lib/utils/quotePricing'
 
 export interface ServiceConfig {
   key: 'standard' | 'deep' | 'moveout' | 'postconstruction' | 'commercial'

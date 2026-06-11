@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { initializeAnalytics, revokeAnalytics } from '@/lib/analytics'
-import { cn } from '@/lib/utils'
+import { initializeAnalytics, revokeAnalytics } from '@/lib/firebase/analytics'
+import { cn } from '@/lib/utils/utils'
 import { AnimatePresence, motion } from 'framer-motion'
 
 export default function CookieBanner() {

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import JsonLd from '@/components/seo/JsonLd'
-import { getFaqSchema } from '@/lib/seo'
+import { getFaqSchema } from '@/lib/utils/seo'
 import SEO from '@/components/seo/SEO'
 
 interface FaqItem {

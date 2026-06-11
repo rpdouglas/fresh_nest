@@ -1,13 +1,13 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import CookieBanner from './CookieBanner'
-import * as analytics from '@/lib/analytics'
+import * as analytics from '@/lib/firebase/analytics'
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }))
 
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/firebase/analytics', () => ({
   initializeAnalytics: vi.fn(),
   revokeAnalytics: vi.fn(),
 }))

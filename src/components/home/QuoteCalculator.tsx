@@ -2,20 +2,16 @@ import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils/utils'
 import {
   calculateQuote,
   FREQUENCY_DISCOUNT,
   type QuoteFrequency,
   type QuotePropertySize,
   type QuoteServiceType,
-} from '@/lib/quotePricing'
-import { logQuoteCalculated } from '@/lib/analytics'
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-}
+} from '@/lib/utils/quotePricing'
+import { logQuoteCalculated } from '@/lib/firebase/analytics'
+import { fadeUp } from '@/lib/utils/animations'
 
 const SIZE_OPTIONS: { value: QuotePropertySize; labelKey: string }[] = [
   { value: 'apartment',  labelKey: 'quote.size.apartment' },

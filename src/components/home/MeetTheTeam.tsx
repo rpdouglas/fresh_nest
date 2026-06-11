@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import TeamAvatar from '@/components/ui/TeamAvatar'
+import { fadeUp, stagger } from '@/lib/utils/animations'
 
 interface TeamMember {
   id: string
@@ -31,15 +32,6 @@ const TEAM_MEMBERS: TeamMember[] = [
   },
 ]
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.45 } },
-}
-
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
-}
 
 export default function MeetTheTeam() {
   const { t } = useTranslation()

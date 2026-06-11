@@ -2,8 +2,8 @@ import { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { cn } from '@/lib/utils'
-import type { GalleryPair } from '@/lib/galleryData'
+import { cn } from '@/lib/utils/utils'
+import type { GalleryPair } from '@/lib/data/galleryData'
 import GalleryImage from '@/components/ui/GalleryImage'
 
 interface LightboxProps {

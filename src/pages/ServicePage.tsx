@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import type { ServiceConfig } from '@/lib/serviceData'
-import { calculateQuote } from '@/lib/quotePricing'
+import type { ServiceConfig } from '@/lib/data/serviceData'
+import { calculateQuote } from '@/lib/utils/quotePricing'
 import JsonLd from '@/components/seo/JsonLd'
-import { getServiceSchema } from '@/lib/seo'
+import { getServiceSchema } from '@/lib/utils/seo'
 import SEO from '@/components/seo/SEO'
 
 // ─── Animation variant ────────────────────────────────────────────────────────

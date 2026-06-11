@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { cn } from '@/lib/utils'
-import { logPhoneClicked } from '@/lib/analytics'
+import { cn } from '@/lib/utils/utils'
+import { logPhoneClicked } from '@/lib/firebase/analytics'
 import logoFooter from '@/assets/logo-footer-dark-120px.png'
 
 const PHONE_NUMBER = '(613) 935-3555'

@@ -1,17 +1,8 @@
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { cn } from '@/lib/utils'
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.45 } },
-}
-
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
-}
+import { cn } from '@/lib/utils/utils'
+import { fadeUp, stagger } from '@/lib/utils/animations'
 
 interface Step {
   number: number

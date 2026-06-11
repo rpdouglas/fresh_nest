@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { ALL_LOCATIONS } from '@/lib/locationData'
+import { ALL_LOCATIONS } from '@/lib/data/locationData'
 import SEO from '@/components/seo/SEO'
 
 export default function LocationsOverview() {

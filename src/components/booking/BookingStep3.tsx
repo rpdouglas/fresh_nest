@@ -1,7 +1,7 @@
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { cn } from '@/lib/utils'
-import type { BookingFormData } from '@/lib/bookingSchema'
+import { cn } from '@/lib/utils/utils'
+import type { BookingFormData } from '@/lib/schemas/bookingSchema'
 
 export default function BookingStep3() {
   const { t } = useTranslation()

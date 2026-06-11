@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils/utils'
 import SEO from '@/components/seo/SEO'
 
 interface PlaceholderPageProps {

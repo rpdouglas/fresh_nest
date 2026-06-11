@@ -1,7 +1,7 @@
 import { Controller, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { cn } from '@/lib/utils'
-import type { BookingFormData } from '@/lib/bookingSchema'
+import { cn } from '@/lib/utils/utils'
+import type { BookingFormData } from '@/lib/schemas/bookingSchema'
 
 type ServiceTypeValue = BookingFormData['serviceType']
 type PropertyTypeValue = BookingFormData['propertyType']
