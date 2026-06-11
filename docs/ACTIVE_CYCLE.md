@@ -474,3 +474,9 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 * **Status:** Completed ✅ (2026-06-11)
 * **Strategy:** Aligned the recurrence frequency title and discount badge inline to save space. Styled the popular badge as a premium top-right floating tag with safety margins to prevent text overlaps. Rectified all brand contrast violations on badge text, CTA buttons, and descriptions.
 * **Close Report:** [recurring-cta-layout-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/recurring-cta-layout-close-2026-06-11.md)
+
+#### Hero Headline Style Refinement
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-11)
+* **Strategy:** Restructured the Hero main H1 title into three split lines using the Trans component. The second line ("Cleaning" in English, "Nettoyage" in French) was italicized and highlighted in brand blue (text-slate-brand), introducing an elegant visual accent.
+* **Close Report:** [hero-headline-style-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/hero-headline-style-close-2026-06-11.md)
