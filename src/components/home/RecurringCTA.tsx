@@ -48,7 +48,7 @@ export default function RecurringCTA() {
           <h2 className="font-display text-4xl text-charcoal mb-4">
             {t('recurring.sectionHeading')}
           </h2>
-          <p className="font-body text-base text-text-muted">
+          <p className="font-body text-lg text-text-muted font-semibold">
             {t('recurring.sectionSubhead')}
           </p>
         </motion.div>
@@ -113,8 +113,8 @@ export default function RecurringCTA() {
 
                     <p
                       className={cn(
-                        'font-body text-base flex-1',
-                        card.inverted ? 'text-white' : 'text-text-muted',
+                        'font-body text-lg flex-1 font-semibold',
+                        card.inverted ? 'text-white/95' : 'text-text-muted',
                       )}
                     >
                       {t(`recurring.tagline.${card.freq}`)}

@@ -120,7 +120,7 @@ export default function BookingStep2() {
               {t('booking.errors.date')}
             </p>
           ) : (
-            <p id="preferredDate-hint" className="font-body text-base text-text-muted mt-1">
+            <p id="preferredDate-hint" className="font-body text-lg text-text-muted font-semibold mt-1">
               {t('booking.fields.preferredDate.hint')}
             </p>
           )}
