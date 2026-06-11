@@ -426,6 +426,10 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 * **Owner:** Dev Team
 * **Status:** Completed ✅ (2026-06-11)
 * **Key Assets:**
+  * [public/images/howitworks-step1.png](file:///workspaces/fresh_nest/public/images/howitworks-step1.png)
+  * [public/images/howitworks-step2.png](file:///workspaces/fresh_nest/public/images/howitworks-step2.png)
+  * [public/images/howitworks-step3.png](file:///workspaces/fresh_nest/public/images/howitworks-step3.png)
+  * [public/images/howitworks-step4.png](file:///workspaces/fresh_nest/public/images/howitworks-step4.png)
   * [public/images/weekly-recurring.png](file:///workspaces/fresh_nest/public/images/weekly-recurring.png)
   * [public/images/biweekly-recurring.png](file:///workspaces/fresh_nest/public/images/biweekly-recurring.png)
   * [public/images/monthly-recurring.png](file:///workspaces/fresh_nest/public/images/monthly-recurring.png)
@@ -433,6 +437,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   * [src/index.css](file:///workspaces/fresh_nest/src/index.css)
   * [src/components/home/Hero.tsx](file:///workspaces/fresh_nest/src/components/home/Hero.tsx)
   * [src/components/home/RecurringCTA.tsx](file:///workspaces/fresh_nest/src/components/home/RecurringCTA.tsx)
+  * [src/components/home/HowItWorks.tsx](file:///workspaces/fresh_nest/src/components/home/HowItWorks.tsx)
   * [src/pages/ServicePage.tsx](file:///workspaces/fresh_nest/src/pages/ServicePage.tsx)
   * [src/components/home/ServicesGrid.tsx](file:///workspaces/fresh_nest/src/components/home/ServicesGrid.tsx)
   * [src/i18n/locales/en.json](file:///workspaces/fresh_nest/src/i18n/locales/en.json)
