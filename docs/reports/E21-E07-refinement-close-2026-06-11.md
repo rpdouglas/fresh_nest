@@ -19,6 +19,7 @@ This refinement epic implemented:
 6. **Legibility & Font weight Enhancements**: Adjusted default body font weight app-wide in `src/index.css` to `font-normal` (400 weight instead of 300) to resolve legibility issues with DM Sans body copy. Applied `font-medium` (500 weight) to the services section subhead and the card description bodies for enhanced readability.
 7. **Book Now Button Inversion**: Styled the "Book Now" button on blue cards with a solid `bg-cream` background and `text-slate-brand` text, providing strong visual contrast, high clickability, and compliance with the brand palette.
 8. **Hero Layout Restructuring**: Positioned the birds nest watermark image behind the main headline `h1` ("Professional Cleaning & Organizing") *only*, embedded a new cozy home cleaning banner image featuring a playful nest theme (`/images/hero-nest-banner.png`) directly under the heading with a 25% black mask overlay, and restored the main company logo right under the subtitle and above the "Book Now" button.
+9. **Recurring Cleaning Background Images**: Generated three stylized watercolor/pastel images representing the weekly, bi-weekly, and monthly recurring cleaning cards (featuring cozy nests, cleaning equipment, and calendar highlights). Set these images as card backgrounds at 15% opacity, and inverted the Book Now button on the bi-weekly blue card to solid cream-white to ensure visual uniformity.
 
 ---
 
@@ -38,6 +39,9 @@ This refinement epic implemented:
 | Apply blue/colored theme to Deep Clean and Post Construction cards | ✅ |
 | Invert Book Now buttons on blue cards to solid cream-white bg | ✅ |
 | Bold body copy globally to normal (400) and card/section subheads to medium (500) | ✅ |
+| Generate and save 3 recurring background images showing nests + calendars (`weekly-recurring.png`, `biweekly-recurring.png`, `monthly-recurring.png`) | ✅ |
+| Set recurring images as backgrounds at 15% opacity in `RecurringCTA.tsx` | ✅ |
+| Invert the Book Now button on the bi-weekly card to solid cream-white | ✅ |
 | Add `imgAlt` translations to `en.json` and `fr.json` for all 5 services | ✅ |
 | Add `viewDetailsAriaLabel` bilingual helper to `en.json` and `fr.json` | ✅ |
 | Wrap card icons in `ServicesGrid.tsx` with specific service detail page routes | ✅ |
@@ -55,9 +59,9 @@ This refinement epic implemented:
 | Persona | Test | Result |
 |---|---|---|
 | **P2 Travis** | Centered Hero & Grid Cards — centered CTAs are highly touchable; clicking card components navigates cleanly to the service page. Logo and banner are beautifully integrated into the page flow. | ✅ PASS |
-| **P3 Margaret** | Legibility and Touch Contrast — body fonts are bolded globally to normal (400) and in cards/subheads to medium (500) for clean reading. Book Now buttons on blue cards use high contrast cream-white background with a minimum 48px tap target. Focus outline is visible. | ✅ PASS |
+| **P3 Margaret** | Legibility and Touch Contrast — body fonts are bolded globally to normal (400) and in cards/subheads to medium (500) for clean reading. Book Now buttons on blue cards (and bi-weekly card) use high contrast cream-white background with a minimum 48px tap target. Focus outline is visible. | ✅ PASS |
 | **P1 Diane / P5 Sophie** | Localization — Hero title, watermark, and alt attributes translate cleanly into French with zero raw keys or hardcoded English copy. | ✅ PASS |
-| **P6 Gallagher** | Premium Branding — soft watercolor bird's nest background watermark, customized home banner image, and consistent colored card themes (Commercial, Deep, Post Construction) elevate the premium visual aesthetic. | ✅ PASS |
+| **P6 Gallagher** | Premium Branding — soft watercolor bird's nest background watermark, customized home banner image, recurring cards with stylized illustrations, and consistent colored card themes (Commercial, Deep, Post Construction, Bi-weekly) elevate the premium visual aesthetic. | ✅ PASS |
 
 ---
 
@@ -72,8 +76,12 @@ This refinement epic implemented:
 | `public/images/commercial-hero.jpg` | CREATED — Compressed hero image for Commercial cleaning |
 | `public/images/nest-watermark.jpg` | CREATED — Web-optimized watercolor bird's nest background graphic |
 | `public/images/hero-nest-banner.png` | CREATED — Stylized horizontal home interior banner with nest details |
+| `public/images/weekly-recurring.png` | CREATED — Whimsical weekly calendar + nest illustration |
+| `public/images/biweekly-recurring.png` | CREATED — Whimsical bi-weekly calendar + nest illustration |
+| `public/images/monthly-recurring.png` | CREATED — Whimsical monthly calendar + nest illustration |
 | `src/index.css` | EDITED — Configured default body font weight to normal (400) |
 | `src/components/home/Hero.tsx` | EDITED — Centered layout, watermark under h1 title, nested banner, and logo under subtitle |
+| `src/components/home/RecurringCTA.tsx` | EDITED — Added background images to cards, solid cream-white button layout |
 | `src/pages/ServicePage.tsx` | EDITED — Dynamic hero background image overlay block |
 | `src/components/home/ServicesGrid.tsx` | EDITED — Applied color theme expansion, solid buttons, font-medium, and card link wrapping |
 | `src/i18n/locales/en.json` | EDITED — Added `imgAlt` and `viewDetailsAriaLabel` localization strings |

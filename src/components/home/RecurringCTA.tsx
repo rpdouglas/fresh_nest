@@ -20,12 +20,13 @@ interface FrequencyCard {
   discountPct: number
   inverted: boolean
   badgeKey: string
+  bgImage: string
 }
 
 const FREQUENCY_CARDS: FrequencyCard[] = [
-  { freq: 'weekly',   discountPct: 20, inverted: false, badgeKey: '' },
-  { freq: 'biweekly', discountPct: 15, inverted: true,  badgeKey: 'recurring.mostPopular' },
-  { freq: 'monthly',  discountPct: 10, inverted: false, badgeKey: '' },
+  { freq: 'weekly',   discountPct: 20, inverted: false, badgeKey: '', bgImage: '/images/weekly-recurring.png' },
+  { freq: 'biweekly', discountPct: 15, inverted: true,  badgeKey: 'recurring.mostPopular', bgImage: '/images/biweekly-recurring.png' },
+  { freq: 'monthly',  discountPct: 10, inverted: false, badgeKey: '', bgImage: '/images/monthly-recurring.png' },
 ]
 
 export default function RecurringCTA() {
@@ -65,61 +66,75 @@ export default function RecurringCTA() {
               <motion.div key={card.freq} variants={fadeUp} className="flex">
                 <article
                   className={cn(
-                    'rounded border p-6 flex flex-col gap-4 w-full',
+                    'relative overflow-hidden rounded border p-6 flex flex-col gap-4 w-full',
                     card.inverted
                       ? 'bg-slate-brand border-slate-brand'
                       : 'bg-white border-sand shadow-sm',
                   )}
                 >
-                  <div
-                    className={cn(
-                      'inline-flex items-center self-start font-body font-medium text-base rounded px-3 py-1',
-                      card.inverted
-                        ? 'bg-white text-slate-brand'
-                        : 'bg-slate-pale text-slate-brand',
-                    )}
-                  >
-                    {t('recurring.discountBadge', { pct: card.discountPct })}
+                  {/* Background Image decoration */}
+                  <div className="absolute inset-0 pointer-events-none">
+                    <img
+                      src={card.bgImage}
+                      alt=""
+                      aria-hidden="true"
+                      className="w-full h-full object-cover"
+                      style={{ opacity: 0.15 }}
+                    />
                   </div>
 
-                  {card.badgeKey && (
-                    <span className="font-body text-sm text-white opacity-75">
-                      {t(card.badgeKey)}
-                    </span>
-                  )}
+                  {/* Relative z-10 wrapper to ensure text stays legible over background image */}
+                  <div className="relative z-10 flex flex-col gap-4 flex-1">
+                    <div
+                      className={cn(
+                        'inline-flex items-center self-start font-body font-medium text-base rounded px-3 py-1',
+                        card.inverted
+                          ? 'bg-white text-slate-brand'
+                          : 'bg-slate-pale text-slate-brand',
+                      )}
+                    >
+                      {t('recurring.discountBadge', { pct: card.discountPct })}
+                    </div>
 
-                  <h3
-                    className={cn(
-                      'font-sub text-2xl',
-                      card.inverted ? 'text-white' : 'text-charcoal',
+                    {card.badgeKey && (
+                      <span className="font-body text-sm text-white opacity-75">
+                        {t(card.badgeKey)}
+                      </span>
                     )}
-                  >
-                    {freqLabel}
-                  </h3>
 
-                  <p
-                    className={cn(
-                      'font-body text-base flex-1',
-                      card.inverted ? 'text-white' : 'text-text-muted',
-                    )}
-                  >
-                    {t(`recurring.tagline.${card.freq}`)}
-                  </p>
+                    <h3
+                      className={cn(
+                        'font-sub text-2xl',
+                        card.inverted ? 'text-white' : 'text-charcoal',
+                      )}
+                    >
+                      {freqLabel}
+                    </h3>
 
-                  <Link
-                    to={`/booking?freq=${card.freq}`}
-                    aria-label={t('recurring.bookAriaLabel', { freq: freqLabel })}
-                    className={cn(
-                      'inline-flex items-center font-body font-medium text-base rounded',
-                      'min-h-[48px] px-4 py-2 self-start transition-colors duration-200',
-                      'focus:outline-none focus:ring-2 focus:ring-offset-2',
-                      card.inverted
-                        ? 'border border-white text-white hover:bg-white hover:text-slate-brand focus:ring-white'
-                        : 'bg-slate-brand text-white hover:bg-slate-dark focus:ring-slate-brand',
-                    )}
-                  >
-                    {t('recurring.bookCta', { freq: freqLabel })} →
-                  </Link>
+                    <p
+                      className={cn(
+                        'font-body text-base flex-1',
+                        card.inverted ? 'text-white' : 'text-text-muted',
+                      )}
+                    >
+                      {t(`recurring.tagline.${card.freq}`)}
+                    </p>
+
+                    <Link
+                      to={`/booking?freq=${card.freq}`}
+                      aria-label={t('recurring.bookAriaLabel', { freq: freqLabel })}
+                      className={cn(
+                        'inline-flex items-center font-body font-medium text-base rounded',
+                        'min-h-[48px] px-4 py-2 self-start transition-colors duration-200',
+                        'focus:outline-none focus:ring-2 focus:ring-offset-2',
+                        card.inverted
+                          ? 'bg-cream text-slate-brand hover:bg-warm-white hover:text-slate-dark focus:ring-white'
+                          : 'bg-slate-brand text-white hover:bg-slate-dark focus:ring-slate-brand',
+                      )}
+                    >
+                      {t('recurring.bookCta', { freq: freqLabel })} →
+                    </Link>
+                  </div>
                 </article>
               </motion.div>
             )
