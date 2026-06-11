@@ -149,12 +149,6 @@ export default function ServicesGrid() {
                       className="w-full h-full object-cover"
                       style={{ opacity: 0.15 }}
                     />
-                    <div
-                      className={cn(
-                        'absolute inset-0 transition-colors duration-200',
-                        card.inverted ? 'bg-slate-brand/90' : 'bg-white/90',
-                      )}
-                    />
                   </div>
 
                   <div className="relative z-10 flex flex-col gap-4 flex-1">
