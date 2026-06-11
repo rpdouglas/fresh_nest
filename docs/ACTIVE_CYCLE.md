@@ -468,3 +468,9 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 * **Status:** Completed ✅ (2026-06-11)
 * **Strategy:** Upgraded H1 and H2 display headings globally to bold (700 weight) to balance them against the heavy body and card designs. Loaded native 600/700 font weights for Cormorant Garamond from Google Fonts to avoid browser-synthetic bolding distortions, and updated the design system.
 * **Close Report:** [heading-bold-typography-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/heading-bold-typography-close-2026-06-11.md)
+
+#### Recurring Service Cards Layout Optimization
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-11)
+* **Strategy:** Aligned the recurrence frequency title and discount badge inline to save space. Styled the popular badge as a premium top-right floating tag with safety margins to prevent text overlaps. Rectified all brand contrast violations on badge text, CTA buttons, and descriptions.
+* **Close Report:** [recurring-cta-layout-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/recurring-cta-layout-close-2026-06-11.md)

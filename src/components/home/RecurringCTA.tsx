@@ -83,38 +83,48 @@ export default function RecurringCTA() {
                     />
                   </div>
 
+                  {/* Floating "Most Popular" badge */}
+                  {card.badgeKey && (
+                    <span
+                      className={cn(
+                        'absolute top-4 right-4 z-20 font-body text-sm font-semibold rounded px-3 py-1 shadow-sm',
+                        card.inverted
+                          ? 'bg-white text-slate-dark'
+                          : 'bg-slate-brand text-white',
+                      )}
+                    >
+                      {t(card.badgeKey)}
+                    </span>
+                  )}
+
                   {/* Relative z-10 wrapper to ensure text stays legible over background image */}
                   <div className="relative z-10 flex flex-col gap-4 flex-1">
-                    <div
-                      className={cn(
-                        'inline-flex items-center self-start font-body font-medium text-base rounded px-3 py-1',
-                        card.inverted
-                          ? 'bg-white text-slate-brand'
-                          : 'bg-slate-pale text-slate-brand',
-                      )}
-                    >
-                      {t('recurring.discountBadge', { pct: card.discountPct })}
+                    <div className={cn('flex items-center gap-3 flex-wrap', card.badgeKey ? 'pr-20' : '')}>
+                      <h3
+                        className={cn(
+                          'font-sub text-2xl',
+                          card.inverted ? 'text-white' : 'text-charcoal',
+                        )}
+                      >
+                        {freqLabel}
+                      </h3>
+
+                      <div
+                        className={cn(
+                          'inline-flex items-center font-body font-medium text-base rounded px-3 py-1',
+                          card.inverted
+                            ? 'bg-white text-slate-dark'
+                            : 'bg-slate-pale text-slate-dark',
+                        )}
+                      >
+                        {t('recurring.discountBadge', { pct: card.discountPct })}
+                      </div>
                     </div>
-
-                    {card.badgeKey && (
-                      <span className="font-body text-sm text-white opacity-75">
-                        {t(card.badgeKey)}
-                      </span>
-                    )}
-
-                    <h3
-                      className={cn(
-                        'font-sub text-2xl',
-                        card.inverted ? 'text-white' : 'text-charcoal',
-                      )}
-                    >
-                      {freqLabel}
-                    </h3>
 
                     <p
                       className={cn(
                         'font-body text-lg flex-1 font-bold',
-                        card.inverted ? 'text-white/95' : 'text-charcoal',
+                        card.inverted ? 'text-white' : 'text-charcoal',
                       )}
                     >
                       {t(`recurring.tagline.${card.freq}`)}
@@ -128,7 +138,7 @@ export default function RecurringCTA() {
                         'min-h-[48px] px-4 py-2 self-start transition-colors duration-200',
                         'focus:outline-none focus:ring-2 focus:ring-offset-2',
                         card.inverted
-                          ? 'bg-cream text-slate-brand hover:bg-warm-white hover:text-slate-dark focus:ring-white'
+                          ? 'bg-cream text-slate-dark hover:bg-warm-white hover:text-slate-dark focus:ring-white'
                           : 'bg-slate-brand text-white hover:bg-slate-dark focus:ring-slate-brand',
                       )}
                     >
