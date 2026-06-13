@@ -15,6 +15,8 @@ import ServicesOverview from '@/pages/ServicesOverview'
 import { SERVICE_CONFIG_MAP } from '@/lib/data/serviceData'
 import ThankYouPage from '@/pages/ThankYouPage'
 import AdminPage from '@/pages/AdminPage'
+import Blog from '@/pages/Blog'
+import BlogPost from '@/pages/BlogPost'
 
 /**
  * React Router v6 browser router.
@@ -119,6 +121,10 @@ const router = createBrowserRouter([
           />
         ),
       },
+
+      // ── Phase 4: Blog ──
+      { path: 'blog', element: <Blog /> },
+      { path: 'blog/:slug', element: <BlogPost /> },
 
       // ── Phase 5: Admin ──
       {

@@ -20,6 +20,9 @@ export interface BookingData {
   marketingConsent?: boolean
   leadSource?: string
   squareFootage?: number
+  referralCode?: string | null
+  referredBy?: string | null
+  assignedTo?: string | null
 }
 
 function esc(value: string | null | undefined): string {

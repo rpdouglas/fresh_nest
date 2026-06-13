@@ -422,6 +422,7 @@
     "locations": "Secteurs desservis",
     "pricing": "Tarifs",
     "faq": "FAQ",
+    "blog": "Blogue",
     "booking": "Réservez maintenant",
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
@@ -497,6 +498,7 @@
     "error": "Une erreur s'est produite. Veuillez réessayer.",
     "required": "Obligatoire",
     "optional": "Facultatif",
+    "verify": "Vérifier",
     "all": "Tout",
     "asc": "Croissant",
     "desc": "Décroissant",
@@ -785,6 +787,8 @@
         "noNotes": "Aucune instruction spéciale fournie.",
         "createdAt": "Soumis le",
         "leadSource": "Source de piste marketing",
+        "referralCode": "Code de parrainage client",
+        "referredBy": "Parrainé par le code",
         "workflow": "Actions de flux de travail",
         "isAirbnb": "Liste de contrôle Airbnb",
         "photoConf": "Confirmation photo requise",
@@ -811,7 +815,8 @@
         "stats": {
           "bookingsCount": "Réservations estimées",
           "estimatedRevenue": "Revenu estimé",
-          "avgBookingValue": "Valeur moyenne de réservation"
+          "avgBookingValue": "Valeur moyenne de réservation",
+          "referredBookings": "Réservations parrainées"
         },
         "charts": {
           "leadDistribution": "Distribution des sources de pistes (Réservations)",
@@ -835,5 +840,31 @@
         "direct": "Trafic direct"
       }
     }
+  },
+  "blog": {
+    "meta": {
+      "title": "Blogue de Fresh Nest Co. — Conseils de Nettoyage",
+      "description": "Lisez nos guides de prix, listes de déménagement et astuces de nettoyage à Cornwall et Akwesasne."
+    },
+    "pageHeading": "Le Blogue Fresh Nest",
+    "pageSubhead": "Conseils saisonniers, guides de nettoyage et astuces d’entretien résidentiel pour nos communautés.",
+    "readMore": "Lire la suite",
+    "publishedAt": "Publié le {{date}}",
+    "writtenBy": "Par {{author}}",
+    "noPosts": "Aucun article trouvé.",
+    "backToBlog": "← Retour au blogue",
+    "metaPost": "{{title}} | Blogue Fresh Nest"
+  },
+  "referrals": {
+    "promoCodeLabel": "Code de parrainage (Optionnel)",
+    "promoPlaceholder": "Entrez le code de votre ami",
+    "promoValid": "Code de parrainage valide ! Réduction de 20 $ appliquée.",
+    "promoInvalid": "Code de parrainage invalide. Veuillez vérifier.",
+    "promoChecking": "Vérification du code...",
+    "referralShareTitle": "Partagez l'amour Fresh Nest",
+    "referralShareDesc": "Offrez 20 $ de rabais à vos amis sur leur premier nettoyage. Lorsqu'ils réservent, vous recevez un rabais de 20 $ !",
+    "copyLink": "Copier le lien de parrainage",
+    "linkCopied": "Lien copié dans le presse-papiers !",
+    "referredBy": "Parrainé par {{name}}"
   }
 }

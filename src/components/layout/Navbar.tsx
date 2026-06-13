@@ -32,6 +32,7 @@ export default function Navbar() {
     { to: '/locations', label: t('nav.locations'), end: false },
     { to: '/pricing', label: t('nav.pricing'), end: true },
     { to: '/faq', label: t('nav.faq'), end: true },
+    { to: '/blog', label: t('nav.blog'), end: false },
   ]
 
   return (

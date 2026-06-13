@@ -25,6 +25,7 @@ interface AnalyticsDashboardProps {
   monthlyTrendData: Array<{ monthKey: string; monthName: string; count: number; revenue: number; sortKey: number }>
   channelsPerformance: Array<{ source: string; name: string; volume: number; revenue: number; avgValue: number; share: number }>
   formatCurrency: (val: number) => string
+  referredBookingsCount: number
 }
 
 export function AnalyticsDashboard({
@@ -37,6 +38,7 @@ export function AnalyticsDashboard({
   monthlyTrendData,
   channelsPerformance,
   formatCurrency,
+  referredBookingsCount,
 }: AnalyticsDashboardProps) {
   const { t } = useTranslation()
 
@@ -69,7 +71,7 @@ export function AnalyticsDashboard({
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-1">
           <span className="font-body text-sm text-text-muted">
             {t('admin.dashboard.analytics.stats.bookingsCount')}
@@ -92,6 +94,14 @@ export function AnalyticsDashboard({
           </span>
           <span className="font-display text-4xl text-green-600 font-bold">
             {formatCurrency(analyticsAvgBookingValue)}
+          </span>
+        </div>
+        <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-amber-500 flex flex-col gap-1">
+          <span className="font-body text-sm text-text-muted">
+            {t('admin.dashboard.analytics.stats.referredBookings')}
+          </span>
+          <span className="font-display text-4xl text-amber-600 font-bold">
+            {referredBookingsCount}
           </span>
         </div>
       </div>

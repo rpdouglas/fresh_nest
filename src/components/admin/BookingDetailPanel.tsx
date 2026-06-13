@@ -258,6 +258,26 @@ export function BookingDetailPanel({
                 {t(`admin.dashboard.leads.${b.leadSource}`) || b.leadSource}
               </span>
             </p>
+            {b.referredBy && (
+              <p>
+                <span className="font-medium text-charcoal">
+                  {t('admin.dashboard.details.referredBy')}:{' '}
+                </span>
+                <span className="bg-green-50 text-green-800 border border-green-200 px-2 py-0.5 rounded">
+                  {b.referredBy}
+                </span>
+              </p>
+            )}
+            {b.referralCode && (
+              <p>
+                <span className="font-medium text-charcoal">
+                  {t('admin.dashboard.details.referralCode')}:{' '}
+                </span>
+                <span className="bg-blue-50 text-blue-800 border border-blue-200 px-2 py-0.5 rounded font-mono">
+                  {b.referralCode}
+                </span>
+              </p>
+            )}
             <p>
               <span className="font-medium text-charcoal">
                 {t('admin.dashboard.details.workflow')}:{' '}

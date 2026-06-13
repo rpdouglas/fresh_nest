@@ -35,6 +35,8 @@ Stores residential, commercial, and Airbnb cleaning reservations.
 | `marketingConsent` | `boolean` | ❌ | CASL: `true` if client opted in to marketing emails. Omitted entirely (not `null`) when false. |
 | `consentTimestamp` | `Timestamp` | ❌ | CASL: Server timestamp of marketing consent. Present only when `marketingConsent === true`. |
 | `consentMethod` | `string` | ❌ | CASL: `'booking-form-v2'`. Present only when `marketingConsent === true`. |
+| `referralCode` | `string \| null` | ❌ | The deterministic referral code generated for this client (e.g., `FIRSTNAME-1234`). |
+| `referredBy` | `string \| null` | ❌ | The referral code applied during booking creation to receive the discount. |
 
 ---
 
@@ -53,7 +55,19 @@ Stores client feedback and ratings, moderated by admin before display.
 
 ---
 
-## 3. Collection: `staff` (Phase 6)
+## 3. Collection: `referrals`
+Stores the active referral codes and their ownership details to enable sharing loops.
+
+| Field Name | Type | Required | Description / Allowed Values |
+| :--- | :--- | :--- | :--- |
+| `ownerName` | `string` | ✅ | The formatted name of the referral owner (e.g., `"Diane L."`) |
+| `bookingId` | `string` | ✅ | The Firestore booking ID that generated this code |
+| `active` | `boolean` | ✅ | `true` if the referral code is active and valid for discounts |
+| `createdAt` | `Timestamp` | ✅ | Timestamp of referral code generation |
+
+---
+
+## 4. Collection: `staff` (Phase 6)
 Stores cleaner employee details and onboarding checkpoints.
 
 | Field Name | Type | Required | Description / Allowed Values |
@@ -68,7 +82,7 @@ Stores cleaner employee details and onboarding checkpoints.
 
 ---
 
-## 4. Database Targeting Asymmetry (Cloud Functions)
+## 5. Database Targeting Asymmetry (Cloud Functions)
 
 ### Scheduler Functions (`onDailyReminderCheck`)
 The daily scheduler function always targets the production `(default)` database explicitly:

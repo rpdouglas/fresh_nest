@@ -422,6 +422,7 @@
     "locations": "Locations",
     "pricing": "Pricing",
     "faq": "FAQ",
+    "blog": "Blog",
     "booking": "Book Now",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
@@ -497,6 +498,7 @@
     "error": "Something went wrong. Please try again.",
     "required": "Required",
     "optional": "Optional",
+    "verify": "Verify",
     "all": "All",
     "asc": "Ascending",
     "desc": "Descending",
@@ -785,6 +787,8 @@
         "noNotes": "No special instructions provided.",
         "createdAt": "Submitted At",
         "leadSource": "Marketing Lead Source",
+        "referralCode": "Client Referral Code",
+        "referredBy": "Referred By Code",
         "workflow": "Workflow Actions",
         "isAirbnb": "Airbnb Turnover Checklist",
         "photoConf": "Photo Confirmation Required",
@@ -811,7 +815,8 @@
         "stats": {
           "bookingsCount": "Estimated Bookings",
           "estimatedRevenue": "Estimated Revenue",
-          "avgBookingValue": "Avg Booking Value"
+          "avgBookingValue": "Avg Booking Value",
+          "referredBookings": "Referred Bookings"
         },
         "charts": {
           "leadDistribution": "Lead Source Distribution (Bookings)",
@@ -835,5 +840,31 @@
         "direct": "Direct Traffic"
       }
     }
+  },
+  "blog": {
+    "meta": {
+      "title": "Fresh Nest Co. Blog — Cleaning & Organizing Tips",
+      "description": "Read cleaning checklists, pricing guides, and seasonal tips from Fresh Nest Co. serving Cornwall and Akwesasne."
+    },
+    "pageHeading": "Fresh Nest Blog",
+    "pageSubhead": "Seasonal tips, move-out checklists, and professional home care advice for our local communities.",
+    "readMore": "Read More",
+    "publishedAt": "Published on {{date}}",
+    "writtenBy": "By {{author}}",
+    "noPosts": "No articles found.",
+    "backToBlog": "← Back to Blog",
+    "metaPost": "{{title}} | Fresh Nest Blog"
+  },
+  "referrals": {
+    "promoCodeLabel": "Referral Code (Optional)",
+    "promoPlaceholder": "Enter friend's code",
+    "promoValid": "Promo code valid! $20 off applied.",
+    "promoInvalid": "Invalid referral code. Please check and try again.",
+    "promoChecking": "Verifying code...",
+    "referralShareTitle": "Share the Fresh Nest Love",
+    "referralShareDesc": "Give your friends $20 off their first clean. When they book, you'll receive a $20 discount on your next service!",
+    "copyLink": "Copy Referral Link",
+    "linkCopied": "Link copied to clipboard!",
+    "referredBy": "Referred by {{name}}"
   }
 }

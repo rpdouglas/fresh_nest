@@ -33,6 +33,7 @@ export default function Footer() {
     { to: '/about', label: t('footer.aboutUs') },
     { to: '/gallery', label: t('footer.gallery') },
     { to: '/reviews', label: t('footer.reviews') },
+    { to: '/blog', label: t('nav.blog') },
     { to: '/careers', label: t('footer.careers') },
     { to: '/privacy', label: t('footer.privacy') },
   ]

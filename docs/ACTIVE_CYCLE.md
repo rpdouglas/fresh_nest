@@ -68,6 +68,15 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 
 ---
 
+### Phase 4 — Organic Growth & Automation
+| Epic | Description | Priority | Primary Persona | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **E31** | Referral Program ("Give $20, Get $20") | High | Margaret, Diane, Travis | Completed ✅ (2026-06-13) |
+| **E32** | Blog & Content Engine | Medium | Sophie, Travis | Completed ✅ (2026-06-13) |
+| **E33** | Recurring Booking Auto-Renewal | High | Travis, Margaret | Completed ✅ (2026-06-13) |
+
+---
+
 ### Epic Log
 
 #### R01 to R10 — Phase R1: Critical Security Hardening & Initial Fixes
@@ -538,3 +547,22 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   * [src/components/admin/hooks/useBookings.ts](file:///workspaces/fresh_nest/src/components/admin/hooks/useBookings.ts)
   * [src/components/admin/hooks/useAdminAnalytics.ts](file:///workspaces/fresh_nest/src/components/admin/hooks/useAdminAnalytics.ts)
 * **Close Report:** [Phase3-close-2026-06-11.md](file:///workspaces/fresh_nest/docs/reports/Phase3-close-2026-06-11.md)
+
+#### Phase 4 — Organic Growth & Automation (E31, E32, E33)
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-13)
+* **Strategy:** Static localized blog markdown content engine, secondary /referrals Firestore collection with client-side verification, deterministic code generation, and 2 AM Cloud Function scheduler for auto-renewals.
+* **Persona tests:** 
+  - Sophie (P5) & Travis (P2): Responsive bilingual blog listing and markdown details.
+  - Margaret (P3) & Diane (P1): Visual discount confirmation, >= 48px touch targets, >= 16px font-size, French email notification.
+  - Travis (P2): Fully automated renewal booking generation and SMS dispatch.
+* **Key Assets:**
+  - [src/lib/data/blogData.ts](file:///workspaces/fresh_nest/src/lib/data/blogData.ts)
+  - [src/pages/Blog.tsx](file:///workspaces/fresh_nest/src/pages/Blog.tsx)
+  - [src/pages/BlogPost.tsx](file:///workspaces/fresh_nest/src/pages/BlogPost.tsx)
+  - [src/components/booking/BookingStep4.tsx](file:///workspaces/fresh_nest/src/components/booking/BookingStep4.tsx)
+  - [src/pages/ThankYouPage.tsx](file:///workspaces/fresh_nest/src/pages/ThankYouPage.tsx)
+  - [src/components/admin/AnalyticsDashboard.tsx](file:///workspaces/fresh_nest/src/components/admin/AnalyticsDashboard.tsx)
+  - [functions/src/index.ts](file:///workspaces/fresh_nest/functions/src/index.ts)
+  - [functions/src/emailTemplates.ts](file:///workspaces/fresh_nest/functions/src/emailTemplates.ts)
+* **Close Report:** [Phase4-close-2026-06-13.md](file:///workspaces/fresh_nest/docs/reports/Phase4-close-2026-06-13.md)

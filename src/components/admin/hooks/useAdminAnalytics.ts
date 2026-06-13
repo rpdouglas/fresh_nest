@@ -146,6 +146,11 @@ export function useAdminAnalytics(bookings: Booking[]) {
     }).sort((a, b) => b.revenue - a.revenue)
   }, [filteredAnalyticsBookings, analyticsTotalBookings, getEstimatedPrice, t])
 
+  // Total bookings created via referral code
+  const referredBookingsCount = useMemo(() => {
+    return filteredAnalyticsBookings.filter((b) => !!b.referredBy).length
+  }, [filteredAnalyticsBookings])
+
   const formatCurrency = useMemo(() => {
     return (val: number) => {
       return new Intl.NumberFormat(i18n.language === 'fr' ? 'fr-CA' : 'en-CA', {
@@ -166,5 +171,6 @@ export function useAdminAnalytics(bookings: Booking[]) {
     monthlyTrendData,
     channelsPerformance,
     formatCurrency,
+    referredBookingsCount,
   }
 }

@@ -1,5 +1,10 @@
+import { useState, useEffect, useCallback } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '@/lib/firebase/firebase'
+import { cn } from '@/lib/utils/utils'
 import type { BookingFormData } from '@/lib/schemas/bookingSchema'
 
 interface Props {
@@ -8,8 +13,49 @@ interface Props {
 
 export default function BookingStep4({ submitError }: Props) {
   const { t } = useTranslation()
-  const { register, getValues, formState: { isSubmitting } } = useFormContext<BookingFormData>()
+  const { register, getValues, setValue, formState: { isSubmitting } } = useFormContext<BookingFormData>()
   const values = getValues()
+
+  const [searchParams] = useSearchParams()
+  const [promoCode, setPromoCode] = useState(() => searchParams.get('ref') || '')
+  const [promoStatus, setPromoStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle')
+  const [promoMessage, setPromoMessage] = useState('')
+
+  const verifyPromo = useCallback(async (code: string) => {
+    if (!code.trim()) return
+    setPromoStatus('checking')
+    try {
+      const cleanCode = code.trim().toUpperCase()
+      const docRef = doc(db, 'referrals', cleanCode)
+      const docSnap = await getDoc(docRef)
+      const data = docSnap.data()
+      if (docSnap.exists() && data && data['active'] === true) {
+        setPromoStatus('valid')
+        setValue('referredBy', cleanCode)
+        const owner = (data['ownerName'] as string) || ''
+        setPromoMessage(t('referrals.promoValid') + (owner ? ` (${t('referrals.referredBy', { name: owner })})` : ''))
+      } else {
+        setPromoStatus('invalid')
+        setValue('referredBy', null)
+        setPromoMessage(t('referrals.promoInvalid'))
+      }
+    } catch (err) {
+      console.error(err)
+      setPromoStatus('invalid')
+      setValue('referredBy', null)
+      setPromoMessage(t('referrals.promoInvalid'))
+    }
+  }, [setValue, t])
+
+  useEffect(() => {
+    const refParam = searchParams.get('ref')
+    if (refParam) {
+      const timer = setTimeout(() => {
+        void verifyPromo(refParam)
+      }, 0)
+      return () => clearTimeout(timer)
+    }
+  }, [searchParams, verifyPromo])
 
   const frequencyLabel = t(`booking.fields.frequency.options.${values.frequency}`)
   const serviceLabel   = t(`services.${values.serviceType}.title`)
@@ -82,6 +128,44 @@ export default function BookingStep4({ submitError }: Props) {
                 <p className="font-body text-lg text-charcoal font-bold mt-0.5">{values.notes}</p>
               </div>
             </div>
+          )}
+        </div>
+
+        {/* Referral / Promo Code */}
+        <div className="pt-4 border-t border-sand">
+          <label htmlFor="referralCodeInput" className="block font-body text-base text-charcoal mb-1">
+            {t('referrals.promoCodeLabel')}
+          </label>
+          <div className="flex gap-2">
+            <input
+              id="referralCodeInput"
+              type="text"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value)}
+              placeholder={t('referrals.promoPlaceholder')}
+              className={cn(
+                'flex-grow border rounded px-4 py-3 min-h-[48px] font-body text-base text-charcoal focus:outline-none focus:ring-2 focus:ring-slate-brand',
+                promoStatus === 'valid' ? 'border-green-500 bg-green-50/20' : 'border-sand'
+              )}
+            />
+            <button
+              type="button"
+              onClick={() => void verifyPromo(promoCode)}
+              disabled={promoStatus === 'checking' || !promoCode.trim()}
+              className="bg-slate-brand text-white font-body font-medium text-base rounded px-6 min-h-[48px] hover:bg-slate-dark transition-colors duration-200 disabled:opacity-60"
+            >
+              {promoStatus === 'checking' ? t('referrals.promoChecking') : t('common.verify')}
+            </button>
+          </div>
+          {promoStatus !== 'idle' && (
+            <p
+              className={cn(
+                'font-body text-base mt-2',
+                promoStatus === 'valid' ? 'text-green-600' : 'text-red-600'
+              )}
+            >
+              {promoMessage}
+            </p>
           )}
         </div>
 

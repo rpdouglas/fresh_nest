@@ -56,6 +56,8 @@ service cloud.firestore {
         && (!('squareFootage' in request.resource.data) || request.resource.data.squareFootage is int)
         && (!('preferredCleaner' in request.resource.data) 
             || (request.resource.data.preferredCleaner is string || request.resource.data.preferredCleaner == null))
+        && (!('referredBy' in request.resource.data)
+            || (request.resource.data.referredBy is string || request.resource.data.referredBy == null))
         && (!('notes' in request.resource.data) || request.resource.data.notes is string);
 
       // Admin read & update
@@ -81,7 +83,15 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // 4. Default Deny-All for other collections (e.g. staff)
+    // 4. Referrals Collection
+    match /referrals/{referralCode} {
+      // Unauthenticated reads permitted to validate promo code existence in client form
+      allow read: if true;
+      // Writes reserved for authenticated administrators
+      allow write: if isAdmin();
+    }
+
+    // 5. Default Deny-All for other collections (e.g. staff)
     match /{document=**} {
       allow read, write: if false;
     }

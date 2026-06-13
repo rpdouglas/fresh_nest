@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useLocation, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
@@ -31,6 +32,13 @@ export default function ThankYouPage() {
   const { t } = useTranslation()
   const location = useLocation()
   const booking = location.state as ThankYouState | null
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = (link: string) => {
+    void navigator.clipboard.writeText(link)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   return (
     <>
@@ -128,6 +136,48 @@ export default function ThankYouPage() {
                   </dd>
                 </div>
               </dl>
+            </motion.div>
+
+            {/* Referral / Sharing Card */}
+            <motion.div
+              custom={1}
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              className="bg-white rounded border border-sand shadow-sm p-6 mt-6"
+            >
+              <h2 className="font-sub text-2xl text-charcoal mb-2">
+                {t('referrals.referralShareTitle')}
+              </h2>
+              <p className="font-body text-base text-text-muted mb-4">
+                {t('referrals.referralShareDesc')}
+              </p>
+              
+              {/* Display code */}
+              <div className="bg-slate-pale border border-sand rounded p-3 mb-4 text-center">
+                <span className="font-body text-sm text-text-muted uppercase tracking-wider block mb-1">
+                  {t('referrals.promoCodeLabel')}
+                </span>
+                <span className="font-display text-2xl text-slate-dark font-bold tracking-widest">
+                  {`${booking.firstName.toUpperCase()}-${booking.bookingId.slice(0, 4).toUpperCase()}`}
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-2">
+                <input
+                  type="text"
+                  readOnly
+                  value={`${window.location.origin}/booking?ref=${booking.firstName.toUpperCase()}-${booking.bookingId.slice(0, 4).toUpperCase()}`}
+                  className="flex-grow border border-sand rounded px-4 py-3 min-h-[48px] font-body text-base text-charcoal bg-cream focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleCopy(`${window.location.origin}/booking?ref=${booking.firstName.toUpperCase()}-${booking.bookingId.slice(0, 4).toUpperCase()}`)}
+                  className="bg-slate-brand text-white font-body font-medium text-base rounded px-6 min-h-[48px] hover:bg-slate-dark transition-colors duration-200"
+                >
+                  {copied ? t('referrals.linkCopied') : t('referrals.copyLink')}
+                </button>
+              </div>
             </motion.div>
           </div>
         </section>

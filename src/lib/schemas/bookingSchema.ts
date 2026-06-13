@@ -25,6 +25,7 @@ export const bookingFormSchema = z.object({
 
   // Step 4 — Consent
   marketingConsent: z.boolean(),
+  referredBy:       z.string().nullable().optional(),
 })
 
 export type BookingFormData = z.infer<typeof bookingFormSchema>
@@ -33,5 +34,5 @@ export const STEP_FIELDS: Record<number, (keyof BookingFormData)[]> = {
   0: ['serviceType', 'propertyType', 'bedrooms', 'bathrooms', 'pets'],
   1: ['frequency', 'preferredDate'],
   2: ['firstName', 'lastName', 'email', 'phone', 'address'],
-  3: [],
+  3: ['marketingConsent', 'referredBy'],
 }
