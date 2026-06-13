@@ -1,0 +1,11 @@
+{
+  "fsm": {
+    "portal": "Portail du personnel",
+    "dashboard": "Tableau de bord",
+    "shifts": "Quarts disponibles",
+    "myJobs": "Mes mandats",
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "epicInProgress": "Fresh Nest Co. — Projet en cours"
+  }
+}

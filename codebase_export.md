@@ -1,7 +1,7 @@
 # Codebase Export: fresh_nest
 
-Generated on: 2026-06-11 01:02:42 UTC  
-Total Files: 99  
+Generated on: 2026-06-13 21:08:03 UTC  
+Total Files: 124  
 
 ## Directory Structure
 
@@ -12,8 +12,28 @@ Total Files: 99
 │       ├── docs-check.yml
 │       ├── firebase-deploy.yml
 │       └── firebase-preview.yml
+├── coverage
+│   ├── lcov-report
+│   │   ├── components
+│   │   │   └── layout
+│   │   │       ├── CookieBanner.tsx.html
+│   │   │       └── index.html
+│   │   ├── lib
+│   │   │   ├── analytics.ts.html
+│   │   │   ├── index.html
+│   │   │   └── utils.ts.html
+│   │   ├── base.css
+│   │   ├── block-navigation.js
+│   │   ├── index.html
+│   │   ├── prettify.css
+│   │   ├── prettify.js
+│   │   └── sorter.js
+│   └── lcov.info
 ├── e2e
-│   └── analytics.spec.ts
+│   ├── analytics.spec.ts
+│   ├── booking.spec.ts
+│   ├── language.spec.ts
+│   └── phase4.spec.ts
 ├── functions
 │   ├── src
 │   │   ├── emailTemplates.ts
@@ -33,6 +53,16 @@ Total Files: 99
 ├── src
 │   ├── assets
 │   ├── components
+│   │   ├── admin
+│   │   │   ├── hooks
+│   │   │   │   ├── useAdminAnalytics.ts
+│   │   │   │   ├── useAdminAuth.ts
+│   │   │   │   └── useBookings.ts
+│   │   │   ├── AccessDeniedPanel.tsx
+│   │   │   ├── AnalyticsDashboard.tsx
+│   │   │   ├── BookingDetailPanel.tsx
+│   │   │   ├── BookingsTable.tsx
+│   │   │   └── LoginPanel.tsx
 │   │   ├── booking
 │   │   │   ├── BookingStep1.tsx
 │   │   │   ├── BookingStep2.tsx
@@ -70,21 +100,29 @@ Total Files: 99
 │   │   │   └── fr.json
 │   │   └── index.ts
 │   ├── lib
-│   │   ├── analytics.test.ts
-│   │   ├── analytics.ts
-│   │   ├── bookingSchema.ts
-│   │   ├── firebase.ts
-│   │   ├── firestore.ts
-│   │   ├── galleryData.ts
-│   │   ├── locationData.ts
-│   │   ├── quotePricing.ts
-│   │   ├── reviewsData.ts
-│   │   ├── seo.ts
-│   │   ├── serviceData.ts
-│   │   └── utils.ts
+│   │   ├── data
+│   │   │   ├── blogData.ts
+│   │   │   ├── galleryData.ts
+│   │   │   ├── locationData.ts
+│   │   │   ├── reviewsData.ts
+│   │   │   └── serviceData.ts
+│   │   ├── firebase
+│   │   │   ├── analytics.test.ts
+│   │   │   ├── analytics.ts
+│   │   │   ├── firebase.ts
+│   │   │   └── firestore.ts
+│   │   ├── schemas
+│   │   │   └── bookingSchema.ts
+│   │   └── utils
+│   │       ├── animations.ts
+│   │       ├── quotePricing.ts
+│   │       ├── seo.ts
+│   │       └── utils.ts
 │   ├── pages
 │   │   ├── AdminPage.tsx
 │   │   ├── AirbnbTurnoverPage.tsx
+│   │   ├── Blog.tsx
+│   │   ├── BlogPost.tsx
 │   │   ├── BookingPage.tsx
 │   │   ├── FaqPage.tsx
 │   │   ├── Gallery.tsx
@@ -103,7 +141,8 @@ Total Files: 99
 │   ├── App.css
 │   ├── App.tsx
 │   ├── index.css
-│   └── main.tsx
+│   ├── main.tsx
+│   └── vite-env.d.ts
 ├── user-guide
 │   ├── admin-guide.md
 │   └── booking-guide.md
@@ -123,13 +162,10 @@ Total Files: 99
 ├── playwright.config.ts
 ├── postcss.config.js
 ├── README.md
-├── scratch_refactor.py
 ├── tailwind.config.js
 ├── tsconfig.app.json
 ├── tsconfig.json
 ├── tsconfig.node.json
-├── update_cookie_json.py
-├── update_json.py
 ├── vite.config.ts
 └── vitest.config.ts
 ```
@@ -302,6 +338,7 @@ dist
 dist-ssr
 *.local
 .env.local
+.env.production
 .firebase/
 *.tsbuildinfo
 
@@ -672,79 +709,1823 @@ These are not aspirational — they are done conditions.
 ## File: README.md
 
 ```markdown
-# React + TypeScript + Vite
+# Fresh Nest Co. — Cleaning & Organizing Services
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This repository contains the codebase for the **Fresh Nest Co.** cleaning services platform, serving Cornwall ON, Akwesasne, Snye QC, Long Sault, and Morrisburg.
 
-Currently, two official plugins are available:
+Live website: [lilypad-freshnest.web.app](https://lilypad-freshnest.web.app)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🛠 Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+*   **Frontend**: React 19, TypeScript (strict), Vite, Tailwind CSS v3.4.x (using token names, not Tailwind v4)
+*   **Routing**: React Router v6 (multi-page)
+*   **Form Management**: React Hook Form + Zod validation
+*   **Animations**: Framer Motion
+*   **Internationalization**: react-i18next (fully bilingual English/French)
+*   **Data & Auth**: TanStack Query v5 + Firebase (Auth, Firestore, Hosting, Cloud Functions)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📂 Codebase & Docs Reference
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Before modifying this project, please read the following guidelines:
+*   [CLAUDE.md](file:///workspaces/fresh_nest/CLAUDE.md) — Main developer context, commands, and code styling rules.
+*   [GEMINI.md](file:///workspaces/fresh_nest/GEMINI.md) — AI Agent rules and persona-based development gates.
+*   [docs/PERSONAS.md](file:///workspaces/fresh_nest/docs/PERSONAS.md) — The 6 core user personas that drive all feature acceptance criteria.
+*   [docs/firestore-schema.md](file:///workspaces/fresh_nest/docs/firestore-schema.md) — The strict datastore schema. Never write fields not defined here.
+*   [docs/design-system.md](file:///workspaces/fresh_nest/docs/design-system.md) — Brand design tokens and Tailwind configuration mapping.
+*   [docs/COMPLIANCE.md](file:///workspaces/fresh_nest/docs/COMPLIANCE.md) — Privacy rules, CASL compliance, and data practices.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## ⚙️ Environment Configuration
+
+The application uses the following environment variables. Local settings can be set in `.env.local` (which is gitignored).
+
+| Variable Name | Type | Purpose / Allowed Values |
+| :--- | :--- | :--- |
+| `VITE_FIREBASE_API_KEY` | `string` | Public Firebase web API key |
+| `VITE_FIREBASE_AUTH_DOMAIN` | `string` | Auth domain |
+| `VITE_FIREBASE_PROJECT_ID` | `string` | Project ID (`freshnest-aa51e`) |
+| `VITE_FIREBASE_STORAGE_BUCKET` | `string` | Storage bucket address |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | `string` | Messaging sender ID |
+| `VITE_FIREBASE_APP_ID` | `string` | Firebase Web App ID |
+| `VITE_FIREBASE_MEASUREMENT_ID` | `string` | GA4 / Analytics Measurement ID |
+| `VITE_FIRESTORE_DB_ID` | `string` | DB target: `(default)` (Prod) \| `freshnest-dev` (Dev/Test) |
+
+*Note: Production values are injected via GitHub Secrets in CI/CD workflows and are not committed.*
+
+---
+
+## 🗄 Database Isolation Architecture
+
+We enforce database isolation using **two separate Firestore databases** in a single Firebase project (see [ADR-002](file:///workspaces/fresh_nest/docs/decisions/ADR-002-firestore-multidb.md)):
+1.  **`(default)`** — Hosts production customer bookings and analytics.
+2.  **`freshnest-dev`** — Hosts development, staging, and PR preview channel mock data.
+
+Database connection routing is driven at build time by the `VITE_FIRESTORE_DB_ID` variable in [src/lib/firebase.ts](file:///workspaces/fresh_nest/src/lib/firebase.ts).
+
+---
+
+## 🚀 Running Locally
+
+1.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
+2.  **Run development server**:
+    ```bash
+    npm run dev
+    ```
+3.  **Run unit tests**:
+    ```bash
+    npm run test
+    ```
+4.  **Run E2E integration tests**:
+    ```bash
+    npm run test:e2e
+    ```
+5.  **Build production package**:
+    ```bash
+    npm run build
+    ```
+6.  **Run ESLint checking**:
+    ```bash
+    npm run lint
+    ```
+
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## File: coverage/lcov-report/base.css
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```css
+body, html {
+  margin:0; padding: 0;
+  height: 100%;
+}
+body {
+    font-family: Helvetica Neue, Helvetica, Arial;
+    font-size: 14px;
+    color:#333;
+}
+.small { font-size: 12px; }
+*, *:after, *:before {
+  -webkit-box-sizing:border-box;
+     -moz-box-sizing:border-box;
+          box-sizing:border-box;
+  }
+h1 { font-size: 20px; margin: 0;}
+h2 { font-size: 14px; }
+pre {
+    font: 12px/1.4 Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    margin: 0;
+    padding: 0;
+    -moz-tab-size: 2;
+    -o-tab-size:  2;
+    tab-size: 2;
+}
+a { color:#0074D9; text-decoration:none; }
+a:hover { text-decoration:underline; }
+.strong { font-weight: bold; }
+.space-top1 { padding: 10px 0 0 0; }
+.pad2y { padding: 20px 0; }
+.pad1y { padding: 10px 0; }
+.pad2x { padding: 0 20px; }
+.pad2 { padding: 20px; }
+.pad1 { padding: 10px; }
+.space-left2 { padding-left:55px; }
+.space-right2 { padding-right:20px; }
+.center { text-align:center; }
+.clearfix { display:block; }
+.clearfix:after {
+  content:'';
+  display:block;
+  height:0;
+  clear:both;
+  visibility:hidden;
+  }
+.fl { float: left; }
+@media only screen and (max-width:640px) {
+  .col3 { width:100%; max-width:100%; }
+  .hide-mobile { display:none!important; }
+}
+
+.quiet {
+  color: #7f7f7f;
+  color: rgba(0,0,0,0.5);
+}
+.quiet a { opacity: 0.7; }
+
+.fraction {
+  font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  font-size: 10px;
+  color: #555;
+  background: #E8E8E8;
+  padding: 4px 5px;
+  border-radius: 3px;
+  vertical-align: middle;
+}
+
+div.path a:link, div.path a:visited { color: #333; }
+table.coverage {
+  border-collapse: collapse;
+  margin: 10px 0 0 0;
+  padding: 0;
+}
+
+table.coverage td {
+  margin: 0;
+  padding: 0;
+  vertical-align: top;
+}
+table.coverage td.line-count {
+    text-align: right;
+    padding: 0 5px 0 20px;
+}
+table.coverage td.line-coverage {
+    text-align: right;
+    padding-right: 10px;
+    min-width:20px;
+}
+
+table.coverage td span.cline-any {
+    display: inline-block;
+    padding: 0 5px;
+    width: 100%;
+}
+.missing-if-branch {
+    display: inline-block;
+    margin-right: 5px;
+    border-radius: 3px;
+    position: relative;
+    padding: 0 4px;
+    background: #333;
+    color: yellow;
+}
+
+.skip-if-branch {
+    display: none;
+    margin-right: 10px;
+    position: relative;
+    padding: 0 4px;
+    background: #ccc;
+    color: white;
+}
+.missing-if-branch .typ, .skip-if-branch .typ {
+    color: inherit !important;
+}
+.coverage-summary {
+  border-collapse: collapse;
+  width: 100%;
+}
+.coverage-summary tr { border-bottom: 1px solid #bbb; }
+.keyline-all { border: 1px solid #ddd; }
+.coverage-summary td, .coverage-summary th { padding: 10px; }
+.coverage-summary tbody { border: 1px solid #bbb; }
+.coverage-summary td { border-right: 1px solid #bbb; }
+.coverage-summary td:last-child { border-right: none; }
+.coverage-summary th {
+  text-align: left;
+  font-weight: normal;
+  white-space: nowrap;
+}
+.coverage-summary th.file { border-right: none !important; }
+.coverage-summary th.pct { }
+.coverage-summary th.pic,
+.coverage-summary th.abs,
+.coverage-summary td.pct,
+.coverage-summary td.abs { text-align: right; }
+.coverage-summary td.file { white-space: nowrap;  }
+.coverage-summary td.pic { min-width: 120px !important;  }
+.coverage-summary tfoot td { }
+
+.coverage-summary .sorter {
+    height: 10px;
+    width: 7px;
+    display: inline-block;
+    margin-left: 0.5em;
+    background: url(sort-arrow-sprite.png) no-repeat scroll 0 0 transparent;
+}
+.coverage-summary .sorted .sorter {
+    background-position: 0 -20px;
+}
+.coverage-summary .sorted-desc .sorter {
+    background-position: 0 -10px;
+}
+.status-line {  height: 10px; }
+/* yellow */
+.cbranch-no { background: yellow !important; color: #111; }
+/* dark red */
+.red.solid, .status-line.low, .low .cover-fill { background:#C21F39 }
+.low .chart { border:1px solid #C21F39 }
+.highlighted,
+.highlighted .cstat-no, .highlighted .fstat-no, .highlighted .cbranch-no{
+  background: #C21F39 !important;
+}
+/* medium red */
+.cstat-no, .fstat-no, .cbranch-no, .cbranch-no { background:#F6C6CE }
+/* light red */
+.low, .cline-no { background:#FCE1E5 }
+/* light green */
+.high, .cline-yes { background:rgb(230,245,208) }
+/* medium green */
+.cstat-yes { background:rgb(161,215,106) }
+/* dark green */
+.status-line.high, .high .cover-fill { background:rgb(77,146,33) }
+.high .chart { border:1px solid rgb(77,146,33) }
+/* dark yellow (gold) */
+.status-line.medium, .medium .cover-fill { background: #f9cd0b; }
+.medium .chart { border:1px solid #f9cd0b; }
+/* light yellow */
+.medium { background: #fff4c2; }
+
+.cstat-skip { background: #ddd; color: #111; }
+.fstat-skip { background: #ddd; color: #111 !important; }
+.cbranch-skip { background: #ddd !important; color: #111; }
+
+span.cline-neutral { background: #eaeaea; }
+
+.coverage-summary td.empty {
+    opacity: .5;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    line-height: 1;
+    color: #888;
+}
+
+.cover-fill, .cover-empty {
+  display:inline-block;
+  height: 12px;
+}
+.chart {
+  line-height: 0;
+}
+.cover-empty {
+    background: white;
+}
+.cover-full {
+    border-right: none !important;
+}
+pre.prettyprint {
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.com { color: #999 !important; }
+.ignore-none { color: #999; font-weight: normal; }
+
+.wrapper {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -48px;
+}
+.footer, .push {
+  height: 48px;
+}
+
 ```
+
+---
+
+## File: coverage/lcov-report/block-navigation.js
+
+```javascript
+/* eslint-disable */
+var jumpToCode = (function init() {
+    // Classes of code we would like to highlight in the file view
+    var missingCoverageClasses = ['.cbranch-no', '.cstat-no', '.fstat-no'];
+
+    // Elements to highlight in the file listing view
+    var fileListingElements = ['td.pct.low'];
+
+    // We don't want to select elements that are direct descendants of another match
+    var notSelector = ':not(' + missingCoverageClasses.join('):not(') + ') > '; // becomes `:not(a):not(b) > `
+
+    // Selector that finds elements on the page to which we can jump
+    var selector =
+        fileListingElements.join(', ') +
+        ', ' +
+        notSelector +
+        missingCoverageClasses.join(', ' + notSelector); // becomes `:not(a):not(b) > a, :not(a):not(b) > b`
+
+    // The NodeList of matching elements
+    var missingCoverageElements = document.querySelectorAll(selector);
+
+    var currentIndex;
+
+    function toggleClass(index) {
+        missingCoverageElements
+            .item(currentIndex)
+            .classList.remove('highlighted');
+        missingCoverageElements.item(index).classList.add('highlighted');
+    }
+
+    function makeCurrent(index) {
+        toggleClass(index);
+        currentIndex = index;
+        missingCoverageElements.item(index).scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'center'
+        });
+    }
+
+    function goToPrevious() {
+        var nextIndex = 0;
+        if (typeof currentIndex !== 'number' || currentIndex === 0) {
+            nextIndex = missingCoverageElements.length - 1;
+        } else if (missingCoverageElements.length > 1) {
+            nextIndex = currentIndex - 1;
+        }
+
+        makeCurrent(nextIndex);
+    }
+
+    function goToNext() {
+        var nextIndex = 0;
+
+        if (
+            typeof currentIndex === 'number' &&
+            currentIndex < missingCoverageElements.length - 1
+        ) {
+            nextIndex = currentIndex + 1;
+        }
+
+        makeCurrent(nextIndex);
+    }
+
+    return function jump(event) {
+        if (
+            document.getElementById('fileSearch') === document.activeElement &&
+            document.activeElement != null
+        ) {
+            // if we're currently focused on the search input, we don't want to navigate
+            return;
+        }
+
+        switch (event.which) {
+            case 78: // n
+            case 74: // j
+                goToNext();
+                break;
+            case 66: // b
+            case 75: // k
+            case 80: // p
+                goToPrevious();
+                break;
+        }
+    };
+})();
+window.addEventListener('keydown', jumpToCode);
+
+```
+
+---
+
+## File: coverage/lcov-report/components/layout/CookieBanner.tsx.html
+
+```html
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for components/layout/CookieBanner.tsx</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">components/layout</a> CookieBanner.tsx</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">95% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>19/20</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>8/8</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">85.71% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>6/7</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>18/18</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line high'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { initializeAnalytics, revokeAnalytics } from '@/lib/analytics'
+import { cn } from '@/lib/utils'
+import { AnimatePresence, motion } from 'framer-motion'
+&nbsp;
+export default function CookieBanner() {
+  const { t } = useTranslation()
+  const [isVisible, setIsVisible] = useState(() =&gt; {
+    return typeof window !== 'undefined' &amp;&amp; localStorage.getItem('freshnest_consent') === null
+  })
+&nbsp;
+  useEffect(() =&gt; {
+    if (typeof window !== 'undefined' &amp;&amp; localStorage.getItem('freshnest_consent') === 'granted') {
+      initializeAnalytics()
+    }
+&nbsp;
+    const <span class="fstat-no" title="function not covered" >handleOpenBanner = () =&gt; <span class="cstat-no" title="statement not covered" >s</span>etIsVisible(true)</span>
+    window.addEventListener('open-cookie-banner', handleOpenBanner)
+    return () =&gt; window.removeEventListener('open-cookie-banner', handleOpenBanner)
+  }, [])
+&nbsp;
+  const handleAccept = () =&gt; {
+    localStorage.setItem('freshnest_consent', 'granted')
+    initializeAnalytics()
+    setIsVisible(false)
+  }
+&nbsp;
+  const handleDecline = () =&gt; {
+    localStorage.setItem('freshnest_consent', 'denied')
+    revokeAnalytics()
+    setIsVisible(false)
+  }
+&nbsp;
+  return (
+    &lt;AnimatePresence&gt;
+      {isVisible &amp;&amp; (
+        &lt;motion.div
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 100, opacity: 0 }}
+          className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-white border-t border-sand shadow-lg"
+        &gt;
+          &lt;div className="max-w-content mx-auto flex flex-col md:flex-row items-center justify-between gap-4"&gt;
+            &lt;p className="font-body text-base text-charcoal text-center md:text-left flex-1"&gt;
+              {t('cookieBanner.message')}
+            &lt;/p&gt;
+            &lt;div className="flex items-center gap-3 w-full md:w-auto"&gt;
+              &lt;button
+                onClick={handleDecline}
+                className={cn(
+                  'flex-1 md:flex-none font-body text-base font-medium min-h-[48px] px-6 rounded border border-sand text-charcoal hover:bg-cream transition-colors focus:outline-none focus:ring-2 focus:ring-slate-pale'
+                )}
+              &gt;
+                {t('cookieBanner.decline')}
+              &lt;/button&gt;
+              &lt;button
+                onClick={handleAccept}
+                className={cn(
+                  'flex-1 md:flex-none font-body text-base font-medium min-h-[48px] px-6 rounded bg-slate-brand text-white hover:bg-slate-dark transition-colors focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2'
+                )}
+              &gt;
+                {t('cookieBanner.accept')}
+              &lt;/button&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/motion.div&gt;
+      )}
+    &lt;/AnimatePresence&gt;
+  )
+}
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2026-06-11T14:05:43.020Z
+            </div>
+        <script src="../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../sorter.js"></script>
+        <script src="../../block-navigation.js"></script>
+    </body>
+</html>
+    
+```
+
+---
+
+## File: coverage/lcov-report/components/layout/index.html
+
+```html
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for components/layout</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../index.html">All files</a> components/layout</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">95% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>19/20</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>8/8</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">85.71% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>6/7</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>18/18</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line high'></div>
+    <div class="pad1">
+<table class="coverage-summary">
+<thead>
+<tr>
+   <th data-col="file" data-fmt="html" data-html="true" class="file">File</th>
+   <th data-col="pic" data-type="number" data-fmt="html" data-html="true" class="pic"></th>
+   <th data-col="statements" data-type="number" data-fmt="pct" class="pct">Statements</th>
+   <th data-col="statements_raw" data-type="number" data-fmt="html" class="abs"></th>
+   <th data-col="branches" data-type="number" data-fmt="pct" class="pct">Branches</th>
+   <th data-col="branches_raw" data-type="number" data-fmt="html" class="abs"></th>
+   <th data-col="functions" data-type="number" data-fmt="pct" class="pct">Functions</th>
+   <th data-col="functions_raw" data-type="number" data-fmt="html" class="abs"></th>
+   <th data-col="lines" data-type="number" data-fmt="pct" class="pct">Lines</th>
+   <th data-col="lines_raw" data-type="number" data-fmt="html" class="abs"></th>
+</tr>
+</thead>
+<tbody><tr>
+	<td class="file high" data-value="CookieBanner.tsx"><a href="CookieBanner.tsx.html">CookieBanner.tsx</a></td>
+	<td data-value="95" class="pic high">
+	<div class="chart"><div class="cover-fill" style="width: 95%"></div><div class="cover-empty" style="width: 5%"></div></div>
+	</td>
+	<td data-value="95" class="pct high">95%</td>
+	<td data-value="20" class="abs high">19/20</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="8" class="abs high">8/8</td>
+	<td data-value="85.71" class="pct high">85.71%</td>
+	<td data-value="7" class="abs high">6/7</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="18" class="abs high">18/18</td>
+	</tr>
+
+</tbody>
+</table>
+</div>
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2026-06-11T14:05:43.020Z
+            </div>
+        <script src="../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../sorter.js"></script>
+        <script src="../../block-navigation.js"></script>
+    </body>
+</html>
+    
+```
+
+---
+
+## File: coverage/lcov-report/index.html
+
+```html
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for All files</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="prettify.css" />
+    <link rel="stylesheet" href="base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1>All files</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">95.65% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>44/46</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">87.5% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>14/16</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">93.75% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>15/16</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">97.67% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>42/43</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line high'></div>
+    <div class="pad1">
+<table class="coverage-summary">
+<thead>
+<tr>
+   <th data-col="file" data-fmt="html" data-html="true" class="file">File</th>
+   <th data-col="pic" data-type="number" data-fmt="html" data-html="true" class="pic"></th>
+   <th data-col="statements" data-type="number" data-fmt="pct" class="pct">Statements</th>
+   <th data-col="statements_raw" data-type="number" data-fmt="html" class="abs"></th>
+   <th data-col="branches" data-type="number" data-fmt="pct" class="pct">Branches</th>
+   <th data-col="branches_raw" data-type="number" data-fmt="html" class="abs"></th>
+   <th data-col="functions" data-type="number" data-fmt="pct" class="pct">Functions</th>
+   <th data-col="functions_raw" data-type="number" data-fmt="html" class="abs"></th>
+   <th data-col="lines" data-type="number" data-fmt="pct" class="pct">Lines</th>
+   <th data-col="lines_raw" data-type="number" data-fmt="html" class="abs"></th>
+</tr>
+</thead>
+<tbody><tr>
+	<td class="file high" data-value="components/layout"><a href="components/layout/index.html">components/layout</a></td>
+	<td data-value="95" class="pic high">
+	<div class="chart"><div class="cover-fill" style="width: 95%"></div><div class="cover-empty" style="width: 5%"></div></div>
+	</td>
+	<td data-value="95" class="pct high">95%</td>
+	<td data-value="20" class="abs high">19/20</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="8" class="abs high">8/8</td>
+	<td data-value="85.71" class="pct high">85.71%</td>
+	<td data-value="7" class="abs high">6/7</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="18" class="abs high">18/18</td>
+	</tr>
+
+<tr>
+	<td class="file high" data-value="lib"><a href="lib/index.html">lib</a></td>
+	<td data-value="96.15" class="pic high">
+	<div class="chart"><div class="cover-fill" style="width: 96%"></div><div class="cover-empty" style="width: 4%"></div></div>
+	</td>
+	<td data-value="96.15" class="pct high">96.15%</td>
+	<td data-value="26" class="abs high">25/26</td>
+	<td data-value="75" class="pct medium">75%</td>
+	<td data-value="8" class="abs medium">6/8</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="9" class="abs high">9/9</td>
+	<td data-value="96" class="pct high">96%</td>
+	<td data-value="25" class="abs high">24/25</td>
+	</tr>
+
+</tbody>
+</table>
+</div>
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2026-06-11T14:05:43.020Z
+            </div>
+        <script src="prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="sorter.js"></script>
+        <script src="block-navigation.js"></script>
+    </body>
+</html>
+    
+```
+
+---
+
+## File: coverage/lcov-report/lib/analytics.ts.html
+
+```html
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for lib/analytics.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">lib</a> analytics.ts</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">95.83% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>23/24</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">75% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>6/8</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>8/8</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">95.83% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>23/24</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line high'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { getAnalytics, logEvent, Analytics, setAnalyticsCollectionEnabled } from 'firebase/analytics'
+import app from './firebase'
+&nbsp;
+let analyticsInstance: Analytics | null = null
+&nbsp;
+export const initializeAnalytics = () =&gt; {
+  if (typeof window !== 'undefined' &amp;&amp; !analyticsInstance) {
+    try {
+      analyticsInstance = getAnalytics(app)
+      console.log('Firebase Analytics initialized.')
+    } catch (error) {
+<span class="cstat-no" title="statement not covered" >      console.error('Failed to initialize Firebase Analytics:', error)</span>
+    }
+  }
+}
+&nbsp;
+export const revokeAnalytics = () =&gt; {
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (analyticsInstance) {
+    setAnalyticsCollectionEnabled(analyticsInstance, false)
+    console.log('Firebase Analytics collection disabled.')
+  }
+}
+&nbsp;
+export const logCustomEvent = (eventName: string, eventParams?: Record&lt;string, unknown&gt;) =&gt; {
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (analyticsInstance) {
+    logEvent(analyticsInstance, eventName, eventParams)
+  }
+}
+&nbsp;
+export const logBookingStarted = () =&gt; {
+  logCustomEvent('booking_started')
+}
+&nbsp;
+export const logBookingCompleted = (serviceType: string, totalValue?: number) =&gt; {
+  logCustomEvent('booking_completed', { service_type: serviceType, value: totalValue })
+}
+&nbsp;
+export const logQuoteCalculated = (serviceType: string, estimatedPrice: number) =&gt; {
+  logCustomEvent('quote_calculated', { service_type: serviceType, value: estimatedPrice })
+}
+&nbsp;
+export const logPhoneClicked = (location: 'navbar' | 'footer' | 'other') =&gt; {
+  logCustomEvent('phone_clicked', { location })
+}
+&nbsp;
+export const logLanguageToggled = (newLanguage: string) =&gt; {
+  logCustomEvent('language_toggled', { language: newLanguage })
+}
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2026-06-11T14:05:43.020Z
+            </div>
+        <script src="../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../sorter.js"></script>
+        <script src="../block-navigation.js"></script>
+    </body>
+</html>
+    
+```
+
+---
+
+## File: coverage/lcov-report/lib/index.html
+
+```html
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for lib</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../index.html">All files</a> lib</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">96.15% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>25/26</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">75% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>6/8</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>9/9</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">96% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>24/25</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line high'></div>
+    <div class="pad1">
+<table class="coverage-summary">
+<thead>
+<tr>
+   <th data-col="file" data-fmt="html" data-html="true" class="file">File</th>
+   <th data-col="pic" data-type="number" data-fmt="html" data-html="true" class="pic"></th>
+   <th data-col="statements" data-type="number" data-fmt="pct" class="pct">Statements</th>
+   <th data-col="statements_raw" data-type="number" data-fmt="html" class="abs"></th>
+   <th data-col="branches" data-type="number" data-fmt="pct" class="pct">Branches</th>
+   <th data-col="branches_raw" data-type="number" data-fmt="html" class="abs"></th>
+   <th data-col="functions" data-type="number" data-fmt="pct" class="pct">Functions</th>
+   <th data-col="functions_raw" data-type="number" data-fmt="html" class="abs"></th>
+   <th data-col="lines" data-type="number" data-fmt="pct" class="pct">Lines</th>
+   <th data-col="lines_raw" data-type="number" data-fmt="html" class="abs"></th>
+</tr>
+</thead>
+<tbody><tr>
+	<td class="file high" data-value="analytics.ts"><a href="analytics.ts.html">analytics.ts</a></td>
+	<td data-value="95.83" class="pic high">
+	<div class="chart"><div class="cover-fill" style="width: 95%"></div><div class="cover-empty" style="width: 5%"></div></div>
+	</td>
+	<td data-value="95.83" class="pct high">95.83%</td>
+	<td data-value="24" class="abs high">23/24</td>
+	<td data-value="75" class="pct medium">75%</td>
+	<td data-value="8" class="abs medium">6/8</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="8" class="abs high">8/8</td>
+	<td data-value="95.83" class="pct high">95.83%</td>
+	<td data-value="24" class="abs high">23/24</td>
+	</tr>
+
+<tr>
+	<td class="file high" data-value="utils.ts"><a href="utils.ts.html">utils.ts</a></td>
+	<td data-value="100" class="pic high">
+	<div class="chart"><div class="cover-fill cover-full" style="width: 100%"></div><div class="cover-empty" style="width: 0%"></div></div>
+	</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="2" class="abs high">2/2</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="0" class="abs high">0/0</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="1" class="abs high">1/1</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="1" class="abs high">1/1</td>
+	</tr>
+
+</tbody>
+</table>
+</div>
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2026-06-11T14:05:43.020Z
+            </div>
+        <script src="../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../sorter.js"></script>
+        <script src="../block-navigation.js"></script>
+    </body>
+</html>
+    
+```
+
+---
+
+## File: coverage/lcov-report/lib/utils.ts.html
+
+```html
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for lib/utils.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">lib</a> utils.ts</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>2/2</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/0</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>1/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>1/1</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line high'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+export const cn = (...inputs: ClassValue[]) =&gt; twMerge(clsx(inputs))
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2026-06-11T14:05:43.020Z
+            </div>
+        <script src="../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../sorter.js"></script>
+        <script src="../block-navigation.js"></script>
+    </body>
+</html>
+    
+```
+
+---
+
+## File: coverage/lcov-report/prettify.css
+
+```css
+.pln{color:#000}@media screen{.str{color:#080}.kwd{color:#008}.com{color:#800}.typ{color:#606}.lit{color:#066}.pun,.opn,.clo{color:#660}.tag{color:#008}.atn{color:#606}.atv{color:#080}.dec,.var{color:#606}.fun{color:red}}@media print,projection{.str{color:#060}.kwd{color:#006;font-weight:bold}.com{color:#600;font-style:italic}.typ{color:#404;font-weight:bold}.lit{color:#044}.pun,.opn,.clo{color:#440}.tag{color:#006;font-weight:bold}.atn{color:#404}.atv{color:#060}}pre.prettyprint{padding:2px;border:1px solid #888}ol.linenums{margin-top:0;margin-bottom:0}li.L0,li.L1,li.L2,li.L3,li.L5,li.L6,li.L7,li.L8{list-style-type:none}li.L1,li.L3,li.L5,li.L7,li.L9{background:#eee}
+
+```
+
+---
+
+## File: coverage/lcov-report/prettify.js
+
+```javascript
+/* eslint-disable */
+window.PR_SHOULD_USE_CONTINUATION=true;(function(){var h=["break,continue,do,else,for,if,return,while"];var u=[h,"auto,case,char,const,default,double,enum,extern,float,goto,int,long,register,short,signed,sizeof,static,struct,switch,typedef,union,unsigned,void,volatile"];var p=[u,"catch,class,delete,false,import,new,operator,private,protected,public,this,throw,true,try,typeof"];var l=[p,"alignof,align_union,asm,axiom,bool,concept,concept_map,const_cast,constexpr,decltype,dynamic_cast,explicit,export,friend,inline,late_check,mutable,namespace,nullptr,reinterpret_cast,static_assert,static_cast,template,typeid,typename,using,virtual,where"];var x=[p,"abstract,boolean,byte,extends,final,finally,implements,import,instanceof,null,native,package,strictfp,super,synchronized,throws,transient"];var R=[x,"as,base,by,checked,decimal,delegate,descending,dynamic,event,fixed,foreach,from,group,implicit,in,interface,internal,into,is,lock,object,out,override,orderby,params,partial,readonly,ref,sbyte,sealed,stackalloc,string,select,uint,ulong,unchecked,unsafe,ushort,var"];var r="all,and,by,catch,class,else,extends,false,finally,for,if,in,is,isnt,loop,new,no,not,null,of,off,on,or,return,super,then,true,try,unless,until,when,while,yes";var w=[p,"debugger,eval,export,function,get,null,set,undefined,var,with,Infinity,NaN"];var s="caller,delete,die,do,dump,elsif,eval,exit,foreach,for,goto,if,import,last,local,my,next,no,our,print,package,redo,require,sub,undef,unless,until,use,wantarray,while,BEGIN,END";var I=[h,"and,as,assert,class,def,del,elif,except,exec,finally,from,global,import,in,is,lambda,nonlocal,not,or,pass,print,raise,try,with,yield,False,True,None"];var f=[h,"alias,and,begin,case,class,def,defined,elsif,end,ensure,false,in,module,next,nil,not,or,redo,rescue,retry,self,super,then,true,undef,unless,until,when,yield,BEGIN,END"];var H=[h,"case,done,elif,esac,eval,fi,function,in,local,set,then,until"];var A=[l,R,w,s+I,f,H];var e=/^(DIR|FILE|vector|(de|priority_)?queue|list|stack|(const_)?iterator|(multi)?(set|map)|bitset|u?(int|float)\d*)/;var C="str";var z="kwd";var j="com";var O="typ";var G="lit";var L="pun";var F="pln";var m="tag";var E="dec";var J="src";var P="atn";var n="atv";var N="nocode";var M="(?:^^\\.?|[+-]|\\!|\\!=|\\!==|\\#|\\%|\\%=|&|&&|&&=|&=|\\(|\\*|\\*=|\\+=|\\,|\\-=|\\->|\\/|\\/=|:|::|\\;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\@|\\[|\\^|\\^=|\\^\\^|\\^\\^=|\\{|\\||\\|=|\\|\\||\\|\\|=|\\~|break|case|continue|delete|do|else|finally|instanceof|return|throw|try|typeof)\\s*";function k(Z){var ad=0;var S=false;var ac=false;for(var V=0,U=Z.length;V<U;++V){var ae=Z[V];if(ae.ignoreCase){ac=true}else{if(/[a-z]/i.test(ae.source.replace(/\\u[0-9a-f]{4}|\\x[0-9a-f]{2}|\\[^ux]/gi,""))){S=true;ac=false;break}}}var Y={b:8,t:9,n:10,v:11,f:12,r:13};function ab(ah){var ag=ah.charCodeAt(0);if(ag!==92){return ag}var af=ah.charAt(1);ag=Y[af];if(ag){return ag}else{if("0"<=af&&af<="7"){return parseInt(ah.substring(1),8)}else{if(af==="u"||af==="x"){return parseInt(ah.substring(2),16)}else{return ah.charCodeAt(1)}}}}function T(af){if(af<32){return(af<16?"\\x0":"\\x")+af.toString(16)}var ag=String.fromCharCode(af);if(ag==="\\"||ag==="-"||ag==="["||ag==="]"){ag="\\"+ag}return ag}function X(am){var aq=am.substring(1,am.length-1).match(new RegExp("\\\\u[0-9A-Fa-f]{4}|\\\\x[0-9A-Fa-f]{2}|\\\\[0-3][0-7]{0,2}|\\\\[0-7]{1,2}|\\\\[\\s\\S]|-|[^-\\\\]","g"));var ak=[];var af=[];var ao=aq[0]==="^";for(var ar=ao?1:0,aj=aq.length;ar<aj;++ar){var ah=aq[ar];if(/\\[bdsw]/i.test(ah)){ak.push(ah)}else{var ag=ab(ah);var al;if(ar+2<aj&&"-"===aq[ar+1]){al=ab(aq[ar+2]);ar+=2}else{al=ag}af.push([ag,al]);if(!(al<65||ag>122)){if(!(al<65||ag>90)){af.push([Math.max(65,ag)|32,Math.min(al,90)|32])}if(!(al<97||ag>122)){af.push([Math.max(97,ag)&~32,Math.min(al,122)&~32])}}}}af.sort(function(av,au){return(av[0]-au[0])||(au[1]-av[1])});var ai=[];var ap=[NaN,NaN];for(var ar=0;ar<af.length;++ar){var at=af[ar];if(at[0]<=ap[1]+1){ap[1]=Math.max(ap[1],at[1])}else{ai.push(ap=at)}}var an=["["];if(ao){an.push("^")}an.push.apply(an,ak);for(var ar=0;ar<ai.length;++ar){var at=ai[ar];an.push(T(at[0]));if(at[1]>at[0]){if(at[1]+1>at[0]){an.push("-")}an.push(T(at[1]))}}an.push("]");return an.join("")}function W(al){var aj=al.source.match(new RegExp("(?:\\[(?:[^\\x5C\\x5D]|\\\\[\\s\\S])*\\]|\\\\u[A-Fa-f0-9]{4}|\\\\x[A-Fa-f0-9]{2}|\\\\[0-9]+|\\\\[^ux0-9]|\\(\\?[:!=]|[\\(\\)\\^]|[^\\x5B\\x5C\\(\\)\\^]+)","g"));var ah=aj.length;var an=[];for(var ak=0,am=0;ak<ah;++ak){var ag=aj[ak];if(ag==="("){++am}else{if("\\"===ag.charAt(0)){var af=+ag.substring(1);if(af&&af<=am){an[af]=-1}}}}for(var ak=1;ak<an.length;++ak){if(-1===an[ak]){an[ak]=++ad}}for(var ak=0,am=0;ak<ah;++ak){var ag=aj[ak];if(ag==="("){++am;if(an[am]===undefined){aj[ak]="(?:"}}else{if("\\"===ag.charAt(0)){var af=+ag.substring(1);if(af&&af<=am){aj[ak]="\\"+an[am]}}}}for(var ak=0,am=0;ak<ah;++ak){if("^"===aj[ak]&&"^"!==aj[ak+1]){aj[ak]=""}}if(al.ignoreCase&&S){for(var ak=0;ak<ah;++ak){var ag=aj[ak];var ai=ag.charAt(0);if(ag.length>=2&&ai==="["){aj[ak]=X(ag)}else{if(ai!=="\\"){aj[ak]=ag.replace(/[a-zA-Z]/g,function(ao){var ap=ao.charCodeAt(0);return"["+String.fromCharCode(ap&~32,ap|32)+"]"})}}}}return aj.join("")}var aa=[];for(var V=0,U=Z.length;V<U;++V){var ae=Z[V];if(ae.global||ae.multiline){throw new Error(""+ae)}aa.push("(?:"+W(ae)+")")}return new RegExp(aa.join("|"),ac?"gi":"g")}function a(V){var U=/(?:^|\s)nocode(?:\s|$)/;var X=[];var T=0;var Z=[];var W=0;var S;if(V.currentStyle){S=V.currentStyle.whiteSpace}else{if(window.getComputedStyle){S=document.defaultView.getComputedStyle(V,null).getPropertyValue("white-space")}}var Y=S&&"pre"===S.substring(0,3);function aa(ab){switch(ab.nodeType){case 1:if(U.test(ab.className)){return}for(var ae=ab.firstChild;ae;ae=ae.nextSibling){aa(ae)}var ad=ab.nodeName;if("BR"===ad||"LI"===ad){X[W]="\n";Z[W<<1]=T++;Z[(W++<<1)|1]=ab}break;case 3:case 4:var ac=ab.nodeValue;if(ac.length){if(!Y){ac=ac.replace(/[ \t\r\n]+/g," ")}else{ac=ac.replace(/\r\n?/g,"\n")}X[W]=ac;Z[W<<1]=T;T+=ac.length;Z[(W++<<1)|1]=ab}break}}aa(V);return{sourceCode:X.join("").replace(/\n$/,""),spans:Z}}function B(S,U,W,T){if(!U){return}var V={sourceCode:U,basePos:S};W(V);T.push.apply(T,V.decorations)}var v=/\S/;function o(S){var V=undefined;for(var U=S.firstChild;U;U=U.nextSibling){var T=U.nodeType;V=(T===1)?(V?S:U):(T===3)?(v.test(U.nodeValue)?S:V):V}return V===S?undefined:V}function g(U,T){var S={};var V;(function(){var ad=U.concat(T);var ah=[];var ag={};for(var ab=0,Z=ad.length;ab<Z;++ab){var Y=ad[ab];var ac=Y[3];if(ac){for(var ae=ac.length;--ae>=0;){S[ac.charAt(ae)]=Y}}var af=Y[1];var aa=""+af;if(!ag.hasOwnProperty(aa)){ah.push(af);ag[aa]=null}}ah.push(/[\0-\uffff]/);V=k(ah)})();var X=T.length;var W=function(ah){var Z=ah.sourceCode,Y=ah.basePos;var ad=[Y,F];var af=0;var an=Z.match(V)||[];var aj={};for(var ae=0,aq=an.length;ae<aq;++ae){var ag=an[ae];var ap=aj[ag];var ai=void 0;var am;if(typeof ap==="string"){am=false}else{var aa=S[ag.charAt(0)];if(aa){ai=ag.match(aa[1]);ap=aa[0]}else{for(var ao=0;ao<X;++ao){aa=T[ao];ai=ag.match(aa[1]);if(ai){ap=aa[0];break}}if(!ai){ap=F}}am=ap.length>=5&&"lang-"===ap.substring(0,5);if(am&&!(ai&&typeof ai[1]==="string")){am=false;ap=J}if(!am){aj[ag]=ap}}var ab=af;af+=ag.length;if(!am){ad.push(Y+ab,ap)}else{var al=ai[1];var ak=ag.indexOf(al);var ac=ak+al.length;if(ai[2]){ac=ag.length-ai[2].length;ak=ac-al.length}var ar=ap.substring(5);B(Y+ab,ag.substring(0,ak),W,ad);B(Y+ab+ak,al,q(ar,al),ad);B(Y+ab+ac,ag.substring(ac),W,ad)}}ah.decorations=ad};return W}function i(T){var W=[],S=[];if(T.tripleQuotedStrings){W.push([C,/^(?:\'\'\'(?:[^\'\\]|\\[\s\S]|\'{1,2}(?=[^\']))*(?:\'\'\'|$)|\"\"\"(?:[^\"\\]|\\[\s\S]|\"{1,2}(?=[^\"]))*(?:\"\"\"|$)|\'(?:[^\\\']|\\[\s\S])*(?:\'|$)|\"(?:[^\\\"]|\\[\s\S])*(?:\"|$))/,null,"'\""])}else{if(T.multiLineStrings){W.push([C,/^(?:\'(?:[^\\\']|\\[\s\S])*(?:\'|$)|\"(?:[^\\\"]|\\[\s\S])*(?:\"|$)|\`(?:[^\\\`]|\\[\s\S])*(?:\`|$))/,null,"'\"`"])}else{W.push([C,/^(?:\'(?:[^\\\'\r\n]|\\.)*(?:\'|$)|\"(?:[^\\\"\r\n]|\\.)*(?:\"|$))/,null,"\"'"])}}if(T.verbatimStrings){S.push([C,/^@\"(?:[^\"]|\"\")*(?:\"|$)/,null])}var Y=T.hashComments;if(Y){if(T.cStyleComments){if(Y>1){W.push([j,/^#(?:##(?:[^#]|#(?!##))*(?:###|$)|.*)/,null,"#"])}else{W.push([j,/^#(?:(?:define|elif|else|endif|error|ifdef|include|ifndef|line|pragma|undef|warning)\b|[^\r\n]*)/,null,"#"])}S.push([C,/^<(?:(?:(?:\.\.\/)*|\/?)(?:[\w-]+(?:\/[\w-]+)+)?[\w-]+\.h|[a-z]\w*)>/,null])}else{W.push([j,/^#[^\r\n]*/,null,"#"])}}if(T.cStyleComments){S.push([j,/^\/\/[^\r\n]*/,null]);S.push([j,/^\/\*[\s\S]*?(?:\*\/|$)/,null])}if(T.regexLiterals){var X=("/(?=[^/*])(?:[^/\\x5B\\x5C]|\\x5C[\\s\\S]|\\x5B(?:[^\\x5C\\x5D]|\\x5C[\\s\\S])*(?:\\x5D|$))+/");S.push(["lang-regex",new RegExp("^"+M+"("+X+")")])}var V=T.types;if(V){S.push([O,V])}var U=(""+T.keywords).replace(/^ | $/g,"");if(U.length){S.push([z,new RegExp("^(?:"+U.replace(/[\s,]+/g,"|")+")\\b"),null])}W.push([F,/^\s+/,null," \r\n\t\xA0"]);S.push([G,/^@[a-z_$][a-z_$@0-9]*/i,null],[O,/^(?:[@_]?[A-Z]+[a-z][A-Za-z_$@0-9]*|\w+_t\b)/,null],[F,/^[a-z_$][a-z_$@0-9]*/i,null],[G,new RegExp("^(?:0x[a-f0-9]+|(?:\\d(?:_\\d+)*\\d*(?:\\.\\d*)?|\\.\\d\\+)(?:e[+\\-]?\\d+)?)[a-z]*","i"),null,"0123456789"],[F,/^\\[\s\S]?/,null],[L,/^.[^\s\w\.$@\'\"\`\/\#\\]*/,null]);return g(W,S)}var K=i({keywords:A,hashComments:true,cStyleComments:true,multiLineStrings:true,regexLiterals:true});function Q(V,ag){var U=/(?:^|\s)nocode(?:\s|$)/;var ab=/\r\n?|\n/;var ac=V.ownerDocument;var S;if(V.currentStyle){S=V.currentStyle.whiteSpace}else{if(window.getComputedStyle){S=ac.defaultView.getComputedStyle(V,null).getPropertyValue("white-space")}}var Z=S&&"pre"===S.substring(0,3);var af=ac.createElement("LI");while(V.firstChild){af.appendChild(V.firstChild)}var W=[af];function ae(al){switch(al.nodeType){case 1:if(U.test(al.className)){break}if("BR"===al.nodeName){ad(al);if(al.parentNode){al.parentNode.removeChild(al)}}else{for(var an=al.firstChild;an;an=an.nextSibling){ae(an)}}break;case 3:case 4:if(Z){var am=al.nodeValue;var aj=am.match(ab);if(aj){var ai=am.substring(0,aj.index);al.nodeValue=ai;var ah=am.substring(aj.index+aj[0].length);if(ah){var ak=al.parentNode;ak.insertBefore(ac.createTextNode(ah),al.nextSibling)}ad(al);if(!ai){al.parentNode.removeChild(al)}}}break}}function ad(ak){while(!ak.nextSibling){ak=ak.parentNode;if(!ak){return}}function ai(al,ar){var aq=ar?al.cloneNode(false):al;var ao=al.parentNode;if(ao){var ap=ai(ao,1);var an=al.nextSibling;ap.appendChild(aq);for(var am=an;am;am=an){an=am.nextSibling;ap.appendChild(am)}}return aq}var ah=ai(ak.nextSibling,0);for(var aj;(aj=ah.parentNode)&&aj.nodeType===1;){ah=aj}W.push(ah)}for(var Y=0;Y<W.length;++Y){ae(W[Y])}if(ag===(ag|0)){W[0].setAttribute("value",ag)}var aa=ac.createElement("OL");aa.className="linenums";var X=Math.max(0,((ag-1))|0)||0;for(var Y=0,T=W.length;Y<T;++Y){af=W[Y];af.className="L"+((Y+X)%10);if(!af.firstChild){af.appendChild(ac.createTextNode("\xA0"))}aa.appendChild(af)}V.appendChild(aa)}function D(ac){var aj=/\bMSIE\b/.test(navigator.userAgent);var am=/\n/g;var al=ac.sourceCode;var an=al.length;var V=0;var aa=ac.spans;var T=aa.length;var ah=0;var X=ac.decorations;var Y=X.length;var Z=0;X[Y]=an;var ar,aq;for(aq=ar=0;aq<Y;){if(X[aq]!==X[aq+2]){X[ar++]=X[aq++];X[ar++]=X[aq++]}else{aq+=2}}Y=ar;for(aq=ar=0;aq<Y;){var at=X[aq];var ab=X[aq+1];var W=aq+2;while(W+2<=Y&&X[W+1]===ab){W+=2}X[ar++]=at;X[ar++]=ab;aq=W}Y=X.length=ar;var ae=null;while(ah<T){var af=aa[ah];var S=aa[ah+2]||an;var ag=X[Z];var ap=X[Z+2]||an;var W=Math.min(S,ap);var ak=aa[ah+1];var U;if(ak.nodeType!==1&&(U=al.substring(V,W))){if(aj){U=U.replace(am,"\r")}ak.nodeValue=U;var ai=ak.ownerDocument;var ao=ai.createElement("SPAN");ao.className=X[Z+1];var ad=ak.parentNode;ad.replaceChild(ao,ak);ao.appendChild(ak);if(V<S){aa[ah+1]=ak=ai.createTextNode(al.substring(W,S));ad.insertBefore(ak,ao.nextSibling)}}V=W;if(V>=S){ah+=2}if(V>=ap){Z+=2}}}var t={};function c(U,V){for(var S=V.length;--S>=0;){var T=V[S];if(!t.hasOwnProperty(T)){t[T]=U}else{if(window.console){console.warn("cannot override language handler %s",T)}}}}function q(T,S){if(!(T&&t.hasOwnProperty(T))){T=/^\s*</.test(S)?"default-markup":"default-code"}return t[T]}c(K,["default-code"]);c(g([],[[F,/^[^<?]+/],[E,/^<!\w[^>]*(?:>|$)/],[j,/^<\!--[\s\S]*?(?:-\->|$)/],["lang-",/^<\?([\s\S]+?)(?:\?>|$)/],["lang-",/^<%([\s\S]+?)(?:%>|$)/],[L,/^(?:<[%?]|[%?]>)/],["lang-",/^<xmp\b[^>]*>([\s\S]+?)<\/xmp\b[^>]*>/i],["lang-js",/^<script\b[^>]*>([\s\S]*?)(<\/script\b[^>]*>)/i],["lang-css",/^<style\b[^>]*>([\s\S]*?)(<\/style\b[^>]*>)/i],["lang-in.tag",/^(<\/?[a-z][^<>]*>)/i]]),["default-markup","htm","html","mxml","xhtml","xml","xsl"]);c(g([[F,/^[\s]+/,null," \t\r\n"],[n,/^(?:\"[^\"]*\"?|\'[^\']*\'?)/,null,"\"'"]],[[m,/^^<\/?[a-z](?:[\w.:-]*\w)?|\/?>$/i],[P,/^(?!style[\s=]|on)[a-z](?:[\w:-]*\w)?/i],["lang-uq.val",/^=\s*([^>\'\"\s]*(?:[^>\'\"\s\/]|\/(?=\s)))/],[L,/^[=<>\/]+/],["lang-js",/^on\w+\s*=\s*\"([^\"]+)\"/i],["lang-js",/^on\w+\s*=\s*\'([^\']+)\'/i],["lang-js",/^on\w+\s*=\s*([^\"\'>\s]+)/i],["lang-css",/^style\s*=\s*\"([^\"]+)\"/i],["lang-css",/^style\s*=\s*\'([^\']+)\'/i],["lang-css",/^style\s*=\s*([^\"\'>\s]+)/i]]),["in.tag"]);c(g([],[[n,/^[\s\S]+/]]),["uq.val"]);c(i({keywords:l,hashComments:true,cStyleComments:true,types:e}),["c","cc","cpp","cxx","cyc","m"]);c(i({keywords:"null,true,false"}),["json"]);c(i({keywords:R,hashComments:true,cStyleComments:true,verbatimStrings:true,types:e}),["cs"]);c(i({keywords:x,cStyleComments:true}),["java"]);c(i({keywords:H,hashComments:true,multiLineStrings:true}),["bsh","csh","sh"]);c(i({keywords:I,hashComments:true,multiLineStrings:true,tripleQuotedStrings:true}),["cv","py"]);c(i({keywords:s,hashComments:true,multiLineStrings:true,regexLiterals:true}),["perl","pl","pm"]);c(i({keywords:f,hashComments:true,multiLineStrings:true,regexLiterals:true}),["rb"]);c(i({keywords:w,cStyleComments:true,regexLiterals:true}),["js"]);c(i({keywords:r,hashComments:3,cStyleComments:true,multilineStrings:true,tripleQuotedStrings:true,regexLiterals:true}),["coffee"]);c(g([],[[C,/^[\s\S]+/]]),["regex"]);function d(V){var U=V.langExtension;try{var S=a(V.sourceNode);var T=S.sourceCode;V.sourceCode=T;V.spans=S.spans;V.basePos=0;q(U,T)(V);D(V)}catch(W){if("console" in window){console.log(W&&W.stack?W.stack:W)}}}function y(W,V,U){var S=document.createElement("PRE");S.innerHTML=W;if(U){Q(S,U)}var T={langExtension:V,numberLines:U,sourceNode:S};d(T);return S.innerHTML}function b(ad){function Y(af){return document.getElementsByTagName(af)}var ac=[Y("pre"),Y("code"),Y("xmp")];var T=[];for(var aa=0;aa<ac.length;++aa){for(var Z=0,V=ac[aa].length;Z<V;++Z){T.push(ac[aa][Z])}}ac=null;var W=Date;if(!W.now){W={now:function(){return +(new Date)}}}var X=0;var S;var ab=/\blang(?:uage)?-([\w.]+)(?!\S)/;var ae=/\bprettyprint\b/;function U(){var ag=(window.PR_SHOULD_USE_CONTINUATION?W.now()+250:Infinity);for(;X<T.length&&W.now()<ag;X++){var aj=T[X];var ai=aj.className;if(ai.indexOf("prettyprint")>=0){var ah=ai.match(ab);var am;if(!ah&&(am=o(aj))&&"CODE"===am.tagName){ah=am.className.match(ab)}if(ah){ah=ah[1]}var al=false;for(var ak=aj.parentNode;ak;ak=ak.parentNode){if((ak.tagName==="pre"||ak.tagName==="code"||ak.tagName==="xmp")&&ak.className&&ak.className.indexOf("prettyprint")>=0){al=true;break}}if(!al){var af=aj.className.match(/\blinenums\b(?::(\d+))?/);af=af?af[1]&&af[1].length?+af[1]:true:false;if(af){Q(aj,af)}S={langExtension:ah,sourceNode:aj,numberLines:af};d(S)}}}if(X<T.length){setTimeout(U,250)}else{if(ad){ad()}}}U()}window.prettyPrintOne=y;window.prettyPrint=b;window.PR={createSimpleLexer:g,registerLangHandler:c,sourceDecorator:i,PR_ATTRIB_NAME:P,PR_ATTRIB_VALUE:n,PR_COMMENT:j,PR_DECLARATION:E,PR_KEYWORD:z,PR_LITERAL:G,PR_NOCODE:N,PR_PLAIN:F,PR_PUNCTUATION:L,PR_SOURCE:J,PR_STRING:C,PR_TAG:m,PR_TYPE:O}})();PR.registerLangHandler(PR.createSimpleLexer([],[[PR.PR_DECLARATION,/^<!\w[^>]*(?:>|$)/],[PR.PR_COMMENT,/^<\!--[\s\S]*?(?:-\->|$)/],[PR.PR_PUNCTUATION,/^(?:<[%?]|[%?]>)/],["lang-",/^<\?([\s\S]+?)(?:\?>|$)/],["lang-",/^<%([\s\S]+?)(?:%>|$)/],["lang-",/^<xmp\b[^>]*>([\s\S]+?)<\/xmp\b[^>]*>/i],["lang-handlebars",/^<script\b[^>]*type\s*=\s*['"]?text\/x-handlebars-template['"]?\b[^>]*>([\s\S]*?)(<\/script\b[^>]*>)/i],["lang-js",/^<script\b[^>]*>([\s\S]*?)(<\/script\b[^>]*>)/i],["lang-css",/^<style\b[^>]*>([\s\S]*?)(<\/style\b[^>]*>)/i],["lang-in.tag",/^(<\/?[a-z][^<>]*>)/i],[PR.PR_DECLARATION,/^{{[#^>/]?\s*[\w.][^}]*}}/],[PR.PR_DECLARATION,/^{{&?\s*[\w.][^}]*}}/],[PR.PR_DECLARATION,/^{{{>?\s*[\w.][^}]*}}}/],[PR.PR_COMMENT,/^{{![^}]*}}/]]),["handlebars","hbs"]);PR.registerLangHandler(PR.createSimpleLexer([[PR.PR_PLAIN,/^[ \t\r\n\f]+/,null," \t\r\n\f"]],[[PR.PR_STRING,/^\"(?:[^\n\r\f\\\"]|\\(?:\r\n?|\n|\f)|\\[\s\S])*\"/,null],[PR.PR_STRING,/^\'(?:[^\n\r\f\\\']|\\(?:\r\n?|\n|\f)|\\[\s\S])*\'/,null],["lang-css-str",/^url\(([^\)\"\']*)\)/i],[PR.PR_KEYWORD,/^(?:url|rgb|\!important|@import|@page|@media|@charset|inherit)(?=[^\-\w]|$)/i,null],["lang-css-kw",/^(-?(?:[_a-z]|(?:\\[0-9a-f]+ ?))(?:[_a-z0-9\-]|\\(?:\\[0-9a-f]+ ?))*)\s*:/i],[PR.PR_COMMENT,/^\/\*[^*]*\*+(?:[^\/*][^*]*\*+)*\//],[PR.PR_COMMENT,/^(?:<!--|-->)/],[PR.PR_LITERAL,/^(?:\d+|\d*\.\d+)(?:%|[a-z]+)?/i],[PR.PR_LITERAL,/^#(?:[0-9a-f]{3}){1,2}/i],[PR.PR_PLAIN,/^-?(?:[_a-z]|(?:\\[\da-f]+ ?))(?:[_a-z\d\-]|\\(?:\\[\da-f]+ ?))*/i],[PR.PR_PUNCTUATION,/^[^\s\w\'\"]+/]]),["css"]);PR.registerLangHandler(PR.createSimpleLexer([],[[PR.PR_KEYWORD,/^-?(?:[_a-z]|(?:\\[\da-f]+ ?))(?:[_a-z\d\-]|\\(?:\\[\da-f]+ ?))*/i]]),["css-kw"]);PR.registerLangHandler(PR.createSimpleLexer([],[[PR.PR_STRING,/^[^\)\"\']+/]]),["css-str"]);
+
+```
+
+---
+
+## File: coverage/lcov-report/sorter.js
+
+```javascript
+/* eslint-disable */
+var addSorting = (function() {
+    'use strict';
+    var cols,
+        currentSort = {
+            index: 0,
+            desc: false
+        };
+
+    // returns the summary table element
+    function getTable() {
+        return document.querySelector('.coverage-summary');
+    }
+    // returns the thead element of the summary table
+    function getTableHeader() {
+        return getTable().querySelector('thead tr');
+    }
+    // returns the tbody element of the summary table
+    function getTableBody() {
+        return getTable().querySelector('tbody');
+    }
+    // returns the th element for nth column
+    function getNthColumn(n) {
+        return getTableHeader().querySelectorAll('th')[n];
+    }
+
+    function onFilterInput() {
+        const searchValue = document.getElementById('fileSearch').value;
+        const rows = document.getElementsByTagName('tbody')[0].children;
+
+        // Try to create a RegExp from the searchValue. If it fails (invalid regex),
+        // it will be treated as a plain text search
+        let searchRegex;
+        try {
+            searchRegex = new RegExp(searchValue, 'i'); // 'i' for case-insensitive
+        } catch (error) {
+            searchRegex = null;
+        }
+
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            let isMatch = false;
+
+            if (searchRegex) {
+                // If a valid regex was created, use it for matching
+                isMatch = searchRegex.test(row.textContent);
+            } else {
+                // Otherwise, fall back to the original plain text search
+                isMatch = row.textContent
+                    .toLowerCase()
+                    .includes(searchValue.toLowerCase());
+            }
+
+            row.style.display = isMatch ? '' : 'none';
+        }
+    }
+
+    // loads the search box
+    function addSearchBox() {
+        var template = document.getElementById('filterTemplate');
+        var templateClone = template.content.cloneNode(true);
+        templateClone.getElementById('fileSearch').oninput = onFilterInput;
+        template.parentElement.appendChild(templateClone);
+    }
+
+    // loads all columns
+    function loadColumns() {
+        var colNodes = getTableHeader().querySelectorAll('th'),
+            colNode,
+            cols = [],
+            col,
+            i;
+
+        for (i = 0; i < colNodes.length; i += 1) {
+            colNode = colNodes[i];
+            col = {
+                key: colNode.getAttribute('data-col'),
+                sortable: !colNode.getAttribute('data-nosort'),
+                type: colNode.getAttribute('data-type') || 'string'
+            };
+            cols.push(col);
+            if (col.sortable) {
+                col.defaultDescSort = col.type === 'number';
+                colNode.innerHTML =
+                    colNode.innerHTML + '<span class="sorter"></span>';
+            }
+        }
+        return cols;
+    }
+    // attaches a data attribute to every tr element with an object
+    // of data values keyed by column name
+    function loadRowData(tableRow) {
+        var tableCols = tableRow.querySelectorAll('td'),
+            colNode,
+            col,
+            data = {},
+            i,
+            val;
+        for (i = 0; i < tableCols.length; i += 1) {
+            colNode = tableCols[i];
+            col = cols[i];
+            val = colNode.getAttribute('data-value');
+            if (col.type === 'number') {
+                val = Number(val);
+            }
+            data[col.key] = val;
+        }
+        return data;
+    }
+    // loads all row data
+    function loadData() {
+        var rows = getTableBody().querySelectorAll('tr'),
+            i;
+
+        for (i = 0; i < rows.length; i += 1) {
+            rows[i].data = loadRowData(rows[i]);
+        }
+    }
+    // sorts the table using the data for the ith column
+    function sortByIndex(index, desc) {
+        var key = cols[index].key,
+            sorter = function(a, b) {
+                a = a.data[key];
+                b = b.data[key];
+                return a < b ? -1 : a > b ? 1 : 0;
+            },
+            finalSorter = sorter,
+            tableBody = document.querySelector('.coverage-summary tbody'),
+            rowNodes = tableBody.querySelectorAll('tr'),
+            rows = [],
+            i;
+
+        if (desc) {
+            finalSorter = function(a, b) {
+                return -1 * sorter(a, b);
+            };
+        }
+
+        for (i = 0; i < rowNodes.length; i += 1) {
+            rows.push(rowNodes[i]);
+            tableBody.removeChild(rowNodes[i]);
+        }
+
+        rows.sort(finalSorter);
+
+        for (i = 0; i < rows.length; i += 1) {
+            tableBody.appendChild(rows[i]);
+        }
+    }
+    // removes sort indicators for current column being sorted
+    function removeSortIndicators() {
+        var col = getNthColumn(currentSort.index),
+            cls = col.className;
+
+        cls = cls.replace(/ sorted$/, '').replace(/ sorted-desc$/, '');
+        col.className = cls;
+    }
+    // adds sort indicators for current column being sorted
+    function addSortIndicators() {
+        getNthColumn(currentSort.index).className += currentSort.desc
+            ? ' sorted-desc'
+            : ' sorted';
+    }
+    // adds event listeners for all sorter widgets
+    function enableUI() {
+        var i,
+            el,
+            ithSorter = function ithSorter(i) {
+                var col = cols[i];
+
+                return function() {
+                    var desc = col.defaultDescSort;
+
+                    if (currentSort.index === i) {
+                        desc = !currentSort.desc;
+                    }
+                    sortByIndex(i, desc);
+                    removeSortIndicators();
+                    currentSort.index = i;
+                    currentSort.desc = desc;
+                    addSortIndicators();
+                };
+            };
+        for (i = 0; i < cols.length; i += 1) {
+            if (cols[i].sortable) {
+                // add the click event handler on the th so users
+                // dont have to click on those tiny arrows
+                el = getNthColumn(i).querySelector('.sorter').parentElement;
+                if (el.addEventListener) {
+                    el.addEventListener('click', ithSorter(i));
+                } else {
+                    el.attachEvent('onclick', ithSorter(i));
+                }
+            }
+        }
+    }
+    // adds sorting functionality to the UI
+    return function() {
+        if (!getTable()) {
+            return;
+        }
+        cols = loadColumns();
+        loadData();
+        addSearchBox();
+        addSortIndicators();
+        enableUI();
+    };
+})();
+
+window.addEventListener('load', addSorting);
+
+```
+
+---
+
+## File: coverage/lcov.info
+
+```
+TN:
+SF:src/components/layout/CookieBanner.tsx
+FN:7,CookieBanner
+FN:9,(anonymous_1)
+FN:13,(anonymous_2)
+FN:18,(anonymous_3)
+FN:20,(anonymous_4)
+FN:23,(anonymous_5)
+FN:29,(anonymous_6)
+FNF:7
+FNH:6
+FNDA:6,CookieBanner
+FNDA:4,(anonymous_1)
+FNDA:4,(anonymous_2)
+FNDA:0,(anonymous_3)
+FNDA:4,(anonymous_4)
+FNDA:1,(anonymous_5)
+FNDA:1,(anonymous_6)
+DA:8,6
+DA:9,6
+DA:10,4
+DA:13,6
+DA:14,4
+DA:15,1
+DA:18,4
+DA:19,4
+DA:20,4
+DA:23,6
+DA:24,1
+DA:25,1
+DA:26,1
+DA:29,6
+DA:30,1
+DA:31,1
+DA:32,1
+DA:35,6
+LF:18
+LH:18
+BRDA:10,0,0,4
+BRDA:10,0,1,4
+BRDA:14,1,0,1
+BRDA:14,1,1,3
+BRDA:14,2,0,4
+BRDA:14,2,1,4
+BRDA:37,3,0,6
+BRDA:37,3,1,3
+BRF:8
+BRH:8
+end_of_record
+TN:
+SF:src/lib/analytics.ts
+FN:6,(anonymous_0)
+FN:17,(anonymous_1)
+FN:24,(anonymous_2)
+FN:30,(anonymous_3)
+FN:34,(anonymous_4)
+FN:38,(anonymous_5)
+FN:42,(anonymous_6)
+FN:46,(anonymous_7)
+FNF:8
+FNH:8
+FNDA:8,(anonymous_0)
+FNDA:1,(anonymous_1)
+FNDA:6,(anonymous_2)
+FNDA:1,(anonymous_3)
+FNDA:1,(anonymous_4)
+FNDA:1,(anonymous_5)
+FNDA:1,(anonymous_6)
+FNDA:1,(anonymous_7)
+DA:4,1
+DA:6,1
+DA:7,8
+DA:8,1
+DA:9,1
+DA:10,1
+DA:12,0
+DA:17,1
+DA:18,1
+DA:19,1
+DA:20,1
+DA:24,1
+DA:25,6
+DA:26,6
+DA:30,1
+DA:31,1
+DA:34,1
+DA:35,1
+DA:38,1
+DA:39,1
+DA:42,1
+DA:43,1
+DA:46,1
+DA:47,1
+LF:24
+LH:23
+BRDA:7,0,0,1
+BRDA:7,0,1,7
+BRDA:7,1,0,8
+BRDA:7,1,1,8
+BRDA:18,2,0,1
+BRDA:18,2,1,0
+BRDA:25,3,0,6
+BRDA:25,3,1,0
+BRF:8
+BRH:6
+end_of_record
+TN:
+SF:src/lib/utils.ts
+FN:3,(anonymous_0)
+FNF:1
+FNH:1
+FNDA:6,(anonymous_0)
+DA:3,6
+LF:1
+LH:1
+BRF:0
+BRH:0
+end_of_record
 
 ```
 
@@ -780,6 +2561,159 @@ test('analytics events are attached to phone link', async ({ page }) => {
 
 ---
 
+## File: e2e/booking.spec.ts
+
+```typescript
+import { test, expect } from '@playwright/test'
+
+test.beforeEach(async ({ page }) => {
+  // Capture console logs from the browser
+  page.on('console', (msg) => {
+    console.log(`[Browser Console] ${msg.type()}: ${msg.text()}`)
+  })
+
+  // Define mock submit function in browser window context
+  await page.addInitScript(() => {
+    window.__MOCK_SUBMIT__ = (data: unknown, language: unknown, source: unknown) => {
+      console.log('Intercepted submitBooking in E2E test:', { data, language, source })
+      return Promise.resolve('mocked-booking-id')
+    }
+  })
+})
+
+test('Travis can complete a full booking in under 3 minutes', async ({ page }) => {
+  await page.goto('/booking')
+
+  // Step 1: Service type + property details
+  // Select standard cleaning
+  await page.getByRole('radio', { name: /standard cleaning/i }).first().click()
+  // Select 3–4 Bedroom Home
+  await page.getByRole('radio', { name: /3.4 bedroom/i }).first().click()
+  // Increase bedrooms by 1 (3 -> 4)
+  await page.getByRole('button', { name: /increase bedrooms/i }).click()
+
+  // Step 2: Schedule
+  // Select biweekly frequency
+  await page.getByRole('radio', { name: /biweekly/i }).first().click()
+  
+  // Set preferred date to 3 days in the future in local timezone (safe from UTC shifts)
+  const futureDate = new Date()
+  futureDate.setDate(futureDate.getDate() + 3)
+  const yyyy = futureDate.getFullYear()
+  const mm = String(futureDate.getMonth() + 1).padStart(2, '0')
+  const dd = String(futureDate.getDate()).padStart(2, '0')
+  const dateStr = `${yyyy}-${mm}-${dd}`
+  
+  await page.locator('#preferredDate').fill(dateStr)
+
+  // Step 3: Contact details
+  await page.locator('#firstName').fill('Travis')
+  await page.locator('#lastName').fill('McLeod')
+  await page.locator('#email').fill('travis@test.com')
+  await page.locator('#phone').fill('6135550001')
+  await page.locator('#address').fill('123 Main St, Long Sault ON')
+
+  // Step 4: Submit
+  // Verify review table summary is present
+  await expect(page.getByText('Standard Cleaning').first()).toBeVisible()
+  await expect(page.getByText('Every two weeks').first()).toBeVisible()
+
+  // Click submit (Confirm Booking)
+  await page.getByRole('button', { name: /confirm booking/i }).click()
+
+  // Wait for redirect to /thank-you or print error if it fails
+  try {
+    await expect(page).toHaveURL(/\/thank-you/, { timeout: 5000 })
+  } catch (err) {
+    const alerts = await page.getByRole('alert').allInnerTexts()
+    console.error('Submission failed! Visible alerts on page:', alerts)
+    throw err
+  }
+
+  await expect(page.getByText(/booking is confirmed/i)).toBeVisible()
+})
+
+test('Required field validation shows errors on empty submit', async ({ page }) => {
+  await page.goto('/booking')
+  
+  // Click Confirm Booking directly without filling preferredDate or contact info
+  await page.getByRole('button', { name: /confirm booking/i }).click()
+
+  // Expect alerts/error messages to show up
+  const alertLocator = page.getByRole('alert')
+  await expect(alertLocator.first()).toBeVisible()
+})
+
+```
+
+---
+
+## File: e2e/language.spec.ts
+
+```typescript
+import { test, expect } from '@playwright/test'
+
+test('Language toggle switches all nav strings to French', async ({ page }) => {
+  await page.goto('/')
+  // Select the desktop language toggle
+  await page.locator('#lang-toggle-desktop').click()
+  // Check that the specific desktop CTA in the navbar switches to French
+  await expect(page.locator('#cta-book-now-nav')).toHaveText(/réservez maintenant/i)
+})
+
+test('French booking page has French field labels', async ({ page }) => {
+  // Opening the page with query param lang=fr should persist the French locale
+  await page.goto('/?lang=fr')
+  await page.goto('/booking')
+  await expect(page.getByText(/quel type de nettoyage/i)).toBeVisible()
+})
+
+```
+
+---
+
+## File: e2e/phase4.spec.ts
+
+```typescript
+import { test, expect } from '@playwright/test'
+
+test('Can view blog list and navigate to individual blog post', async ({ page }) => {
+  // 1. Visit the blog listing page
+  await page.goto('/blog')
+  await expect(page).toHaveTitle(/Fresh Nest Co. Blog/i)
+  
+  // Verify heading is present
+  await expect(page.getByRole('heading', { name: /Fresh Nest Blog/i, level: 1 })).toBeVisible()
+  
+  // Verify that the cost guide article is in the listing
+  const costGuideArticle = page.getByRole('heading', { name: /How Much Does House Cleaning Cost in Cornwall/i, level: 2 })
+  await expect(costGuideArticle).toBeVisible()
+
+  // 2. Click "Read More" on the first blog post
+  await page.getByRole('link', { name: /How Much Does House Cleaning Cost in Cornwall/i }).click()
+
+  // Verify URL redirection to slug path
+  await expect(page).toHaveURL(/\/blog\/cleaning-cost-cornwall/)
+
+  // Verify that the full article header is displayed
+  await expect(page.getByRole('heading', { name: /How Much Does House Cleaning Cost in Cornwall/i, level: 1 })).toBeVisible()
+})
+
+test('Referral URL parameter successfully populates code input in booking form', async ({ page }) => {
+  // Navigate to booking form with referral code query parameter
+  await page.goto('/booking?ref=MARGARET-4B52')
+
+  // Get the referral code input field
+  const promoInput = page.locator('#referralCodeInput')
+  
+  // Verify it contains the value from the URL query parameter
+  await expect(promoInput).toHaveValue('MARGARET-4B52')
+})
+
+```
+
+---
+
 ## File: eslint.config.js
 
 ```javascript
@@ -788,20 +2722,32 @@ import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
+import queryPlugin from '@tanstack/eslint-plugin-query'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', 'coverage']),
+  ...queryPlugin.configs['flat/recommended'],
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
       js.configs.recommended,
-      tseslint.configs.recommended,
+      ...tseslint.configs.recommendedTypeChecked,
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
     ],
     languageOptions: {
       globals: globals.browser,
+      parserOptions: {
+        projectService: {
+          allowDefaultProject: [
+            'playwright.config.ts',
+            'vitest.config.ts',
+            'e2e/*.ts'
+          ],
+        },
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
   },
 ])
@@ -833,7 +2779,8 @@ export default defineConfig([
         ]},
         { "source": "**", "headers": [
             { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-            { "key": "X-Content-Type-Options", "value": "nosniff" }
+            { "key": "X-Content-Type-Options", "value": "nosniff" },
+            { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.cloudfunctions.net wss://*.firebaseio.com; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://lh3.googleusercontent.com; frame-ancestors 'none';" }
         ]}
       ]
     },
@@ -841,7 +2788,17 @@ export default defineConfig([
       "target": "freshnest-dev",
       "public": "dist",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-      "rewrites": [{ "source": "**", "destination": "/index.html" }]
+      "rewrites": [{ "source": "**", "destination": "/index.html" }],
+      "headers": [
+        { "source": "**/*.@(js|css|woff2)", "headers": [
+            { "key": "Cache-Control", "value": "max-age=31536000, immutable" }
+        ]},
+        { "source": "**", "headers": [
+            { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+            { "key": "X-Content-Type-Options", "value": "nosniff" },
+            { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.cloudfunctions.net wss://*.firebaseio.com; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://lh3.googleusercontent.com; frame-ancestors 'none';" }
+        ]}
+      ]
     }
   ],
   "firestore": [
@@ -862,11 +2819,102 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Helper: Verify if the user's Google auth email exists in the admins allowlist collection
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.token.email));
+    }
+
+    // 1. Bookings Collection
+    match /bookings/{bookingId} {
+      
+      // Public Booking Creation
+      allow create: if
+        // A. Verify presence of all required fields (18 fields matching schema)
+        request.resource.data.keys().hasAll([
+          'firstName', 'lastName', 'email', 'phone', 'language',
+          'propertyType', 'bedrooms', 'bathrooms', 'frequency', 'pets',
+          'address', 'serviceType', 'preferredDate', 'leadSource', 'status',
+          'assignedTo', 'isAirbnb', 'photoConfirmation', 'createdAt'
+        ])
+        
+        // B. Ensure types are correct
+        && request.resource.data.firstName is string && request.resource.data.firstName.size() > 0
+        && request.resource.data.lastName is string && request.resource.data.lastName.size() > 0
+        && request.resource.data.email is string && request.resource.data.email.matches('.+@.+\\..+')
+        && request.resource.data.phone is string && request.resource.data.phone.size() >= 10
+        && request.resource.data.address is string && request.resource.data.address.size() >= 5
+        && request.resource.data.bedrooms is int && request.resource.data.bedrooms >= 0
+        && request.resource.data.bathrooms is int && request.resource.data.bathrooms >= 0
+        && request.resource.data.pets is bool
+        && request.resource.data.isAirbnb is bool
+        && request.resource.data.photoConfirmation is bool
+        
+        // C. Enforce allowed values (Enums)
+        && request.resource.data.language in ['en', 'fr']
+        && request.resource.data.status == 'pending' // No customer can self-confirm
+        && request.resource.data.leadSource in ['organic', 'google', 'referral', 'facebook', 'direct']
+        && request.resource.data.frequency in ['one-time', 'weekly', 'biweekly', 'monthly']
+        && request.resource.data.serviceType in ['standard', 'deep', 'moveout', 'postconstruction', 'airbnb', 'commercial']
+        && request.resource.data.propertyType in ['apartment', '1-2bed', '3-4bed', '5+bed', 'commercial']
+        
+        // D. Validate constraints
+        && request.resource.data.preferredDate is string && request.resource.data.preferredDate.size() == 10 // YYYY-MM-DD
+        && request.resource.data.assignedTo == null // Cannot self-assign staff on create
+        && request.resource.data.createdAt == request.time // Must use server timestamp
+        
+        // E. Validate conditional/optional fields
+        && (!('marketingConsent' in request.resource.data) 
+            || (request.resource.data.marketingConsent is bool 
+                && request.resource.data.consentTimestamp is timestamp
+                && request.resource.data.consentMethod == 'booking-form-v2'))
+        && (!('addOns' in request.resource.data) || request.resource.data.addOns is list)
+        && (!('squareFootage' in request.resource.data) || request.resource.data.squareFootage is int)
+        && (!('preferredCleaner' in request.resource.data) 
+            || (request.resource.data.preferredCleaner is string || request.resource.data.preferredCleaner == null))
+        && (!('referredBy' in request.resource.data)
+            || (request.resource.data.referredBy is string || request.resource.data.referredBy == null))
+        && (!('notes' in request.resource.data) || request.resource.data.notes is string);
+
+      // Admin read & update
+      allow read, update: if isAdmin();
+      
+      // Permanently deleting bookings is forbidden
+      allow delete: if false;
+    }
+
+    // 2. Admins Collection
+    match /admins/{email} {
+      // Admins can read their own whitelist document to verify authentication
+      allow read: if request.auth != null && request.auth.token.email == email;
+      // No client code can modify the allowlist
+      allow write: if false;
+    }
+
+    // 3. Reviews Collection
+    match /reviews/{reviewId} {
+      // Anyone can read approved reviews
+      allow read: if resource.data.approved == true;
+      // All writes restricted to authenticated administrators
+      allow write: if isAdmin();
+    }
+
+    // 4. Referrals Collection
+    match /referrals/{referralCode} {
+      // Unauthenticated reads permitted to validate promo code existence in client form
+      allow read: if true;
+      // Writes reserved for authenticated administrators
+      allow write: if isAdmin();
+    }
+
+    // 5. Default Deny-All for other collections (e.g. staff)
     match /{document=**} {
-      allow read, write: if true;
+      allow read, write: if false;
     }
   }
 }
+
 
 ```
 
@@ -891,11 +2939,92 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Helper: Verify if the user's Google auth email exists in the admins allowlist collection
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.token.email));
+    }
+
+    // 1. Bookings Collection
+    match /bookings/{bookingId} {
+      
+      // Public Booking Creation
+      allow create: if
+        // A. Verify presence of all required fields (18 fields matching schema)
+        request.resource.data.keys().hasAll([
+          'firstName', 'lastName', 'email', 'phone', 'language',
+          'propertyType', 'bedrooms', 'bathrooms', 'frequency', 'pets',
+          'address', 'serviceType', 'preferredDate', 'leadSource', 'status',
+          'assignedTo', 'isAirbnb', 'photoConfirmation', 'createdAt'
+        ])
+        
+        // B. Ensure types are correct
+        && request.resource.data.firstName is string && request.resource.data.firstName.size() > 0
+        && request.resource.data.lastName is string && request.resource.data.lastName.size() > 0
+        && request.resource.data.email is string && request.resource.data.email.matches('.+@.+\\..+')
+        && request.resource.data.phone is string && request.resource.data.phone.size() >= 10
+        && request.resource.data.address is string && request.resource.data.address.size() >= 5
+        && request.resource.data.bedrooms is int && request.resource.data.bedrooms >= 0
+        && request.resource.data.bathrooms is int && request.resource.data.bathrooms >= 0
+        && request.resource.data.pets is bool
+        && request.resource.data.isAirbnb is bool
+        && request.resource.data.photoConfirmation is bool
+        
+        // C. Enforce allowed values (Enums)
+        && request.resource.data.language in ['en', 'fr']
+        && request.resource.data.status == 'pending' // No customer can self-confirm
+        && request.resource.data.leadSource in ['organic', 'google', 'referral', 'facebook', 'direct']
+        && request.resource.data.frequency in ['one-time', 'weekly', 'biweekly', 'monthly']
+        && request.resource.data.serviceType in ['standard', 'deep', 'moveout', 'postconstruction', 'airbnb', 'commercial']
+        && request.resource.data.propertyType in ['apartment', '1-2bed', '3-4bed', '5+bed', 'commercial']
+        
+        // D. Validate constraints
+        && request.resource.data.preferredDate is string && request.resource.data.preferredDate.size() == 10 // YYYY-MM-DD
+        && request.resource.data.assignedTo == null // Cannot self-assign staff on create
+        && request.resource.data.createdAt == request.time // Must use server timestamp
+        
+        // E. Validate conditional/optional fields
+        && (!('marketingConsent' in request.resource.data) 
+            || (request.resource.data.marketingConsent is bool 
+                && request.resource.data.consentTimestamp is timestamp
+                && request.resource.data.consentMethod == 'booking-form-v2'))
+        && (!('addOns' in request.resource.data) || request.resource.data.addOns is list)
+        && (!('squareFootage' in request.resource.data) || request.resource.data.squareFootage is int)
+        && (!('preferredCleaner' in request.resource.data) 
+            || (request.resource.data.preferredCleaner is string || request.resource.data.preferredCleaner == null))
+        && (!('notes' in request.resource.data) || request.resource.data.notes is string);
+
+      // Admin read & update
+      allow read, update: if isAdmin();
+      
+      // Permanently deleting bookings is forbidden
+      allow delete: if false;
+    }
+
+    // 2. Admins Collection
+    match /admins/{email} {
+      // Admins can read their own whitelist document to verify authentication
+      allow read: if request.auth != null && request.auth.token.email == email;
+      // No client code can modify the allowlist
+      allow write: if false;
+    }
+
+    // 3. Reviews Collection
+    match /reviews/{reviewId} {
+      // Anyone can read approved reviews
+      allow read: if resource.data.approved == true;
+      // All writes restricted to authenticated administrators
+      allow write: if isAdmin();
+    }
+
+    // 4. Default Deny-All for other collections (e.g. staff)
     match /{document=**} {
-      allow read, write: if true;
+      allow read, write: if false;
     }
   }
 }
+
 
 ```
 
@@ -970,6 +3099,9 @@ export interface BookingData {
   marketingConsent?: boolean
   leadSource?: string
   squareFootage?: number
+  referralCode?: string | null
+  referredBy?: string | null
+  assignedTo?: string | null
 }
 
 function esc(value: string | null | undefined): string {
@@ -1200,6 +3332,27 @@ export const onBookingCreated = onDocumentCreated(
     const booking = event.data?.data() as BookingData | undefined
     if (!booking) return
 
+    // E31: Generate referral code and write to referrals collection
+    const firstName = booking.firstName || 'CLIENT'
+    const docId = event.params['docId']
+    const refCode = `${firstName.trim().toUpperCase()}-${docId.substring(0, 4).toUpperCase()}`
+
+    if (!booking.referralCode) {
+      const db = getFirestore()
+      try {
+        await db.collection('referrals').doc(refCode).set({
+          ownerName: `${booking.firstName} ${booking.lastName ? booking.lastName.charAt(0) + '.' : ''}`,
+          bookingId: docId,
+          active: true,
+          createdAt: new Date(),
+        })
+        await db.collection('bookings').doc(docId).update({ referralCode: refCode })
+        booking.referralCode = refCode
+      } catch (err) {
+        console.error('[onBookingCreated] Failed to generate referral code:', err)
+      }
+    }
+
     const emailConfig = {
       resendApiKey: RESEND_API_KEY.value(),
       ownerEmail:   OWNER_EMAIL.value(),
@@ -1234,7 +3387,9 @@ export const onDailyReminderCheck = onSchedule(
     secrets:  [TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER],
   },
   async () => {
-    const db = getFirestore()
+    // Explicitly target the production database — we never send SMS reminders for test bookings
+    // in freshnest-dev. This is intentional. See docs/firestore-schema.md for DB architecture.
+    const db = getFirestore('(default)')
 
     const tomorrow = new Date()
     tomorrow.setUTCDate(tomorrow.getUTCDate() + 1)
@@ -1276,6 +3431,91 @@ export const onDailyReminderCheck = onSchedule(
     })
 
     console.log(`[onDailyReminderCheck] Processed ${snapshot.size} reminder(s) for ${tomorrowStr}`)
+  },
+)
+
+export const onDailyRecurringRenewal = onSchedule(
+  {
+    schedule: '0 2 * * *', // Run at 2 AM every day
+    timeZone: 'UTC',
+  },
+  async () => {
+    const db = getFirestore('(default)')
+    const today = new Date()
+    const fourteenDaysOut = new Date()
+    fourteenDaysOut.setUTCDate(fourteenDaysOut.getUTCDate() + 14)
+    const fourteenDaysOutStr = fourteenDaysOut.toISOString().slice(0, 10)
+
+    console.log(`[onDailyRecurringRenewal] Running check for date threshold: ${fourteenDaysOutStr}`)
+
+    const snapshot = await db
+      .collection('bookings')
+      .where('status', 'in', ['confirmed', 'completed'])
+      .where('frequency', 'in', ['weekly', 'biweekly', 'monthly'])
+      .get()
+
+    if (snapshot.empty) {
+      console.log('[onDailyRecurringRenewal] No active recurring bookings found.')
+      return
+    }
+
+    for (const docSnap of snapshot.docs) {
+      const booking = docSnap.data() as BookingData
+      const preferredDateStr = booking.preferredDate
+      if (!preferredDateStr) continue
+
+      const preferredDate = new Date(preferredDateStr + 'T00:00:00Z')
+      let daysToAdd = 7
+      if (booking.frequency === 'biweekly') daysToAdd = 14
+      if (booking.frequency === 'monthly') daysToAdd = 30
+
+      const nextDate = new Date(preferredDate.getTime())
+      nextDate.setUTCDate(nextDate.getUTCDate() + daysToAdd)
+      const nextDateStr = nextDate.toISOString().slice(0, 10)
+
+      // Only generate if the next clean is within our 14-day window and is in the future
+      const todayStr = today.toISOString().slice(0, 10)
+      if (nextDateStr > todayStr && nextDateStr <= fourteenDaysOutStr) {
+        // Check if we already created a booking for this client on that next date
+        const existingQuery = await db
+          .collection('bookings')
+          .where('email', '==', booking.email)
+          .where('preferredDate', '==', nextDateStr)
+          .where('status', '!=', 'cancelled')
+          .get()
+
+        if (existingQuery.empty) {
+          console.log(`[onDailyRecurringRenewal] Auto-renewing booking for ${booking.email} on date ${nextDateStr}`)
+          
+          const newBookingData = {
+            firstName:         booking.firstName,
+            lastName:          booking.lastName,
+            email:             booking.email,
+            phone:             booking.phone,
+            language:          booking.language,
+            propertyType:      booking.propertyType,
+            bedrooms:          booking.bedrooms,
+            bathrooms:         booking.bathrooms,
+            squareFootage:     booking.squareFootage || null,
+            frequency:         booking.frequency,
+            pets:              booking.pets ?? false,
+            address:           booking.address,
+            serviceType:       booking.serviceType,
+            addOns:            booking.addOns || [],
+            preferredCleaner:  booking.preferredCleaner || null,
+            notes:             booking.notes || '',
+            leadSource:        'organic',
+            status:            'pending',
+            assignedTo:        booking.assignedTo || null,
+            isAirbnb:          booking.isAirbnb || false,
+            photoConfirmation: booking.photoConfirmation || false,
+            createdAt:         new Date(),
+          }
+
+          await db.collection('bookings').add(newBookingData)
+        }
+      }
+    }
   },
 )
 
@@ -1504,7 +3744,7 @@ export function reminderSms(preferredDate: string, lang: 'en' | 'fr'): string {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Marcellus&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Marcellus&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <title>Fresh Nest Co. — Cleaning & Organizing Services | Cornwall, ON</title>
   </head>
   <body>
@@ -1563,6 +3803,7 @@ export function reminderSms(preferredDate: string, lang: 'en' | 'fr'): string {
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "^4.1.8",
     "autoprefixer": "^10.5.0",
     "eslint": "^10.3.0",
     "eslint-plugin-react-hooks": "^7.1.1",
@@ -1587,6 +3828,7 @@ export function reminderSms(preferredDate: string, lang: 'en' | 'fr'): string {
 ## File: playwright.config.ts
 
 ```typescript
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
@@ -1604,6 +3846,10 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
     },
   ],
   webServer: {
@@ -1692,59 +3938,6 @@ export default {
 
 ---
 
-## File: scratch_refactor.py
-
-```python
-import os
-import re
-
-steps_dir = '/workspaces/fresh_nest/src/components/booking'
-
-def remove_next_back(filepath, step_num):
-    with open(filepath, 'r') as f:
-        content = f.read()
-
-    # Remove framer-motion import
-    content = re.sub(r"import\s*{\s*motion\s*}\s*from\s*'framer-motion'\n", "", content)
-    
-    # Replace <motion.div ...> with <div>
-    content = re.sub(r"<motion\.div[^>]*>", "<div>", content)
-    content = re.sub(r"</motion\.div>", "</div>", content)
-    
-    if step_num == 1:
-        # Remove Props
-        content = re.sub(r"interface Props {\s*onNext: \(\) => void\s*}\n\n", "", content)
-        content = re.sub(r"export default function BookingStep1\({ onNext }: Props\) {", "export default function BookingStep1() {", content)
-        # Remove Next button div
-        content = re.sub(r'<div className="mt-6 flex justify-end">.*?</div>\n    </div>', '</div>', content, flags=re.DOTALL)
-    elif step_num == 2:
-        content = re.sub(r"interface Props {\s*onNext: \(\) => void\s*onBack: \(\) => void\s*}\n\n", "", content)
-        content = re.sub(r"export default function BookingStep2\({ onNext, onBack }: Props\) {", "export default function BookingStep2() {", content)
-        # Remove buttons div
-        content = re.sub(r'<div className="mt-6 flex justify-between">.*?</div>\n    </div>', '</div>', content, flags=re.DOTALL)
-    elif step_num == 3:
-        content = re.sub(r"interface Props {\s*onNext: \(\) => void\s*onBack: \(\) => void\s*}\n\n", "", content)
-        content = re.sub(r"export default function BookingStep3\({ onNext, onBack }: Props\) {", "export default function BookingStep3() {", content)
-        # Remove buttons div
-        content = re.sub(r'<div className="mt-6 flex justify-between">.*?</div>\n    </div>', '</div>', content, flags=re.DOTALL)
-    elif step_num == 4:
-        content = re.sub(r"interface Props {\s*onBack: \(\) => void\s*onSetStep: \(step: number\) => void\s*submitError: string \| null\s*}\n\n", "interface Props {\n  submitError: string | null\n}\n\n", content)
-        content = re.sub(r"export default function BookingStep4\({ onBack, onSetStep, submitError }: Props\) {", "export default function BookingStep4({ submitError }: Props) {", content)
-        # Remove Edit buttons in Step 4
-        content = re.sub(r'<button\s*type="button"\s*onClick=\{[^}]*\}\s*className="[^"]*"\s*aria-label="[^"]*"\s*>\s*\{t\(\'booking\.edit\'\)\}\s*</button>', '', content)
-        # Remove Back button
-        content = re.sub(r'<button\s*type="button"\s*onClick=\{onBack\}[^>]*>.*?booking\.back.*?</button>', '', content, flags=re.DOTALL)
-        
-    with open(filepath, 'w') as f:
-        f.write(content)
-
-for i in range(1, 5):
-    remove_next_back(os.path.join(steps_dir, f'BookingStep{i}.tsx'), i)
-
-```
-
----
-
 ## File: src/App.css
 
 ```css
@@ -1768,7 +3961,7 @@ import Layout from '@/components/layout/Layout'
 import Home from '@/pages/Home'
 import Gallery from '@/pages/Gallery'
 import PlaceholderPage from '@/pages/PlaceholderPage'
-import { CORNWALL_ON, AKWESASNE, SNYE_QC, LONG_SAULT, MORRISBURG } from '@/lib/locationData'
+import { CORNWALL_ON, AKWESASNE, SNYE_QC, LONG_SAULT, MORRISBURG } from '@/lib/data/locationData'
 import LocationPage from '@/pages/LocationPage'
 import LocationsOverview from '@/pages/LocationsOverview'
 import FaqPage from '@/pages/FaqPage'
@@ -1777,9 +3970,11 @@ import PricingPage from '@/pages/PricingPage'
 import AirbnbTurnoverPage from '@/pages/AirbnbTurnoverPage'
 import ServicePage from '@/pages/ServicePage'
 import ServicesOverview from '@/pages/ServicesOverview'
-import { SERVICE_CONFIG_MAP } from '@/lib/serviceData'
+import { SERVICE_CONFIG_MAP } from '@/lib/data/serviceData'
 import ThankYouPage from '@/pages/ThankYouPage'
 import AdminPage from '@/pages/AdminPage'
+import Blog from '@/pages/Blog'
+import BlogPost from '@/pages/BlogPost'
 
 /**
  * React Router v6 browser router.
@@ -1885,6 +4080,10 @@ const router = createBrowserRouter([
         ),
       },
 
+      // ── Phase 4: Blog ──
+      { path: 'blog', element: <Blog /> },
+      { path: 'blog/:slug', element: <BlogPost /> },
+
       // ── Phase 5: Admin ──
       {
         path: 'admin',
@@ -1902,13 +4101,1525 @@ export default function App() {
 
 ---
 
+## File: src/components/admin/AccessDeniedPanel.tsx
+
+```tsx
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import type { User } from 'firebase/auth'
+import { cn } from '@/lib/utils/utils'
+import { fadeUp } from '@/lib/utils/animations'
+
+interface AccessDeniedPanelProps {
+  user: User
+  handleSignOut: () => Promise<void> | void
+  authError: string | null
+}
+
+export function AccessDeniedPanel({ user, handleSignOut, authError }: AccessDeniedPanelProps) {
+  const { t } = useTranslation()
+
+  return (
+    <motion.div
+      key="access-denied"
+      initial="hidden"
+      animate="visible"
+      exit="hidden"
+      variants={fadeUp}
+      className="w-full max-w-md bg-white border border-sand rounded shadow-sm p-6 md:p-8 mx-auto"
+    >
+      <div className="flex flex-col items-center text-center gap-6">
+        <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center shrink-0">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="w-8 h-8"
+          >
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+        </div>
+
+        <div className="space-y-2">
+          <h1 className="font-display text-5xl text-charcoal">
+            {t('admin.login.errorTitle')}
+          </h1>
+          <p className="font-body text-base text-text-muted">
+            {authError || t('admin.login.errorMessage', { email: user.email })}
+          </p>
+        </div>
+
+        <div className="w-full flex flex-col gap-3">
+          <button
+            onClick={() => { void handleSignOut() }}
+            className={cn(
+              'w-full bg-slate-brand text-white font-body font-medium rounded',
+              'min-h-[48px] py-3 px-6 hover:bg-slate-dark transition-colors duration-200',
+              'focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2'
+            )}
+          >
+            {t('admin.login.tryAnother')}
+          </button>
+          <Link
+            to="/"
+            className={cn(
+              'w-full border border-sand text-charcoal font-body font-medium rounded',
+              'min-h-[48px] inline-flex items-center justify-center py-3 px-6',
+              'hover:bg-cream transition-colors duration-200',
+              'focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2'
+            )}
+          >
+            {t('admin.login.backToHome')}
+          </Link>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+```
+
+---
+
+## File: src/components/admin/AnalyticsDashboard.tsx
+
+```tsx
+import { useTranslation } from 'react-i18next'
+import {
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip as RechartsTooltip,
+  Legend as RechartsLegend,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+} from 'recharts'
+import type { AnalyticsTimeRange } from './hooks/useAdminAnalytics'
+import { LEAD_COLORS } from './hooks/useAdminAnalytics'
+
+interface AnalyticsDashboardProps {
+  analyticsTimeRange: AnalyticsTimeRange
+  setAnalyticsTimeRange: (val: AnalyticsTimeRange) => void
+  analyticsTotalBookings: number
+  analyticsTotalRevenue: number
+  analyticsAvgBookingValue: number
+  leadSourceData: Array<{ name: string; value: number; revenue: number; key: string }>
+  monthlyTrendData: Array<{ monthKey: string; monthName: string; count: number; revenue: number; sortKey: number }>
+  channelsPerformance: Array<{ source: string; name: string; volume: number; revenue: number; avgValue: number; share: number }>
+  formatCurrency: (val: number) => string
+  referredBookingsCount: number
+}
+
+export function AnalyticsDashboard({
+  analyticsTimeRange,
+  setAnalyticsTimeRange,
+  analyticsTotalBookings,
+  analyticsTotalRevenue,
+  analyticsAvgBookingValue,
+  leadSourceData,
+  monthlyTrendData,
+  channelsPerformance,
+  formatCurrency,
+  referredBookingsCount,
+}: AnalyticsDashboardProps) {
+  const { t } = useTranslation()
+
+  return (
+    <div className="flex flex-col gap-8">
+      {/* Time Range Selector */}
+      <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 className="font-display text-4xl text-charcoal">
+            {t('admin.dashboard.analytics.title')}
+          </h2>
+        </div>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
+          <label htmlFor="analytics-range" className="font-body text-base text-charcoal font-medium whitespace-nowrap">
+            {t('admin.dashboard.analytics.rangeLabel')}:
+          </label>
+          <select
+            id="analytics-range"
+            value={analyticsTimeRange}
+            onChange={(e) => setAnalyticsTimeRange(e.target.value as AnalyticsTimeRange)}
+            className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+          >
+            <option value="all">{t('admin.dashboard.analytics.ranges.all')}</option>
+            <option value="30days">{t('admin.dashboard.analytics.ranges.30days')}</option>
+            <option value="90days">{t('admin.dashboard.analytics.ranges.90days')}</option>
+            <option value="ytd">{t('admin.dashboard.analytics.ranges.ytd')}</option>
+            <option value="month">{t('admin.dashboard.analytics.ranges.month')}</option>
+          </select>
+        </div>
+      </div>
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-1">
+          <span className="font-body text-sm text-text-muted">
+            {t('admin.dashboard.analytics.stats.bookingsCount')}
+          </span>
+          <span className="font-display text-4xl text-charcoal font-bold">
+            {analyticsTotalBookings}
+          </span>
+        </div>
+        <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-slate-brand flex flex-col gap-1">
+          <span className="font-body text-sm text-text-muted">
+            {t('admin.dashboard.analytics.stats.estimatedRevenue')}
+          </span>
+          <span className="font-display text-4xl text-slate-brand font-bold">
+            {formatCurrency(analyticsTotalRevenue)}
+          </span>
+        </div>
+        <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-green-500 flex flex-col gap-1">
+          <span className="font-body text-sm text-text-muted">
+            {t('admin.dashboard.analytics.stats.avgBookingValue')}
+          </span>
+          <span className="font-display text-4xl text-green-600 font-bold">
+            {formatCurrency(analyticsAvgBookingValue)}
+          </span>
+        </div>
+        <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-amber-500 flex flex-col gap-1">
+          <span className="font-body text-sm text-text-muted">
+            {t('admin.dashboard.analytics.stats.referredBookings')}
+          </span>
+          <span className="font-display text-4xl text-amber-600 font-bold">
+            {referredBookingsCount}
+          </span>
+        </div>
+      </div>
+
+      {/* Charts Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Lead Source Pie Chart */}
+        <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-4">
+          <h3 className="font-sub text-2xl text-charcoal font-bold border-b border-sand pb-2">
+            {t('admin.dashboard.analytics.charts.leadDistribution')}
+          </h3>
+          <div className="h-[320px] w-full flex items-center justify-center">
+            {leadSourceData.length === 0 ? (
+              <span className="font-body text-base text-text-muted italic">
+                {t('admin.dashboard.table.noResults')}
+              </span>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={leadSourceData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={90}
+                    paddingAngle={4}
+                    dataKey="value"
+                  >
+                    {leadSourceData.map((entry) => (
+                      <Cell key={`cell-${entry.key}`} fill={LEAD_COLORS[entry.key] || '#7a8f96'} />
+                    ))}
+                  </Pie>
+                  <RechartsTooltip
+                    formatter={(value: unknown, name: unknown, props: unknown) => {
+                      const valStr = String(value)
+                      const nameStr = String(name)
+                      const payload = (props as { payload?: { revenue?: number } })?.payload
+                      const revenue = payload?.revenue || 0
+                      return [
+                        `${valStr} ${t('admin.dashboard.analytics.charts.bookings').toLowerCase()} (${formatCurrency(revenue)})`,
+                        nameStr,
+                      ]
+                    }}
+                    contentStyle={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '14px',
+                      borderRadius: '4px',
+                      borderColor: '#c4b09a',
+                    }}
+                  />
+                  <RechartsLegend
+                    verticalAlign="bottom"
+                    height={36}
+                    iconType="circle"
+                    wrapperStyle={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '14px',
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </div>
+
+        {/* Monthly Trend Bar Chart */}
+        <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-4">
+          <h3 className="font-sub text-2xl text-charcoal font-bold border-b border-sand pb-2">
+            {t('admin.dashboard.analytics.charts.monthlyTrend')}
+          </h3>
+          <div className="h-[320px] w-full flex items-center justify-center">
+            {monthlyTrendData.length === 0 ? (
+              <span className="font-body text-base text-text-muted italic">
+                {t('admin.dashboard.table.noResults')}
+              </span>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={monthlyTrendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e8e8e8" />
+                  <XAxis
+                    dataKey="monthName"
+                    stroke="#7a8f96"
+                    tickLine={false}
+                    axisLine={false}
+                    style={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '12px',
+                    }}
+                  />
+                  <YAxis
+                    stroke="#7a8f96"
+                    tickLine={false}
+                    axisLine={false}
+                    style={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '12px',
+                    }}
+                  />
+                  <RechartsTooltip
+                    formatter={(value: unknown, name: unknown) => {
+                      const val = Number(value)
+                      const nm = String(name)
+                      if (nm === 'revenue') {
+                        return [formatCurrency(val), t('admin.dashboard.analytics.charts.revenue')];
+                      }
+                      return [val, t('admin.dashboard.analytics.charts.bookings')];
+                    }}
+                    contentStyle={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '14px',
+                      borderRadius: '4px',
+                      borderColor: '#c4b09a',
+                    }}
+                  />
+                  <Bar dataKey="revenue" fill="#5b7e8f" name="revenue" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Channels Performance Table */}
+      <div className="bg-white border border-sand rounded shadow-sm flex flex-col gap-4 p-6">
+        <h3 className="font-sub text-2xl text-charcoal font-bold border-b border-sand pb-2">
+          {t('admin.dashboard.analytics.title')}
+        </h3>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left min-w-[600px]">
+            <thead>
+              <tr className="border-b border-sand bg-cream">
+                <th className="p-4 font-sub text-base text-charcoal font-bold">
+                  {t('admin.dashboard.analytics.table.channel')}
+                </th>
+                <th className="p-4 font-sub text-base text-charcoal font-bold text-center">
+                  {t('admin.dashboard.analytics.table.volume')}
+                </th>
+                <th className="p-4 font-sub text-base text-charcoal font-bold text-right">
+                  {t('admin.dashboard.analytics.table.revenue')}
+                </th>
+                <th className="p-4 font-sub text-base text-charcoal font-bold text-right">
+                  {t('admin.dashboard.analytics.table.avgValue')}
+                </th>
+                <th className="p-4 font-sub text-base text-charcoal font-bold text-right">
+                  {t('admin.dashboard.analytics.table.share')}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {channelsPerformance.map((ch) => (
+                <tr key={ch.source} className="border-b border-sand hover:bg-warm-white transition-colors duration-150">
+                  <td className="p-4 font-body text-base text-charcoal font-medium">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="w-3 h-3 rounded-full shrink-0"
+                        style={{ backgroundColor: LEAD_COLORS[ch.source] || '#7a8f96' }}
+                      />
+                      {ch.name}
+                    </div>
+                  </td>
+                  <td className="p-4 font-body text-base text-charcoal text-center">
+                    {ch.volume}
+                  </td>
+                  <td className="p-4 font-body text-base text-charcoal text-right">
+                    {formatCurrency(ch.revenue)}
+                  </td>
+                  <td className="p-4 font-body text-base text-charcoal text-right">
+                    {formatCurrency(ch.avgValue)}
+                  </td>
+                  <td className="p-4 font-body text-base text-charcoal text-right">
+                    {ch.share.toFixed(1)}%
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+```
+
+---
+
+## File: src/components/admin/BookingDetailPanel.tsx
+
+```tsx
+import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { cn } from '@/lib/utils/utils'
+import type { Booking, BookingStatus } from '@/types'
+
+interface BookingDetailPanelProps {
+  booking: Booking
+  customCleanerNames: Record<string, string>
+  showCustomInput: Record<string, boolean>
+  setCustomCleanerNames: React.Dispatch<React.SetStateAction<Record<string, string>>>
+  handleStatusChange: (bookingId: string, status: BookingStatus) => Promise<void> | void
+  handleAssignmentChange: (bookingId: string, value: string) => Promise<void> | void
+  handleCustomCleanerSave: (bookingId: string) => Promise<void> | void
+}
+
+export function BookingDetailPanel({
+  booking: b,
+  customCleanerNames,
+  showCustomInput,
+  setCustomCleanerNames,
+  handleStatusChange,
+  handleAssignmentChange,
+  handleCustomCleanerSave,
+}: BookingDetailPanelProps) {
+  const { t, i18n } = useTranslation()
+
+  return (
+    <tr>
+      <td colSpan={5} className="p-0 border-b border-sand bg-slate-pale/30">
+        <motion.div
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: 'auto', opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="overflow-hidden p-6"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+            {/* Contact & Address Section */}
+            <div className="flex flex-col gap-4">
+              <h4 className="font-sub text-xl text-charcoal font-bold border-b border-sand pb-1.5">
+                {t('admin.dashboard.table.client')}
+              </h4>
+              <div className="font-body text-base text-charcoal space-y-2">
+                <p>
+                  <span className="font-medium">{t('booking.fields.phone.label')}: </span>
+                  <a href={`tel:${b.phone}`} className="text-slate-brand hover:underline min-h-[48px] inline-flex items-center">
+                    {b.phone}
+                  </a>
+                </p>
+                <p>
+                  <span className="font-medium">{t('admin.dashboard.filters.language')}: </span>
+                  {b.language === 'en' ? t('common.languages.enLong') : t('common.languages.frLong')}
+                </p>
+                <div className="pt-2">
+                  <span className="font-medium block mb-1">
+                    {t('admin.dashboard.details.address')}:
+                  </span>
+                  <span className="text-text-muted block leading-snug">
+                    {b.address}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Property Specifications */}
+            <div className="flex flex-col gap-4">
+              <h4 className="font-sub text-xl text-charcoal font-bold border-b border-sand pb-1.5">
+                {t('admin.dashboard.details.property')}
+              </h4>
+              <div className="font-body text-base text-charcoal space-y-2">
+                <p>
+                  <span className="font-medium">{t('booking.fields.propertyType.label')}: </span>
+                  {t(`booking.fields.propertyType.options.${b.propertyType}`)}
+                </p>
+                <p>
+                  <span className="font-medium">{t('admin.dashboard.details.rooms')}: </span>
+                  {t('admin.dashboard.details.roomsValue', { bedrooms: b.bedrooms, bathrooms: b.bathrooms })}
+                </p>
+                {b.squareFootage && (
+                  <p>
+                    <span className="font-medium">{t('admin.dashboard.details.size')}: </span>
+                    {t('admin.dashboard.details.sqft', { size: b.squareFootage })}
+                  </p>
+                )}
+                <p>
+                  <span className="font-medium">{t('admin.dashboard.details.frequency')}: </span>
+                  {t(`booking.fields.frequency.options.${b.frequency}`)}
+                </p>
+                <p>
+                  <span className="font-medium">{t('admin.dashboard.details.pets')}: </span>
+                  <span className={cn(b.pets ? 'text-amber-700 font-medium' : '')}>
+                    {b.pets
+                      ? t('admin.dashboard.details.petsYes')
+                      : t('admin.dashboard.details.petsNo')}
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            {/* Workflow & Admin Controls */}
+            <div className="flex flex-col gap-4">
+              <h4 className="font-sub text-xl text-charcoal font-bold border-b border-sand pb-1.5">
+                {t('admin.dashboard.details.assignHeader')}
+              </h4>
+
+              {/* Status Update Control */}
+              <div className="flex flex-col gap-1.5">
+                <label
+                  htmlFor={`status-select-${b.id}`}
+                  className="font-body text-sm text-text-muted"
+                >
+                  {t('admin.dashboard.details.updateStatus')}
+                </label>
+                <select
+                  id={`status-select-${b.id}`}
+                  value={b.status}
+                  onChange={(e) => {
+                    void handleStatusChange(b.id!, e.target.value as BookingStatus)
+                  }}
+                  className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-white focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                >
+                  <option value="pending">{t('booking.status.pending')}</option>
+                  <option value="confirmed">{t('booking.status.confirmed')}</option>
+                  <option value="completed">{t('booking.status.completed')}</option>
+                  <option value="cancelled">{t('booking.status.cancelled')}</option>
+                </select>
+              </div>
+
+              {/* Cleaner Assignment Control */}
+              <div className="flex flex-col gap-1.5 mt-1">
+                <label
+                  htmlFor={`cleaner-select-${b.id}`}
+                  className="font-body text-sm text-text-muted"
+                >
+                  {t('admin.dashboard.details.assignCleaner')}
+                </label>
+                <select
+                  id={`cleaner-select-${b.id}`}
+                  value={
+                    showCustomInput[b.id!]
+                      ? 'custom'
+                      : b.assignedTo === null
+                      ? 'unassigned'
+                      : b.assignedTo && ['Lauren S.', 'Sarah M.'].includes(b.assignedTo)
+                      ? b.assignedTo
+                      : 'custom'
+                  }
+                  onChange={(e) => { void handleAssignmentChange(b.id!, e.target.value) }}
+                  className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-white focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                >
+                  <option value="unassigned">
+                    {t('admin.dashboard.details.unassigned')}
+                  </option>
+                  <option value="Lauren S.">Lauren S.</option>
+                  <option value="Sarah M.">Sarah M.</option>
+                  <option value="custom">
+                    {t('admin.dashboard.details.customOption')}
+                  </option>
+                </select>
+
+                {/* Custom cleaner text input fallback */}
+                {(showCustomInput[b.id!] ||
+                  (b.assignedTo &&
+                    !['Lauren S.', 'Sarah M.'].includes(b.assignedTo))) && (
+                  <div className="flex flex-col gap-1.5 mt-2">
+                    <label
+                      htmlFor={`custom-cleaner-input-${b.id}`}
+                      className="font-body text-sm text-text-muted"
+                    >
+                      {t('admin.dashboard.details.customCleaner')}
+                    </label>
+                    <div className="flex gap-2">
+                      <div className="flex-1">
+                        <input
+                          id={`custom-cleaner-input-${b.id}`}
+                          type="text"
+                          value={
+                            customCleanerNames[b.id!] !== undefined
+                              ? customCleanerNames[b.id!]
+                              : b.assignedTo || ''
+                          }
+                          onChange={(e) =>
+                            setCustomCleanerNames((prev) => ({
+                              ...prev,
+                              [b.id!]: e.target.value,
+                            }))
+                          }
+                          placeholder={t('admin.dashboard.details.customPlaceholder')}
+                          className="w-full border border-sand rounded px-4 py-3 min-h-[48px] font-body text-base text-charcoal bg-white focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                        />
+                      </div>
+                      <button
+                        onClick={() => { void handleCustomCleanerSave(b.id!) }}
+                        className={cn(
+                          'bg-slate-brand text-white font-body font-medium rounded',
+                          'min-h-[48px] px-4 py-2 hover:bg-slate-dark transition-colors duration-200',
+                          'focus:outline-none focus:ring-2 focus:ring-slate-brand'
+                        )}
+                      >
+                        {t('admin.dashboard.details.save')}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Sub-details (Notes, Add-ons, Workflow) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mt-8 pt-6 border-t border-sand">
+            {/* Extras & Add-ons */}
+            <div className="flex flex-col gap-2">
+              <h4 className="font-sub text-xl text-charcoal font-bold">
+                {t('admin.dashboard.details.addons')}
+              </h4>
+              {b.addOns && b.addOns.length > 0 ? (
+                <div className="flex flex-wrap gap-2 mt-1">
+                  {b.addOns.map((add) => (
+                    <span
+                      key={add}
+                      className="bg-slate-pale text-slate-dark border border-sand px-2.5 py-1 rounded font-body text-sm font-medium"
+                    >
+                      {t(`booking.fields.addOns.options.${add}`)}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="font-body text-base text-text-muted italic mt-1">
+                  {t('admin.dashboard.details.noAddons')}
+                </p>
+              )}
+            </div>
+
+            {/* Notes Section */}
+            <div className="flex flex-col gap-2">
+              <h4 className="font-sub text-xl text-charcoal font-bold">
+                {t('admin.dashboard.details.notes')}
+              </h4>
+              <p className="font-body text-base text-charcoal bg-white border border-sand rounded p-3 mt-1 leading-normal whitespace-pre-line min-h-[60px]">
+                {b.notes?.trim() || t('admin.dashboard.details.noNotes')}
+              </p>
+            </div>
+          </div>
+
+          {/* Lead Source, Timestamps, Flags Footer */}
+          <div className="flex flex-wrap gap-x-8 gap-y-2 text-left mt-8 pt-4 border-t border-sand text-base font-body text-text-muted">
+            <p>
+              <span className="font-medium text-charcoal">
+                {t('admin.dashboard.details.createdAt')}:{' '}
+              </span>
+              {b.createdAt?.toLocaleString(i18n.language === 'fr' ? 'fr-CA' : 'en-CA')}
+            </p>
+            <p>
+              <span className="font-medium text-charcoal">
+                {t('admin.dashboard.details.leadSource')}:{' '}
+              </span>
+              <span className="capitalize">
+                {t(`admin.dashboard.leads.${b.leadSource}`) || b.leadSource}
+              </span>
+            </p>
+            {b.referredBy && (
+              <p>
+                <span className="font-medium text-charcoal">
+                  {t('admin.dashboard.details.referredBy')}:{' '}
+                </span>
+                <span className="bg-green-50 text-green-800 border border-green-200 px-2 py-0.5 rounded">
+                  {b.referredBy}
+                </span>
+              </p>
+            )}
+            {b.referralCode && (
+              <p>
+                <span className="font-medium text-charcoal">
+                  {t('admin.dashboard.details.referralCode')}:{' '}
+                </span>
+                <span className="bg-blue-50 text-blue-800 border border-blue-200 px-2 py-0.5 rounded font-mono">
+                  {b.referralCode}
+                </span>
+              </p>
+            )}
+            <p>
+              <span className="font-medium text-charcoal">
+                {t('admin.dashboard.details.workflow')}:{' '}
+              </span>
+              {b.isAirbnb && (
+                <span className="bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded mr-2">
+                  {t('admin.dashboard.details.isAirbnb')}
+                </span>
+              )}
+              {b.photoConfirmation && (
+                <span className="bg-blue-50 text-blue-800 border border-blue-200 px-2 py-0.5 rounded">
+                  {t('admin.dashboard.details.photoConf')}
+                </span>
+              )}
+            </p>
+          </div>
+        </motion.div>
+      </td>
+    </tr>
+  )
+}
+
+```
+
+---
+
+## File: src/components/admin/BookingsTable.tsx
+
+```tsx
+import { useTranslation } from 'react-i18next'
+import { AnimatePresence } from 'framer-motion'
+import { cn } from '@/lib/utils/utils'
+import type { Booking, BookingStatus } from '@/types'
+import { BookingDetailPanel } from './BookingDetailPanel'
+
+interface BookingsTableProps {
+  filteredBookings: Booking[]
+  totalCount: number
+  pendingCount: number
+  confirmedCount: number
+  statusFilter: string
+  setStatusFilter: (val: string) => void
+  serviceFilter: string
+  setServiceFilter: (val: string) => void
+  languageFilter: string
+  setLanguageFilter: (val: string) => void
+  sortBy: 'preferredDate' | 'createdAt'
+  setSortBy: (val: 'preferredDate' | 'createdAt') => void
+  sortOrder: 'asc' | 'desc'
+  setSortOrder: (val: 'asc' | 'desc') => void
+  searchQuery: string
+  setSearchQuery: (val: string) => void
+  expandedRowId: string | null
+  setExpandedRowId: (val: string | null) => void
+  customCleanerNames: Record<string, string>
+  setCustomCleanerNames: React.Dispatch<React.SetStateAction<Record<string, string>>>
+  showCustomInput: Record<string, boolean>
+  handleStatusChange: (bookingId: string, status: BookingStatus) => Promise<void> | void
+  handleAssignmentChange: (bookingId: string, value: string) => Promise<void> | void
+  handleCustomCleanerSave: (bookingId: string) => Promise<void> | void
+}
+
+export function BookingsTable({
+  filteredBookings,
+  totalCount,
+  pendingCount,
+  confirmedCount,
+  statusFilter,
+  setStatusFilter,
+  serviceFilter,
+  setServiceFilter,
+  languageFilter,
+  setLanguageFilter,
+  sortBy,
+  setSortBy,
+  sortOrder,
+  setSortOrder,
+  searchQuery,
+  setSearchQuery,
+  expandedRowId,
+  setExpandedRowId,
+  customCleanerNames,
+  setCustomCleanerNames,
+  showCustomInput,
+  handleStatusChange,
+  handleAssignmentChange,
+  handleCustomCleanerSave,
+}: BookingsTableProps) {
+  const { t } = useTranslation()
+
+  return (
+    <div className="flex flex-col gap-8">
+      {/* Stats Counters Panel */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-1">
+          <span className="font-body text-sm text-text-muted">
+            {t('admin.dashboard.stats.total')}
+          </span>
+          <span className="font-display text-4xl text-charcoal font-bold">
+            {totalCount}
+          </span>
+        </div>
+        <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-slate-brand flex flex-col gap-1">
+          <span className="font-body text-sm text-text-muted">
+            {t('admin.dashboard.stats.pending')}
+          </span>
+          <span className="font-display text-4xl text-slate-brand font-bold">
+            {pendingCount}
+          </span>
+        </div>
+        <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-green-500 flex flex-col gap-1">
+          <span className="font-body text-sm text-text-muted">
+            {t('admin.dashboard.stats.confirmed')}
+          </span>
+          <span className="font-display text-4xl text-green-600 font-bold">
+            {confirmedCount}
+          </span>
+        </div>
+      </div>
+
+      {/* Filtering Controls Bar */}
+      <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {/* Status filter */}
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="status-filter" className="font-body text-base text-charcoal font-medium">
+              {t('admin.dashboard.filters.status')}
+            </label>
+            <select
+              id="status-filter"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+            >
+              <option value="all">{t('common.all')}</option>
+              <option value="pending">{t('booking.status.pending')}</option>
+              <option value="confirmed">{t('booking.status.confirmed')}</option>
+              <option value="completed">{t('booking.status.completed')}</option>
+              <option value="cancelled">{t('booking.status.cancelled')}</option>
+            </select>
+          </div>
+
+          {/* Service Type Filter */}
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="service-filter" className="font-body text-base text-charcoal font-medium">
+              {t('admin.dashboard.filters.service')}
+            </label>
+            <select
+              id="service-filter"
+              value={serviceFilter}
+              onChange={(e) => setServiceFilter(e.target.value)}
+              className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+            >
+              <option value="all">{t('common.all')}</option>
+              <option value="standard">{t('services.standard.title')}</option>
+              <option value="deep">{t('services.deep.title')}</option>
+              <option value="moveout">{t('services.moveout.title')}</option>
+              <option value="postconstruction">{t('services.postconstruction.title')}</option>
+              <option value="airbnb">{t('services.airbnb.title')}</option>
+              <option value="commercial">{t('services.commercial.title')}</option>
+            </select>
+          </div>
+
+          {/* Language Filter */}
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="language-filter" className="font-body text-base text-charcoal font-medium">
+              {t('admin.dashboard.filters.language')}
+            </label>
+            <select
+              id="language-filter"
+              value={languageFilter}
+              onChange={(e) => setLanguageFilter(e.target.value)}
+              className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+            >
+              <option value="all">{t('common.all')}</option>
+              <option value="en">{t('common.languages.en')}</option>
+              <option value="fr">{t('common.languages.fr')}</option>
+            </select>
+          </div>
+
+          {/* Sort By Filter */}
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="sort-by" className="font-body text-base text-charcoal font-medium">
+              {t('admin.dashboard.filters.sortBy')}
+            </label>
+            <select
+              id="sort-by"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as 'preferredDate' | 'createdAt')}
+              className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+            >
+              <option value="preferredDate">{t('admin.dashboard.table.date')}</option>
+              <option value="createdAt">{t('admin.dashboard.details.createdAt')}</option>
+            </select>
+          </div>
+
+          {/* Sort Order Filter */}
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="sort-order" className="font-body text-base text-charcoal font-medium">
+              {t('admin.dashboard.filters.sortOrder')}
+            </label>
+            <select
+              id="sort-order"
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+              className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+            >
+              <option value="asc">{t('common.asc')}</option>
+              <option value="desc">{t('common.desc')}</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Search Bar */}
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="search-query" className="font-body text-base text-charcoal font-medium">
+            {t('common.search')}
+          </label>
+          <input
+            id="search-query"
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={t('admin.dashboard.filters.search')}
+            className="w-full border border-sand rounded px-4 py-3 min-h-[48px] font-body text-base text-charcoal focus:outline-none focus:ring-2 focus:ring-slate-brand"
+          />
+        </div>
+      </div>
+
+      {/* Bookings Table */}
+      <div className="bg-white border border-sand rounded shadow-sm overflow-x-auto">
+        <table className="w-full border-collapse text-left min-w-[700px]">
+          <thead>
+            <tr className="border-b border-sand bg-cream">
+              <th className="p-4 font-sub text-base text-charcoal font-bold">
+                {t('admin.dashboard.table.client')}
+              </th>
+              <th className="p-4 font-sub text-base text-charcoal font-bold">
+                {t('admin.dashboard.table.date')}
+              </th>
+              <th className="p-4 font-sub text-base text-charcoal font-bold">
+                {t('admin.dashboard.table.service')}
+              </th>
+              <th className="p-4 font-sub text-base text-charcoal font-bold">
+                {t('admin.dashboard.table.status')}
+              </th>
+              <th className="p-4 font-sub text-base text-charcoal font-bold">
+                {t('admin.dashboard.table.assigned')}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredBookings.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="p-8 text-center font-body text-base text-text-muted">
+                  {t('admin.dashboard.table.noResults')}
+                </td>
+              </tr>
+            ) : (
+              filteredBookings.map((b) => {
+                const isExpanded = expandedRowId === b.id
+                const clientName = `${b.firstName} ${b.lastName}`
+                const serviceKey = b.serviceType
+
+                return (
+                  <div key={b.id} className="contents">
+                    {/* Main table row */}
+                    <tr
+                      onClick={() => setExpandedRowId(isExpanded ? null : (b.id ?? null))}
+                      className={cn(
+                        'border-b border-sand hover:bg-warm-white transition-colors duration-150 cursor-pointer',
+                        isExpanded && 'bg-warm-white'
+                      )}
+                    >
+                      <td className="p-4 font-body text-base text-charcoal font-medium">
+                        <div className="flex flex-col">
+                          <span>{clientName}</span>
+                          <span className="text-sm text-text-muted font-normal">{b.email}</span>
+                        </div>
+                      </td>
+                      <td className="p-4 font-body text-base text-charcoal">
+                        {b.preferredDate}
+                      </td>
+                      <td className="p-4 font-body text-base text-charcoal capitalize">
+                        {t(`services.${serviceKey}.title`)}
+                      </td>
+                      <td className="p-4">
+                        <span
+                          className={cn(
+                            'inline-flex items-center px-2.5 py-0.5 rounded font-body text-sm font-medium border',
+                            b.status === 'pending' && 'bg-yellow-50 text-yellow-800 border-yellow-200',
+                            b.status === 'confirmed' && 'bg-green-50 text-green-800 border-green-200',
+                            b.status === 'completed' && 'bg-blue-50 text-blue-800 border-blue-200',
+                            b.status === 'cancelled' && 'bg-red-50 text-red-800 border-red-200'
+                          )}
+                        >
+                          {t(`booking.status.${b.status}`)}
+                        </span>
+                      </td>
+                      <td className="p-4 font-body text-base text-charcoal">
+                        {b.assignedTo || (
+                          <span className="text-text-muted italic">
+                            {t('admin.dashboard.details.unassigned')}
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+
+                    {/* Collapsible details panel */}
+                    <AnimatePresence initial={false}>
+                      {isExpanded && b.id && (
+                        <BookingDetailPanel
+                          booking={b}
+                          customCleanerNames={customCleanerNames}
+                          showCustomInput={showCustomInput}
+                          setCustomCleanerNames={setCustomCleanerNames}
+                          handleStatusChange={handleStatusChange}
+                          handleAssignmentChange={handleAssignmentChange}
+                          handleCustomCleanerSave={handleCustomCleanerSave}
+                        />
+                      )}
+                    </AnimatePresence>
+                  </div>
+                )
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
+```
+
+---
+
+## File: src/components/admin/LoginPanel.tsx
+
+```tsx
+import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
+import { cn } from '@/lib/utils/utils'
+import { fadeUp } from '@/lib/utils/animations'
+
+interface LoginPanelProps {
+  handleSignIn: () => Promise<void> | void
+  authError: string | null
+}
+
+export function LoginPanel({ handleSignIn, authError }: LoginPanelProps) {
+  const { t } = useTranslation()
+
+  return (
+    <motion.div
+      key="login-gate"
+      initial="hidden"
+      animate="visible"
+      exit="hidden"
+      variants={fadeUp}
+      className="w-full max-w-md bg-white border border-sand rounded shadow-sm p-6 md:p-8 mx-auto"
+    >
+      <div className="flex flex-col items-center text-center gap-6">
+        <div className="w-16 h-16 bg-slate-pale text-slate-brand rounded-full flex items-center justify-center shrink-0">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="w-8 h-8"
+          >
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+        </div>
+
+        <div className="space-y-2">
+          <h1 className="font-display text-5xl text-charcoal">
+            {t('admin.login.heading')}
+          </h1>
+          <p className="font-body text-base text-text-muted">
+            {t('admin.login.subhead')}
+          </p>
+        </div>
+
+        {authError && (
+          <div className="w-full p-3 bg-red-50 border border-red-200 text-red-700 rounded text-base font-body">
+            {authError}
+          </div>
+        )}
+
+        <button
+          onClick={() => { void handleSignIn() }}
+          className={cn(
+            'w-full bg-slate-brand text-white font-body font-medium rounded',
+            'min-h-[48px] py-3 px-6 hover:bg-slate-dark transition-colors duration-200',
+            'focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2',
+            'inline-flex items-center justify-center gap-3'
+          )}
+        >
+          <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+            <path d="M12.24 10.285V13.4h6.887C18.2 15.614 15.645 18 12.24 18c-3.86 0-7-3.14-7-7s3.14-7 7-7c1.706 0 3.277.614 4.5 1.625l2.437-2.437C17.312 1.696 14.933 1 12.24 1 6.583 1 2 5.583 2 11.24s4.583 10.24 10.24 10.24c5.795 0 10.24-4.11 10.24-10.24 0-.568-.057-1.125-.17-1.67H12.24z" />
+          </svg>
+          {t('admin.login.button')}
+        </button>
+      </div>
+    </motion.div>
+  )
+}
+
+```
+
+---
+
+## File: src/components/admin/hooks/useAdminAnalytics.ts
+
+```typescript
+import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { calculateQuote } from '@/lib/utils/quotePricing'
+import type { QuotePropertySize, QuoteServiceType } from '@/lib/utils/quotePricing'
+import type { Booking } from '@/types'
+
+export type AnalyticsTimeRange = 'all' | '30days' | '90days' | 'ytd' | 'month'
+
+export const LEAD_COLORS: Record<string, string> = {
+  organic: '#5b7e8f',  // slate-brand
+  google: '#7fa0b0',   // slate-light
+  referral: '#c4b09a', // sand-dark
+  facebook: '#3f5f6e', // slate-dark
+  direct: '#7a8f96',   // text-muted
+}
+
+export function useAdminAnalytics(bookings: Booking[]) {
+  const { t, i18n } = useTranslation()
+  const [analyticsTimeRange, setAnalyticsTimeRange] = useState<AnalyticsTimeRange>('all')
+
+  // Helper to calculate estimated price in-memory for analytics
+  const getEstimatedPrice = useMemo(() => {
+    return (booking: Booking): number => {
+      if (booking.propertyType === 'commercial') {
+        return 300 // Baseline average for commercial clean estimates
+      }
+      const sizeMap: Record<string, QuotePropertySize> = {
+        apartment: 'apartment',
+        '1-2bed': '1-2bed',
+        '3-4bed': '3-4bed',
+        '5+bed': '5plus',
+      }
+      const size = sizeMap[booking.propertyType] || 'apartment'
+      const validServices = ['standard', 'deep', 'moveout', 'postconstruction', 'airbnb']
+      const service = (validServices.includes(booking.serviceType) ? booking.serviceType : 'standard') as QuoteServiceType
+      const frequency = booking.frequency
+
+      const quote = calculateQuote(size, service, frequency)
+      if (quote.type === 'range') {
+        return (quote.min + quote.max) / 2
+      }
+      return 150
+    }
+  }, [])
+
+  // Filtering based on time range
+  const filteredAnalyticsBookings = useMemo(() => {
+    const now = new Date()
+    return bookings.filter((b) => {
+      if (!b.createdAt) return false
+      const date = new Date(b.createdAt)
+      if (analyticsTimeRange === '30days') {
+        const thirtyDaysAgo = new Date()
+        thirtyDaysAgo.setDate(now.getDate() - 30)
+        return date >= thirtyDaysAgo
+      }
+      if (analyticsTimeRange === '90days') {
+        const ninetyDaysAgo = new Date()
+        ninetyDaysAgo.setDate(now.getDate() - 90)
+        return date >= ninetyDaysAgo
+      }
+      if (analyticsTimeRange === 'ytd') {
+        const startOfYear = new Date(now.getFullYear(), 0, 1)
+        return date >= startOfYear
+      }
+      if (analyticsTimeRange === 'month') {
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+        return date >= startOfMonth
+      }
+      return true // 'all'
+    })
+  }, [bookings, analyticsTimeRange])
+
+  // KPI Metrics
+  const analyticsTotalBookings = filteredAnalyticsBookings.length
+  const analyticsTotalRevenue = useMemo(() => {
+    return filteredAnalyticsBookings.reduce((sum, b) => sum + getEstimatedPrice(b), 0)
+  }, [filteredAnalyticsBookings, getEstimatedPrice])
+
+  const analyticsAvgBookingValue = useMemo(() => {
+    return analyticsTotalBookings > 0 ? analyticsTotalRevenue / analyticsTotalBookings : 0
+  }, [analyticsTotalBookings, analyticsTotalRevenue])
+
+  // 1. Lead Source Distribution (Pie Chart)
+  const leadSourceData = useMemo(() => {
+    const leadSourceKeys = ['organic', 'google', 'referral', 'facebook', 'direct']
+    return leadSourceKeys.map((source) => {
+      const sourceBookings = filteredAnalyticsBookings.filter((b) => b.leadSource === source)
+      const count = sourceBookings.length
+      const revenue = sourceBookings.reduce((sum, b) => sum + getEstimatedPrice(b), 0)
+      return {
+        name: t(`admin.dashboard.leads.${source}`) || source,
+        value: count,
+        revenue,
+        key: source,
+      }
+    }).filter(item => item.value > 0)
+  }, [filteredAnalyticsBookings, getEstimatedPrice, t])
+
+  // 2. Monthly Trend Chart
+  const monthlyTrendData = useMemo(() => {
+    const monthlyDataMap: Record<string, { monthKey: string; monthName: string; count: number; revenue: number; sortKey: number }> = {}
+    filteredAnalyticsBookings.forEach((b) => {
+      if (!b.createdAt) return
+      const date = new Date(b.createdAt)
+      const year = date.getFullYear()
+      const month = date.getMonth()
+      const sortKey = year * 100 + month
+      const monthName = date.toLocaleDateString(i18n.language === 'fr' ? 'fr-CA' : 'en-CA', {
+        month: 'short',
+        year: 'numeric',
+      })
+      const key = `${year}-${month}`
+      if (!monthlyDataMap[key]) {
+        monthlyDataMap[key] = {
+          monthKey: key,
+          monthName,
+          count: 0,
+          revenue: 0,
+          sortKey,
+        }
+      }
+      monthlyDataMap[key].count += 1
+      monthlyDataMap[key].revenue += getEstimatedPrice(b)
+    })
+    return Object.values(monthlyDataMap).sort((a, b) => a.sortKey - b.sortKey)
+  }, [filteredAnalyticsBookings, getEstimatedPrice, i18n.language])
+
+  // Channels Performance Table
+  const channelsPerformance = useMemo(() => {
+    const leadSourceKeys = ['organic', 'google', 'referral', 'facebook', 'direct']
+    return leadSourceKeys.map((source) => {
+      const sourceBookings = filteredAnalyticsBookings.filter((b) => b.leadSource === source)
+      const volume = sourceBookings.length
+      const revenue = sourceBookings.reduce((sum, b) => sum + getEstimatedPrice(b), 0)
+      const avgValue = volume > 0 ? revenue / volume : 0
+      const share = analyticsTotalBookings > 0 ? (volume / analyticsTotalBookings) * 100 : 0
+      return {
+        source,
+        name: t(`admin.dashboard.leads.${source}`) || source,
+        volume,
+        revenue,
+        avgValue,
+        share,
+      }
+    }).sort((a, b) => b.revenue - a.revenue)
+  }, [filteredAnalyticsBookings, analyticsTotalBookings, getEstimatedPrice, t])
+
+  // Total bookings created via referral code
+  const referredBookingsCount = useMemo(() => {
+    return filteredAnalyticsBookings.filter((b) => !!b.referredBy).length
+  }, [filteredAnalyticsBookings])
+
+  const formatCurrency = useMemo(() => {
+    return (val: number) => {
+      return new Intl.NumberFormat(i18n.language === 'fr' ? 'fr-CA' : 'en-CA', {
+        style: 'currency',
+        currency: 'CAD',
+        maximumFractionDigits: 0,
+      }).format(val)
+    }
+  }, [i18n.language])
+
+  return {
+    analyticsTimeRange,
+    setAnalyticsTimeRange,
+    analyticsTotalBookings,
+    analyticsTotalRevenue,
+    analyticsAvgBookingValue,
+    leadSourceData,
+    monthlyTrendData,
+    channelsPerformance,
+    formatCurrency,
+    referredBookingsCount,
+  }
+}
+
+```
+
+---
+
+## File: src/components/admin/hooks/useAdminAuth.ts
+
+```typescript
+import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, type User } from 'firebase/auth'
+import { doc, getDoc } from 'firebase/firestore'
+import { auth, db } from '@/lib/firebase/firebase'
+
+export function useAdminAuth() {
+  const { t } = useTranslation()
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [isAuthorized, setIsAuthorized] = useState(false)
+  const [authError, setAuthError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      const handleAuthChange = async () => {
+        setUser(currentUser)
+        if (currentUser) {
+          const userEmail = currentUser.email?.trim().toLowerCase()
+          if (userEmail) {
+            try {
+              const adminDocRef = doc(db, 'admins', userEmail)
+              const adminSnap = await getDoc(adminDocRef)
+              const authorized = adminSnap.exists()
+              setIsAuthorized(authorized)
+
+              if (!authorized) {
+                setAuthError(t('admin.login.errorMessage', { email: currentUser.email }))
+              } else {
+                setAuthError(null)
+              }
+            } catch (err) {
+              console.error('Error verifying admin authorization:', err)
+              setIsAuthorized(false)
+              setAuthError(t('admin.login.errorMessage', { email: currentUser.email }))
+            }
+          } else {
+            setIsAuthorized(false)
+            setAuthError(t('admin.login.authFailed'))
+          }
+        } else {
+          setIsAuthorized(false)
+          setAuthError(null)
+        }
+        setLoading(false)
+      }
+      void handleAuthChange()
+    })
+
+    return () => unsubscribe()
+  }, [t])
+
+  const handleSignIn = async () => {
+    setLoading(true)
+    setAuthError(null)
+    const provider = new GoogleAuthProvider()
+    try {
+      await signInWithPopup(auth, provider)
+    } catch (err) {
+      console.error('Sign-in error:', err)
+      setAuthError(t('admin.login.authFailed'))
+      setLoading(false)
+    }
+  }
+
+  const handleSignOut = async () => {
+    setLoading(true)
+    try {
+      await signOut(auth)
+    } catch (err) {
+      console.error('Sign-out error:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return {
+    user,
+    loading,
+    isAuthorized,
+    authError,
+    handleSignIn,
+    handleSignOut,
+  }
+}
+
+```
+
+---
+
+## File: src/components/admin/hooks/useBookings.ts
+
+```typescript
+import { useState, useMemo } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { useCollectionQuery } from '@tanstack-query-firebase/react/firestore'
+import { collection, query, orderBy, Timestamp } from 'firebase/firestore'
+import { db } from '@/lib/firebase/firebase'
+import { updateBookingStatus, updateBookingAssignment } from '@/lib/firebase/firestore'
+import type { Booking, BookingStatus } from '@/types'
+
+export function useBookings(enabled: boolean) {
+  const queryClient = useQueryClient()
+
+  // Firestore query for bookings
+  const bookingsQuery = useMemo(() => {
+    return query(collection(db, 'bookings'), orderBy('createdAt', 'desc'))
+  }, [])
+
+  const { data, isLoading, error } = useCollectionQuery(bookingsQuery, {
+    queryKey: ['bookings'],
+    enabled,
+  })
+
+  // Map the raw documents from QuerySnapshot to Booking[]
+  const bookings = useMemo<Booking[]>(() => {
+    if (!data) return []
+    return data.docs.map((docSnap) => {
+      const docData = docSnap.data()
+      return {
+        id: docSnap.id,
+        ...docData,
+        createdAt: docData.createdAt instanceof Timestamp ? docData.createdAt.toDate() : new Date(),
+      } as Booking
+    })
+  }, [data])
+
+  // Collapsible rows state
+  const [expandedRowId, setExpandedRowId] = useState<string | null>(null)
+
+  // Cleaner custom names input state
+  const [customCleanerNames, setCustomCleanerNames] = useState<Record<string, string>>({})
+  const [showCustomInput, setShowCustomInput] = useState<Record<string, boolean>>({})
+
+  // Filtering states
+  const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [serviceFilter, setServiceFilter] = useState<string>('all')
+  const [languageFilter, setLanguageFilter] = useState<string>('all')
+  const [sortBy, setSortBy] = useState<'preferredDate' | 'createdAt'>('preferredDate')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+  const [searchQuery, setSearchQuery] = useState<string>('')
+
+  // Statistics counters
+  const totalCount = bookings.length
+  const pendingCount = bookings.filter((b) => b.status === 'pending').length
+  const confirmedCount = bookings.filter((b) => b.status === 'confirmed').length
+
+  // Filtered & Sorted Bookings
+  const filteredBookings = useMemo(() => {
+    return bookings
+      .filter((b) => {
+        const matchesStatus = statusFilter === 'all' || b.status === statusFilter
+        const matchesService = serviceFilter === 'all' || b.serviceType === serviceFilter
+        const matchesLanguage = languageFilter === 'all' || b.language === languageFilter
+
+        const fullName = `${b.firstName} ${b.lastName}`.toLowerCase()
+        const qVal = searchQuery.toLowerCase()
+        const matchesSearch =
+          fullName.includes(qVal) ||
+          b.email.toLowerCase().includes(qVal) ||
+          b.phone.includes(qVal) ||
+          b.address.toLowerCase().includes(qVal)
+
+        return matchesStatus && matchesService && matchesLanguage && matchesSearch
+      })
+      .sort((a, b) => {
+        const dateA = sortBy === 'preferredDate'
+          ? new Date(a.preferredDate).getTime()
+          : a.createdAt.getTime()
+        const dateB = sortBy === 'preferredDate'
+          ? new Date(b.preferredDate).getTime()
+          : b.createdAt.getTime()
+        return sortOrder === 'asc' ? dateA - dateB : dateB - dateA
+      })
+  }, [bookings, statusFilter, serviceFilter, languageFilter, sortBy, sortOrder, searchQuery])
+
+  const handleStatusChange = async (bookingId: string, status: BookingStatus) => {
+    try {
+      await updateBookingStatus(bookingId, status)
+      await queryClient.invalidateQueries({ queryKey: ['bookings'] })
+    } catch (err) {
+      console.error('Error updating status:', err)
+    }
+  }
+
+  const handleAssignmentChange = async (bookingId: string, value: string) => {
+    if (value === 'custom') {
+      setShowCustomInput((prev) => ({ ...prev, [bookingId]: true }))
+    } else {
+      setShowCustomInput((prev) => ({ ...prev, [bookingId]: false }))
+      try {
+        const cleanerName = value === 'unassigned' ? null : value
+        await updateBookingAssignment(bookingId, cleanerName)
+        await queryClient.invalidateQueries({ queryKey: ['bookings'] })
+      } catch (err) {
+        console.error('Error updating cleaner assignment:', err)
+      }
+    }
+  }
+
+  const handleCustomCleanerSave = async (bookingId: string) => {
+    const customName = customCleanerNames[bookingId]?.trim()
+    if (!customName) return
+
+    try {
+      await updateBookingAssignment(bookingId, customName)
+      setShowCustomInput((prev) => ({ ...prev, [bookingId]: false }))
+      await queryClient.invalidateQueries({ queryKey: ['bookings'] })
+    } catch (err) {
+      console.error('Error saving custom cleaner name:', err)
+    }
+  }
+
+  return {
+    bookings,
+    filteredBookings,
+    totalCount,
+    pendingCount,
+    confirmedCount,
+    isLoading,
+    error,
+    statusFilter,
+    setStatusFilter,
+    serviceFilter,
+    setServiceFilter,
+    languageFilter,
+    setLanguageFilter,
+    sortBy,
+    setSortBy,
+    sortOrder,
+    setSortOrder,
+    searchQuery,
+    setSearchQuery,
+    expandedRowId,
+    setExpandedRowId,
+    customCleanerNames,
+    setCustomCleanerNames,
+    showCustomInput,
+    setShowCustomInput,
+    handleStatusChange,
+    handleAssignmentChange,
+    handleCustomCleanerSave,
+  }
+}
+
+```
+
+---
+
 ## File: src/components/booking/BookingStep1.tsx
 
 ```tsx
 import { Controller, useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { cn } from '@/lib/utils'
-import type { BookingFormData } from '@/lib/bookingSchema'
+import { cn } from '@/lib/utils/utils'
+import type { BookingFormData } from '@/lib/schemas/bookingSchema'
 
 type ServiceTypeValue = BookingFormData['serviceType']
 type PropertyTypeValue = BookingFormData['propertyType']
@@ -1969,7 +5680,7 @@ export default function BookingStep1() {
                       <span className="font-body text-base text-charcoal block">
                         {t(`services.${type}.title`)}
                       </span>
-                      <span className="font-body text-base text-text-muted block leading-snug mt-0.5">
+                      <span className="font-body text-lg text-charcoal block font-bold leading-snug mt-0.5">
                         {t(`services.${type}.description`)}
                       </span>
                     </div>
@@ -1988,7 +5699,7 @@ export default function BookingStep1() {
         {/* Airbnb note */}
         {serviceType === 'airbnb' && (
           <div className="bg-slate-pale border border-sand rounded p-4">
-            <p className="font-body text-base text-charcoal">{t('booking.airbnbNote')}</p>
+            <p className="font-body text-lg text-charcoal font-bold">{t('booking.airbnbNote')}</p>
           </div>
         )}
 
@@ -2123,7 +5834,7 @@ export default function BookingStep1() {
                 <span className="font-body text-base text-charcoal block">
                   {t('booking.fields.pets.label')}
                 </span>
-                <span className="font-body text-base text-text-muted block mt-0.5">
+                <span className="font-body text-lg text-charcoal block font-bold mt-0.5">
                   {t('booking.fields.pets.hint')}
                 </span>
               </div>
@@ -2145,8 +5856,8 @@ export default function BookingStep1() {
 ```tsx
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { cn } from '@/lib/utils'
-import type { BookingFormData } from '@/lib/bookingSchema'
+import { cn } from '@/lib/utils/utils'
+import type { BookingFormData } from '@/lib/schemas/bookingSchema'
 
 type FrequencyValue = BookingFormData['frequency']
 type AddOnValue = BookingFormData['addOns'][number]
@@ -2173,15 +5884,15 @@ const ADD_ON_OPTIONS: { value: AddOnValue; labelKey: string }[] = [
   { value: 'basement', labelKey: 'booking.fields.addOns.options.basement' },
 ]
 
-const tomorrow = new Date()
-tomorrow.setDate(tomorrow.getDate() + 1)
-const MIN_DATE = tomorrow.toISOString().slice(0, 10)
-
-const maxDay = new Date()
-maxDay.setDate(maxDay.getDate() + 90)
-const MAX_DATE = maxDay.toISOString().slice(0, 10)
-
 export default function BookingStep2() {
+  const tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  const MIN_DATE = tomorrow.toISOString().slice(0, 10)
+
+  const maxDay = new Date()
+  maxDay.setDate(maxDay.getDate() + 90)
+  const MAX_DATE = maxDay.toISOString().slice(0, 10)
+
   const { t } = useTranslation()
   const { register, watch, setValue, formState: { errors } } = useFormContext<BookingFormData>()
   const currentFreq = watch('frequency')
@@ -2265,7 +5976,7 @@ export default function BookingStep2() {
               {t('booking.errors.date')}
             </p>
           ) : (
-            <p id="preferredDate-hint" className="font-body text-base text-text-muted mt-1">
+            <p id="preferredDate-hint" className="font-body text-lg text-charcoal font-bold mt-1">
               {t('booking.fields.preferredDate.hint')}
             </p>
           )}
@@ -2335,8 +6046,8 @@ export default function BookingStep2() {
 ```tsx
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { cn } from '@/lib/utils'
-import type { BookingFormData } from '@/lib/bookingSchema'
+import { cn } from '@/lib/utils/utils'
+import type { BookingFormData } from '@/lib/schemas/bookingSchema'
 
 export default function BookingStep3() {
   const { t } = useTranslation()
@@ -2481,7 +6192,7 @@ export default function BookingStep3() {
               {t('booking.errors.required')}
             </p>
           ) : (
-            <p id="address-hint" className="font-body text-base text-text-muted mt-1">
+            <p id="address-hint" className="font-body text-lg text-charcoal font-bold mt-1">
               {t('booking.fields.address.hint')}
             </p>
           )}
@@ -2527,9 +6238,14 @@ export default function BookingStep3() {
 ## File: src/components/booking/BookingStep4.tsx
 
 ```tsx
+import { useState, useEffect, useCallback } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import type { BookingFormData } from '@/lib/bookingSchema'
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '@/lib/firebase/firebase'
+import { cn } from '@/lib/utils/utils'
+import type { BookingFormData } from '@/lib/schemas/bookingSchema'
 
 interface Props {
   submitError?: string | null
@@ -2537,8 +6253,49 @@ interface Props {
 
 export default function BookingStep4({ submitError }: Props) {
   const { t } = useTranslation()
-  const { register, getValues, formState: { isSubmitting } } = useFormContext<BookingFormData>()
+  const { register, getValues, setValue, formState: { isSubmitting } } = useFormContext<BookingFormData>()
   const values = getValues()
+
+  const [searchParams] = useSearchParams()
+  const [promoCode, setPromoCode] = useState(() => searchParams.get('ref') || '')
+  const [promoStatus, setPromoStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle')
+  const [promoMessage, setPromoMessage] = useState('')
+
+  const verifyPromo = useCallback(async (code: string) => {
+    if (!code.trim()) return
+    setPromoStatus('checking')
+    try {
+      const cleanCode = code.trim().toUpperCase()
+      const docRef = doc(db, 'referrals', cleanCode)
+      const docSnap = await getDoc(docRef)
+      const data = docSnap.data()
+      if (docSnap.exists() && data && data['active'] === true) {
+        setPromoStatus('valid')
+        setValue('referredBy', cleanCode)
+        const owner = (data['ownerName'] as string) || ''
+        setPromoMessage(t('referrals.promoValid') + (owner ? ` (${t('referrals.referredBy', { name: owner })})` : ''))
+      } else {
+        setPromoStatus('invalid')
+        setValue('referredBy', null)
+        setPromoMessage(t('referrals.promoInvalid'))
+      }
+    } catch (err) {
+      console.error(err)
+      setPromoStatus('invalid')
+      setValue('referredBy', null)
+      setPromoMessage(t('referrals.promoInvalid'))
+    }
+  }, [setValue, t])
+
+  useEffect(() => {
+    const refParam = searchParams.get('ref')
+    if (refParam) {
+      const timer = setTimeout(() => {
+        void verifyPromo(refParam)
+      }, 0)
+      return () => clearTimeout(timer)
+    }
+  }, [searchParams, verifyPromo])
 
   const frequencyLabel = t(`booking.fields.frequency.options.${values.frequency}`)
   const serviceLabel   = t(`services.${values.serviceType}.title`)
@@ -2558,16 +6315,16 @@ export default function BookingStep4({ submitError }: Props) {
           {/* Service */}
           <div className="flex items-start justify-between py-3">
             <div>
-              <p className="font-body text-base text-text-muted">{t('booking.review.service')}</p>
-              <p className="font-body text-base text-charcoal mt-0.5">{serviceLabel}</p>
+              <p className="font-body text-lg text-charcoal font-bold">{t('booking.review.service')}</p>
+              <p className="font-body text-lg text-charcoal font-bold mt-0.5">{serviceLabel}</p>
             </div>
           </div>
 
           {/* Property */}
           <div className="flex items-start justify-between py-3">
             <div>
-              <p className="font-body text-base text-text-muted">{t('booking.review.property')}</p>
-              <p className="font-body text-base text-charcoal mt-0.5">
+              <p className="font-body text-lg text-charcoal font-bold">{t('booking.review.property')}</p>
+              <p className="font-body text-lg text-charcoal font-bold mt-0.5">
                 {propertyLabel} — {values.bedrooms} {t('booking.fields.bedrooms.label').toLowerCase()} / {values.bathrooms} {t('booking.fields.bathrooms.label').toLowerCase()}
                 {values.pets && ` · ${t('booking.fields.pets.label')}`}
               </p>
@@ -2577,8 +6334,8 @@ export default function BookingStep4({ submitError }: Props) {
           {/* Schedule */}
           <div className="flex items-start justify-between py-3">
             <div>
-              <p className="font-body text-base text-text-muted">{t('booking.review.schedule')}</p>
-              <p className="font-body text-base text-charcoal mt-0.5">
+              <p className="font-body text-lg text-charcoal font-bold">{t('booking.review.schedule')}</p>
+              <p className="font-body text-lg text-charcoal font-bold mt-0.5">
                 {frequencyLabel} · {values.preferredDate}
               </p>
             </div>
@@ -2587,19 +6344,19 @@ export default function BookingStep4({ submitError }: Props) {
           {/* Add-ons */}
           <div className="flex items-start justify-between py-3">
             <div>
-              <p className="font-body text-base text-text-muted">{t('booking.review.addOns')}</p>
-              <p className="font-body text-base text-charcoal mt-0.5">{addOnLabels}</p>
+              <p className="font-body text-lg text-charcoal font-bold">{t('booking.review.addOns')}</p>
+              <p className="font-body text-lg text-charcoal font-bold mt-0.5">{addOnLabels}</p>
             </div>
           </div>
 
           {/* Contact */}
           <div className="flex items-start justify-between py-3">
             <div>
-              <p className="font-body text-base text-text-muted">{t('booking.review.contact')}</p>
-              <p className="font-body text-base text-charcoal mt-0.5">
+              <p className="font-body text-lg text-charcoal font-bold">{t('booking.review.contact')}</p>
+              <p className="font-body text-lg text-charcoal font-bold mt-0.5">
                 {values.firstName} {values.lastName} · {values.email} · {values.phone}
               </p>
-              <p className="font-body text-base text-text-muted mt-0.5">{values.address}</p>
+              <p className="font-body text-lg text-charcoal font-bold mt-0.5">{values.address}</p>
             </div>
           </div>
 
@@ -2607,10 +6364,48 @@ export default function BookingStep4({ submitError }: Props) {
           {values.notes && (
             <div className="flex items-start justify-between py-3">
               <div>
-                <p className="font-body text-base text-text-muted">{t('booking.review.notes')}</p>
-                <p className="font-body text-base text-charcoal mt-0.5">{values.notes}</p>
+                <p className="font-body text-lg text-charcoal font-bold">{t('booking.review.notes')}</p>
+                <p className="font-body text-lg text-charcoal font-bold mt-0.5">{values.notes}</p>
               </div>
             </div>
+          )}
+        </div>
+
+        {/* Referral / Promo Code */}
+        <div className="pt-4 border-t border-sand">
+          <label htmlFor="referralCodeInput" className="block font-body text-base text-charcoal mb-1">
+            {t('referrals.promoCodeLabel')}
+          </label>
+          <div className="flex gap-2">
+            <input
+              id="referralCodeInput"
+              type="text"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value)}
+              placeholder={t('referrals.promoPlaceholder')}
+              className={cn(
+                'flex-grow border rounded px-4 py-3 min-h-[48px] font-body text-base text-charcoal focus:outline-none focus:ring-2 focus:ring-slate-brand',
+                promoStatus === 'valid' ? 'border-green-500 bg-green-50/20' : 'border-sand'
+              )}
+            />
+            <button
+              type="button"
+              onClick={() => void verifyPromo(promoCode)}
+              disabled={promoStatus === 'checking' || !promoCode.trim()}
+              className="bg-slate-brand text-white font-body font-medium text-base rounded px-6 min-h-[48px] hover:bg-slate-dark transition-colors duration-200 disabled:opacity-60"
+            >
+              {promoStatus === 'checking' ? t('referrals.promoChecking') : t('common.verify')}
+            </button>
+          </div>
+          {promoStatus !== 'idle' && (
+            <p
+              className={cn(
+                'font-body text-base mt-2',
+                promoStatus === 'valid' ? 'text-green-600' : 'text-red-600'
+              )}
+            >
+              {promoMessage}
+            </p>
           )}
         </div>
 
@@ -2663,7 +6458,7 @@ export default function BookingStep4({ submitError }: Props) {
 
 ```tsx
 import { useTranslation } from 'react-i18next'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils/utils'
 
 interface StepIndicatorProps {
   currentStep: number
@@ -2717,19 +6512,10 @@ export default function StepIndicator({ currentStep, totalSteps }: StepIndicator
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { cn } from '@/lib/utils'
-import { FEATURED_PAIRS } from '@/lib/galleryData'
+import { cn } from '@/lib/utils/utils'
+import { FEATURED_PAIRS } from '@/lib/data/galleryData'
 import GalleryImage from '@/components/ui/GalleryImage'
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.45 } },
-}
-
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
-}
+import { fadeUp, stagger } from '@/lib/utils/animations'
 
 export default function GalleryPreview() {
   const { t } = useTranslation()
@@ -2840,67 +6626,75 @@ export default function GalleryPreview() {
 
 ```tsx
 import { motion } from 'framer-motion'
-import { useTranslation } from 'react-i18next'
+import { useTranslation, Trans } from 'react-i18next'
 import { Link } from 'react-router-dom'
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-}
-
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.15 } },
-}
+import logoHero from '@/assets/logo-hero-340px.png'
+import { fadeUp, stagger } from '@/lib/utils/animations'
 
 export default function Hero() {
   const { t } = useTranslation()
 
   return (
-    <section className="bg-warm-white py-12 px-4 md:py-20 md:px-6">
-      <div className="max-w-content mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    <section className="bg-warm-white py-12 px-4 md:py-16 md:px-6 overflow-hidden relative">
+      <div className="relative max-w-4xl mx-auto text-center flex flex-col items-center gap-6 min-h-[300px] justify-center">
         <motion.div
           initial="hidden"
           animate="visible"
           variants={stagger}
-          className="flex flex-col gap-6"
+          className="relative z-10 flex flex-col items-center gap-6 w-full"
         >
-          <motion.h1
-            variants={fadeUp}
-            className="font-display text-5xl text-charcoal leading-tight"
-          >
-            {t('hero.headline')}
-          </motion.h1>
+          {/* Main title container with nest watermark behind it */}
+          <div className="relative w-full py-4 flex items-center justify-center">
+            <div className="absolute inset-0 pointer-events-none z-0 flex items-center justify-center overflow-visible">
+              <img
+                src="/images/nest-watermark.jpg"
+                alt=""
+                aria-hidden="true"
+                className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] object-contain mix-blend-multiply"
+                style={{ opacity: 0.25 }}
+              />
+            </div>
+            <motion.h1
+              variants={fadeUp}
+              className="relative z-10 font-display text-5xl md:text-6xl text-charcoal leading-tight max-w-2xl text-center"
+            >
+              <Trans
+                i18nKey="hero.headline"
+                components={{
+                  highlight: <span className="italic text-slate-brand" />,
+                  br: <br />
+                }}
+              />
+            </motion.h1>
+          </div>
 
           <motion.p
             variants={fadeUp}
-            className="font-body text-base text-text-muted"
+            className="font-body text-xl font-bold text-charcoal max-w-xl leading-relaxed"
           >
             {t('hero.subhead')}
           </motion.p>
 
-          <motion.div variants={fadeUp}>
+          {/* Hero logo under subtitle, above Book Now button */}
+          <motion.div
+            variants={fadeUp}
+            className="w-full max-w-[280px] md:max-w-[340px] my-2"
+          >
+            <img
+              src={logoHero}
+              alt="Fresh Nest Co."
+              className="w-full h-auto object-contain mx-auto"
+            />
+          </motion.div>
+
+          <motion.div variants={fadeUp} className="mt-2">
             <Link
               to="/booking"
-              className="inline-flex items-center bg-slate-brand text-white font-body font-medium rounded px-6 py-3 min-h-[48px] hover:bg-slate-dark transition-colors duration-200"
+              className="inline-flex items-center bg-slate-brand text-white font-body font-medium rounded px-8 py-4 min-h-[48px] hover:bg-slate-dark transition-colors duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2 focus:ring-offset-warm-white"
             >
               {t('common.bookNow')}
             </Link>
           </motion.div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="flex justify-center"
-        >
-          <img
-            src="/icons/icon-1024x1024.png"
-            alt=""
-            aria-hidden="true"
-            className="rounded max-w-full h-auto"
-          />
         </motion.div>
       </div>
     </section>
@@ -2917,16 +6711,8 @@ export default function Hero() {
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.45 } },
-}
-
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
-}
+import { cn } from '@/lib/utils/utils'
+import { fadeUp, stagger } from '@/lib/utils/animations'
 
 interface Step {
   number: number
@@ -2960,45 +6746,80 @@ export default function HowItWorks() {
           <h2 className="font-display text-4xl text-charcoal mb-4">
             {t('howItWorks.sectionHeading')}
           </h2>
-          <p className="font-body text-base text-text-muted">
+          <p className="font-body text-lg text-charcoal font-bold">
             {t('howItWorks.sectionSubhead')}
           </p>
         </motion.div>
 
         <div className="relative">
-          {/* Connector line — decorative, visible only at 4-col desktop layout */}
-          <div
-            aria-hidden="true"
-            className="hidden lg:block absolute top-6 left-[12.5%] right-[12.5%] h-px bg-sand"
-          />
-
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-50px' }}
             variants={stagger}
           >
-            {STEPS.map(step => (
-              <motion.div
-                key={step.number}
-                variants={fadeUp}
-                className="flex flex-col items-center text-center"
-              >
-                <div
-                  aria-hidden="true"
-                  className="relative z-10 w-12 h-12 rounded-full bg-slate-brand text-white flex items-center justify-center font-sub text-xl mb-4 shrink-0"
-                >
-                  {step.number}
-                </div>
-                <h3 className="font-sub text-xl text-charcoal mb-2">
-                  {t(step.titleKey)}
-                </h3>
-                <p className="font-body text-base text-text-muted">
-                  {t(step.descKey)}
-                </p>
-              </motion.div>
-            ))}
+            {STEPS.map((step) => {
+              const inverted = step.number % 2 === 0
+              return (
+                <motion.div key={step.number} variants={fadeUp} className="flex">
+                  <article
+                    className={cn(
+                      'relative overflow-hidden rounded border p-6 flex flex-col items-start text-left gap-4 w-full',
+                      inverted
+                        ? 'bg-slate-brand border-slate-brand'
+                        : 'bg-white border-sand shadow-sm',
+                    )}
+                  >
+                    {/* Background Image decoration */}
+                    <div className="absolute inset-0 pointer-events-none">
+                      <img
+                        src={`/images/howitworks-step${step.number}.png`}
+                        alt=""
+                        aria-hidden="true"
+                        className="w-full h-full object-cover"
+                        style={{ opacity: 0.15 }}
+                      />
+                    </div>
+
+                    {/* Content wrapper to float above background image */}
+                    <div className="relative z-10 flex flex-col items-start gap-4 flex-1">
+                      <div className="flex items-center gap-3">
+                        <div
+                          aria-hidden="true"
+                          className={cn(
+                            'w-10 h-10 rounded-full flex items-center justify-center font-sub text-lg shrink-0 transition-colors duration-200',
+                            inverted
+                              ? 'bg-white text-slate-brand'
+                              : 'bg-slate-brand text-white',
+                          )}
+                        >
+                          {step.number}
+                        </div>
+
+                        <h3
+                          className={cn(
+                            'font-sub text-xl',
+                            inverted ? 'text-white' : 'text-charcoal',
+                          )}
+                        >
+                          {t(step.titleKey)}
+                        </h3>
+                      </div>
+
+                      <p
+                        className={cn(
+                          'font-body text-lg flex-1 font-bold',
+                          inverted ? 'text-white' : 'text-charcoal',
+                        )}
+                      >
+                        {t(step.descKey)}
+                      </p>
+                    </div>
+                  </article>
+                </motion.div>
+              )
+            })}
           </motion.div>
         </div>
 
@@ -3032,6 +6853,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import TeamAvatar from '@/components/ui/TeamAvatar'
+import { fadeUp, stagger } from '@/lib/utils/animations'
 
 interface TeamMember {
   id: string
@@ -3061,15 +6883,6 @@ const TEAM_MEMBERS: TeamMember[] = [
   },
 ]
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.45 } },
-}
-
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
-}
 
 export default function MeetTheTeam() {
   const { t } = useTranslation()
@@ -3087,7 +6900,7 @@ export default function MeetTheTeam() {
           className="mb-8"
         >
           <h2 className="font-display text-4xl text-charcoal mb-4">{t('team.sectionHeading')}</h2>
-          <p className="font-body text-base text-text-muted">{t('team.sectionSubhead')}</p>
+          <p className="font-body text-lg text-charcoal font-bold">{t('team.sectionSubhead')}</p>
         </motion.div>
 
         {/* Consistent-assignment callout */}
@@ -3112,7 +6925,7 @@ export default function MeetTheTeam() {
                 <polyline points="20 6 9 17 4 12" />
               </svg>
             </div>
-            <p className="flex-1 font-body text-base text-charcoal">{t('team.assignmentNote')}</p>
+            <p className="flex-1 font-body text-lg text-charcoal font-bold">{t('team.assignmentNote')}</p>
             <Link
               to="/booking"
               className="shrink-0 inline-flex items-center font-body font-medium text-base
@@ -3148,7 +6961,7 @@ export default function MeetTheTeam() {
                   <p className="font-body text-sm font-medium text-slate-brand mb-3">
                     {t(member.roleKey)}
                   </p>
-                  <p className="font-body text-base text-text-muted">{t(member.bioKey)}</p>
+                  <p className="font-body text-lg text-charcoal font-bold">{t(member.bioKey)}</p>
                 </div>
               </article>
             </motion.div>
@@ -3171,20 +6984,16 @@ import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils/utils'
 import {
   calculateQuote,
   FREQUENCY_DISCOUNT,
   type QuoteFrequency,
   type QuotePropertySize,
   type QuoteServiceType,
-} from '@/lib/quotePricing'
-import { logQuoteCalculated } from '@/lib/analytics'
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-}
+} from '@/lib/utils/quotePricing'
+import { logQuoteCalculated } from '@/lib/firebase/analytics'
+import { fadeUp } from '@/lib/utils/animations'
 
 const SIZE_OPTIONS: { value: QuotePropertySize; labelKey: string }[] = [
   { value: 'apartment',  labelKey: 'quote.size.apartment' },
@@ -3240,84 +7049,121 @@ export default function QuoteCalculator() {
       <div className="max-w-content mx-auto">
         <motion.div
           initial="hidden"
-          animate="visible"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-50px' }}
           variants={fadeUp}
           className="max-w-2xl mx-auto"
         >
           <h2 className="font-display text-4xl text-charcoal mb-3">
             {t('quote.sectionHeading')}
           </h2>
-          <p className="font-body text-base text-text-muted mb-8">
+          <p className="font-body text-lg text-charcoal font-bold mb-8">
             {t('quote.sectionSubhead')}
           </p>
 
           <div className="space-y-6">
             {/* Property Size */}
-            <div>
-              <p id="size-label" className="font-body text-base font-medium text-charcoal mb-2">
-                {t('quote.sizeLabel')}
-              </p>
-              <div role="group" aria-labelledby="size-label" className="flex flex-wrap gap-2">
-                {SIZE_OPTIONS.map(({ value, labelKey }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    aria-pressed={size === value}
-                    onClick={() => setSize(value)}
-                    className={btnClass(size === value)}
-                  >
-                    {t(labelKey)}
-                  </button>
-                ))}
+            <div className="relative overflow-hidden bg-white border border-sand rounded p-6">
+              {/* Background Image decoration */}
+              <div className="absolute inset-0 pointer-events-none">
+                <img
+                  src="/images/quote-size.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="w-full h-full object-cover"
+                  style={{ opacity: 0.25 }}
+                />
+              </div>
+              <div className="relative z-10">
+                <p id="size-label" className="font-body text-base font-medium text-charcoal mb-2">
+                  {t('quote.sizeLabel')}
+                </p>
+                <div role="group" aria-labelledby="size-label" className="flex flex-wrap gap-2">
+                  {SIZE_OPTIONS.map(({ value, labelKey }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      aria-pressed={size === value}
+                      onClick={() => setSize(value)}
+                      className={btnClass(size === value)}
+                    >
+                      {t(labelKey)}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Service Type */}
-            <div>
-              <p id="service-label" className="font-body text-base font-medium text-charcoal mb-2">
-                {t('quote.serviceLabel')}
-              </p>
-              <div role="group" aria-labelledby="service-label" className="flex flex-wrap gap-2">
-                {SERVICE_OPTIONS.map(({ value, labelKey }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    aria-pressed={service === value}
-                    onClick={() => setService(value)}
-                    className={btnClass(service === value)}
-                  >
-                    {t(labelKey)}
-                  </button>
-                ))}
+            <div className="relative overflow-hidden bg-cream border border-sand rounded p-6">
+              {/* Background Image decoration */}
+              <div className="absolute inset-0 pointer-events-none">
+                <img
+                  src="/images/quote-service.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="w-full h-full object-cover"
+                  style={{ opacity: 0.25 }}
+                />
+              </div>
+              <div className="relative z-10">
+                <p id="service-label" className="font-body text-base font-medium text-charcoal mb-2">
+                  {t('quote.serviceLabel')}
+                </p>
+                <div role="group" aria-labelledby="service-label" className="flex flex-wrap gap-2">
+                  {SERVICE_OPTIONS.map(({ value, labelKey }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      aria-pressed={service === value}
+                      onClick={() => setService(value)}
+                      className={btnClass(service === value)}
+                    >
+                      {t(labelKey)}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* Frequency */}
-            <div>
-              <p id="freq-label" className="font-body text-base font-medium text-charcoal mb-2">
-                {t('quote.frequencyLabel')}
-              </p>
-              <div role="group" aria-labelledby="freq-label" className="flex flex-wrap gap-2">
-                {FREQUENCY_OPTIONS.map(({ value, labelKey }) => {
-                  const discount = FREQUENCY_DISCOUNT[value]
-                  const isActive = frequency === value
-                  return (
-                    <button
-                      key={value}
-                      type="button"
-                      aria-pressed={isActive}
-                      onClick={() => setFrequency(value)}
-                      className={btnClass(isActive)}
-                    >
-                      {t(labelKey)}
-                      {discount > 0 && (
-                        <span className="font-body text-sm ml-1.5 opacity-75">
-                          {t('quote.discountBadge', { pct: Math.round(discount * 100) })}
-                        </span>
-                      )}
-                    </button>
-                  )
-                })}
+            <div className="relative overflow-hidden bg-slate-pale border border-sand rounded p-6">
+              {/* Background Image decoration */}
+              <div className="absolute inset-0 pointer-events-none">
+                <img
+                  src="/images/quote-frequency.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="w-full h-full object-cover"
+                  style={{ opacity: 0.25 }}
+                />
+              </div>
+              <div className="relative z-10">
+                <p id="freq-label" className="font-body text-base font-medium text-charcoal mb-2">
+                  {t('quote.frequencyLabel')}
+                </p>
+                <div role="group" aria-labelledby="freq-label" className="flex flex-wrap gap-2">
+                  {FREQUENCY_OPTIONS.map(({ value, labelKey }) => {
+                    const discount = FREQUENCY_DISCOUNT[value]
+                    const isActive = frequency === value
+                    return (
+                      <button
+                        key={value}
+                        type="button"
+                        aria-pressed={isActive}
+                        onClick={() => setFrequency(value)}
+                        className={btnClass(isActive)}
+                      >
+                        {t(labelKey)}
+                        {discount > 0 && (
+                          <span className="font-body text-sm ml-1.5 opacity-75">
+                            {t('quote.discountBadge', { pct: Math.round(discount * 100) })}
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
             </div>
           </div>
@@ -3378,17 +7224,8 @@ export default function QuoteCalculator() {
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { cn } from '@/lib/utils'
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.45 } },
-}
-
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
-}
+import { cn } from '@/lib/utils/utils'
+import { fadeUp, stagger } from '@/lib/utils/animations'
 
 type FrequencyOption = 'weekly' | 'biweekly' | 'monthly'
 
@@ -3397,12 +7234,13 @@ interface FrequencyCard {
   discountPct: number
   inverted: boolean
   badgeKey: string
+  bgImage: string
 }
 
 const FREQUENCY_CARDS: FrequencyCard[] = [
-  { freq: 'weekly',   discountPct: 20, inverted: false, badgeKey: '' },
-  { freq: 'biweekly', discountPct: 15, inverted: true,  badgeKey: 'recurring.mostPopular' },
-  { freq: 'monthly',  discountPct: 10, inverted: false, badgeKey: '' },
+  { freq: 'weekly',   discountPct: 20, inverted: false, badgeKey: '', bgImage: '/images/weekly-recurring.png' },
+  { freq: 'biweekly', discountPct: 15, inverted: true,  badgeKey: 'recurring.mostPopular', bgImage: '/images/biweekly-recurring.png' },
+  { freq: 'monthly',  discountPct: 10, inverted: false, badgeKey: '', bgImage: '/images/monthly-recurring.png' },
 ]
 
 export default function RecurringCTA() {
@@ -3424,7 +7262,7 @@ export default function RecurringCTA() {
           <h2 className="font-display text-4xl text-charcoal mb-4">
             {t('recurring.sectionHeading')}
           </h2>
-          <p className="font-body text-base text-text-muted">
+          <p className="font-body text-lg text-charcoal font-bold">
             {t('recurring.sectionSubhead')}
           </p>
         </motion.div>
@@ -3442,61 +7280,85 @@ export default function RecurringCTA() {
               <motion.div key={card.freq} variants={fadeUp} className="flex">
                 <article
                   className={cn(
-                    'rounded border p-6 flex flex-col gap-4 w-full',
+                    'relative overflow-hidden rounded border p-6 flex flex-col gap-4 w-full',
                     card.inverted
                       ? 'bg-slate-brand border-slate-brand'
                       : 'bg-white border-sand shadow-sm',
                   )}
                 >
-                  <div
-                    className={cn(
-                      'inline-flex items-center self-start font-body font-medium text-base rounded px-3 py-1',
-                      card.inverted
-                        ? 'bg-white text-slate-brand'
-                        : 'bg-slate-pale text-slate-brand',
-                    )}
-                  >
-                    {t('recurring.discountBadge', { pct: card.discountPct })}
+                  {/* Background Image decoration */}
+                  <div className="absolute inset-0 pointer-events-none">
+                    <img
+                      src={card.bgImage}
+                      alt=""
+                      aria-hidden="true"
+                      className="w-full h-full object-cover"
+                      style={{ opacity: 0.15 }}
+                    />
                   </div>
 
+                  {/* Floating "Most Popular" badge */}
                   {card.badgeKey && (
-                    <span className="font-body text-sm text-white opacity-75">
+                    <span
+                      className={cn(
+                        'absolute top-4 right-4 z-20 font-body text-sm font-semibold rounded px-3 py-1 shadow-sm',
+                        card.inverted
+                          ? 'bg-white text-slate-dark'
+                          : 'bg-slate-brand text-white',
+                      )}
+                    >
                       {t(card.badgeKey)}
                     </span>
                   )}
 
-                  <h3
-                    className={cn(
-                      'font-sub text-2xl',
-                      card.inverted ? 'text-white' : 'text-charcoal',
-                    )}
-                  >
-                    {freqLabel}
-                  </h3>
+                  {/* Relative z-10 wrapper to ensure text stays legible over background image */}
+                  <div className="relative z-10 flex flex-col gap-4 flex-1">
+                    <div className={cn('flex items-center gap-3 flex-wrap', card.badgeKey ? 'pr-20' : '')}>
+                      <h3
+                        className={cn(
+                          'font-sub text-2xl',
+                          card.inverted ? 'text-white' : 'text-charcoal',
+                        )}
+                      >
+                        {freqLabel}
+                      </h3>
 
-                  <p
-                    className={cn(
-                      'font-body text-base flex-1',
-                      card.inverted ? 'text-white' : 'text-text-muted',
-                    )}
-                  >
-                    {t(`recurring.tagline.${card.freq}`)}
-                  </p>
+                      <div
+                        className={cn(
+                          'inline-flex items-center font-body font-medium text-base rounded px-3 py-1',
+                          card.inverted
+                            ? 'bg-white text-slate-dark'
+                            : 'bg-slate-pale text-slate-dark',
+                        )}
+                      >
+                        {t('recurring.discountBadge', { pct: card.discountPct })}
+                      </div>
+                    </div>
 
-                  <Link
-                    to={`/booking?freq=${card.freq}`}
-                    aria-label={t('recurring.bookAriaLabel', { freq: freqLabel })}
-                    className={cn(
-                      'inline-flex items-center font-body font-medium text-base rounded',
-                      'min-h-[48px] px-4 py-2 self-start transition-colors duration-200',
-                      'focus:outline-none focus:ring-2 focus:ring-offset-2',
-                      card.inverted
-                        ? 'border border-white text-white hover:bg-white hover:text-slate-brand focus:ring-white'
-                        : 'bg-slate-brand text-white hover:bg-slate-dark focus:ring-slate-brand',
-                    )}
-                  >
-                    {t('recurring.bookCta', { freq: freqLabel })} →
-                  </Link>
+                    <p
+                      className={cn(
+                        'font-body text-lg flex-1 font-bold',
+                        card.inverted ? 'text-white' : 'text-charcoal',
+                      )}
+                    >
+                      {t(`recurring.tagline.${card.freq}`)}
+                    </p>
+
+                    <Link
+                      to={`/booking?freq=${card.freq}`}
+                      aria-label={t('recurring.bookAriaLabel', { freq: freqLabel })}
+                      className={cn(
+                        'inline-flex items-center font-body font-medium text-base rounded',
+                        'min-h-[48px] px-4 py-2 self-start transition-colors duration-200',
+                        'focus:outline-none focus:ring-2 focus:ring-offset-2',
+                        card.inverted
+                          ? 'bg-cream text-slate-dark hover:bg-warm-white hover:text-slate-dark focus:ring-white'
+                          : 'bg-slate-brand text-white hover:bg-slate-dark focus:ring-slate-brand',
+                      )}
+                    >
+                      {t('recurring.bookCta', { freq: freqLabel })} →
+                    </Link>
+                  </div>
                 </article>
               </motion.div>
             )
@@ -3516,17 +7378,8 @@ export default function RecurringCTA() {
 ```tsx
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { STATIC_REVIEWS, type Review } from '@/lib/reviewsData'
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.45 } },
-}
-
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
-}
+import { STATIC_REVIEWS, type Review } from '@/lib/data/reviewsData'
+import { fadeUp, stagger } from '@/lib/utils/animations'
 
 function StarRating({ rating }: { rating: number }) {
   const { t } = useTranslation()
@@ -3561,7 +7414,7 @@ function ReviewCard({ review }: { review: Review }) {
                  flex flex-col gap-3"
     >
       <StarRating rating={review.rating} />
-      <p className="font-body text-base text-charcoal flex-1 leading-relaxed">{review.text}</p>
+      <p className="font-body text-lg text-charcoal flex-1 font-bold leading-relaxed">{review.text}</p>
       <div className="pt-2 border-t border-sand">
         <p className="font-sub text-base text-charcoal">{review.name}</p>
         <p className="font-body text-sm text-text-muted">{review.location}</p>
@@ -3594,7 +7447,7 @@ export default function Reviews() {
         >
           <div>
             <h2 className="font-display text-4xl text-charcoal mb-2">{t('reviews.sectionHeading')}</h2>
-            <p className="font-body text-base text-text-muted">{t('reviews.sectionSubhead')}</p>
+            <p className="font-body text-lg text-charcoal font-bold">{t('reviews.sectionSubhead')}</p>
           </div>
           {/* Rating aggregate */}
           <div
@@ -3638,18 +7491,9 @@ export default function Reviews() {
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils/utils'
 import type { ServiceType } from '@/types'
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.45 } },
-}
-
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
-}
+import { fadeUp, stagger } from '@/lib/utils/animations'
 
 interface ServiceCard {
   key: ServiceType
@@ -3661,77 +7505,73 @@ interface ServiceCard {
 
 const SERVICE_CARDS: ServiceCard[] = [
   { key: 'standard',         labelKey: 'services.standard.title',         descKey: 'services.standard.description',         route: '/services/standard-cleaning',  inverted: false },
-  { key: 'deep',             labelKey: 'services.deep.title',             descKey: 'services.deep.description',             route: '/services/deep-cleaning',       inverted: false },
+  { key: 'deep',             labelKey: 'services.deep.title',             descKey: 'services.deep.description',             route: '/services/deep-cleaning',       inverted: true  },
   { key: 'moveout',          labelKey: 'services.moveout.title',          descKey: 'services.moveout.description',          route: '/services/move-out-cleaning',   inverted: false },
-  { key: 'postconstruction', labelKey: 'services.postconstruction.title', descKey: 'services.postconstruction.description', route: '/services/post-construction',   inverted: false },
+  { key: 'postconstruction', labelKey: 'services.postconstruction.title', descKey: 'services.postconstruction.description', route: '/services/post-construction',   inverted: true  },
   { key: 'airbnb',           labelKey: 'services.airbnb.title',           descKey: 'services.airbnb.description',           route: '/services/airbnb-turnover',     inverted: false },
   { key: 'commercial',       labelKey: 'services.commercial.title',       descKey: 'services.commercial.description',       route: '/services/commercial-cleaning', inverted: true  },
 ]
 
-function ServiceIcon({ serviceKey }: { serviceKey: ServiceType }) {
-  const base = {
-    xmlns: 'http://www.w3.org/2000/svg',
-    width: 24,
-    height: 24,
-    viewBox: '0 0 24 24',
-    fill: 'none',
-    stroke: 'currentColor',
-    strokeWidth: 1.75,
-    strokeLinecap: 'round' as const,
-    strokeLinejoin: 'round' as const,
-    'aria-hidden': true as const,
-  }
+const ICON_PATHS: Record<ServiceType, React.ReactNode> = {
+  standard: (
+    <>
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+      <polyline points="9 22 9 12 15 12 15 22" />
+    </>
+  ),
+  deep: (
+    <>
+      <polygon points="12 2 2 7 12 12 22 7 12 2" />
+      <polyline points="2 17 12 22 22 17" />
+      <polyline points="2 12 12 17 22 12" />
+    </>
+  ),
+  moveout: (
+    <>
+      <polyline points="21 8 21 21 3 21 3 8" />
+      <rect x={1} y={3} width={22} height={5} />
+      <line x1={10} y1={12} x2={14} y2={12} />
+    </>
+  ),
+  postconstruction: (
+    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+  ),
+  airbnb: (
+    <>
+      <rect x={3} y={4} width={18} height={18} rx={2} />
+      <line x1={16} y1={2} x2={16} y2={6} />
+      <line x1={8} y1={2} x2={8} y2={6} />
+      <line x1={3} y1={10} x2={21} y2={10} />
+      <polyline points="12 14 12 17 14 17" />
+    </>
+  ),
+  commercial: (
+    <>
+      <rect x={3} y={3} width={7} height={7} />
+      <rect x={14} y={3} width={7} height={7} />
+      <rect x={14} y={14} width={7} height={7} />
+      <rect x={3} y={14} width={7} height={7} />
+    </>
+  ),
+}
 
-  switch (serviceKey) {
-    case 'standard':
-      return (
-        <svg {...base}>
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-          <polyline points="9 22 9 12 15 12 15 22" />
-        </svg>
-      )
-    case 'deep':
-      return (
-        <svg {...base}>
-          <polygon points="12 2 2 7 12 12 22 7 12 2" />
-          <polyline points="2 17 12 22 22 17" />
-          <polyline points="2 12 12 17 22 12" />
-        </svg>
-      )
-    case 'moveout':
-      return (
-        <svg {...base}>
-          <polyline points="21 8 21 21 3 21 3 8" />
-          <rect x={1} y={3} width={22} height={5} />
-          <line x1={10} y1={12} x2={14} y2={12} />
-        </svg>
-      )
-    case 'postconstruction':
-      return (
-        <svg {...base}>
-          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-        </svg>
-      )
-    case 'airbnb':
-      return (
-        <svg {...base}>
-          <rect x={3} y={4} width={18} height={18} rx={2} />
-          <line x1={16} y1={2} x2={16} y2={6} />
-          <line x1={8} y1={2} x2={8} y2={6} />
-          <line x1={3} y1={10} x2={21} y2={10} />
-          <polyline points="12 14 12 17 14 17" />
-        </svg>
-      )
-    case 'commercial':
-      return (
-        <svg {...base}>
-          <rect x={3} y={3} width={7} height={7} />
-          <rect x={14} y={3} width={7} height={7} />
-          <rect x={14} y={14} width={7} height={7} />
-          <rect x={3} y={14} width={7} height={7} />
-        </svg>
-      )
-  }
+function ServiceIcon({ serviceKey }: { serviceKey: ServiceType }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={24}
+      height={24}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      {ICON_PATHS[serviceKey]}
+    </svg>
+  )
 }
 
 export default function ServicesGrid() {
@@ -3753,7 +7593,7 @@ export default function ServicesGrid() {
           <h2 className="font-display text-4xl text-charcoal mb-4">
             {t('services.sectionHeading')}
           </h2>
-          <p className="font-body text-base text-text-muted">
+          <p className="font-body text-lg text-charcoal font-bold">
             {t('services.sectionSubhead')}
           </p>
         </motion.div>
@@ -3771,53 +7611,75 @@ export default function ServicesGrid() {
               <motion.div key={card.key} variants={fadeUp} className="flex">
                 <article
                   className={cn(
-                    'rounded border p-6 flex flex-col gap-4 w-full',
+                    'relative overflow-hidden rounded border p-6 flex flex-col gap-4 w-full',
                     card.inverted
                       ? 'bg-slate-brand border-slate-brand'
                       : 'bg-white border-sand shadow-sm',
                   )}
                 >
-                  <div
-                    className={cn(
-                      'w-10 h-10 flex items-center justify-center',
-                      card.inverted ? 'text-white' : 'text-slate-brand',
-                    )}
-                  >
-                    <ServiceIcon serviceKey={card.key} />
+                  {/* Background Image decoration */}
+                  <div className="absolute inset-0 pointer-events-none">
+                    <img
+                      src={`/images/${card.key}-hero.jpg`}
+                      alt=""
+                      aria-hidden="true"
+                      className="w-full h-full object-cover"
+                      style={{ opacity: 0.15 }}
+                    />
                   </div>
 
-                  <h3
-                    className={cn(
-                      'font-sub text-2xl',
-                      card.inverted ? 'text-white' : 'text-charcoal',
-                    )}
-                  >
-                    {serviceTitle}
-                  </h3>
+                  <div className="relative z-10 flex flex-col gap-4 flex-1">
+                    <h3
+                      className={cn(
+                        'font-sub text-2xl',
+                        card.inverted ? 'text-white' : 'text-charcoal',
+                      )}
+                    >
+                      <Link
+                        to={card.route}
+                        className={cn(
+                          'group flex items-center gap-3 hover:underline rounded focus:outline-none focus:ring-2 focus:ring-offset-2 min-h-[48px]',
+                          card.inverted ? 'focus:ring-white' : 'focus:ring-slate-brand',
+                        )}
+                      >
+                        <span
+                          className={cn(
+                            'flex items-center justify-center transition-colors duration-200',
+                            card.inverted
+                              ? 'text-white group-hover:text-slate-pale'
+                              : 'text-slate-brand group-hover:text-slate-dark',
+                          )}
+                        >
+                          <ServiceIcon serviceKey={card.key} />
+                        </span>
+                        <span>{serviceTitle}</span>
+                      </Link>
+                    </h3>
 
-                  <p
-                    className={cn(
-                      'font-body text-base flex-1',
-                      card.inverted ? 'text-white' : 'text-text-muted',
-                    )}
-                  >
-                    {t(card.descKey)}
-                  </p>
+                    <p
+                      className={cn(
+                        'font-body text-lg flex-1 font-bold',
+                        card.inverted ? 'text-white' : 'text-charcoal',
+                      )}
+                    >
+                      {t(card.descKey)}
+                    </p>
 
-                  <Link
-                    to={`/booking?serviceType=${card.key}`}
-                    aria-label={t('services.bookAriaLabel', { service: serviceTitle })}
-                    className={cn(
-                      'inline-flex items-center font-body font-medium text-base rounded',
-                      'min-h-[48px] px-4 py-2 self-start transition-colors duration-200',
-                      'focus:outline-none focus:ring-2 focus:ring-offset-2',
-                      card.inverted
-                        ? 'border border-white text-white hover:bg-white hover:text-slate-brand focus:ring-white'
-                        : 'bg-slate-brand text-white hover:bg-slate-dark focus:ring-slate-brand',
-                    )}
-                  >
-                    {t('services.bookNow')} →
-                  </Link>
+                    <Link
+                      to={`/booking?serviceType=${card.key}`}
+                      aria-label={t('services.bookAriaLabel', { service: serviceTitle })}
+                      className={cn(
+                        'inline-flex items-center font-body font-medium text-base rounded',
+                        'min-h-[48px] px-4 py-2 self-start transition-colors duration-200',
+                        'focus:outline-none focus:ring-2 focus:ring-offset-2',
+                        card.inverted
+                          ? 'bg-cream text-slate-brand hover:bg-warm-white hover:text-slate-dark focus:ring-white'
+                          : 'bg-slate-brand text-white hover:bg-slate-dark focus:ring-slate-brand',
+                      )}
+                    >
+                      {t('services.bookNow')} →
+                    </Link>
+                  </div>
                 </article>
               </motion.div>
             )
@@ -3838,21 +7700,7 @@ export default function ServicesGrid() {
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
-}
-
-const stagger = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.7,
-    },
-  },
-}
+import { fadeUp, stagger } from '@/lib/utils/animations'
 
 function CheckIcon() {
   return (
@@ -3961,13 +7809,13 @@ export default function TrustBar() {
 import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import CookieBanner from './CookieBanner'
-import * as analytics from '@/lib/analytics'
+import * as analytics from '@/lib/firebase/analytics'
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }))
 
-vi.mock('@/lib/analytics', () => ({
+vi.mock('@/lib/firebase/analytics', () => ({
   initializeAnalytics: vi.fn(),
   revokeAnalytics: vi.fn(),
 }))
@@ -4025,8 +7873,8 @@ describe('CookieBanner', () => {
 ```tsx
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { initializeAnalytics, revokeAnalytics } from '@/lib/analytics'
-import { cn } from '@/lib/utils'
+import { initializeAnalytics, revokeAnalytics } from '@/lib/firebase/analytics'
+import { cn } from '@/lib/utils/utils'
 import { AnimatePresence, motion } from 'framer-motion'
 
 export default function CookieBanner() {
@@ -4104,8 +7952,8 @@ export default function CookieBanner() {
 ```tsx
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { cn } from '@/lib/utils'
-import { logPhoneClicked } from '@/lib/analytics'
+import { cn } from '@/lib/utils/utils'
+import { logPhoneClicked } from '@/lib/firebase/analytics'
 import logoFooter from '@/assets/logo-footer-dark-120px.png'
 
 const PHONE_NUMBER = '(613) 935-3555'
@@ -4126,7 +7974,7 @@ export default function Footer() {
   ]
 
   const locationLinks = [
-    { to: '/locations/cornwall', label: t('footer.cornwallON') },
+    { to: '/locations/cornwall-on', label: t('footer.cornwallON') },
     { to: '/locations/akwesasne', label: t('footer.akwesasne') },
     { to: '/locations/snye-qc', label: t('footer.snyeQC') },
     { to: '/locations/long-sault', label: t('footer.longSault') },
@@ -4137,6 +7985,7 @@ export default function Footer() {
     { to: '/about', label: t('footer.aboutUs') },
     { to: '/gallery', label: t('footer.gallery') },
     { to: '/reviews', label: t('footer.reviews') },
+    { to: '/blog', label: t('nav.blog') },
     { to: '/careers', label: t('footer.careers') },
     { to: '/privacy', label: t('footer.privacy') },
   ]
@@ -4354,11 +8203,11 @@ import { Outlet, ScrollRestoration } from 'react-router-dom'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import JsonLd from '@/components/seo/JsonLd'
-import { getLocalBusinessSchema } from '@/lib/seo'
+import { getLocalBusinessSchema } from '@/lib/utils/seo'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
-import { logCustomEvent } from '@/lib/analytics'
+import { logCustomEvent } from '@/lib/firebase/analytics'
 import CookieBanner from './CookieBanner'
 /**
  * Root layout wrapper.
@@ -4406,8 +8255,8 @@ import { useState, useCallback } from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'framer-motion'
-import { cn } from '@/lib/utils'
-import { logLanguageToggled, logPhoneClicked } from '@/lib/analytics'
+import { cn } from '@/lib/utils/utils'
+import { logLanguageToggled, logPhoneClicked } from '@/lib/firebase/analytics'
 import { useScrolled } from '@/hooks/useScrolled'
 import logoNavbar from '@/assets/logo-navbar-80px.png'
 import logoNavbar2x from '@/assets/logo-navbar-160px@2x.png'
@@ -4422,7 +8271,7 @@ export default function Navbar() {
 
   const toggleLanguage = useCallback(() => {
     const next = i18n.language.startsWith('fr') ? 'en' : 'fr'
-    i18n.changeLanguage(next)
+    void i18n.changeLanguage(next)
     logLanguageToggled(next)
     // Persist in localStorage — i18next LanguageDetector picks this up on reload
     localStorage.setItem('i18nextLng', next)
@@ -4436,6 +8285,7 @@ export default function Navbar() {
     { to: '/locations', label: t('nav.locations'), end: false },
     { to: '/pricing', label: t('nav.pricing'), end: true },
     { to: '/faq', label: t('nav.faq'), end: true },
+    { to: '/blog', label: t('nav.blog'), end: false },
   ]
 
   return (
@@ -4719,7 +8569,7 @@ export default function Navbar() {
 ## File: src/components/seo/JsonLd.tsx
 
 ```tsx
-import type { SchemaOrgObject } from '@/lib/seo'
+import type { SchemaOrgObject } from '@/lib/utils/seo'
 
 interface Props {
   schema: SchemaOrgObject
@@ -4804,7 +8654,7 @@ export default function SEO({ title, description, image, type = 'website' }: SEO
 
 ```tsx
 import { useTranslation } from 'react-i18next'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils/utils'
 
 interface GalleryImageProps {
   src: string | null
@@ -4855,8 +8705,8 @@ import { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { cn } from '@/lib/utils'
-import type { GalleryPair } from '@/lib/galleryData'
+import { cn } from '@/lib/utils/utils'
+import type { GalleryPair } from '@/lib/data/galleryData'
 import GalleryImage from '@/components/ui/GalleryImage'
 
 interface LightboxProps {
@@ -5081,7 +8931,7 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 import en from './locales/en.json'
 import fr from './locales/fr.json'
 
-i18n
+void i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
@@ -5114,7 +8964,7 @@ export default i18n
     "metaDesc": "Information about {{page}} at Fresh Nest Co. serving Cornwall and surrounding areas."
   },
   "hero": {
-    "headline": "Professional Cleaning & Organizing",
+    "headline": "Professional <br /> <highlight>Cleaning</highlight> <br /> & Organizing",
     "subhead": "Serving Cornwall, Akwesasne, Snye & surrounding communities."
   },
   "trustBar": {
@@ -5167,6 +9017,7 @@ export default i18n
     "sectionSubhead": "Professional cleaning for every need — residential, rental, and commercial. Proudly serving Cornwall and surrounding communities.",
     "bookNow": "Book Now",
     "bookAriaLabel": "Book {{service}}",
+    "viewDetailsAriaLabel": "Learn more about {{service}}",
     "standard": {
       "title": "Standard Cleaning",
       "description": "Regular maintenance cleaning to keep your home fresh. Ideal for weekly or biweekly visits — counters, floors, bathrooms, and living areas."
@@ -5463,6 +9314,12 @@ export default i18n
       "addOns": "Add-ons",
       "notes": "Notes",
       "edit": "Edit"
+    },
+    "status": {
+      "pending": "Pending Confirmation",
+      "confirmed": "Confirmed Schedule",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
     }
   },
   "faq": {
@@ -5522,6 +9379,7 @@ export default i18n
     "locations": "Locations",
     "pricing": "Pricing",
     "faq": "FAQ",
+    "blog": "Blog",
     "booking": "Book Now",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
@@ -5597,6 +9455,7 @@ export default i18n
     "error": "Something went wrong. Please try again.",
     "required": "Required",
     "optional": "Optional",
+    "verify": "Verify",
     "all": "All",
     "asc": "Ascending",
     "desc": "Descending",
@@ -5711,7 +9570,8 @@ export default i18n
     "standard": {
       "hero": {
         "heading": "Standard Cleaning",
-        "subhead": "Regular, consistent cleaning to keep your home fresh. No prep work needed — just let us in."
+        "subhead": "Regular, consistent cleaning to keep your home fresh. No prep work needed — just let us in.",
+        "imgAlt": "Bright, clean living room with vacuumed floor, sofa, and natural light"
       },
       "included": {
         "floors": "Vacuuming and mopping all floors",
@@ -5725,7 +9585,8 @@ export default i18n
     "deep": {
       "hero": {
         "heading": "Deep Clean",
-        "subhead": "A top-to-bottom reset that reaches the areas regular cleaning never touches."
+        "subhead": "A top-to-bottom reset that reaches the areas regular cleaning never touches.",
+        "imgAlt": "Immaculate kitchen with sparkling clean appliances, countertops, and tiled backsplash"
       },
       "included": {
         "everything": "Everything in our Standard Cleaning",
@@ -5740,7 +9601,8 @@ export default i18n
     "moveout": {
       "hero": {
         "heading": "Move-Out Cleaning",
-        "subhead": "Leave your old home spotless so you get your deposit back — and move on with confidence."
+        "subhead": "Leave your old home spotless so you get your deposit back — and move on with confidence.",
+        "imgAlt": "Empty and spotless dining area showing clean hardwood floors and large windows"
       },
       "included": {
         "allRooms": "Full clean of all rooms and closets",
@@ -5754,7 +9616,8 @@ export default i18n
     "postconstruction": {
       "hero": {
         "heading": "Post-Construction Cleaning",
-        "subhead": "Construction dust is everywhere — we remove it safely before you move in."
+        "subhead": "Construction dust is everywhere — we remove it safely before you move in.",
+        "imgAlt": "Freshly renovated modern space free of dust, with clean windows and sleek finishes"
       },
       "included": {
         "dustRemoval": "Fine dust removal from all surfaces",
@@ -5768,7 +9631,8 @@ export default i18n
     "commercial": {
       "hero": {
         "heading": "Commercial Cleaning",
-        "subhead": "Consistent, professional cleaning for offices, retail, and business facilities in the region."
+        "subhead": "Consistent, professional cleaning for offices, retail, and business facilities in the region.",
+        "imgAlt": "Modern, clean office workspace with tidy desks and large windows"
       },
       "included": {
         "officeSpaces": "Office and workspace cleaning",
@@ -5880,6 +9744,8 @@ export default i18n
         "noNotes": "No special instructions provided.",
         "createdAt": "Submitted At",
         "leadSource": "Marketing Lead Source",
+        "referralCode": "Client Referral Code",
+        "referredBy": "Referred By Code",
         "workflow": "Workflow Actions",
         "isAirbnb": "Airbnb Turnover Checklist",
         "photoConf": "Photo Confirmation Required",
@@ -5906,7 +9772,8 @@ export default i18n
         "stats": {
           "bookingsCount": "Estimated Bookings",
           "estimatedRevenue": "Estimated Revenue",
-          "avgBookingValue": "Avg Booking Value"
+          "avgBookingValue": "Avg Booking Value",
+          "referredBookings": "Referred Bookings"
         },
         "charts": {
           "leadDistribution": "Lead Source Distribution (Bookings)",
@@ -5930,6 +9797,32 @@ export default i18n
         "direct": "Direct Traffic"
       }
     }
+  },
+  "blog": {
+    "meta": {
+      "title": "Fresh Nest Co. Blog — Cleaning & Organizing Tips",
+      "description": "Read cleaning checklists, pricing guides, and seasonal tips from Fresh Nest Co. serving Cornwall and Akwesasne."
+    },
+    "pageHeading": "Fresh Nest Blog",
+    "pageSubhead": "Seasonal tips, move-out checklists, and professional home care advice for our local communities.",
+    "readMore": "Read More",
+    "publishedAt": "Published on {{date}}",
+    "writtenBy": "By {{author}}",
+    "noPosts": "No articles found.",
+    "backToBlog": "← Back to Blog",
+    "metaPost": "{{title}} | Fresh Nest Blog"
+  },
+  "referrals": {
+    "promoCodeLabel": "Referral Code (Optional)",
+    "promoPlaceholder": "Enter friend's code",
+    "promoValid": "Promo code valid! $20 off applied.",
+    "promoInvalid": "Invalid referral code. Please check and try again.",
+    "promoChecking": "Verifying code...",
+    "referralShareTitle": "Share the Fresh Nest Love",
+    "referralShareDesc": "Give your friends $20 off their first clean. When they book, you'll receive a $20 discount on your next service!",
+    "copyLink": "Copy Referral Link",
+    "linkCopied": "Link copied to clipboard!",
+    "referredBy": "Referred by {{name}}"
   }
 }
 
@@ -5949,7 +9842,7 @@ export default i18n
     "metaDesc": "Informations sur {{page}} chez Fresh Nest Co. desservant Cornwall et ses environs."
   },
   "hero": {
-    "headline": "Nettoyage et organisation professionnels",
+    "headline": "Professionnel <br /> <highlight>Nettoyage</highlight> <br /> & Organisation",
     "subhead": "Nous desservons Cornwall, Akwesasne, Snye et les communautés avoisinantes."
   },
   "trustBar": {
@@ -6002,6 +9895,7 @@ export default i18n
     "sectionSubhead": "Un nettoyage professionnel pour chaque besoin — résidentiel, locatif et commercial. Fièrement au service de Cornwall et des communautés environnantes.",
     "bookNow": "Réserver",
     "bookAriaLabel": "Réserver {{service}}",
+    "viewDetailsAriaLabel": "En savoir plus sur {{service}}",
     "standard": {
       "title": "Nettoyage standard",
       "description": "Un entretien régulier pour garder votre maison impeccable. Idéal pour des visites hebdomadaires ou bimensuelles — comptoirs, planchers, salles de bain et pièces communes."
@@ -6298,6 +10192,12 @@ export default i18n
       "addOns": "Options",
       "notes": "Notes",
       "edit": "Modifier"
+    },
+    "status": {
+      "pending": "En attente de confirmation",
+      "confirmed": "Horaire confirmé",
+      "completed": "Terminé",
+      "cancelled": "Annulé"
     }
   },
   "faq": {
@@ -6357,6 +10257,7 @@ export default i18n
     "locations": "Secteurs desservis",
     "pricing": "Tarifs",
     "faq": "FAQ",
+    "blog": "Blogue",
     "booking": "Réservez maintenant",
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
@@ -6432,6 +10333,7 @@ export default i18n
     "error": "Une erreur s'est produite. Veuillez réessayer.",
     "required": "Obligatoire",
     "optional": "Facultatif",
+    "verify": "Vérifier",
     "all": "Tout",
     "asc": "Croissant",
     "desc": "Décroissant",
@@ -6546,7 +10448,8 @@ export default i18n
     "standard": {
       "hero": {
         "heading": "Nettoyage régulier",
-        "subhead": "Un nettoyage régulier et constant pour garder votre maison fraîche. Aucune préparation requise."
+        "subhead": "Un nettoyage régulier et constant pour garder votre maison fraîche. Aucune préparation requise.",
+        "imgAlt": "Salon lumineux et propre avec sol aspiré, canapé et lumière naturelle"
       },
       "included": {
         "floors": "Aspiration et lavage de tous les planchers",
@@ -6560,7 +10463,8 @@ export default i18n
     "deep": {
       "hero": {
         "heading": "Grand nettoyage",
-        "subhead": "Une remise à zéro complète qui atteint les endroits que le nettoyage régulier ne touche jamais."
+        "subhead": "Une remise à zéro complète qui atteint les endroits que le nettoyage régulier ne touche jamais.",
+        "imgAlt": "Cuisine immaculée avec appareils électroménagers étincelants de propreté, comptoirs et dosseret en tuiles"
       },
       "included": {
         "everything": "Tout ce qui est inclus dans notre nettoyage régulier",
@@ -6575,7 +10479,8 @@ export default i18n
     "moveout": {
       "hero": {
         "heading": "Nettoyage de déménagement",
-        "subhead": "Laissez votre ancienne maison impeccable pour récupérer votre dépôt — et passer à autre chose sereinement."
+        "subhead": "Laissez votre ancienne maison impeccable pour récupérer votre dépôt — et passer à autre chose sereinement.",
+        "imgAlt": "Salle à manger vide et impeccable montrant des planchers de bois franc propres et de grandes fenêtres"
       },
       "included": {
         "allRooms": "Nettoyage complet de toutes les pièces et placards",
@@ -6589,7 +10494,8 @@ export default i18n
     "postconstruction": {
       "hero": {
         "heading": "Nettoyage post-construction",
-        "subhead": "La poussière de construction est partout — nous l'éliminons en toute sécurité avant votre emménagement."
+        "subhead": "La poussière de construction est partout — nous l'éliminons en toute sécurité avant votre emménagement.",
+        "imgAlt": "Espace moderne fraîchement rénové et exempt de poussière, avec des fenêtres propres et des finitions soignées"
       },
       "included": {
         "dustRemoval": "Élimination de la fine poussière sur toutes les surfaces",
@@ -6603,7 +10509,8 @@ export default i18n
     "commercial": {
       "hero": {
         "heading": "Nettoyage commercial",
-        "subhead": "Nettoyage professionnel et constant pour les bureaux, commerces et installations de la région."
+        "subhead": "Nettoyage professionnel et constant pour les bureaux, commerces et installations de la région.",
+        "imgAlt": "Espace de travail de bureau moderne et propre avec des bureaux bien rangés et de grandes fenêtres"
       },
       "included": {
         "officeSpaces": "Nettoyage des bureaux et espaces de travail",
@@ -6715,6 +10622,8 @@ export default i18n
         "noNotes": "Aucune instruction spéciale fournie.",
         "createdAt": "Soumis le",
         "leadSource": "Source de piste marketing",
+        "referralCode": "Code de parrainage client",
+        "referredBy": "Parrainé par le code",
         "workflow": "Actions de flux de travail",
         "isAirbnb": "Liste de contrôle Airbnb",
         "photoConf": "Confirmation photo requise",
@@ -6741,7 +10650,8 @@ export default i18n
         "stats": {
           "bookingsCount": "Réservations estimées",
           "estimatedRevenue": "Revenu estimé",
-          "avgBookingValue": "Valeur moyenne de réservation"
+          "avgBookingValue": "Valeur moyenne de réservation",
+          "referredBookings": "Réservations parrainées"
         },
         "charts": {
           "leadDistribution": "Distribution des sources de pistes (Réservations)",
@@ -6765,6 +10675,32 @@ export default i18n
         "direct": "Trafic direct"
       }
     }
+  },
+  "blog": {
+    "meta": {
+      "title": "Blogue de Fresh Nest Co. — Conseils de Nettoyage",
+      "description": "Lisez nos guides de prix, listes de déménagement et astuces de nettoyage à Cornwall et Akwesasne."
+    },
+    "pageHeading": "Le Blogue Fresh Nest",
+    "pageSubhead": "Conseils saisonniers, guides de nettoyage et astuces d’entretien résidentiel pour nos communautés.",
+    "readMore": "Lire la suite",
+    "publishedAt": "Publié le {{date}}",
+    "writtenBy": "Par {{author}}",
+    "noPosts": "Aucun article trouvé.",
+    "backToBlog": "← Retour au blogue",
+    "metaPost": "{{title}} | Blogue Fresh Nest"
+  },
+  "referrals": {
+    "promoCodeLabel": "Code de parrainage (Optionnel)",
+    "promoPlaceholder": "Entrez le code de votre ami",
+    "promoValid": "Code de parrainage valide ! Réduction de 20 $ appliquée.",
+    "promoInvalid": "Code de parrainage invalide. Veuillez vérifier.",
+    "promoChecking": "Vérification du code...",
+    "referralShareTitle": "Partagez l'amour Fresh Nest",
+    "referralShareDesc": "Offrez 20 $ de rabais à vos amis sur leur premier nettoyage. Lorsqu'ils réservent, vous recevez un rabais de 20 $ !",
+    "copyLink": "Copier le lien de parrainage",
+    "linkCopied": "Lien copié dans le presse-papiers !",
+    "referredBy": "Parrainé par {{name}}"
   }
 }
 
@@ -6781,322 +10717,271 @@ export default i18n
 
 @layer base {
   html { font-family: 'DM Sans', sans-serif; scroll-behavior: smooth; }
-  body { @apply bg-warm-white text-charcoal; }
+  body { @apply bg-warm-white text-charcoal font-normal; }
+  h1.font-display, h2.font-display { @apply font-bold; }
 }
 
 ```
 
 ---
 
-## File: src/lib/analytics.test.ts
+## File: src/lib/data/blogData.ts
 
 ```typescript
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { getAnalytics, logEvent, setAnalyticsCollectionEnabled } from 'firebase/analytics'
-import {
-  initializeAnalytics,
-  revokeAnalytics,
-  logCustomEvent,
-  logBookingStarted,
-  logBookingCompleted,
-  logQuoteCalculated,
-  logPhoneClicked,
-  logLanguageToggled,
-} from './analytics'
+import { BlogPost } from '@/types'
 
-vi.mock('firebase/analytics', () => ({
-  getAnalytics: vi.fn(() => ({})),
-  logEvent: vi.fn(),
-  setAnalyticsCollectionEnabled: vi.fn(),
-}))
+export const BLOG_POSTS: BlogPost[] = [
+  {
+    slug: 'cleaning-cost-cornwall',
+    title: {
+      en: 'How Much Does House Cleaning Cost in Cornwall, ON?',
+      fr: 'Combien Coûte le Nettoyage Résidentiel à Cornwall, ON ?'
+    },
+    description: {
+      en: 'A guide to standard house cleaning rates, deep cleans, and add-on pricing in the Cornwall region.',
+      fr: 'Un guide des tarifs de nettoyage résidentiel standard, en profondeur et des options à Cornwall.'
+    },
+    author: {
+      en: 'Lauren S.',
+      fr: 'Lauren S.'
+    },
+    publishedAt: '2026-06-10',
+    readTime: {
+      en: '4 min read',
+      fr: '4 min de lecture'
+    },
+    image: '/images/standard-hero.jpg',
+    content: {
+      en: `
+Finding reliable, professional home cleaning in Cornwall, Ontario, shouldn't be a guessing game. Understanding the typical cost of house cleaning services can help you budget correctly and choose the right option for your lifestyle.
 
-vi.mock('./firebase', () => ({
-  default: {},
-}))
+### Standard Rates in Cornwall
 
-describe('Analytics', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-    // Reset the internal instance for testing logic isn't easily reachable
-    // if initialized, so we just check behavior.
-  })
+Most cleaning services in the Eastern Ontario region charge either a flat rate based on the size of the home or an hourly rate.
+- **Flat Rates**: Typically range from **$150 to $250** for a standard 3-bedroom, 2-bathroom house.
+- **Hourly Rates**: Usually range between **$35 and $55 per hour** per cleaner.
 
-  it('initializeAnalytics initializes analytics', () => {
-    initializeAnalytics()
-    expect(getAnalytics).toHaveBeenCalled()
-  })
+### Deep Cleaning vs. Standard Cleaning
 
-  it('revokeAnalytics disables collection', () => {
-    initializeAnalytics()
-    revokeAnalytics()
-    expect(setAnalyticsCollectionEnabled).toHaveBeenCalledWith(expect.anything(), false)
-  })
+When scheduling your first appointment or seasonal resets, it helps to understand the difference:
+1. **Standard Clean**: Perfect for weekly or bi-weekly maintenance. Includes dusting, vacuuming, mopping, and wiping countertops.
+2. **Deep Clean**: Requires additional time to tackle built-up grime. Includes baseboards, inside appliances, and detailing tile grout. This typically costs **$50 to $100 more** than a standard clean.
 
-  it('logCustomEvent logs event', () => {
-    initializeAnalytics()
-    logCustomEvent('test_event', { prop: 1 })
-    expect(logEvent).toHaveBeenCalledWith(expect.anything(), 'test_event', { prop: 1 })
-  })
+### Add-on Additions
 
-  it('logBookingStarted logs booking_started', () => {
-    initializeAnalytics()
-    logBookingStarted()
-    expect(logEvent).toHaveBeenCalledWith(expect.anything(), 'booking_started', undefined)
-  })
+Many agencies offer custom add-ons to fit your specific home:
+- **Oven cleaning**: $30 - $45
+- **Fridge interior**: $25 - $40
+- **Window interior cleaning**: $5 per window
 
-  it('logBookingCompleted logs booking_completed', () => {
-    initializeAnalytics()
-    logBookingCompleted('Standard Cleaning', 100)
-    expect(logEvent).toHaveBeenCalledWith(expect.anything(), 'booking_completed', {
-      service_type: 'Standard Cleaning',
-      value: 100,
-    })
-  })
+At Fresh Nest Co., we provide transparent instant quotes so you know exactly what to expect before booking. Try our online quote tool today!
+`,
+      fr: `
+Trouver un service de nettoyage résidentiel fiable et professionnel à Cornwall, en Ontario, ne devrait pas être un mystère. Comprendre les coûts typiques des services de nettoyage peut vous aider à planifier votre budget et à choisir la formule adaptée à votre mode de vie.
 
-  it('logQuoteCalculated logs quote_calculated', () => {
-    initializeAnalytics()
-    logQuoteCalculated('Deep Cleaning', 200)
-    expect(logEvent).toHaveBeenCalledWith(expect.anything(), 'quote_calculated', {
-      service_type: 'Deep Cleaning',
-      value: 200,
-    })
-  })
+### Tarifs Standards à Cornwall
 
-  it('logPhoneClicked logs phone_clicked', () => {
-    initializeAnalytics()
-    logPhoneClicked('navbar')
-    expect(logEvent).toHaveBeenCalledWith(expect.anything(), 'phone_clicked', { location: 'navbar' })
-  })
+La plupart des services de nettoyage de la région de l'Est de l'Ontario facturent soit un tarif forfaitaire basé sur la taille de la maison, soit un tarif horaire.
+- **Tarifs Forfaitaires** : Généralement situés entre **150 $ et 250 $** pour une maison standard de 3 chambres et 2 salles de bain.
+- **Tarifs Horaires** : En moyenne entre **35 $ et 55 $ de l'heure** par nettoyeur.
 
-  it('logLanguageToggled logs language_toggled', () => {
-    initializeAnalytics()
-    logLanguageToggled('fr')
-    expect(logEvent).toHaveBeenCalledWith(expect.anything(), 'language_toggled', { language: 'fr' })
-  })
-})
+### Nettoyage Standard vs. Nettoyage en Profondeur
 
-```
+Lors de votre premier rendez-vous ou d'un nettoyage saisonnier, il est utile de faire la distinction :
+1. **Nettoyage Standard** : Idéal pour l'entretien hebdomadaire ou bihebdomadaire. Comprend l'époussetage, l'aspirateur, la vadrouille et le nettoyage des comptoirs.
+2. **Nettoyage en Profondeur** : Nécessite plus de temps pour éliminer la saleté accumulée. Comprend les plinthes, l'intérieur des électroménagers et le récurage des tuiles. Cela coûte généralement **50 $ à 100 $ de plus** qu'un nettoyage standard.
 
----
+### Suppléments Options
 
-## File: src/lib/analytics.ts
+De nombreuses agences proposent des services additionnels personnalisés :
+- **Nettoyage du four** : 30 $ - 45 $
+- **Intérieur du réfrigérateur** : 25 $ - 40 $
+- **Lavage des vitres intérieures** : 5 $ par fenêtre
 
-```typescript
-import { getAnalytics, logEvent, Analytics, setAnalyticsCollectionEnabled } from 'firebase/analytics'
-import app from './firebase'
+Chez Fresh Nest Co., nous offrons des devis instantanés et transparents afin que vous sachiez exactement à quoi vous attendre avant de réserver. Essayez notre outil en ligne dès aujourd'hui !
+`
+    }
+  },
+  {
+    slug: 'move-out-checklist-cornwall',
+    title: {
+      en: 'The Ultimate Move-Out Cleaning Checklist: Cornwall Edition',
+      fr: 'La Liste de Nettoyage de Déménagement Ultime : Édition Cornwall'
+    },
+    description: {
+      en: 'Don’t lose your security deposit. Follow our detailed checklist to leave your rented home sparkling.',
+      fr: 'Ne perdez pas votre dépôt de garantie. Suivez notre guide détaillé pour rendre votre logement étincelant.'
+    },
+    author: {
+      en: 'Lauren S.',
+      fr: 'Lauren S.'
+    },
+    publishedAt: '2026-06-08',
+    readTime: {
+      en: '5 min read',
+      fr: '5 min de lecture'
+    },
+    image: '/images/moveout-hero.jpg',
+    content: {
+      en: `
+Moving can be stressful. Between packing boxes, coordinating movers, and setting up utilities in your new home, cleaning your old place is often the last thing you want to do. However, leaving your home spotless is crucial for securing your security deposit refund or attracting buyers.
 
-let analyticsInstance: Analytics | null = null
+### 1. The Kitchen (The Most Critical Area)
+Landlords and new owners pay closest attention here:
+- **Appliances**: Clean the inside and outside of the oven, microwave, and refrigerator. Pull them out and clean the dust behind them.
+- **Cabinets**: Wipe down all shelves and cabinet doors, removing any crumbs and grease splatters.
+- **Sinks**: Scrub and disinfect the sink and fixtures.
 
-export const initializeAnalytics = () => {
-  if (typeof window !== 'undefined' && !analyticsInstance) {
-    try {
-      analyticsInstance = getAnalytics(app)
-      console.log('Firebase Analytics initialized.')
-    } catch (error) {
-      console.error('Failed to initialize Firebase Analytics:', error)
+### 2. Bathrooms
+- **Tub & Shower**: Remove all soap scum and limescale buildup from tiles, tub, and glass doors.
+- **Toilet**: Disinfect the bowl, base, and tank.
+- **Vanity**: Wipe drawers, clean the mirror, and polish faucets.
+
+### 3. Throughout the House
+- **Walls & Baseboards**: Wipe off scuffs, dust baseboards, and clean light switches.
+- **Windows**: Wash interior window glass, sills, and tracks.
+- **Floors**: Vacuum all carpets and mop hardwood or tile floors.
+
+If you don't have the time or energy to tackle this checklist yourself, the team at Fresh Nest Co. is here to help. Our move-out cleaning services are tailored to meet landlord inspection standards.
+`,
+      fr: `
+Déménager est une source de stress importante. Entre les boîtes à emballer, la coordination des déménageurs et l'activation des services dans votre nouveau domicile, le nettoyage de votre ancien logement est souvent la dernière tâche dont vous voulez vous occuper. Pourtant, rendre un espace impeccable est essentiel pour récupérer votre dépôt ou attirer des acheteurs.
+
+### 1. La Cuisine (La zone la plus importante)
+Les propriétaires et les acheteurs y portent une attention particulière :
+- **Électroménagers** : Nettoyez l'intérieur et l'extérieur du four, du micro-ondes et du réfrigérateur. Tirez-les pour nettoyer la poussière accumulée derrière.
+- **Armoires** : Essuyez toutes les étagères et portes, en enlevant les miettes et les taches de graisse.
+- **Évier** : Récurez et désinfectez l'évier ainsi que la robinetterie.
+
+### 2. Salles de Bain
+- **Baignoire et Douche** : Éliminez les résidus de savon et le calcaire des tuiles, de la baignoire et des portes vitrées.
+- **Toilette** : Désinfectez la cuvette, la base et le réservoir.
+- **Meuble-lavabo** : Nettoyez les tiroirs, le miroir et polissez les robinets.
+
+### 3. Dans Toute la Maison
+- **Murs et Plinthes** : Enlevez les traces de frottement, époussetez les plinthes et nettoyez les interrupteurs.
+- **Fenêtres** : Nettoyez les vitres intérieures, les cadres et les rails.
+- **Sols** : Passez l'aspirateur sur tous les tapis et nettoyez les planchers de bois ou de céramique.
+
+Si vous manquez de temps ou d'énergie, l'équipe de Fresh Nest Co. est à votre service. Nos prestations de nettoyage de déménagement sont conçues pour satisfaire aux critères d'inspection les plus stricts.
+`
+    }
+  },
+  {
+    slug: 'commercial-cleaning-akwesasne',
+    title: {
+      en: 'Commercial Cleaning Services for Akwesasne Businesses',
+      fr: "Services de Nettoyage Commercial pour les Entreprises d'Akwesasne"
+    },
+    description: {
+      en: 'Keep your office or retail space professional and clean. We serve Akwesasne and Cornwall island regions.',
+      fr: 'Maintenez des locaux propres et professionnels. Nous desservons Akwesasne et les îles locales.'
+    },
+    author: {
+      en: 'Dev Team',
+      fr: 'Équipe Dev'
+    },
+    publishedAt: '2026-06-05',
+    readTime: {
+      en: '3 min read',
+      fr: '3 min de lecture'
+    },
+    image: '/images/commercial-hero.jpg',
+    content: {
+      en: `
+A clean work environment is directly linked to employee productivity and client satisfaction. For local businesses in Akwesasne, Cornwall Island, and surrounding regions, having a trusted local cleaning partner makes all the difference.
+
+### First Impressions Matter
+When clients or business partners walk into your retail shop, medical clinic, or corporate office, they instantly form an impression. Clean carpets, polished glass, and dust-free desks signal professionalism and care.
+
+### Health and Productivity
+Regular sanitizing of high-touch surfaces like doorknobs, keyboards, and lunchroom counters reduces the spread of seasonal illnesses, keeping your workforce active and healthy.
+
+### Custom Islands Services
+We recognize the unique geography of our community. Unlike big franchises, Fresh Nest Co. explicitly services Cornwall Island (Kawehno:ke), Snye (Tsi Snaihne), and St. Regis (Kana:takon) areas. We schedule cleanings around your business hours (morning, evening, or weekends) to minimize disruption.
+
+Contact us today to set up a custom recurring cleaning schedule for your commercial space.
+`,
+      fr: `
+Un environnement de travail propre est directement lié à la productivité des employés et à la satisfaction des clients. Pour les entreprises locales d'Akwesasne, de Cornwall Island et des régions environnantes, avoir un partenaire de confiance local fait toute la différence.
+
+### L'Importance de la Première Impression
+Lorsque des clients ou des partenaires franchissent la porte de votre magasin, de votre clinique ou de votre bureau, ils se font immédiatement une opinion. Des tapis propres, des vitres impeccables et des bureaux dépoussiérés témoignent de votre professionnalisme.
+
+### Santé et Productivité
+La désinfection régulière des surfaces fréquemment touchées, comme les poignées de porte, les claviers et les tables de cafétéria, réduit la propagation des maladies saisonnières, préservant ainsi la santé et l'efficacité de vos équipes.
+
+### Services Adaptés aux Îles Locales
+Nous comprenons la géographie unique de notre communauté. Contrairement aux grandes franchises nationales, Fresh Nest Co. dessert explicitement Cornwall Island (Kawehno:ke), Snye (Tsi Snaihne) et St. Regis (Kana:takon). Nous organisons nos interventions en fonction de vos heures d'ouverture pour limiter les interruptions.
+
+Contactez-nous dès aujourd'hui pour mettre en place un plan d'entretien sur mesure pour vos locaux commerciaux.
+`
+    }
+  },
+  {
+    slug: 'eco-friendly-products',
+    title: {
+      en: 'Eco-Friendly Cleaning Products: What We Use and Why',
+      fr: 'Produits de Nettoyage Écologiques : Ce que Nous Utilisons et Pourquoi'
+    },
+    description: {
+      en: 'Learn about our pet-safe, child-safe, and environmentally conscious cleaning methods.',
+      fr: 'Découvrez nos méthodes de nettoyage respectueuses de l’environnement, des enfants et des animaux.'
+    },
+    author: {
+      en: 'Lauren S.',
+      fr: 'Lauren S.'
+    },
+    publishedAt: '2026-06-01',
+    readTime: {
+      en: '3 min read',
+      fr: '3 min de lecture'
+    },
+    image: '/images/deep-hero.jpg',
+    content: {
+      en: `
+At Fresh Nest Co., one of our founding principles is promoting a healthy living space without introducing harsh chemical residues. Our choice of eco-friendly products ensures that your family, your pets, and our local ecosystem remain safe.
+
+### Why Green Cleaning?
+Traditional cleaners often contain harsh chemicals like ammonia, chlorine, and synthetic fragrances. While they sanitize, they also leave behind volatile organic compounds (VOCs) that irritate eyes, skin, and lungs—especially in children and pets who spend time close to floors.
+
+### What We Use
+We source biodegradable, non-toxic products that achieve professional-grade results:
+- **Plant-based surfactants**: Break down dirt and grease naturally without toxic residues.
+- **Natural essential oils**: Leave a light, clean fragrance (lavender, lemon, or eucalyptus) instead of synthetic perfumes.
+- **Microfiber technology**: Captures 99% of dust and bacteria physically, reducing the amount of liquid cleaner needed.
+
+### Pet-Safe and Child-Safe
+Our products contain no phosphates or carcinogens, meaning your toddlers and four-legged companions can safely roam the house immediately after our team finishes cleaning.
+
+Ask us about our green cleaning options when scheduling your next booking!
+`,
+      fr: `
+Chez Fresh Nest Co., l'un de nos principes fondateurs est de favoriser un espace de vie sain sans laisser de résidus chimiques nocifs. Notre choix de produits écologiques garantit la sécurité de votre famille, de vos animaux et de notre écosystème local.
+
+### Pourquoi le Nettoyage Écologique ?
+Les nettoyants traditionnels contiennent souvent des substances chimiques agressives comme l'ammoniac, le chlore et des parfums synthétiques. S'ils désinfectent, ils libèrent également des composés organiques volatils (COV) qui irritent les yeux, la peau et les poumons—particulièrement chez les enfants et les animaux.
+
+### Ce que Nous Utilisons
+Nous choisissons des produits biodégradables et non toxiques qui offrent des résultats professionnels :
+- **Tensioactifs d'origine végétale** : Éliminent la saleté et la graisse naturellement.
+- **Huiles essentielles naturelles** : Laissent un parfum léger et frais (lavende, citron ou eucalyptus) sans produits synthétiques.
+- **Technologie microfibre** : Retient 99 % de la poussière et des bactéries, limitant la quantité de nettoyant liquide requise.
+
+### Sécuritaire pour les Enfants et les Animaux
+Nos produits ne contiennent aucun phosphate ni cancérogène, ce qui permet à vos tout-petits et à vos animaux de se déplacer en toute sécurité dès la fin de notre prestation.
+
+Demandez notre option écologique lors de votre prochaine réservation !
+`
     }
   }
-}
-
-export const revokeAnalytics = () => {
-  if (analyticsInstance) {
-    setAnalyticsCollectionEnabled(analyticsInstance, false)
-    console.log('Firebase Analytics collection disabled.')
-  }
-}
-
-export const logCustomEvent = (eventName: string, eventParams?: Record<string, unknown>) => {
-  if (analyticsInstance) {
-    logEvent(analyticsInstance, eventName, eventParams)
-  }
-}
-
-export const logBookingStarted = () => {
-  logCustomEvent('booking_started')
-}
-
-export const logBookingCompleted = (serviceType: string, totalValue?: number) => {
-  logCustomEvent('booking_completed', { service_type: serviceType, value: totalValue })
-}
-
-export const logQuoteCalculated = (serviceType: string, estimatedPrice: number) => {
-  logCustomEvent('quote_calculated', { service_type: serviceType, value: estimatedPrice })
-}
-
-export const logPhoneClicked = (location: 'navbar' | 'footer' | 'other') => {
-  logCustomEvent('phone_clicked', { location })
-}
-
-export const logLanguageToggled = (newLanguage: string) => {
-  logCustomEvent('language_toggled', { language: newLanguage })
-}
+]
 
 ```
 
 ---
 
-## File: src/lib/bookingSchema.ts
-
-```typescript
-import { z } from 'zod'
-
-export const bookingFormSchema = z.object({
-  // Step 1 — Service details
-  serviceType:  z.enum(['standard', 'deep', 'moveout', 'postconstruction', 'airbnb', 'commercial']),
-  propertyType: z.enum(['apartment', '1-2bed', '3-4bed', '5+bed', 'commercial']),
-  bedrooms:     z.number().int().min(0).max(20),
-  bathrooms:    z.number().int().min(0).max(10),
-  pets:         z.boolean(),
-
-  // Step 2 — Schedule
-  frequency:      z.enum(['one-time', 'weekly', 'biweekly', 'monthly']),
-  preferredDate:  z.string().min(1),
-  addOns:         z.array(z.enum(['oven', 'fridge', 'windows', 'laundry', 'petHair', 'basement'])),
-  squareFootage:  z.number().int().min(0).optional(),
-
-  // Step 3 — Contact
-  firstName:        z.string().min(1),
-  lastName:         z.string().min(1),
-  email:            z.string().email(),
-  phone:            z.string().min(10),
-  address:          z.string().min(5),
-  preferredCleaner: z.string().nullable().optional(),
-  notes:            z.string().max(1000).optional(),
-
-  // Step 4 — Consent
-  marketingConsent: z.boolean(),
-})
-
-export type BookingFormData = z.infer<typeof bookingFormSchema>
-
-export const STEP_FIELDS: Record<number, (keyof BookingFormData)[]> = {
-  0: ['serviceType', 'propertyType', 'bedrooms', 'bathrooms', 'pets'],
-  1: ['frequency', 'preferredDate'],
-  2: ['firstName', 'lastName', 'email', 'phone', 'address'],
-  3: [],
-}
-
-```
-
----
-
-## File: src/lib/firebase.ts
-
-```typescript
-import { initializeApp } from 'firebase/app'
-import { getFirestore } from 'firebase/firestore'
-import { getAuth } from 'firebase/auth'
-
-const app = initializeApp({
-  apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain:        import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId:         import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket:     import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId:             import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId:     import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
-})
-
-const dbId = import.meta.env.VITE_FIRESTORE_DB_ID ?? '(default)'
-export const db = getFirestore(app, dbId)
-export const auth = getAuth(app)
-export default app
-
-```
-
----
-
-## File: src/lib/firestore.ts
-
-```typescript
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  Timestamp,
-  query,
-  orderBy,
-  onSnapshot,
-  doc,
-  updateDoc,
-} from 'firebase/firestore'
-import { db } from '@/lib/firebase'
-import type { BookingFormData } from '@/lib/bookingSchema'
-import type { Language, Booking, BookingStatus } from '@/types'
-
-export type LeadSource = 'organic' | 'google' | 'referral' | 'facebook' | 'direct'
-
-export function detectLeadSource(params: URLSearchParams): LeadSource {
-  const ref = (params.get('ref') ?? params.get('utm_source') ?? '').toLowerCase()
-  const map: Record<string, LeadSource> = {
-    google:   'google',
-    facebook: 'facebook',
-    referral: 'referral',
-    direct:   'direct',
-  }
-  return map[ref] ?? 'organic'
-}
-
-export async function submitBooking(
-  data: BookingFormData,
-  language: Language,
-  source: LeadSource,
-): Promise<string> {
-  const { marketingConsent, ...formFields } = data
-
-  const docData: Record<string, unknown> = {
-    ...formFields,
-    language,
-    leadSource:        source,
-    status:            'pending',
-    assignedTo:        null,
-    isAirbnb:          data.serviceType === 'airbnb',
-    photoConfirmation: data.serviceType === 'airbnb' || data.serviceType === 'commercial',
-    fsmAppointmentId:  null,
-    createdAt:         serverTimestamp(),
-  }
-
-  if (marketingConsent) {
-    docData.marketingConsent = true
-    docData.consentTimestamp = Timestamp.now()
-    docData.consentMethod    = 'booking-form-v2'
-  }
-
-  const ref = await addDoc(collection(db, 'bookings'), docData)
-  return ref.id
-}
-
-export function subscribeToBookings(callback: (bookings: Booking[]) => void): () => void {
-  const q = query(collection(db, 'bookings'), orderBy('createdAt', 'desc'))
-  return onSnapshot(q, (snapshot) => {
-    const bookings: Booking[] = []
-    snapshot.forEach((docSnap) => {
-      const data = docSnap.data()
-      bookings.push({
-        id: docSnap.id,
-        ...data,
-        createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toDate() : new Date(),
-      } as Booking)
-    })
-    callback(bookings)
-  })
-}
-
-export async function updateBookingStatus(bookingId: string, status: BookingStatus): Promise<void> {
-  const docRef = doc(db, 'bookings', bookingId)
-  await updateDoc(docRef, { status })
-}
-
-export async function updateBookingAssignment(bookingId: string, cleanerName: string | null): Promise<void> {
-  const docRef = doc(db, 'bookings', bookingId)
-  await updateDoc(docRef, { assignedTo: cleanerName })
-}
-
-```
-
----
-
-## File: src/lib/galleryData.ts
+## File: src/lib/data/galleryData.ts
 
 ```typescript
 import type { ServiceType } from '@/types'
@@ -7161,7 +11046,7 @@ export const FEATURED_PAIRS = GALLERY_PAIRS.filter(p => p.featured)
 
 ---
 
-## File: src/lib/locationData.ts
+## File: src/lib/data/locationData.ts
 
 ```typescript
 import type { ServiceType } from '@/types'
@@ -7247,65 +11132,7 @@ export const ALL_LOCATIONS: LocationConfig[] = [
 
 ---
 
-## File: src/lib/quotePricing.ts
-
-```typescript
-export type QuotePropertySize = 'apartment' | '1-2bed' | '3-4bed' | '5plus' | 'commercial'
-export type QuoteServiceType  = 'standard' | 'deep' | 'moveout' | 'postconstruction' | 'airbnb'
-export type QuoteFrequency    = 'one-time' | 'weekly' | 'biweekly' | 'monthly'
-
-interface PriceRange { min: number; max: number }
-
-export const BASE_PRICES: Record<Exclude<QuotePropertySize, 'commercial'>, PriceRange> = {
-  apartment: { min: 100, max: 130 },
-  '1-2bed':  { min: 120, max: 155 },
-  '3-4bed':  { min: 160, max: 200 },
-  '5plus':   { min: 210, max: 270 },
-}
-
-export const SERVICE_MULTIPLIER: Record<QuoteServiceType, number> = {
-  standard:         1.0,
-  deep:             1.5,
-  moveout:          1.75,
-  postconstruction: 2.0,
-  airbnb:           0.85,
-}
-
-export const FREQUENCY_DISCOUNT: Record<QuoteFrequency, number> = {
-  'one-time': 0,
-  weekly:     0.20,
-  biweekly:   0.15,
-  monthly:    0.10,
-}
-
-export type QuoteResult =
-  | { type: 'range'; min: number; max: number }
-  | { type: 'commercial' }
-
-function roundToNearest5(n: number): number {
-  return Math.round(n / 5) * 5
-}
-
-export function calculateQuote(
-  size: QuotePropertySize,
-  service: QuoteServiceType,
-  frequency: QuoteFrequency,
-): QuoteResult {
-  if (size === 'commercial') return { type: 'commercial' }
-  const base = BASE_PRICES[size]
-  const factor = SERVICE_MULTIPLIER[service] * (1 - FREQUENCY_DISCOUNT[frequency])
-  return {
-    type: 'range',
-    min: roundToNearest5(base.min * factor),
-    max: roundToNearest5(base.max * factor),
-  }
-}
-
-```
-
----
-
-## File: src/lib/reviewsData.ts
+## File: src/lib/data/reviewsData.ts
 
 ```typescript
 export interface Review {
@@ -7364,11 +11191,470 @@ export const STATIC_REVIEWS: Review[] = [
 
 ---
 
-## File: src/lib/seo.ts
+## File: src/lib/data/serviceData.ts
+
+```typescript
+import type { QuoteServiceType } from '@/lib/utils/quotePricing'
+
+export interface ServiceConfig {
+  key: 'standard' | 'deep' | 'moveout' | 'postconstruction' | 'commercial'
+  route: string
+  pricingKey?: QuoteServiceType
+  includedItems: readonly string[]
+  isCommercial: boolean
+}
+
+const standard: ServiceConfig = {
+  key: 'standard',
+  route: 'standard-cleaning',
+  pricingKey: 'standard',
+  includedItems: ['floors', 'kitchen', 'bathrooms', 'dusting', 'trash', 'beds'],
+  isCommercial: false,
+}
+
+const deep: ServiceConfig = {
+  key: 'deep',
+  route: 'deep-cleaning',
+  pricingKey: 'deep',
+  includedItems: ['everything', 'appliances', 'cabinets', 'baseboards', 'windowSills', 'fixtures', 'grout'],
+  isCommercial: false,
+}
+
+const moveout: ServiceConfig = {
+  key: 'moveout',
+  route: 'move-out-cleaning',
+  pricingKey: 'moveout',
+  includedItems: ['allRooms', 'appliances', 'cupboards', 'behindAppliances', 'windowsDoorsFrames', 'checklistWalkthrough'],
+  isCommercial: false,
+}
+
+const postconstruction: ServiceConfig = {
+  key: 'postconstruction',
+  route: 'post-construction',
+  pricingKey: 'postconstruction',
+  includedItems: ['dustRemoval', 'hepaVacuum', 'adhesiveRemoval', 'windows', 'vents', 'debrisRemoval'],
+  isCommercial: false,
+}
+
+const commercial: ServiceConfig = {
+  key: 'commercial',
+  route: 'commercial-cleaning',
+  includedItems: ['officeSpaces', 'washrooms', 'commonAreas', 'floorCare', 'wasteRemoval', 'flexibleScheduling'],
+  isCommercial: true,
+}
+
+export const SERVICE_CONFIGS: ServiceConfig[] = [
+  standard, deep, moveout, postconstruction, commercial,
+]
+
+export const SERVICE_CONFIG_MAP: Record<ServiceConfig['key'], ServiceConfig> = {
+  standard, deep, moveout, postconstruction, commercial,
+}
+
+```
+
+---
+
+## File: src/lib/firebase/analytics.test.ts
+
+```typescript
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { getAnalytics, logEvent, setAnalyticsCollectionEnabled } from 'firebase/analytics'
+import {
+  initializeAnalytics,
+  revokeAnalytics,
+  logCustomEvent,
+  logBookingStarted,
+  logBookingCompleted,
+  logQuoteCalculated,
+  logPhoneClicked,
+  logLanguageToggled,
+  _resetForTesting,
+} from './analytics'
+
+vi.mock('firebase/analytics', () => ({
+  getAnalytics: vi.fn(() => ({})),
+  logEvent: vi.fn(),
+  setAnalyticsCollectionEnabled: vi.fn(),
+}))
+
+vi.mock('./firebase', () => ({
+  default: {},
+}))
+
+describe('Analytics', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    _resetForTesting()
+  })
+
+  it('initializeAnalytics initializes analytics', () => {
+    initializeAnalytics()
+    expect(getAnalytics).toHaveBeenCalled()
+  })
+
+  it('revokeAnalytics disables collection', () => {
+    initializeAnalytics()
+    revokeAnalytics()
+    expect(setAnalyticsCollectionEnabled).toHaveBeenCalledWith(expect.anything(), false)
+  })
+
+  it('logCustomEvent logs event', () => {
+    initializeAnalytics()
+    logCustomEvent('test_event', { prop: 1 })
+    expect(logEvent).toHaveBeenCalledWith(expect.anything(), 'test_event', { prop: 1 })
+  })
+
+  it('logBookingStarted logs booking_started', () => {
+    initializeAnalytics()
+    logBookingStarted()
+    expect(logEvent).toHaveBeenCalledWith(expect.anything(), 'booking_started', undefined)
+  })
+
+  it('logBookingCompleted logs booking_completed', () => {
+    initializeAnalytics()
+    logBookingCompleted('Standard Cleaning', 100)
+    expect(logEvent).toHaveBeenCalledWith(expect.anything(), 'booking_completed', {
+      service_type: 'Standard Cleaning',
+      value: 100,
+    })
+  })
+
+  it('logQuoteCalculated logs quote_calculated', () => {
+    initializeAnalytics()
+    logQuoteCalculated('Deep Cleaning', 200)
+    expect(logEvent).toHaveBeenCalledWith(expect.anything(), 'quote_calculated', {
+      service_type: 'Deep Cleaning',
+      value: 200,
+    })
+  })
+
+  it('logPhoneClicked logs phone_clicked', () => {
+    initializeAnalytics()
+    logPhoneClicked('navbar')
+    expect(logEvent).toHaveBeenCalledWith(expect.anything(), 'phone_clicked', { location: 'navbar' })
+  })
+
+  it('logLanguageToggled logs language_toggled', () => {
+    initializeAnalytics()
+    logLanguageToggled('fr')
+    expect(logEvent).toHaveBeenCalledWith(expect.anything(), 'language_toggled', { language: 'fr' })
+  })
+})
+
+```
+
+---
+
+## File: src/lib/firebase/analytics.ts
+
+```typescript
+import { getAnalytics, logEvent, Analytics, setAnalyticsCollectionEnabled } from 'firebase/analytics'
+import app from './firebase'
+
+let analyticsInstance: Analytics | null = null
+
+export const initializeAnalytics = () => {
+  if (typeof window !== 'undefined' && !analyticsInstance) {
+    try {
+      analyticsInstance = getAnalytics(app)
+      console.log('Firebase Analytics initialized.')
+    } catch (error) {
+      console.error('Failed to initialize Firebase Analytics:', error)
+    }
+  }
+}
+
+export const revokeAnalytics = () => {
+  if (analyticsInstance) {
+    setAnalyticsCollectionEnabled(analyticsInstance, false)
+    console.log('Firebase Analytics collection disabled.')
+  }
+}
+
+export const logCustomEvent = (eventName: string, eventParams?: Record<string, unknown>) => {
+  if (analyticsInstance) {
+    logEvent(analyticsInstance, eventName, eventParams)
+  }
+}
+
+export const logBookingStarted = () => {
+  logCustomEvent('booking_started')
+}
+
+export const logBookingCompleted = (serviceType: string, totalValue?: number) => {
+  logCustomEvent('booking_completed', { service_type: serviceType, value: totalValue })
+}
+
+export const logQuoteCalculated = (serviceType: string, estimatedPrice: number) => {
+  logCustomEvent('quote_calculated', { service_type: serviceType, value: estimatedPrice })
+}
+
+export const logPhoneClicked = (location: 'navbar' | 'footer' | 'other') => {
+  logCustomEvent('phone_clicked', { location })
+}
+
+export const logLanguageToggled = (newLanguage: string) => {
+  logCustomEvent('language_toggled', { language: newLanguage })
+}
+
+export const _resetForTesting = () => {
+  if (import.meta.env.MODE === 'test') {
+    analyticsInstance = null
+  }
+}
+
+```
+
+---
+
+## File: src/lib/firebase/firebase.ts
+
+```typescript
+import { initializeApp } from 'firebase/app'
+import { getFirestore } from 'firebase/firestore'
+import { getAuth } from 'firebase/auth'
+
+const app = initializeApp({
+  apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain:        import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId:         import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket:     import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId:             import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId:     import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+})
+
+const dbId = import.meta.env.VITE_FIRESTORE_DB_ID ?? '(default)'
+export const db = getFirestore(app, dbId)
+export const auth = getAuth(app)
+export default app
+
+```
+
+---
+
+## File: src/lib/firebase/firestore.ts
+
+```typescript
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  Timestamp,
+  query,
+  orderBy,
+  onSnapshot,
+  doc,
+  updateDoc,
+} from 'firebase/firestore'
+import { db } from '@/lib/firebase/firebase'
+import type { BookingFormData } from '@/lib/schemas/bookingSchema'
+import type { Language, Booking, BookingStatus } from '@/types'
+
+export type LeadSource = 'organic' | 'google' | 'referral' | 'facebook' | 'direct'
+
+export function detectLeadSource(params: URLSearchParams): LeadSource {
+  const ref = (params.get('ref') ?? params.get('utm_source') ?? '').toLowerCase()
+  const map: Record<string, LeadSource> = {
+    google:   'google',
+    facebook: 'facebook',
+    referral: 'referral',
+    direct:   'direct',
+  }
+  return map[ref] ?? 'organic'
+}
+
+export async function submitBooking(
+  data: BookingFormData,
+  language: Language,
+  source: LeadSource,
+): Promise<string> {
+  if (typeof window !== 'undefined' && window.__MOCK_SUBMIT__) {
+    return window.__MOCK_SUBMIT__(data, language, source)
+  }
+  const { marketingConsent, ...formFields } = data
+
+  const docData: Record<string, unknown> = {
+    ...formFields,
+    language,
+    leadSource:        source,
+    status:            'pending',
+    assignedTo:        null,
+    isAirbnb:          data.serviceType === 'airbnb',
+    photoConfirmation: data.serviceType === 'airbnb' || data.serviceType === 'commercial',
+    fsmAppointmentId:  null,
+    createdAt:         serverTimestamp(),
+  }
+
+  if (marketingConsent) {
+    docData.marketingConsent = true
+    docData.consentTimestamp = Timestamp.now()
+    docData.consentMethod    = 'booking-form-v2'
+  }
+
+  const ref = await addDoc(collection(db, 'bookings'), docData)
+  return ref.id
+}
+
+export function subscribeToBookings(callback: (bookings: Booking[]) => void): () => void {
+  const q = query(collection(db, 'bookings'), orderBy('createdAt', 'desc'))
+  return onSnapshot(q, (snapshot) => {
+    const bookings: Booking[] = []
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data()
+      bookings.push({
+        id: docSnap.id,
+        ...data,
+        createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toDate() : new Date(),
+      } as Booking)
+    })
+    callback(bookings)
+  })
+}
+
+export async function updateBookingStatus(bookingId: string, status: BookingStatus): Promise<void> {
+  const docRef = doc(db, 'bookings', bookingId)
+  await updateDoc(docRef, { status })
+}
+
+export async function updateBookingAssignment(bookingId: string, cleanerName: string | null): Promise<void> {
+  const docRef = doc(db, 'bookings', bookingId)
+  await updateDoc(docRef, { assignedTo: cleanerName })
+}
+
+```
+
+---
+
+## File: src/lib/schemas/bookingSchema.ts
+
+```typescript
+import { z } from 'zod'
+
+export const bookingFormSchema = z.object({
+  // Step 1 — Service details
+  serviceType:  z.enum(['standard', 'deep', 'moveout', 'postconstruction', 'airbnb', 'commercial']),
+  propertyType: z.enum(['apartment', '1-2bed', '3-4bed', '5+bed', 'commercial']),
+  bedrooms:     z.number().int().min(0).max(20),
+  bathrooms:    z.number().int().min(0).max(10),
+  pets:         z.boolean(),
+
+  // Step 2 — Schedule
+  frequency:      z.enum(['one-time', 'weekly', 'biweekly', 'monthly']),
+  preferredDate:  z.string().min(1),
+  addOns:         z.array(z.enum(['oven', 'fridge', 'windows', 'laundry', 'petHair', 'basement'])),
+  squareFootage:  z.number().int().min(0).optional(),
+
+  // Step 3 — Contact
+  firstName:        z.string().min(1),
+  lastName:         z.string().min(1),
+  email:            z.string().email(),
+  phone:            z.string().min(10),
+  address:          z.string().min(5),
+  preferredCleaner: z.string().nullable().optional(),
+  notes:            z.string().max(1000).optional(),
+
+  // Step 4 — Consent
+  marketingConsent: z.boolean(),
+  referredBy:       z.string().nullable().optional(),
+})
+
+export type BookingFormData = z.infer<typeof bookingFormSchema>
+
+export const STEP_FIELDS: Record<number, (keyof BookingFormData)[]> = {
+  0: ['serviceType', 'propertyType', 'bedrooms', 'bathrooms', 'pets'],
+  1: ['frequency', 'preferredDate'],
+  2: ['firstName', 'lastName', 'email', 'phone', 'address'],
+  3: ['marketingConsent', 'referredBy'],
+}
+
+```
+
+---
+
+## File: src/lib/utils/animations.ts
+
+```typescript
+import type { Variants } from 'framer-motion'
+
+export const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.45 } },
+}
+
+export const stagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
+}
+
+```
+
+---
+
+## File: src/lib/utils/quotePricing.ts
+
+```typescript
+export type QuotePropertySize = 'apartment' | '1-2bed' | '3-4bed' | '5plus' | 'commercial'
+export type QuoteServiceType  = 'standard' | 'deep' | 'moveout' | 'postconstruction' | 'airbnb'
+export type QuoteFrequency    = 'one-time' | 'weekly' | 'biweekly' | 'monthly'
+
+interface PriceRange { min: number; max: number }
+
+export const BASE_PRICES: Record<Exclude<QuotePropertySize, 'commercial'>, PriceRange> = {
+  apartment: { min: 100, max: 130 },
+  '1-2bed':  { min: 120, max: 155 },
+  '3-4bed':  { min: 160, max: 200 },
+  '5plus':   { min: 210, max: 270 },
+}
+
+export const SERVICE_MULTIPLIER: Record<QuoteServiceType, number> = {
+  standard:         1.0,
+  deep:             1.5,
+  moveout:          1.75,
+  postconstruction: 2.0,
+  airbnb:           0.85,
+}
+
+export const FREQUENCY_DISCOUNT: Record<QuoteFrequency, number> = {
+  'one-time': 0,
+  weekly:     0.20,
+  biweekly:   0.15,
+  monthly:    0.10,
+}
+
+export type QuoteResult =
+  | { type: 'range'; min: number; max: number }
+  | { type: 'commercial' }
+
+function roundToNearest5(n: number): number {
+  return Math.round(n / 5) * 5
+}
+
+export function calculateQuote(
+  size: QuotePropertySize,
+  service: QuoteServiceType,
+  frequency: QuoteFrequency,
+): QuoteResult {
+  if (size === 'commercial') return { type: 'commercial' }
+  const base = BASE_PRICES[size]
+  const factor = SERVICE_MULTIPLIER[service] * (1 - FREQUENCY_DISCOUNT[frequency])
+  return {
+    type: 'range',
+    min: roundToNearest5(base.min * factor),
+    max: roundToNearest5(base.max * factor),
+  }
+}
+
+```
+
+---
+
+## File: src/lib/utils/seo.ts
 
 ```typescript
 import type { TFunction } from 'i18next'
-import { STATIC_REVIEWS } from './reviewsData'
+import { STATIC_REVIEWS } from '@/lib/data/reviewsData'
 
 // Types for JSON-LD schemas to ensure valid outputs
 export interface SchemaOrgObject {
@@ -7538,71 +11824,7 @@ export function getFaqSchema(t: TFunction): SchemaOrgObject {
 
 ---
 
-## File: src/lib/serviceData.ts
-
-```typescript
-import type { QuoteServiceType } from './quotePricing'
-
-export interface ServiceConfig {
-  key: 'standard' | 'deep' | 'moveout' | 'postconstruction' | 'commercial'
-  route: string
-  pricingKey?: QuoteServiceType
-  includedItems: readonly string[]
-  isCommercial: boolean
-}
-
-const standard: ServiceConfig = {
-  key: 'standard',
-  route: 'standard-cleaning',
-  pricingKey: 'standard',
-  includedItems: ['floors', 'kitchen', 'bathrooms', 'dusting', 'trash', 'beds'],
-  isCommercial: false,
-}
-
-const deep: ServiceConfig = {
-  key: 'deep',
-  route: 'deep-cleaning',
-  pricingKey: 'deep',
-  includedItems: ['everything', 'appliances', 'cabinets', 'baseboards', 'windowSills', 'fixtures', 'grout'],
-  isCommercial: false,
-}
-
-const moveout: ServiceConfig = {
-  key: 'moveout',
-  route: 'move-out-cleaning',
-  pricingKey: 'moveout',
-  includedItems: ['allRooms', 'appliances', 'cupboards', 'behindAppliances', 'windowsDoorsFrames', 'checklistWalkthrough'],
-  isCommercial: false,
-}
-
-const postconstruction: ServiceConfig = {
-  key: 'postconstruction',
-  route: 'post-construction',
-  pricingKey: 'postconstruction',
-  includedItems: ['dustRemoval', 'hepaVacuum', 'adhesiveRemoval', 'windows', 'vents', 'debrisRemoval'],
-  isCommercial: false,
-}
-
-const commercial: ServiceConfig = {
-  key: 'commercial',
-  route: 'commercial-cleaning',
-  includedItems: ['officeSpaces', 'washrooms', 'commonAreas', 'floorCare', 'wasteRemoval', 'flexibleScheduling'],
-  isCommercial: true,
-}
-
-export const SERVICE_CONFIGS: ServiceConfig[] = [
-  standard, deep, moveout, postconstruction, commercial,
-]
-
-export const SERVICE_CONFIG_MAP: Record<ServiceConfig['key'], ServiceConfig> = {
-  standard, deep, moveout, postconstruction, commercial,
-}
-
-```
-
----
-
-## File: src/lib/utils.ts
+## File: src/lib/utils/utils.ts
 
 ```typescript
 import { clsx, type ClassValue } from 'clsx'
@@ -7642,330 +11864,28 @@ createRoot(document.getElementById('root')!).render(
 ## File: src/pages/AdminPage.tsx
 
 ```tsx
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, type User } from 'firebase/auth'
-import { auth } from '@/lib/firebase'
-import {
-  subscribeToBookings,
-  updateBookingStatus,
-  updateBookingAssignment,
-} from '@/lib/firestore'
-import type { Booking, BookingStatus } from '@/types'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils/utils'
+import { fadeUp } from '@/lib/utils/animations'
 import SEO from '@/components/seo/SEO'
-import { calculateQuote } from '@/lib/quotePricing'
-import type { QuotePropertySize, QuoteServiceType, QuoteFrequency } from '@/lib/quotePricing'
-import {
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip as RechartsTooltip,
-  Legend as RechartsLegend,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-} from 'recharts'
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
-}
+import { useAdminAuth } from '@/components/admin/hooks/useAdminAuth'
+import { useBookings } from '@/components/admin/hooks/useBookings'
+import { useAdminAnalytics } from '@/components/admin/hooks/useAdminAnalytics'
+import { LoginPanel } from '@/components/admin/LoginPanel'
+import { AccessDeniedPanel } from '@/components/admin/AccessDeniedPanel'
+import { BookingsTable } from '@/components/admin/BookingsTable'
+import { AnalyticsDashboard } from '@/components/admin/AnalyticsDashboard'
 
 export default function AdminPage() {
-  const { t, i18n } = useTranslation()
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [isAuthorized, setIsAuthorized] = useState(false)
-  const [authError, setAuthError] = useState<string | null>(null)
-
-  // Bookings list state
-  const [bookings, setBookings] = useState<Booking[]>([])
+  const { t } = useTranslation()
+  const { user, loading, isAuthorized, authError, handleSignIn, handleSignOut } = useAdminAuth()
+  const bookingsState = useBookings(isAuthorized)
+  const analyticsState = useAdminAnalytics(bookingsState.bookings)
 
   const [activeTab, setActiveTab] = useState<'bookings' | 'analytics'>('bookings')
-  const [analyticsTimeRange, setAnalyticsTimeRange] = useState<'all' | '30days' | '90days' | 'ytd' | 'month'>('all')
 
-  // Helper to calculate estimated price in-memory for analytics
-  const getEstimatedPrice = (booking: Booking): number => {
-    if (booking.propertyType === 'commercial') {
-      return 300 // Baseline average for commercial clean estimates
-    }
-    const sizeMap: Record<string, QuotePropertySize> = {
-      apartment: 'apartment',
-      '1-2bed': '1-2bed',
-      '3-4bed': '3-4bed',
-      '5+bed': '5plus',
-    }
-    const size = sizeMap[booking.propertyType] || 'apartment'
-    const validServices = ['standard', 'deep', 'moveout', 'postconstruction', 'airbnb']
-    const service = (validServices.includes(booking.serviceType) ? booking.serviceType : 'standard') as QuoteServiceType
-    const frequency = booking.frequency as QuoteFrequency
-
-    const quote = calculateQuote(size, service, frequency)
-    if (quote.type === 'range') {
-      return (quote.min + quote.max) / 2
-    }
-    return 150
-  }
-
-  // Collapsible rows state
-  const [expandedRowId, setExpandedRowId] = useState<string | null>(null)
-
-  // Cleaner custom names input state
-  const [customCleanerNames, setCustomCleanerNames] = useState<Record<string, string>>({})
-  const [showCustomInput, setShowCustomInput] = useState<Record<string, boolean>>({})
-
-  // Filtering states
-  const [statusFilter, setStatusFilter] = useState<string>('all')
-  const [serviceFilter, setServiceFilter] = useState<string>('all')
-  const [languageFilter, setLanguageFilter] = useState<string>('all')
-  const [sortBy, setSortBy] = useState<'preferredDate' | 'createdAt'>('preferredDate')
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
-  const [searchQuery, setSearchQuery] = useState<string>('')
-
-  // Listen to auth state changes
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser)
-      if (currentUser) {
-        // Validate against client-side allowlist environment variable
-        const allowedEmails = (
-          import.meta.env.VITE_ADMIN_EMAILS ||
-          'lauren@freshnest.co,dev@freshnest.co,rpdouglas@gmail.com,freshnestcompany2023@gmail.com'
-        )
-          .split(',')
-          .map((email: string) => email.trim().toLowerCase())
-
-        const userEmail = currentUser.email?.trim().toLowerCase()
-        const authorized = userEmail ? allowedEmails.includes(userEmail) : false
-        setIsAuthorized(authorized)
-
-        if (!authorized) {
-          setAuthError(t('admin.login.errorMessage', { email: currentUser.email }))
-        } else {
-          setAuthError(null)
-        }
-      } else {
-        setIsAuthorized(false)
-        setAuthError(null)
-      }
-      setLoading(false)
-    })
-
-    return () => unsubscribe()
-  }, [t])
-
-  // Sync bookings in real-time once authorized
-  useEffect(() => {
-    if (user && isAuthorized) {
-      const unsubscribe = subscribeToBookings((data) => {
-        setBookings(data)
-      })
-      return () => unsubscribe()
-    }
-  }, [user, isAuthorized])
-
-  const handleSignIn = async () => {
-    setLoading(true)
-    setAuthError(null)
-    const provider = new GoogleAuthProvider()
-    try {
-      await signInWithPopup(auth, provider)
-    } catch (err) {
-      console.error('Sign-in error:', err)
-      setAuthError(t('admin.login.authFailed'))
-      setLoading(false)
-    }
-  }
-
-  const handleSignOut = async () => {
-    setLoading(true)
-    try {
-      await signOut(auth)
-    } catch (err) {
-      console.error('Sign-out error:', err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleStatusChange = async (bookingId: string, status: BookingStatus) => {
-    try {
-      await updateBookingStatus(bookingId, status)
-    } catch (err) {
-      console.error('Error updating status:', err)
-    }
-  }
-
-  const handleAssignmentChange = async (bookingId: string, value: string) => {
-    if (value === 'custom') {
-      setShowCustomInput((prev) => ({ ...prev, [bookingId]: true }))
-    } else {
-      setShowCustomInput((prev) => ({ ...prev, [bookingId]: false }))
-      try {
-        const cleanerName = value === 'unassigned' ? null : value
-        await updateBookingAssignment(bookingId, cleanerName)
-      } catch (err) {
-        console.error('Error updating cleaner assignment:', err)
-      }
-    }
-  }
-
-  const handleCustomCleanerSave = async (bookingId: string) => {
-    const customName = customCleanerNames[bookingId]?.trim()
-    if (!customName) return
-
-    try {
-      await updateBookingAssignment(bookingId, customName)
-      setShowCustomInput((prev) => ({ ...prev, [bookingId]: false }))
-    } catch (err) {
-      console.error('Error saving custom cleaner name:', err)
-    }
-  }
-
-  // Statistics counters
-  const totalCount = bookings.length
-  const pendingCount = bookings.filter((b) => b.status === 'pending').length
-  const confirmedCount = bookings.filter((b) => b.status === 'confirmed').length
-
-  // Filtered & Sorted Bookings
-  const filteredBookings = bookings
-    .filter((b) => {
-      const matchesStatus = statusFilter === 'all' || b.status === statusFilter
-      const matchesService = serviceFilter === 'all' || b.serviceType === serviceFilter
-      const matchesLanguage = languageFilter === 'all' || b.language === languageFilter
-
-      const fullName = `${b.firstName} ${b.lastName}`.toLowerCase()
-      const query = searchQuery.toLowerCase()
-      const matchesSearch =
-        fullName.includes(query) ||
-        b.email.toLowerCase().includes(query) ||
-        b.phone.includes(query) ||
-        b.address.toLowerCase().includes(query)
-
-      return matchesStatus && matchesService && matchesLanguage && matchesSearch
-    })
-    .sort((a, b) => {
-      const dateA = sortBy === 'preferredDate'
-        ? new Date(a.preferredDate).getTime()
-        : a.createdAt.getTime()
-      const dateB = sortBy === 'preferredDate'
-        ? new Date(b.preferredDate).getTime()
-        : b.createdAt.getTime()
-      return sortOrder === 'asc' ? dateA - dateB : dateB - dateA
-    })
-
-  // Analytics aggregation logic
-  const now = new Date()
-  const filteredAnalyticsBookings = bookings.filter((b) => {
-    if (!b.createdAt) return false
-    const date = new Date(b.createdAt)
-    if (analyticsTimeRange === '30days') {
-      const thirtyDaysAgo = new Date()
-      thirtyDaysAgo.setDate(now.getDate() - 30)
-      return date >= thirtyDaysAgo
-    }
-    if (analyticsTimeRange === '90days') {
-      const ninetyDaysAgo = new Date()
-      ninetyDaysAgo.setDate(now.getDate() - 90)
-      return date >= ninetyDaysAgo
-    }
-    if (analyticsTimeRange === 'ytd') {
-      const startOfYear = new Date(now.getFullYear(), 0, 1)
-      return date >= startOfYear
-    }
-    if (analyticsTimeRange === 'month') {
-      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
-      return date >= startOfMonth
-    }
-    return true // 'all'
-  })
-
-  // KPI Metrics
-  const analyticsTotalBookings = filteredAnalyticsBookings.length
-  const analyticsTotalRevenue = filteredAnalyticsBookings.reduce((sum, b) => sum + getEstimatedPrice(b), 0)
-  const analyticsAvgBookingValue = analyticsTotalBookings > 0 ? analyticsTotalRevenue / analyticsTotalBookings : 0
-
-  // 1. Lead Source Distribution (Pie Chart)
-  const leadSourceKeys = ['organic', 'google', 'referral', 'facebook', 'direct']
-  const leadSourceData = leadSourceKeys.map((source) => {
-    const sourceBookings = filteredAnalyticsBookings.filter((b) => b.leadSource === source)
-    const count = sourceBookings.length
-    const revenue = sourceBookings.reduce((sum, b) => sum + getEstimatedPrice(b), 0)
-    return {
-      name: t(`admin.dashboard.leads.${source}`) || source,
-      value: count,
-      revenue,
-      key: source,
-    }
-  }).filter(item => item.value > 0)
-
-  // 2. Monthly Trend Chart
-  const monthlyDataMap: Record<string, { monthKey: string; monthName: string; count: number; revenue: number; sortKey: number }> = {}
-  filteredAnalyticsBookings.forEach((b) => {
-    if (!b.createdAt) return
-    const date = new Date(b.createdAt)
-    const year = date.getFullYear()
-    const month = date.getMonth()
-    const sortKey = year * 100 + month
-    const monthName = date.toLocaleDateString(i18n.language === 'fr' ? 'fr-CA' : 'en-CA', {
-      month: 'short',
-      year: 'numeric',
-    })
-    const key = `${year}-${month}`
-    if (!monthlyDataMap[key]) {
-      monthlyDataMap[key] = {
-        monthKey: key,
-        monthName,
-        count: 0,
-        revenue: 0,
-        sortKey,
-      }
-    }
-    monthlyDataMap[key].count += 1
-    monthlyDataMap[key].revenue += getEstimatedPrice(b)
-  })
-  const monthlyTrendData = Object.values(monthlyDataMap).sort((a, b) => a.sortKey - b.sortKey)
-
-  // Color Mapping for Lead Sources
-  const LEAD_COLORS: Record<string, string> = {
-    organic: '#5b7e8f',  // slate-brand
-    google: '#7fa0b0',   // slate-light
-    referral: '#c4b09a', // sand-dark
-    facebook: '#3f5f6e', // slate-dark
-    direct: '#7a8f96',   // text-muted
-  }
-
-  const formatCurrency = (val: number) => {
-    return new Intl.NumberFormat(i18n.language === 'fr' ? 'fr-CA' : 'en-CA', {
-      style: 'currency',
-      currency: 'CAD',
-      maximumFractionDigits: 0,
-    }).format(val)
-  }
-
-  const channelsPerformance = leadSourceKeys.map((source) => {
-    const sourceBookings = filteredAnalyticsBookings.filter((b) => b.leadSource === source)
-    const volume = sourceBookings.length
-    const revenue = sourceBookings.reduce((sum, b) => sum + getEstimatedPrice(b), 0)
-    const avgValue = volume > 0 ? revenue / volume : 0
-    const share = analyticsTotalBookings > 0 ? (volume / analyticsTotalBookings) * 100 : 0
-    return {
-      source,
-      name: t(`admin.dashboard.leads.${source}`) || source,
-      volume,
-      revenue,
-      avgValue,
-      share,
-    }
-  }).sort((a, b) => b.revenue - a.revenue)
-
-  // Loading state
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center bg-warm-white">
@@ -7985,122 +11905,19 @@ export default function AdminPage() {
         <AnimatePresence mode="wait">
           {/* Access Denied View */}
           {user && !isAuthorized && (
-            <motion.div
-              key="access-denied"
-              initial="hidden"
-              animate="visible"
-              exit="hidden"
-              variants={fadeUp}
-              className="w-full max-w-md bg-white border border-sand rounded shadow-sm p-6 md:p-8 mx-auto"
-            >
-              <div className="flex flex-col items-center text-center gap-6">
-                <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center shrink-0">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-8 h-8"
-                  >
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                  </svg>
-                </div>
-
-                <div className="space-y-2">
-                  <h1 className="font-display text-5xl text-charcoal">
-                    {t('admin.login.errorTitle')}
-                  </h1>
-                  <p className="font-body text-base text-text-muted">
-                    {authError || t('admin.login.errorMessage', { email: user.email })}
-                  </p>
-                </div>
-
-                <div className="w-full flex flex-col gap-3">
-                  <button
-                    onClick={handleSignOut}
-                    className={cn(
-                      'w-full bg-slate-brand text-white font-body font-medium rounded',
-                      'min-h-[48px] py-3 px-6 hover:bg-slate-dark transition-colors duration-200',
-                      'focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2'
-                    )}
-                  >
-                    {t('admin.login.tryAnother')}
-                  </button>
-                  <Link
-                    to="/"
-                    className={cn(
-                      'w-full border border-sand text-charcoal font-body font-medium rounded',
-                      'min-h-[48px] inline-flex items-center justify-center py-3 px-6',
-                      'hover:bg-cream transition-colors duration-200',
-                      'focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2'
-                    )}
-                  >
-                    {t('admin.login.backToHome')}
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
+            <AccessDeniedPanel
+              user={user}
+              handleSignOut={handleSignOut}
+              authError={authError}
+            />
           )}
 
           {/* Login Gate View */}
           {!user && (
-            <motion.div
-              key="login-gate"
-              initial="hidden"
-              animate="visible"
-              exit="hidden"
-              variants={fadeUp}
-              className="w-full max-w-md bg-white border border-sand rounded shadow-sm p-6 md:p-8 mx-auto"
-            >
-              <div className="flex flex-col items-center text-center gap-6">
-                <div className="w-16 h-16 bg-slate-pale text-slate-brand rounded-full flex items-center justify-center shrink-0">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-8 h-8"
-                  >
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                  </svg>
-                </div>
-
-                <div className="space-y-2">
-                  <h1 className="font-display text-5xl text-charcoal">
-                    {t('admin.login.heading')}
-                  </h1>
-                  <p className="font-body text-base text-text-muted">
-                    {t('admin.login.subhead')}
-                  </p>
-                </div>
-
-                {authError && (
-                  <div className="w-full p-3 bg-red-50 border border-red-200 text-red-700 rounded text-base font-body">
-                    {authError}
-                  </div>
-                )}
-
-                <button
-                  onClick={handleSignIn}
-                  className={cn(
-                    'w-full bg-slate-brand text-white font-body font-medium rounded',
-                    'min-h-[48px] py-3 px-6 hover:bg-slate-dark transition-colors duration-200',
-                    'focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2',
-                    'inline-flex items-center justify-center gap-3'
-                  )}
-                >
-                  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                    <path d="M12.24 10.285V13.4h6.887C18.2 15.614 15.645 18 12.24 18c-3.86 0-7-3.14-7-7s3.14-7 7-7c1.706 0 3.277.614 4.5 1.625l2.437-2.437C17.312 1.696 14.933 1 12.24 1 6.583 1 2 5.583 2 11.24s4.583 10.24 10.24 10.24c5.795 0 10.24-4.11 10.24-10.24 0-.568-.057-1.125-.17-1.67H12.24z" />
-                  </svg>
-                  {t('admin.login.button')}
-                </button>
-              </div>
-            </motion.div>
+            <LoginPanel
+              handleSignIn={handleSignIn}
+              authError={authError}
+            />
           )}
 
           {/* Authenticated Bookings Dashboard */}
@@ -8150,7 +11967,7 @@ export default function AdminPage() {
                   </div>
 
                   <button
-                    onClick={handleSignOut}
+                    onClick={() => { void handleSignOut() }}
                     className={cn(
                       'ml-2 border border-sand text-charcoal font-body font-medium rounded',
                       'min-h-[48px] px-4 py-2 text-base hover:bg-cream transition-colors duration-200',
@@ -8196,488 +12013,8 @@ export default function AdminPage() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
-                    className="flex flex-col gap-8"
                   >
-                    {/* Stats Counters Panel */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-1">
-                        <span className="font-body text-sm text-text-muted">
-                          {t('admin.dashboard.stats.total')}
-                        </span>
-                        <span className="font-display text-4xl text-charcoal font-bold">
-                          {totalCount}
-                        </span>
-                      </div>
-                      <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-slate-brand flex flex-col gap-1">
-                        <span className="font-body text-sm text-text-muted">
-                          {t('admin.dashboard.stats.pending')}
-                        </span>
-                        <span className="font-display text-4xl text-slate-brand font-bold">
-                          {pendingCount}
-                        </span>
-                      </div>
-                      <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-green-500 flex flex-col gap-1">
-                        <span className="font-body text-sm text-text-muted">
-                          {t('admin.dashboard.stats.confirmed')}
-                        </span>
-                        <span className="font-display text-4xl text-green-600 font-bold">
-                          {confirmedCount}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Filtering Controls Bar */}
-                    <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-6">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                        {/* Status filter */}
-                        <div className="flex flex-col gap-1.5">
-                          <label htmlFor="status-filter" className="font-body text-base text-charcoal font-medium">
-                            {t('admin.dashboard.filters.status')}
-                          </label>
-                          <select
-                            id="status-filter"
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                            className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
-                          >
-                            <option value="all">{t('common.all')}</option>
-                            <option value="pending">{t('booking.status.pending')}</option>
-                            <option value="confirmed">{t('booking.status.confirmed')}</option>
-                            <option value="completed">{t('booking.status.completed')}</option>
-                            <option value="cancelled">{t('booking.status.cancelled')}</option>
-                          </select>
-                        </div>
-
-                        {/* Service Type Filter */}
-                        <div className="flex flex-col gap-1.5">
-                          <label htmlFor="service-filter" className="font-body text-base text-charcoal font-medium">
-                            {t('admin.dashboard.filters.service')}
-                          </label>
-                          <select
-                            id="service-filter"
-                            value={serviceFilter}
-                            onChange={(e) => setServiceFilter(e.target.value)}
-                            className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
-                          >
-                            <option value="all">{t('common.all')}</option>
-                            <option value="standard">{t('services.standard.title')}</option>
-                            <option value="deep">{t('services.deep.title')}</option>
-                            <option value="moveout">{t('services.moveout.title')}</option>
-                            <option value="postconstruction">{t('services.postconstruction.title')}</option>
-                            <option value="airbnb">{t('services.airbnb.title')}</option>
-                            <option value="commercial">{t('services.commercial.title')}</option>
-                          </select>
-                        </div>
-
-                        {/* Language Filter */}
-                        <div className="flex flex-col gap-1.5">
-                          <label htmlFor="language-filter" className="font-body text-base text-charcoal font-medium">
-                            {t('admin.dashboard.filters.language')}
-                          </label>
-                          <select
-                            id="language-filter"
-                            value={languageFilter}
-                            onChange={(e) => setLanguageFilter(e.target.value)}
-                            className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
-                          >
-                            <option value="all">{t('common.all')}</option>
-                            <option value="en">{t('common.languages.en')}</option>
-                            <option value="fr">{t('common.languages.fr')}</option>
-                          </select>
-                        </div>
-
-                        {/* Sort By Filter */}
-                        <div className="flex flex-col gap-1.5">
-                          <label htmlFor="sort-by" className="font-body text-base text-charcoal font-medium">
-                            {t('admin.dashboard.filters.sortBy')}
-                          </label>
-                          <select
-                            id="sort-by"
-                            value={sortBy}
-                            onChange={(e) => setSortBy(e.target.value as 'preferredDate' | 'createdAt')}
-                            className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
-                          >
-                            <option value="preferredDate">{t('admin.dashboard.table.date')}</option>
-                            <option value="createdAt">{t('admin.dashboard.details.createdAt')}</option>
-                          </select>
-                        </div>
-
-                        {/* Sort Order Filter */}
-                        <div className="flex flex-col gap-1.5">
-                          <label htmlFor="sort-order" className="font-body text-base text-charcoal font-medium">
-                            {t('admin.dashboard.filters.sortOrder')}
-                          </label>
-                          <select
-                            id="sort-order"
-                            value={sortOrder}
-                            onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
-                            className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
-                          >
-                            <option value="asc">{t('common.asc')}</option>
-                            <option value="desc">{t('common.desc')}</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      {/* Search Bar */}
-                      <div className="flex flex-col gap-1.5">
-                        <label htmlFor="search-query" className="font-body text-base text-charcoal font-medium">
-                          {t('common.search')}
-                        </label>
-                        <input
-                          id="search-query"
-                          type="text"
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          placeholder={t('admin.dashboard.filters.search')}
-                          className="w-full border border-sand rounded px-4 py-3 min-h-[48px] font-body text-base text-charcoal focus:outline-none focus:ring-2 focus:ring-slate-brand"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Bookings Table */}
-                    <div className="bg-white border border-sand rounded shadow-sm overflow-x-auto">
-                      <table className="w-full border-collapse text-left min-w-[700px]">
-                        <thead>
-                          <tr className="border-b border-sand bg-cream">
-                            <th className="p-4 font-sub text-base text-charcoal font-bold">
-                              {t('admin.dashboard.table.client')}
-                            </th>
-                            <th className="p-4 font-sub text-base text-charcoal font-bold">
-                              {t('admin.dashboard.table.date')}
-                            </th>
-                            <th className="p-4 font-sub text-base text-charcoal font-bold">
-                              {t('admin.dashboard.table.service')}
-                            </th>
-                            <th className="p-4 font-sub text-base text-charcoal font-bold">
-                              {t('admin.dashboard.table.status')}
-                            </th>
-                            <th className="p-4 font-sub text-base text-charcoal font-bold">
-                              {t('admin.dashboard.table.assigned')}
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {filteredBookings.length === 0 ? (
-                            <tr>
-                              <td colSpan={5} className="p-8 text-center font-body text-base text-text-muted">
-                                {t('admin.dashboard.table.noResults')}
-                              </td>
-                            </tr>
-                          ) : (
-                            filteredBookings.map((b) => {
-                              const isExpanded = expandedRowId === b.id
-                              const clientName = `${b.firstName} ${b.lastName}`
-                              const serviceKey = b.serviceType
-
-                              return (
-                                <div key={b.id} className="contents">
-                                  {/* Main table row */}
-                                  <tr
-                                    onClick={() => setExpandedRowId(isExpanded ? null : (b.id ?? null))}
-                                    className={cn(
-                                      'border-b border-sand hover:bg-warm-white transition-colors duration-150 cursor-pointer',
-                                      isExpanded && 'bg-warm-white'
-                                    )}
-                                  >
-                                    <td className="p-4 font-body text-base text-charcoal font-medium">
-                                      <div className="flex flex-col">
-                                        <span>{clientName}</span>
-                                        <span className="text-sm text-text-muted font-normal">{b.email}</span>
-                                      </div>
-                                    </td>
-                                    <td className="p-4 font-body text-base text-charcoal">
-                                      {b.preferredDate}
-                                    </td>
-                                    <td className="p-4 font-body text-base text-charcoal capitalize">
-                                      {t(`services.${serviceKey}.title`)}
-                                    </td>
-                                    <td className="p-4">
-                                      <span
-                                        className={cn(
-                                          'inline-flex items-center px-2.5 py-0.5 rounded font-body text-sm font-medium border',
-                                          b.status === 'pending' && 'bg-yellow-50 text-yellow-800 border-yellow-200',
-                                          b.status === 'confirmed' && 'bg-green-50 text-green-800 border-green-200',
-                                          b.status === 'completed' && 'bg-blue-50 text-blue-800 border-blue-200',
-                                          b.status === 'cancelled' && 'bg-red-50 text-red-800 border-red-200'
-                                        )}
-                                      >
-                                        {t(`booking.status.${b.status}`)}
-                                      </span>
-                                    </td>
-                                    <td className="p-4 font-body text-base text-charcoal">
-                                      {b.assignedTo || (
-                                        <span className="text-text-muted italic">
-                                          {t('admin.dashboard.details.unassigned')}
-                                        </span>
-                                      )}
-                                    </td>
-                                  </tr>
-
-                                  {/* Collapsible details panel */}
-                                  <AnimatePresence initial={false}>
-                                    {isExpanded && b.id && (
-                                      <tr>
-                                        <td colSpan={5} className="p-0 border-b border-sand bg-slate-pale/30">
-                                          <motion.div
-                                            initial={{ height: 0, opacity: 0 }}
-                                            animate={{ height: 'auto', opacity: 1 }}
-                                            exit={{ height: 0, opacity: 0 }}
-                                            transition={{ duration: 0.3 }}
-                                            className="overflow-hidden p-6"
-                                          >
-                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
-                                              {/* Contact & Address Section */}
-                                              <div className="flex flex-col gap-4">
-                                                <h4 className="font-sub text-xl text-charcoal font-bold border-b border-sand pb-1.5">
-                                                  {t('admin.dashboard.table.client')}
-                                                </h4>
-                                                <div className="font-body text-base text-charcoal space-y-2">
-                                                  <p>
-                                                    <span className="font-medium">{t('booking.fields.phone.label')}: </span>
-                                                    <a href={`tel:${b.phone}`} className="text-slate-brand hover:underline min-h-[48px] inline-flex items-center">
-                                                      {b.phone}
-                                                    </a>
-                                                  </p>
-                                                  <p>
-                                                    <span className="font-medium">{t('admin.dashboard.filters.language')}: </span>
-                                                    {b.language === 'en' ? t('common.languages.enLong') : t('common.languages.frLong')}
-                                                  </p>
-                                                  <p className="pt-2">
-                                                    <span className="font-medium block mb-1">
-                                                      {t('admin.dashboard.details.address')}:
-                                                    </span>
-                                                    <span className="text-text-muted block leading-snug">
-                                                      {b.address}
-                                                    </span>
-                                                  </p>
-                                                </div>
-                                              </div>
-
-                                              {/* Property Specifications */}
-                                              <div className="flex flex-col gap-4">
-                                                <h4 className="font-sub text-xl text-charcoal font-bold border-b border-sand pb-1.5">
-                                                  {t('admin.dashboard.details.property')}
-                                                </h4>
-                                                <div className="font-body text-base text-charcoal space-y-2">
-                                                  <p>
-                                                    <span className="font-medium">{t('booking.fields.propertyType.label')}: </span>
-                                                    {t(`booking.fields.propertyType.options.${b.propertyType}`)}
-                                                  </p>
-                                                  <p>
-                                                    <span className="font-medium">{t('admin.dashboard.details.rooms')}: </span>
-                                                    {t('admin.dashboard.details.roomsValue', { bedrooms: b.bedrooms, bathrooms: b.bathrooms })}
-                                                  </p>
-                                                  {b.squareFootage && (
-                                                    <p>
-                                                      <span className="font-medium">{t('admin.dashboard.details.size')}: </span>
-                                                      {t('admin.dashboard.details.sqft', { size: b.squareFootage })}
-                                                    </p>
-                                                  )}
-                                                  <p>
-                                                    <span className="font-medium">{t('admin.dashboard.details.frequency')}: </span>
-                                                    {t(`booking.fields.frequency.options.${b.frequency}`)}
-                                                  </p>
-                                                  <p>
-                                                    <span className="font-medium">{t('admin.dashboard.details.pets')}: </span>
-                                                    <span className={cn(b.pets ? 'text-amber-700 font-medium' : '')}>
-                                                      {b.pets
-                                                        ? t('admin.dashboard.details.petsYes')
-                                                        : t('admin.dashboard.details.petsNo')}
-                                                    </span>
-                                                  </p>
-                                                </div>
-                                              </div>
-
-                                              {/* Workflow & Admin Controls */}
-                                              <div className="flex flex-col gap-4">
-                                                <h4 className="font-sub text-xl text-charcoal font-bold border-b border-sand pb-1.5">
-                                                  {t('admin.dashboard.details.assignHeader')}
-                                                </h4>
-
-                                                {/* Status Update Control */}
-                                                <div className="flex flex-col gap-1.5">
-                                                  <label
-                                                    htmlFor={`status-select-${b.id}`}
-                                                    className="font-body text-sm text-text-muted"
-                                                  >
-                                                    {t('admin.dashboard.details.updateStatus')}
-                                                  </label>
-                                                  <select
-                                                    id={`status-select-${b.id}`}
-                                                    value={b.status}
-                                                    onChange={(e) =>
-                                                      handleStatusChange(b.id!, e.target.value as BookingStatus)
-                                                    }
-                                                    className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-white focus:outline-none focus:ring-2 focus:ring-slate-brand"
-                                                  >
-                                                    <option value="pending">{t('booking.status.pending')}</option>
-                                                    <option value="confirmed">{t('booking.status.confirmed')}</option>
-                                                    <option value="completed">{t('booking.status.completed')}</option>
-                                                    <option value="cancelled">{t('booking.status.cancelled')}</option>
-                                                  </select>
-                                                </div>
-
-                                                {/* Cleaner Assignment Control */}
-                                                <div className="flex flex-col gap-1.5 mt-1">
-                                                  <label
-                                                    htmlFor={`cleaner-select-${b.id}`}
-                                                    className="font-body text-sm text-text-muted"
-                                                  >
-                                                    {t('admin.dashboard.details.assignCleaner')}
-                                                  </label>
-                                                  <select
-                                                    id={`cleaner-select-${b.id}`}
-                                                    value={
-                                                      showCustomInput[b.id!]
-                                                        ? 'custom'
-                                                        : b.assignedTo === null
-                                                        ? 'unassigned'
-                                                        : b.assignedTo && ['Lauren S.', 'Sarah M.'].includes(b.assignedTo)
-                                                        ? b.assignedTo
-                                                        : 'custom'
-                                                    }
-                                                    onChange={(e) => handleAssignmentChange(b.id!, e.target.value)}
-                                                    className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-white focus:outline-none focus:ring-2 focus:ring-slate-brand"
-                                                  >
-                                                    <option value="unassigned">
-                                                      {t('admin.dashboard.details.unassigned')}
-                                                    </option>
-                                                    <option value="Lauren S.">Lauren S.</option>
-                                                    <option value="Sarah M.">Sarah M.</option>
-                                                    <option value="custom">
-                                                      {t('admin.dashboard.details.customOption')}
-                                                    </option>
-                                                  </select>
-
-                                                  {/* Custom cleaner text input fallback */}
-                                                  {(showCustomInput[b.id!] ||
-                                                    (b.assignedTo &&
-                                                      !['Lauren S.', 'Sarah M.'].includes(b.assignedTo))) && (
-                                                    <div className="flex flex-col gap-1.5 mt-2">
-                                                      <label
-                                                        htmlFor={`custom-cleaner-input-${b.id}`}
-                                                        className="font-body text-sm text-text-muted"
-                                                      >
-                                                        {t('admin.dashboard.details.customCleaner')}
-                                                      </label>
-                                                      <div className="flex gap-2">
-                                                        <div className="flex-1">
-                                                          <input
-                                                            id={`custom-cleaner-input-${b.id}`}
-                                                            type="text"
-                                                            value={
-                                                              customCleanerNames[b.id!] !== undefined
-                                                                ? customCleanerNames[b.id!]
-                                                                : b.assignedTo || ''
-                                                            }
-                                                            onChange={(e) =>
-                                                              setCustomCleanerNames((prev) => ({
-                                                                ...prev,
-                                                                [b.id!]: e.target.value,
-                                                              }))
-                                                            }
-                                                            placeholder={t('admin.dashboard.details.customPlaceholder')}
-                                                            className="w-full border border-sand rounded px-4 py-3 min-h-[48px] font-body text-base text-charcoal bg-white focus:outline-none focus:ring-2 focus:ring-slate-brand"
-                                                          />
-                                                        </div>
-                                                        <button
-                                                          onClick={() => handleCustomCleanerSave(b.id!)}
-                                                          className={cn(
-                                                            'bg-slate-brand text-white font-body font-medium rounded',
-                                                            'min-h-[48px] px-4 py-2 hover:bg-slate-dark transition-colors duration-200',
-                                                            'focus:outline-none focus:ring-2 focus:ring-slate-brand'
-                                                          )}
-                                                        >
-                                                          {t('admin.dashboard.details.save')}
-                                                        </button>
-                                                      </div>
-                                                    </div>
-                                                  )}
-                                                </div>
-                                              </div>
-                                            </div>
-
-                                            {/* Sub-details (Notes, Add-ons, Workflow) */}
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mt-8 pt-6 border-t border-sand">
-                                              {/* Extras & Add-ons */}
-                                              <div className="flex flex-col gap-2">
-                                                <h4 className="font-sub text-xl text-charcoal font-bold">
-                                                  {t('admin.dashboard.details.addons')}
-                                                </h4>
-                                                {b.addOns && b.addOns.length > 0 ? (
-                                                  <div className="flex flex-wrap gap-2 mt-1">
-                                                    {b.addOns.map((add) => (
-                                                      <span
-                                                        key={add}
-                                                        className="bg-slate-pale text-slate-dark border border-sand px-2.5 py-1 rounded font-body text-sm font-medium"
-                                                      >
-                                                        {t(`booking.fields.addOns.options.${add}`)}
-                                                      </span>
-                                                    ))}
-                                                  </div>
-                                                ) : (
-                                                  <p className="font-body text-base text-text-muted italic mt-1">
-                                                    {t('admin.dashboard.details.noAddons')}
-                                                  </p>
-                                                )}
-                                              </div>
-
-                                              {/* Notes Section */}
-                                              <div className="flex flex-col gap-2">
-                                                <h4 className="font-sub text-xl text-charcoal font-bold">
-                                                  {t('admin.dashboard.details.notes')}
-                                                </h4>
-                                                <p className="font-body text-base text-charcoal bg-white border border-sand rounded p-3 mt-1 leading-normal whitespace-pre-line min-h-[60px]">
-                                                  {b.notes?.trim() || t('admin.dashboard.details.noNotes')}
-                                                </p>
-                                              </div>
-                                            </div>
-
-                                            {/* Lead Source, Timestamps, Flags Footer */}
-                                            <div className="flex flex-wrap gap-x-8 gap-y-2 text-left mt-8 pt-4 border-t border-sand text-base font-body text-text-muted">
-                                              <p>
-                                                <span className="font-medium text-charcoal">
-                                                  {t('admin.dashboard.details.createdAt')}:{' '}
-                                                </span>
-                                                {b.createdAt?.toLocaleString(i18n.language === 'fr' ? 'fr-CA' : 'en-CA')}
-                                              </p>
-                                              <p>
-                                                <span className="font-medium text-charcoal">
-                                                  {t('admin.dashboard.details.leadSource')}:{' '}
-                                                </span>
-                                                <span className="capitalize">
-                                                   {t(`admin.dashboard.leads.${b.leadSource}`) || b.leadSource}
-                                                 </span>
-                                              </p>
-                                              <p>
-                                                <span className="font-medium text-charcoal">
-                                                  {t('admin.dashboard.details.workflow')}:{' '}
-                                                </span>
-                                                {b.isAirbnb && (
-                                                  <span className="bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded mr-2">
-                                                    {t('admin.dashboard.details.isAirbnb')}
-                                                  </span>
-                                                )}
-                                                {b.photoConfirmation && (
-                                                  <span className="bg-blue-50 text-blue-800 border border-blue-200 px-2 py-0.5 rounded">
-                                                    {t('admin.dashboard.details.photoConf')}
-                                                  </span>
-                                                )}
-                                              </p>
-                                            </div>
-                                          </motion.div>
-                                        </td>
-                                      </tr>
-                                    )}
-                                  </AnimatePresence>
-                                </div>
-                              )
-                            })
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
+                    <BookingsTable {...bookingsState} />
                   </motion.div>
                 ) : (
                   <motion.div
@@ -8686,236 +12023,8 @@ export default function AdminPage() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
-                    className="flex flex-col gap-8"
                   >
-                    {/* Time Range Selector */}
-                    <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-                      <div>
-                        <h2 className="font-display text-4xl text-charcoal">
-                          {t('admin.dashboard.analytics.title')}
-                        </h2>
-                      </div>
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
-                        <label htmlFor="analytics-range" className="font-body text-base text-charcoal font-medium whitespace-nowrap">
-                          {t('admin.dashboard.analytics.rangeLabel')}:
-                        </label>
-                        <select
-                          id="analytics-range"
-                          value={analyticsTimeRange}
-                          onChange={(e) => setAnalyticsTimeRange(e.target.value as 'all' | '30days' | '90days' | 'ytd' | 'month')}
-                          className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
-                        >
-                          <option value="all">{t('admin.dashboard.analytics.ranges.all')}</option>
-                          <option value="30days">{t('admin.dashboard.analytics.ranges.30days')}</option>
-                          <option value="90days">{t('admin.dashboard.analytics.ranges.90days')}</option>
-                          <option value="ytd">{t('admin.dashboard.analytics.ranges.ytd')}</option>
-                          <option value="month">{t('admin.dashboard.analytics.ranges.month')}</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    {/* KPI Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-1">
-                        <span className="font-body text-sm text-text-muted">
-                          {t('admin.dashboard.analytics.stats.bookingsCount')}
-                        </span>
-                        <span className="font-display text-4xl text-charcoal font-bold">
-                          {analyticsTotalBookings}
-                        </span>
-                      </div>
-                      <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-slate-brand flex flex-col gap-1">
-                        <span className="font-body text-sm text-text-muted">
-                          {t('admin.dashboard.analytics.stats.estimatedRevenue')}
-                        </span>
-                        <span className="font-display text-4xl text-slate-brand font-bold">
-                          {formatCurrency(analyticsTotalRevenue)}
-                        </span>
-                      </div>
-                      <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-green-500 flex flex-col gap-1">
-                        <span className="font-body text-sm text-text-muted">
-                          {t('admin.dashboard.analytics.stats.avgBookingValue')}
-                        </span>
-                        <span className="font-display text-4xl text-green-600 font-bold">
-                          {formatCurrency(analyticsAvgBookingValue)}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Charts Grid */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                      {/* Lead Source Pie Chart */}
-                      <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-4">
-                        <h3 className="font-sub text-2xl text-charcoal font-bold border-b border-sand pb-2">
-                          {t('admin.dashboard.analytics.charts.leadDistribution')}
-                        </h3>
-                        <div className="h-[320px] w-full flex items-center justify-center">
-                          {leadSourceData.length === 0 ? (
-                            <span className="font-body text-base text-text-muted italic">
-                              {t('admin.dashboard.table.noResults')}
-                            </span>
-                          ) : (
-                            <ResponsiveContainer width="100%" height="100%">
-                              <PieChart>
-                                <Pie
-                                  data={leadSourceData}
-                                  cx="50%"
-                                  cy="50%"
-                                  innerRadius={60}
-                                  outerRadius={90}
-                                  paddingAngle={4}
-                                  dataKey="value"
-                                >
-                                  {leadSourceData.map((entry) => (
-                                    <Cell key={`cell-${entry.key}`} fill={LEAD_COLORS[entry.key] || '#7a8f96'} />
-                                  ))}
-                                </Pie>
-                                <RechartsTooltip
-                                  formatter={(value: unknown, name: unknown, props: unknown) => {
-                                    const valStr = String(value)
-                                    const nameStr = String(name)
-                                    const payload = (props as { payload?: { revenue?: number } })?.payload
-                                    const revenue = payload?.revenue || 0
-                                    return [
-                                      `${valStr} ${t('admin.dashboard.analytics.charts.bookings').toLowerCase()} (${formatCurrency(revenue)})`,
-                                      nameStr,
-                                    ]
-                                  }}
-                                  contentStyle={{
-                                    fontFamily: 'var(--font-body)',
-                                    fontSize: '14px',
-                                    borderRadius: '4px',
-                                    borderColor: '#c4b09a',
-                                  }}
-                                />
-                                <RechartsLegend
-                                  verticalAlign="bottom"
-                                  height={36}
-                                  iconType="circle"
-                                  wrapperStyle={{
-                                    fontFamily: 'var(--font-body)',
-                                    fontSize: '14px',
-                                  }}
-                                />
-                              </PieChart>
-                            </ResponsiveContainer>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Monthly Trend Bar Chart */}
-                      <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-4">
-                        <h3 className="font-sub text-2xl text-charcoal font-bold border-b border-sand pb-2">
-                          {t('admin.dashboard.analytics.charts.monthlyTrend')}
-                        </h3>
-                        <div className="h-[320px] w-full flex items-center justify-center">
-                          {monthlyTrendData.length === 0 ? (
-                            <span className="font-body text-base text-text-muted italic">
-                              {t('admin.dashboard.table.noResults')}
-                            </span>
-                          ) : (
-                            <ResponsiveContainer width="100%" height="100%">
-                              <BarChart data={monthlyTrendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e8e8e8" />
-                                <XAxis
-                                  dataKey="monthName"
-                                  stroke="#7a8f96"
-                                  tickLine={false}
-                                  axisLine={false}
-                                  style={{
-                                    fontFamily: 'var(--font-body)',
-                                    fontSize: '12px',
-                                  }}
-                                />
-                                <YAxis
-                                  stroke="#7a8f96"
-                                  tickLine={false}
-                                  axisLine={false}
-                                  style={{
-                                    fontFamily: 'var(--font-body)',
-                                    fontSize: '12px',
-                                  }}
-                                />
-                                <RechartsTooltip
-                                  formatter={(value: unknown, name: unknown) => {
-                                    const val = Number(value)
-                                    const nm = String(name)
-                                    if (nm === 'revenue') {
-                                      return [formatCurrency(val), t('admin.dashboard.analytics.charts.revenue')];
-                                    }
-                                    return [val, t('admin.dashboard.analytics.charts.bookings')];
-                                  }}
-                                  contentStyle={{
-                                    fontFamily: 'var(--font-body)',
-                                    fontSize: '14px',
-                                    borderRadius: '4px',
-                                    borderColor: '#c4b09a',
-                                  }}
-                                />
-                                <Bar dataKey="revenue" fill="#5b7e8f" name="revenue" radius={[4, 4, 0, 0]} />
-                              </BarChart>
-                            </ResponsiveContainer>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Channels Performance Table */}
-                    <div className="bg-white border border-sand rounded shadow-sm flex flex-col gap-4 p-6">
-                      <h3 className="font-sub text-2xl text-charcoal font-bold border-b border-sand pb-2">
-                        {t('admin.dashboard.analytics.title')}
-                      </h3>
-                      <div className="overflow-x-auto">
-                        <table className="w-full border-collapse text-left min-w-[600px]">
-                          <thead>
-                            <tr className="border-b border-sand bg-cream">
-                              <th className="p-4 font-sub text-base text-charcoal font-bold">
-                                {t('admin.dashboard.analytics.table.channel')}
-                              </th>
-                              <th className="p-4 font-sub text-base text-charcoal font-bold text-center">
-                                {t('admin.dashboard.analytics.table.volume')}
-                              </th>
-                              <th className="p-4 font-sub text-base text-charcoal font-bold text-right">
-                                {t('admin.dashboard.analytics.table.revenue')}
-                              </th>
-                              <th className="p-4 font-sub text-base text-charcoal font-bold text-right">
-                                {t('admin.dashboard.analytics.table.avgValue')}
-                              </th>
-                              <th className="p-4 font-sub text-base text-charcoal font-bold text-right">
-                                {t('admin.dashboard.analytics.table.share')}
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {channelsPerformance.map((ch) => (
-                              <tr key={ch.source} className="border-b border-sand hover:bg-warm-white transition-colors duration-150">
-                                <td className="p-4 font-body text-base text-charcoal font-medium">
-                                  <div className="flex items-center gap-2">
-                                    <span
-                                      className="w-3 h-3 rounded-full shrink-0"
-                                      style={{ backgroundColor: LEAD_COLORS[ch.source] || '#7a8f96' }}
-                                    />
-                                    {ch.name}
-                                  </div>
-                                </td>
-                                <td className="p-4 font-body text-base text-charcoal text-center">
-                                  {ch.volume}
-                                </td>
-                                <td className="p-4 font-body text-base text-charcoal text-right">
-                                  {formatCurrency(ch.revenue)}
-                                </td>
-                                <td className="p-4 font-body text-base text-charcoal text-right">
-                                  {formatCurrency(ch.avgValue)}
-                                </td>
-                                <td className="p-4 font-body text-base text-charcoal text-right">
-                                  {ch.share.toFixed(1)}%
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
+                    <AnalyticsDashboard {...analyticsState} />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -8941,10 +12050,10 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { calculateQuote } from '@/lib/quotePricing'
-import { submitBooking, detectLeadSource } from '@/lib/firestore'
+import { calculateQuote } from '@/lib/utils/quotePricing'
+import { submitBooking, detectLeadSource } from '@/lib/firebase/firestore'
 import JsonLd from '@/components/seo/JsonLd'
-import { getServiceSchema } from '@/lib/seo'
+import { getServiceSchema } from '@/lib/utils/seo'
 import SEO from '@/components/seo/SEO'
 
 // ─── Animation variant ───────────────────────────────────────────────────────
@@ -9122,7 +12231,7 @@ export default function AirbnbTurnoverPage() {
             >
               {t('airbnbPage.hero.heading')}
             </h1>
-            <p className="font-body text-base text-slate-pale max-w-lg mb-8">
+            <p className="font-body text-lg text-slate-pale font-bold max-w-lg mb-8">
               {t('airbnbPage.hero.subhead')}
             </p>
             <a
@@ -9177,7 +12286,7 @@ export default function AirbnbTurnoverPage() {
                 >
                   ✓
                 </span>
-                <span className="font-body text-base text-charcoal">
+                <span className="font-body text-lg text-charcoal font-bold">
                   {t(`airbnbPage.included.${key}`)}
                 </span>
               </motion.li>
@@ -9227,7 +12336,7 @@ export default function AirbnbTurnoverPage() {
                 <h3 className="font-sub text-2xl text-charcoal mb-2">
                   {t(`airbnbPage.howItWorks.${titleKey}`)}
                 </h3>
-                <p className="font-body text-base text-text-muted">
+                <p className="font-body text-lg text-charcoal font-bold">
                   {t(`airbnbPage.howItWorks.${descKey}`)}
                 </p>
               </motion.div>
@@ -9271,7 +12380,7 @@ export default function AirbnbTurnoverPage() {
                 <span className="font-display text-5xl text-white mb-2">
                   {t(`airbnbPage.trust.${statKey}`)}
                 </span>
-                <span className="font-body text-base text-slate-pale">
+                <span className="font-body text-lg text-slate-pale font-bold">
                   {t(`airbnbPage.trust.${labelKey}`)}
                 </span>
               </motion.div>
@@ -9305,7 +12414,7 @@ export default function AirbnbTurnoverPage() {
                 {t('airbnbPage.pricing.starting', { min: priceMin })}
               </p>
             )}
-            <p className="font-body text-base text-text-muted mb-6">
+            <p className="font-body text-lg text-charcoal font-bold mb-6">
               {t('airbnbPage.pricing.volume')}
             </p>
             <Link
@@ -9339,7 +12448,7 @@ export default function AirbnbTurnoverPage() {
             >
               {t('airbnbPage.form.heading')}
             </h2>
-            <p className="font-body text-base text-text-muted mb-8">
+            <p className="font-body text-lg text-charcoal font-bold mb-8">
               {t('airbnbPage.form.subhead')}
             </p>
           </motion.div>
@@ -9374,7 +12483,7 @@ export default function AirbnbTurnoverPage() {
               </div>
             ) : (
               <form
-                onSubmit={handleSubmit(onSubmit)}
+                onSubmit={(e) => { void handleSubmit(onSubmit)(e); }}
                 noValidate
                 aria-label={t('airbnbPage.form.heading')}
                 className="bg-white border border-sand rounded p-6 md:p-8 space-y-6"
@@ -9623,6 +12732,304 @@ export default function AirbnbTurnoverPage() {
 
 ---
 
+## File: src/pages/Blog.tsx
+
+```tsx
+import { motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
+import { BLOG_POSTS } from '@/lib/data/blogData'
+import SEO from '@/components/seo/SEO'
+import { fadeUp, stagger } from '@/lib/utils/animations'
+import { cn } from '@/lib/utils/utils'
+
+export default function Blog() {
+  const { t, i18n } = useTranslation()
+  const currentLang = (i18n.language || 'en') as 'en' | 'fr'
+
+  return (
+    <main className="bg-warm-white py-12 px-4 md:py-20 md:px-6">
+      <SEO
+        title={t('blog.meta.title')}
+        description={t('blog.meta.description')}
+      />
+      <div className="max-w-content mx-auto">
+        {/* Page Heading */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={fadeUp}
+          className="mb-12"
+        >
+          <h1 className="font-display text-5xl text-charcoal mb-4 font-bold">
+            {t('blog.pageHeading')}
+          </h1>
+          <p className="font-body text-base text-text-muted max-w-xl">
+            {t('blog.pageSubhead')}
+          </p>
+        </motion.div>
+
+        {/* Blog Post Cards Grid */}
+        {BLOG_POSTS.length === 0 ? (
+          <p className="font-body text-base text-text-muted">{t('blog.noPosts')}</p>
+        ) : (
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8"
+            initial="hidden"
+            animate="visible"
+            variants={stagger}
+          >
+            {BLOG_POSTS.map((post) => {
+              const title = post.title[currentLang] || post.title.en
+              const desc = post.description[currentLang] || post.description.en
+              const author = post.author[currentLang] || post.author.en
+
+              return (
+                <motion.article
+                  key={post.slug}
+                  variants={fadeUp}
+                  className="bg-white rounded border border-sand shadow-sm overflow-hidden flex flex-col h-full"
+                >
+                  <div className="aspect-[16/9] w-full overflow-hidden relative bg-cream">
+                    <img
+                      src={post.image}
+                      alt={title}
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <div className="p-6 flex flex-col flex-grow">
+                    <div className="flex flex-wrap gap-2 text-text-muted font-body text-sm mb-3">
+                      <span>{t('blog.writtenBy', { author })}</span>
+                      <span>•</span>
+                      <span>{t('blog.publishedAt', { date: post.publishedAt })}</span>
+                    </div>
+                    <h2 className="font-sub text-2xl text-charcoal mb-3 font-semibold hover:text-slate-brand transition-colors">
+                      <Link to={`/blog/${post.slug}`}>{title}</Link>
+                    </h2>
+                    <p className="font-body text-base text-charcoal mb-6 flex-grow">
+                      {desc}
+                    </p>
+                    <div className="mt-auto">
+                      <Link
+                        to={`/blog/${post.slug}`}
+                        className={cn(
+                          'inline-flex items-center justify-center font-body font-medium text-base rounded border border-slate-brand text-slate-brand',
+                          'min-h-[48px] px-6 py-2 hover:bg-slate-pale transition-colors duration-200',
+                          'focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2 w-full sm:w-auto'
+                        )}
+                      >
+                        {t('blog.readMore')} →
+                      </Link>
+                    </div>
+                  </div>
+                </motion.article>
+              )
+            })}
+          </motion.div>
+        )}
+      </div>
+    </main>
+  )
+}
+
+```
+
+---
+
+## File: src/pages/BlogPost.tsx
+
+```tsx
+import { motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
+import { useParams, Link } from 'react-router-dom'
+import { BLOG_POSTS } from '@/lib/data/blogData'
+import SEO from '@/components/seo/SEO'
+import { fadeUp } from '@/lib/utils/animations'
+import { cn } from '@/lib/utils/utils'
+
+// A simple Markdown parser component that handles paragraphs, headers (###), bold text (**), and lists (-).
+function MarkdownRenderer({ content }: { content: string }) {
+  const lines = content.trim().split('\n')
+  const elements: React.ReactNode[] = []
+
+  let listItems: string[] = []
+
+  const flushList = (key: string) => {
+    if (listItems.length > 0) {
+      elements.push(
+        <ul key={`list-${key}`} className="list-disc pl-6 mb-6 space-y-2 font-body text-base text-charcoal">
+          {listItems.map((item, idx) => (
+            <li key={idx} dangerouslySetInnerHTML={{ __html: formatInlineMarkdown(item) }} />
+          ))}
+        </ul>
+      )
+      listItems = []
+    }
+  }
+
+  // Parses bold tags **text** into <strong>text</strong>
+  const formatInlineMarkdown = (text: string) => {
+    return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+  }
+
+  lines.forEach((line, idx) => {
+    const trimmedLine = line.trim()
+
+    if (trimmedLine.startsWith('- ')) {
+      listItems.push(trimmedLine.substring(2))
+    } else {
+      flushList(String(idx))
+
+      if (trimmedLine.startsWith('### ')) {
+        elements.push(
+          <h3
+            key={idx}
+            className="font-sub text-2xl text-charcoal mt-8 mb-4 font-semibold"
+            dangerouslySetInnerHTML={{ __html: formatInlineMarkdown(trimmedLine.substring(4)) }}
+          />
+        )
+      } else if (trimmedLine.startsWith('## ')) {
+        elements.push(
+          <h2
+            key={idx}
+            className="font-display text-3xl text-charcoal mt-10 mb-4 font-bold"
+            dangerouslySetInnerHTML={{ __html: formatInlineMarkdown(trimmedLine.substring(3)) }}
+          />
+        )
+      } else if (trimmedLine.startsWith('# ')) {
+        elements.push(
+          <h1
+            key={idx}
+            className="font-display text-4xl text-charcoal mt-12 mb-4 font-bold"
+            dangerouslySetInnerHTML={{ __html: formatInlineMarkdown(trimmedLine.substring(2)) }}
+          />
+        )
+      } else if (trimmedLine === '') {
+        // Empty line, do nothing
+      } else {
+        elements.push(
+          <p
+            key={idx}
+            className="font-body text-base text-charcoal mb-6 leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: formatInlineMarkdown(trimmedLine) }}
+          />
+        )
+      }
+    }
+  })
+
+  // Flush any remaining list items at the end
+  flushList('end')
+
+  return <div>{elements}</div>
+}
+
+export default function BlogPost() {
+  const { slug } = useParams<{ slug: string }>()
+  const { t, i18n } = useTranslation()
+  const currentLang = (i18n.language || 'en') as 'en' | 'fr'
+
+  const post = BLOG_POSTS.find((p) => p.slug === slug)
+
+  if (!post) {
+    return (
+      <main className="bg-warm-white py-12 px-4 md:py-20 md:px-6">
+        <SEO
+          title={t('blog.meta.title')}
+          description={t('blog.meta.description')}
+        />
+        <div className="max-w-3xl mx-auto text-center">
+          <h1 className="font-display text-4xl text-charcoal mb-6 font-bold">
+            {t('blog.noPosts')}
+          </h1>
+          <Link
+            to="/blog"
+            className={cn(
+              'inline-flex items-center justify-center font-body font-medium text-base rounded bg-slate-brand text-white',
+              'min-h-[48px] px-6 py-3 hover:bg-slate-dark transition-colors duration-200'
+            )}
+          >
+            {t('blog.backToBlog')}
+          </Link>
+        </div>
+      </main>
+    )
+  }
+
+  const title = post.title[currentLang] || post.title.en
+  const desc = post.description[currentLang] || post.description.en
+  const author = post.author[currentLang] || post.author.en
+  const content = post.content[currentLang] || post.content.en
+  const readTime = post.readTime[currentLang] || post.readTime.en
+
+  return (
+    <main className="bg-warm-white py-12 px-4 md:py-20 md:px-6">
+      <SEO
+        title={t('blog.metaPost', { title })}
+        description={desc}
+      />
+      <div className="max-w-3xl mx-auto">
+        {/* Back Link */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={fadeUp}
+          className="mb-8"
+        >
+          <Link
+            to="/blog"
+            className={cn(
+              'inline-flex items-center font-body text-base text-slate-brand hover:text-slate-dark transition-colors',
+              'min-h-[48px]'
+            )}
+          >
+            {t('blog.backToBlog')}
+          </Link>
+        </motion.div>
+
+        {/* Article Header */}
+        <motion.article
+          initial="hidden"
+          animate="visible"
+          variants={fadeUp}
+          className="bg-white rounded border border-sand shadow-sm p-6 md:p-10"
+        >
+          <header className="mb-8 border-b border-sand pb-8">
+            <h1 className="font-display text-4xl md:text-5xl text-charcoal mb-4 font-bold leading-tight">
+              {title}
+            </h1>
+            <div className="flex flex-wrap gap-4 text-text-muted font-body text-base">
+              <span>{t('blog.writtenBy', { author })}</span>
+              <span>•</span>
+              <span>{t('blog.publishedAt', { date: post.publishedAt })}</span>
+              <span>•</span>
+              <span>{readTime}</span>
+            </div>
+          </header>
+
+          {/* Cover Image */}
+          <div className="aspect-[21/9] w-full overflow-hidden rounded mb-8 bg-cream border border-sand">
+            <img
+              src={post.image}
+              alt={title}
+              className="w-full h-full object-cover"
+            />
+          </div>
+
+          {/* Article Content */}
+          <div className="prose max-w-none">
+            <MarkdownRenderer content={content} />
+          </div>
+        </motion.article>
+      </div>
+    </main>
+  )
+}
+
+```
+
+---
+
 ## File: src/pages/BookingPage.tsx
 
 ```tsx
@@ -9631,9 +13038,9 @@ import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
-import { bookingFormSchema, BookingFormData } from '@/lib/bookingSchema'
-import { submitBooking, detectLeadSource } from '@/lib/firestore'
-import { logBookingStarted, logBookingCompleted } from '@/lib/analytics'
+import { bookingFormSchema, BookingFormData } from '@/lib/schemas/bookingSchema'
+import { submitBooking, detectLeadSource } from '@/lib/firebase/firestore'
+import { logBookingStarted, logBookingCompleted } from '@/lib/firebase/analytics'
 import BookingStep1 from '@/components/booking/BookingStep1'
 import BookingStep2 from '@/components/booking/BookingStep2'
 import BookingStep3 from '@/components/booking/BookingStep3'
@@ -9728,7 +13135,7 @@ export default function BookingPage() {
       const lang = i18n.language === 'fr' ? 'fr' : 'en'
       const bookingId = await submitBooking(data, lang, source)
       logBookingCompleted(data.serviceType)
-      navigate('/thank-you', {
+      void navigate('/thank-you', {
         state: {
           firstName:     data.firstName,
           email:         data.email,
@@ -9762,7 +13169,7 @@ export default function BookingPage() {
       <section className="bg-cream py-10 px-4 md:py-14 md:px-6">
         <div className="max-w-2xl mx-auto">
           <FormProvider {...methods}>
-            <form onSubmit={methods.handleSubmit(onSubmit)} noValidate className="space-y-8">
+            <form onSubmit={(e) => { void methods.handleSubmit(onSubmit)(e); }} noValidate className="space-y-8">
               <BookingStep1 />
               <BookingStep2 />
               <BookingStep3 />
@@ -9787,7 +13194,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import JsonLd from '@/components/seo/JsonLd'
-import { getFaqSchema } from '@/lib/seo'
+import { getFaqSchema } from '@/lib/utils/seo'
 import SEO from '@/components/seo/SEO'
 
 interface FaqItem {
@@ -9957,21 +13364,12 @@ import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { cn } from '@/lib/utils'
-import { GALLERY_PAIRS } from '@/lib/galleryData'
+import { cn } from '@/lib/utils/utils'
+import { GALLERY_PAIRS } from '@/lib/data/galleryData'
 import GalleryImage from '@/components/ui/GalleryImage'
 import Lightbox from '@/components/ui/Lightbox'
 import SEO from '@/components/seo/SEO'
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.45 } },
-}
-
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
-}
+import { fadeUp, stagger } from '@/lib/utils/animations'
 
 export default function Gallery() {
   const { t } = useTranslation()
@@ -10159,7 +13557,7 @@ export default function Home() {
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import type { LocationConfig } from '@/lib/locationData'
+import type { LocationConfig } from '@/lib/data/locationData'
 import SEO from '@/components/seo/SEO'
 
 export default function LocationPage({ config }: { config: LocationConfig }) {
@@ -10184,8 +13582,8 @@ export default function LocationPage({ config }: { config: LocationConfig }) {
             <h1 className="font-display text-4xl md:text-5xl text-charcoal mb-4">
               {t(config.headingKey)}
             </h1>
-            <p className="font-body text-base text-text-muted mb-4">{t(config.subheadKey)}</p>
-            <p className="font-body text-base text-charcoal max-w-2xl leading-relaxed">
+            <p className="font-body text-lg text-charcoal font-bold mb-4">{t(config.subheadKey)}</p>
+            <p className="font-body text-lg text-charcoal font-bold max-w-2xl leading-relaxed">
               {t(config.descriptionKey)}
             </p>
           </motion.div>
@@ -10212,7 +13610,7 @@ export default function LocationPage({ config }: { config: LocationConfig }) {
                   <circle cx="12" cy="10" r="3" />
                 </svg>
               </div>
-              <p className="font-body text-base text-charcoal">{t(config.calloutKey)}</p>
+              <p className="font-body text-lg text-charcoal font-bold">{t(config.calloutKey)}</p>
             </motion.div>
           )}
         </div>
@@ -10283,7 +13681,7 @@ export default function LocationPage({ config }: { config: LocationConfig }) {
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { ALL_LOCATIONS } from '@/lib/locationData'
+import { ALL_LOCATIONS } from '@/lib/data/locationData'
 import SEO from '@/components/seo/SEO'
 
 export default function LocationsOverview() {
@@ -10307,7 +13705,7 @@ export default function LocationsOverview() {
             <h1 className="font-display text-4xl md:text-5xl text-charcoal mb-4">
               {t('locations.overview.heading')}
             </h1>
-            <p className="font-body text-base text-text-muted">
+            <p className="font-body text-lg text-charcoal font-bold">
               {t('locations.overview.subhead')}
             </p>
           </motion.div>
@@ -10331,7 +13729,7 @@ export default function LocationsOverview() {
                   <h2 className="font-sub text-xl text-charcoal mb-2">
                     {t(loc.headingKey)}
                   </h2>
-                  <p className="font-body text-base text-text-muted mb-4">
+                  <p className="font-body text-lg text-charcoal font-bold mb-4">
                     {t(loc.subheadKey)}
                   </p>
                   <span
@@ -10359,7 +13757,7 @@ export default function LocationsOverview() {
 ```tsx
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils/utils'
 import SEO from '@/components/seo/SEO'
 
 interface PlaceholderPageProps {
@@ -10411,7 +13809,7 @@ import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import QuoteCalculator from '@/components/home/QuoteCalculator'
-import { calculateQuote, type QuoteServiceType } from '@/lib/quotePricing'
+import { calculateQuote, type QuoteServiceType } from '@/lib/utils/quotePricing'
 import SEO from '@/components/seo/SEO'
 
 const fadeUp = {
@@ -10466,7 +13864,7 @@ export default function PricingPage() {
             <h1 className="font-display text-5xl text-charcoal mb-4">
               {t('pricing.hero.title')}
             </h1>
-            <p className="font-body text-base text-text-muted max-w-xl">
+            <p className="font-body text-lg text-charcoal font-bold max-w-xl">
               {t('pricing.hero.subtitle')}
             </p>
           </motion.div>
@@ -10485,7 +13883,7 @@ export default function PricingPage() {
           >
             {t('pricing.services.heading')}
           </h2>
-          <p className="font-body text-base text-text-muted mb-8">
+          <p className="font-body text-lg text-charcoal font-bold mb-8">
             {t('pricing.services.reference')}
           </p>
 
@@ -10512,7 +13910,7 @@ export default function PricingPage() {
                   <p className="font-display text-3xl text-slate-brand mb-3">
                     {priceDisplay}
                   </p>
-                  <p className="font-body text-base text-text-muted flex-1 mb-4">
+                  <p className="font-body text-lg text-charcoal font-bold flex-1 mb-4">
                     {t(descKey)}
                   </p>
                   <Link
@@ -10540,7 +13938,7 @@ export default function PricingPage() {
           >
             {t('pricing.frequency.heading')}
           </h2>
-          <p className="font-body text-base text-text-muted mb-8">
+          <p className="font-body text-lg text-charcoal font-bold mb-8">
             {t('pricing.frequency.cta')}
           </p>
 
@@ -10561,7 +13959,7 @@ export default function PricingPage() {
                 )}
                 <p className="font-sub text-xl text-charcoal mb-1">{t(labelKey)}</p>
                 <p className="font-display text-3xl text-slate-brand mb-3">{t(saveKey)}</p>
-                <p className="font-body text-base text-text-muted">{t(taglineKey)}</p>
+                <p className="font-body text-lg text-charcoal font-bold">{t(taglineKey)}</p>
               </motion.div>
             ))}
           </div>
@@ -10600,10 +13998,10 @@ export default function PricingPage() {
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import type { ServiceConfig } from '@/lib/serviceData'
-import { calculateQuote } from '@/lib/quotePricing'
+import type { ServiceConfig } from '@/lib/data/serviceData'
+import { calculateQuote } from '@/lib/utils/quotePricing'
 import JsonLd from '@/components/seo/JsonLd'
-import { getServiceSchema } from '@/lib/seo'
+import { getServiceSchema } from '@/lib/utils/seo'
 import SEO from '@/components/seo/SEO'
 
 // ─── Animation variant ────────────────────────────────────────────────────────
@@ -10658,9 +14056,18 @@ export default function ServicePage({ config }: Props) {
       {/* ── 1. Hero ───────────────────────────────────────────────────────── */}
       <section
         aria-labelledby={`${config.key}-hero-heading`}
-        className="bg-charcoal relative overflow-hidden"
+        className="relative bg-charcoal overflow-hidden"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-dark to-charcoal opacity-80 pointer-events-none" />
+        {/* Hero image */}
+        <div className="absolute inset-0">
+          <img
+            src={`/images/${config.key}-hero.jpg`}
+            alt={t(`${k}.hero.imgAlt`)}
+            className="w-full h-full object-cover opacity-30"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-charcoal/90 via-charcoal/70 to-charcoal/30" />
+        </div>
+
         <div className="relative max-w-content mx-auto py-20 px-4 md:py-32 md:px-6">
           <motion.div
             initial="hidden"
@@ -10681,7 +14088,7 @@ export default function ServicePage({ config }: Props) {
             >
               {pageTitle}
             </h1>
-            <p className="font-body text-base text-slate-pale max-w-lg mb-8">
+            <p className="font-body text-lg text-slate-pale font-bold max-w-lg mb-8">
               {t(`${k}.hero.subhead`)}
             </p>
             <Link
@@ -10732,7 +14139,7 @@ export default function ServicePage({ config }: Props) {
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span className="font-body text-base text-charcoal">
+                <span className="font-body text-lg text-charcoal font-bold">
                   {t(`${k}.included.${item}`)}
                 </span>
               </motion.div>
@@ -10771,7 +14178,7 @@ export default function ServicePage({ config }: Props) {
                 <h3 className="font-display text-xl text-charcoal mb-2">
                   {t(`servicePage.common.${step.titleKey}`)}
                 </h3>
-                <p className="font-body text-base text-text-muted leading-relaxed">
+                <p className="font-body text-lg text-charcoal font-bold leading-relaxed">
                   {t(`servicePage.common.${step.descKey}`)}
                 </p>
               </motion.div>
@@ -10807,7 +14214,7 @@ export default function ServicePage({ config }: Props) {
                 <span className="font-display text-5xl text-slate-pale block mb-2">
                   {t(`servicePage.common.${signal.statKey}`)}
                 </span>
-                <p className="font-body text-base text-slate-light leading-relaxed">
+                <p className="font-body text-lg text-slate-pale font-bold leading-relaxed">
                   {t(`servicePage.common.${signal.labelKey}`)}
                 </p>
               </motion.div>
@@ -10836,7 +14243,7 @@ export default function ServicePage({ config }: Props) {
               viewport={{ once: true }}
               variants={fadeUp}
               custom={1}
-              className="font-body text-xl text-charcoal mb-8"
+              className="font-body text-xl font-semibold text-charcoal mb-8"
             >
               {t('servicePage.pricingStarting', { min: priceMin })}
             </motion.p>
@@ -10875,7 +14282,7 @@ export default function ServicePage({ config }: Props) {
               viewport={{ once: true }}
               variants={fadeUp}
               custom={1}
-              className="font-body text-base text-text-muted mb-8 max-w-xl mx-auto"
+              className="font-body text-lg text-charcoal font-bold mb-8 max-w-xl mx-auto"
             >
               {t('servicePage.customPricingBody')}
             </motion.p>
@@ -10980,7 +14387,7 @@ export default function ServicesOverview() {
             animate="visible"
             variants={fadeUp}
             custom={1}
-            className="font-body text-base text-text-muted max-w-xl"
+            className="font-body text-lg text-charcoal font-bold max-w-xl"
           >
             {t('servicePage.overview.subhead')}
           </motion.p>
@@ -11000,6 +14407,7 @@ export default function ServicesOverview() {
 ## File: src/pages/ThankYouPage.tsx
 
 ```tsx
+import { useState } from 'react'
 import { useLocation, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
@@ -11031,8 +14439,15 @@ const STEPS = [
 
 export default function ThankYouPage() {
   const { t } = useTranslation()
-  const { state } = useLocation()
-  const booking = state as ThankYouState | null
+  const location = useLocation()
+  const booking = location.state as ThankYouState | null
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = (link: string) => {
+    void navigator.clipboard.writeText(link)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   return (
     <>
@@ -11130,6 +14545,48 @@ export default function ThankYouPage() {
                   </dd>
                 </div>
               </dl>
+            </motion.div>
+
+            {/* Referral / Sharing Card */}
+            <motion.div
+              custom={1}
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              className="bg-white rounded border border-sand shadow-sm p-6 mt-6"
+            >
+              <h2 className="font-sub text-2xl text-charcoal mb-2">
+                {t('referrals.referralShareTitle')}
+              </h2>
+              <p className="font-body text-base text-text-muted mb-4">
+                {t('referrals.referralShareDesc')}
+              </p>
+              
+              {/* Display code */}
+              <div className="bg-slate-pale border border-sand rounded p-3 mb-4 text-center">
+                <span className="font-body text-sm text-text-muted uppercase tracking-wider block mb-1">
+                  {t('referrals.promoCodeLabel')}
+                </span>
+                <span className="font-display text-2xl text-slate-dark font-bold tracking-widest">
+                  {`${booking.firstName.toUpperCase()}-${booking.bookingId.slice(0, 4).toUpperCase()}`}
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-2">
+                <input
+                  type="text"
+                  readOnly
+                  value={`${window.location.origin}/booking?ref=${booking.firstName.toUpperCase()}-${booking.bookingId.slice(0, 4).toUpperCase()}`}
+                  className="flex-grow border border-sand rounded px-4 py-3 min-h-[48px] font-body text-base text-charcoal bg-cream focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleCopy(`${window.location.origin}/booking?ref=${booking.firstName.toUpperCase()}-${booking.bookingId.slice(0, 4).toUpperCase()}`)}
+                  className="bg-slate-brand text-white font-body font-medium text-base rounded px-6 min-h-[48px] hover:bg-slate-dark transition-colors duration-200"
+                >
+                  {copied ? t('referrals.linkCopied') : t('referrals.copyLink')}
+                </button>
+              </div>
             </motion.div>
           </div>
         </section>
@@ -11237,6 +14694,8 @@ export interface Booking {
   photoConfirmation: boolean
   fsmAppointmentId?: string | null
   createdAt: Date
+  referredBy?: string | null
+  referralCode?: string | null
 }
 
 export interface Review {
@@ -11256,6 +14715,49 @@ export interface Persona {
   primaryService: string
   keyFeature: string
   retentionDriver: string
+}
+
+export interface BlogPost {
+  slug: string
+  title: { en: string; fr: string }
+  description: { en: string; fr: string }
+  content: { en: string; fr: string }
+  publishedAt: string
+  author: { en: string; fr: string }
+  readTime: { en: string; fr: string }
+  image: string
+}
+
+```
+
+---
+
+## File: src/vite-env.d.ts
+
+```typescript
+/// <reference types="vite/client" />
+
+interface ImportMetaEnv {
+  readonly VITE_FIREBASE_API_KEY: string
+  readonly VITE_FIREBASE_AUTH_DOMAIN: string
+  readonly VITE_FIREBASE_PROJECT_ID: string
+  readonly VITE_FIREBASE_STORAGE_BUCKET: string
+  readonly VITE_FIREBASE_MESSAGING_SENDER_ID: string
+  readonly VITE_FIREBASE_APP_ID: string
+  readonly VITE_FIREBASE_MEASUREMENT_ID: string
+  readonly VITE_FIRESTORE_DB_ID?: string
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}
+
+interface Window {
+  __MOCK_SUBMIT__?: (
+    data: unknown,
+    language: unknown,
+    source: unknown,
+  ) => Promise<string>
 }
 
 ```
@@ -11377,78 +14879,6 @@ export default {
 
 ---
 
-## File: update_cookie_json.py
-
-```python
-import json
-
-cookie_en = {
-  "preferences": "Cookie Preferences"
-}
-
-cookie_fr = {
-  "preferences": "Préférences de cookies"
-}
-
-def add_cookie_translation(filepath, data):
-    with open(filepath, 'r', encoding='utf-8') as f:
-        content = json.load(f)
-    content['cookieBanner']['preferences'] = data['preferences']
-    with open(filepath, 'w', encoding='utf-8') as f:
-        json.dump(content, f, indent=2, ensure_ascii=False)
-        f.write('\n')
-
-add_cookie_translation('/workspaces/fresh_nest/src/i18n/locales/en.json', cookie_en)
-add_cookie_translation('/workspaces/fresh_nest/src/i18n/locales/fr.json', cookie_fr)
-print("Updated translations for Cookie Preferences")
-
-```
-
----
-
-## File: update_json.py
-
-```python
-import json
-
-a11y_en = {
-  "navMain": "Main navigation",
-  "homeLink": "Fresh Nest Co. — Home",
-  "callUs": "Call Fresh Nest Co. at {{phone}}",
-  "navMobile": "Mobile navigation",
-  "footerServices": "Footer services links",
-  "footerLocations": "Footer service areas links",
-  "footerCompany": "Footer company links"
-}
-
-a11y_fr = {
-  "navMain": "Navigation principale",
-  "homeLink": "Fresh Nest Co. — Accueil",
-  "callUs": "Appelez Fresh Nest Co. au {{phone}}",
-  "navMobile": "Navigation mobile",
-  "footerServices": "Liens de services du pied de page",
-  "footerLocations": "Liens des zones de service du pied de page",
-  "footerCompany": "Liens de l'entreprise du pied de page"
-}
-
-def update_json(filepath, a11y_data):
-    with open(filepath, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    
-    data['a11y'] = a11y_data
-    
-    with open(filepath, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-        f.write('\n')
-
-update_json('/workspaces/fresh_nest/src/i18n/locales/en.json', a11y_en)
-update_json('/workspaces/fresh_nest/src/i18n/locales/fr.json', a11y_fr)
-print("Updated JSON files")
-
-```
-
----
-
 ## File: user-guide/admin-guide.md
 
 ```markdown
@@ -11483,17 +14913,29 @@ The dashboard is split into two tabs:
 2. Click the booking row to expand the detail panel.
 3. Use the **Status** dropdown to update the status.
 4. Use the **Assigned To** field to assign a cleaner by name (or click custom to type a custom name).
+5. **Referral Metadata:** If a referral code was applied, it is highlighted under the booking metadata in this panel (shows referral code used).
 
 ---
 
 ## Marketing Analytics Tab
 
 Toggle to the **Marketing Analytics** tab to view marketing performance metrics:
-- **KPI Cards:** Track estimated total bookings count, estimated revenues (calculated dynamically in-memory based on property specs), and average booking values.
+- **KPI Cards:** Track estimated total bookings count, estimated revenues (calculated dynamically in-memory based on property specs), average booking values, and **Referred Bookings** (total volume of cleans generated via referral codes).
 - **Time Range Filter:** Filter your charts by *All Time*, *Last 30 Days*, *Last 90 Days*, *Year to Date (YTD)*, or *This Month*.
 - **Lead Source Distribution:** A visual donut chart showing booking distribution by marketing channels (organic, google ads, referrals, facebook ads, direct).
 - **Monthly Trends:** A bar chart tracking estimated revenues month-over-month.
 - **Performance Table:** Shows booking count, total estimated revenue, average value, and percentage conversion share for each lead channel.
+
+---
+
+## Automated Recurring Booking Auto-Renewal
+
+To maximize retention and ensure cleaning consistency, a scheduled daily background script runs at **2:00 AM UTC**:
+1. **Target Identification:** The function identifies bookings marked as `confirmed` or `completed` with a frequency of `weekly`, `biweekly`, or `monthly`.
+2. **Next Date Window:** It projects the next occurrence (+7, +14, or +30 days). If that next date is within a 14-day window from today, it initiates renewal.
+3. **De-duplication Check:** The system verifies that no active booking already exists for that user on that specific date.
+4. **Draft Generation:** If clear, a new booking is generated with status `pending`, copying all property parameters, preferences, notes, and preferred cleaners.
+5. **Client Alerts:** Upon creation, bilingual emails and SMS notifications are automatically sent to notify the client of their upcoming reservation in their chosen language (`en` or `fr`).
 
 ---
 
@@ -11538,7 +14980,7 @@ firebase deploy --only hosting:freshnest-prod
 ```markdown
 # Booking Guide — Fresh Nest Co.
 **For:** Clients booking online  
-**Updated:** 2026-06-10 (E25 — single-page form)
+**Updated:** 2026-06-13 (Phase 4 — Blog & Referrals)
 
 ---
 
@@ -11547,8 +14989,9 @@ firebase deploy --only hosting:freshnest-prod
 1. **Visit our booking page** at [lilypad-freshnest.web.app/booking](https://lilypad-freshnest.web.app/booking).
 2. **Service Details:** Select your service type (Standard, Deep, Move-Out, Airbnb, etc.) and enter your property details (bedrooms, bathrooms, pets). If you select Airbnb Turnover, a note confirms the 11am–3pm service window.
 3. **Schedule & Add-Ons:** Choose your preferred frequency (one-time, weekly, biweekly, monthly), your preferred date, and any optional add-ons (oven, fridge, windows, etc.).
-4. **Contact Info:** Enter your name, email, phone number, and full service address. Include your Cornwall Island address or bridge crossing notes if applicable. Add any special instructions (gate codes, allergies, areas of focus).
-5. **Review & Submit:** Confirm all your details, optionally opt in to marketing emails, then click submit.
+4. **Contact Info:** Enter your name, email, phone number, and service address. Include your Cornwall Island address or bridge crossing notes if applicable.
+5. **Review & Promos (Step 4):** Verify all details. If you were referred by a friend, enter their referral code (or check if it was pre-populated from a referral link) in the **Promo / Referral Code** box and click **Verify**. Once verified, a $20 discount confirmation will display. You can also choose to opt-in to marketing communications.
+6. **Submit:** Click the submit button to finalize your appointment.
 
 **Tip:** If you used the Instant Quote Calculator, your property size and service type are carried forward automatically when you click "Book Now".
 
@@ -11556,11 +14999,18 @@ firebase deploy --only hosting:freshnest-prod
 
 ## After You Book
 
-- After submitting, you are taken to a **confirmation page** at `/thank-you` showing your name, service type, preferred date, frequency, and a booking reference number. Save or screenshot this page — the details are not available after you navigate away.
+- After submitting, you are taken to a **confirmation page** at `/thank-you` showing your booking summary. 
+- **Referral Sharing Loop:** The thank-you page displays a **"Give $20, Get $20"** card with your custom referral code (e.g., `FIRSTNAME-12AB`) and a shareable link. Copy this link or code to share with friends. When they book, they save $20, and you earn a $20 credit!
 - You will receive an **email confirmation** within 60 seconds. (French clients receive French-language confirmations.)
 - You will receive an **SMS confirmation** to your mobile number within 60 seconds.
 - A team member will confirm your booking within 24 hours.
 - You will receive a **reminder SMS** 48 hours before your scheduled clean.
+
+---
+
+## Organic Blog & Cleaning Tips
+
+We publish regular clean-living guides, cost analyses, and local Cornwall area service updates on our [Fresh Nest Co. Blog](https://lilypad-freshnest.web.app/blog). Check it out for professional tips!
 
 ---
 
@@ -11620,6 +15070,24 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     globals: true,
     exclude: [...configDefaults.exclude, 'e2e/**'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov'],
+      thresholds: {
+        lines: 40,
+        functions: 40,
+        branches: 35,
+        statements: 40,
+      },
+      exclude: [
+        'src/i18n/**',
+        'src/lib/data/**',
+        'src/types/**',
+        'src/main.tsx',
+        'src/App.tsx',
+        'dist/**',
+      ],
+    },
   },
 })
 

@@ -77,6 +77,15 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 
 ---
 
+### FSM Platform Phase 1 — Infrastructure & Authentication
+| Epic | Description | Priority | Primary Persona | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **F01a** | Monorepo Restructuring | High | Dev Team | Completed ✅ (2026-06-13) |
+| **F01b** | FSM Hosting & Firebase Setup | High | Owner, Dev Team | In Progress ⬜ |
+| **F01c** | Staff Auth System | High | Ahmed, Dev Team | In Progress ⬜ |
+
+---
+
 ### Epic Log
 
 #### R01 to R10 — Phase R1: Critical Security Hardening & Initial Fixes
@@ -566,3 +575,21 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   - [functions/src/index.ts](file:///workspaces/fresh_nest/functions/src/index.ts)
   - [functions/src/emailTemplates.ts](file:///workspaces/fresh_nest/functions/src/emailTemplates.ts)
 * **Close Report:** [Phase4-close-2026-06-13.md](file:///workspaces/fresh_nest/docs/reports/Phase4-close-2026-06-13.md)
+
+#### F01a — FSM Monorepo Workspace Transition
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-13)
+* **Strategy:** Restructured flat repository into npm workspaces (`apps/customer`, `apps/fsm`, `packages/shared`). Set up root workspace orchestration, isolated compiler options, FSM app scaffolding with service-worker skeleton, and resolved type/linting environments (e.g. `vite/client` and `eslint.config.js`).
+* **Persona tests:** 
+  - Ahmed (P10): Multi-lingual routing placeholder config loaded with Arabic RTL toggle setup.
+  - Margaret (P3): Ensured metadata font scales follow design system constraints (minimum `text-sm` for secondary labels).
+  - Dev Team (Ryan): Dual compiling environment with clean independent Vite build targets and test execution.
+* **Key Assets:**
+  - [package.json](file:///workspaces/fresh_nest/package.json) (root npm workspaces)
+  - [apps/customer/package.json](file:///workspaces/fresh_nest/apps/customer/package.json)
+  - [apps/fsm/package.json](file:///workspaces/fresh_nest/apps/fsm/package.json)
+  - [apps/fsm/src/vite-env.d.ts](file:///workspaces/fresh_nest/apps/fsm/src/vite-env.d.ts)
+  - [apps/fsm/src/App.tsx](file:///workspaces/fresh_nest/apps/fsm/src/App.tsx)
+  - [apps/fsm/src/index.css](file:///workspaces/fresh_nest/apps/fsm/src/index.css)
+* **Close Report:** [F01a-close-2026-06-13.md](file:///workspaces/fresh_nest/docs/reports/F01a-close-2026-06-13.md)
+

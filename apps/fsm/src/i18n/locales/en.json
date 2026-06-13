@@ -1,0 +1,11 @@
+{
+  "fsm": {
+    "portal": "Staff Portal",
+    "dashboard": "Dashboard",
+    "shifts": "Available Shifts",
+    "myJobs": "My Jobs",
+    "login": "Sign In",
+    "logout": "Sign Out",
+    "epicInProgress": "Fresh Nest Co. — Epic in progress"
+  }
+}

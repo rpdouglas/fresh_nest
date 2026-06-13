@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'DM Sans', sans-serif;
+    scroll-behavior: smooth;
+  }
+  body { @apply bg-warm-white text-charcoal font-normal; }
+  h1.font-display, h2.font-display { @apply font-bold; }
+  
+  /* RTL support for Ahmed (P10) */
+  [dir="rtl"] { font-family: 'DM Sans', 'Noto Sans Arabic', sans-serif; }
+}
