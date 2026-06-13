@@ -21,10 +21,19 @@ jobs:
           VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
           VITE_FIRESTORE_DB_ID: freshnest-dev
         run: npm run build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Deploy Customer Preview
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           projectId: freshnest-aa51e
           target: freshnest-dev
+          expires: 7d
+      - name: Deploy FSM Preview
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: freshnest-aa51e
+          target: freshnest-fsm
           expires: 7d

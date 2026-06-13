@@ -1,6 +1,6 @@
 # F01c — FSM Staff Authentication & Login
 **Epic:** F01 | **Phase:** Phase 1 (Infrastructure) | **Date:** June 13, 2026  
-**Primary Personas:** Ahmed (P10 - Multi-lingual UX, Magic link), Dev Team (Ryan)  
+**Primary Personas:** Ahmed (P10 - Bilingual UI, Magic link), Dev Team (Ryan)  
 **Dependencies:** F01a, F01b  
 
 ---
@@ -18,14 +18,13 @@ The authentication flow utilizes Firebase Authentication's email/password and pa
 2. The system checks Firestore `/staff` for a document matching the email. If no approved staff record exists, sign-in/link generation is blocked with a user-friendly error.
 3. If approved, the user can either sign in with a password or trigger `sendSignInLinkToEmail` for a magic link.
 4. On success, the session state is managed via a React context and a `useStaffAuth` hook.
-5. In FSM, RTL (Arabic) support is initialized. The i18n detection applies `dir="rtl"` to the HTML root when Arabic is selected.
 
 ---
 
 ## 3. Implementation Steps
 
 ### Step 1: Add i18n Translation Keys
-Add translation keys in `apps/fsm/src/i18n/locales/` (`en.json`, `fr.json`, `ar.json`) for login fields, errors (e.g. "email not found", "invalid credentials"), and placeholders.
+Add translation keys in `apps/fsm/src/i18n/locales/` (`en.json`, `fr.json`) for login fields, errors (e.g. "email not found", "invalid credentials"), and placeholders.
 
 ### Step 2: Implement the `useStaffAuth` Hook
 Create `apps/fsm/src/hooks/useStaffAuth.ts` which exposes:
@@ -40,7 +39,7 @@ Create `apps/fsm/src/hooks/useStaffAuth.ts` which exposes:
 
 ### Step 3: Build the Login Page
 Create `apps/fsm/src/pages/LoginPage.tsx`:
-- Toggle buttons for Language Selection (EN / FR / AR). Selecting AR sets `document.documentElement.dir = 'rtl'`.
+- Toggle buttons for Language Selection (EN / FR).
 - Forms for Email + Password sign-in.
 - Button to request a Magic Link (triggers `sendMagicLink`).
 - Clean visual states (loading spinners, error alerts) matching the warm-white, slate-brand, and sand design system.
@@ -53,7 +52,7 @@ Update `apps/fsm/src/App.tsx` to wrap schedule, dashboard, and job paths with th
 
 ## 4. Persona Acceptance Tests
 
-*   **P10 Ahmed (Arabic UX & Magic Link):**
-    Ahmed opens the portal on his mobile. He switches the language toggle to Arabic. The interface text changes and shifts to RTL layout. He enters his email and clicks "Send Magic Link". He receives the email, clicks it, and is redirected to the FSM portal where he is automatically logged in and lands on the dashboard without password entry.
+*   **P10 Ahmed (Bilingual UX & Magic Link):**
+    Ahmed opens the portal on his mobile. He switches the language toggle between English and French. The interface text changes accordingly. He enters his email and clicks "Send Magic Link". He receives the email, clicks it, and is redirected to the FSM portal where he is automatically logged in and lands on the dashboard without password entry.
 *   **Intruder / Public User:**
     An unauthorized user enters their email and attempts to log in or request a magic link. The app returns a clear bilingual validation error: "Access Denied. Your email is not registered in the system." No magic link is sent.

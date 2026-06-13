@@ -1,5 +1,8 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { StaffAuthProvider } from './context/StaffAuthProvider'
+import { ProtectedRoute } from './components/auth/ProtectedRoute'
+import LoginPage from './pages/LoginPage'
 
 function PlaceholderPage({ titleKey }: { titleKey: string }) {
   const { t } = useTranslation()
@@ -16,23 +19,32 @@ function PlaceholderPage({ titleKey }: { titleKey: string }) {
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <PlaceholderPage titleKey="fsm.dashboard" />,
-  },
-  {
-    path: '/shifts',
-    element: <PlaceholderPage titleKey="fsm.shifts" />,
-  },
-  {
-    path: '/jobs',
-    element: <PlaceholderPage titleKey="fsm.myJobs" />,
-  },
-  {
     path: '/login',
-    element: <PlaceholderPage titleKey="fsm.login" />,
+    element: <LoginPage />,
+  },
+  {
+    element: <ProtectedRoute />,
+    children: [
+      {
+        path: '/',
+        element: <PlaceholderPage titleKey="fsm.dashboard" />,
+      },
+      {
+        path: '/shifts',
+        element: <PlaceholderPage titleKey="fsm.shifts" />,
+      },
+      {
+        path: '/jobs',
+        element: <PlaceholderPage titleKey="fsm.myJobs" />,
+      },
+    ],
   },
 ])
 
 export default function App() {
-  return <RouterProvider router={router} />
+  return (
+    <StaffAuthProvider>
+      <RouterProvider router={router} />
+    </StaffAuthProvider>
+  )
 }

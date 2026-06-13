@@ -4,8 +4,26 @@
     "dashboard": "Dashboard",
     "shifts": "Available Shifts",
     "myJobs": "My Jobs",
-    "login": "Sign In",
     "logout": "Sign Out",
-    "epicInProgress": "Fresh Nest Co. — Epic in progress"
+    "epicInProgress": "Fresh Nest Co. — Epic in progress",
+    "login": {
+      "title": "Staff Portal",
+      "subtitle": "Access your schedule and job details",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "you@freshnest.ca",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "signInBtn": "Sign In with Password",
+      "sendMagicLinkBtn": "Send Magic Link",
+      "orDivider": "or",
+      "errorNoProfile": "Access Denied. Your email is not registered in the system.",
+      "errorInvalid": "Invalid email or password.",
+      "errorGeneral": "An error occurred. Please try again.",
+      "emailRequired": "Email is required.",
+      "magicLinkSent": "A sign-in link has been sent to your email. Please check your inbox.",
+      "authenticating": "Signing in...",
+      "sendingLink": "Sending link...",
+      "completingSignIn": "Completing sign-in, please wait..."
+    }
   }
 }

@@ -78,7 +78,7 @@ Stores employee profiles, schedule constraints, financial limits, and compliance
 | `phone` | `string` | ✅ | Employee phone number |
 | `role` | `string` | ✅ | `'cleaner' \| 'lead' \| 'supervisor'` |
 | `status` | `string` | ✅ | `'onboarding' \| 'active' \| 'inactive'` |
-| `preferences` | `map` | ✅ | Preferences: `{ language: 'en' \| 'fr' \| 'ar' }` (RTL fallback for Arabic) |
+| `preferences` | `map` | ✅ | Preferences: `{ language: 'en' \| 'fr' }` |
 | `constraints` | `map` | ✅ | Constraints: `{ transportMode: 'personal_vehicle' \| 'transit' \| 'rideshare' \| 'walk', transitBufferMinutes: number, blockedWindows: BlockedWindow[] }` |
 | `financials` | `map` | ✅ | Earnings details: `{ monthlyEarningsLimit: number \| null, currentMonthEarnings: number, earningsHistory: Array<{ month: string, total: number }> }` |
 | `compliance` | `map` | ✅ | Terms consent details: `{ acceptedTermsVersion: string, termsHistory: TermsAcceptance[] }` |

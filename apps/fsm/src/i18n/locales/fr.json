@@ -4,8 +4,26 @@
     "dashboard": "Tableau de bord",
     "shifts": "Quarts disponibles",
     "myJobs": "Mes mandats",
-    "login": "Connexion",
     "logout": "Déconnexion",
-    "epicInProgress": "Fresh Nest Co. — Projet en cours"
+    "epicInProgress": "Fresh Nest Co. — Projet en cours",
+    "login": {
+      "title": "Portail du personnel",
+      "subtitle": "Accédez à votre horaire et aux détails de vos mandats",
+      "emailLabel": "Adresse courriel",
+      "emailPlaceholder": "vous@freshnest.ca",
+      "passwordLabel": "Mot de passe",
+      "passwordPlaceholder": "••••••••",
+      "signInBtn": "Se connecter avec mot de passe",
+      "sendMagicLinkBtn": "Envoyer un lien magique",
+      "orDivider": "ou",
+      "errorNoProfile": "Accès refusé. Votre adresse courriel n'est pas enregistrée dans le système.",
+      "errorInvalid": "Courriel ou mot de passe invalide.",
+      "errorGeneral": "Une erreur est survenue. Veuillez réessayer.",
+      "emailRequired": "L'adresse courriel est obligatoire.",
+      "magicLinkSent": "Un lien de connexion a été envoyé à votre adresse courriel. Veuillez vérifier votre boîte de réception.",
+      "authenticating": "Connexion en cours...",
+      "sendingLink": "Envoi du lien...",
+      "completingSignIn": "Finalisation de la connexion, veuillez patienter..."
+    }
   }
 }

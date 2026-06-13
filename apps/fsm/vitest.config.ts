@@ -1,0 +1,31 @@
+import { defineConfig, configDefaults } from 'vitest/config'
+import react from '@vitejs/plugin-react'
+import path from 'path'
+
+export default defineConfig({
+  plugins: [react()],
+  resolve: { alias: { '@': path.resolve(__dirname, './src') } },
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+    globals: true,
+    exclude: [...configDefaults.exclude],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov'],
+      thresholds: {
+        lines: 40,
+        functions: 40,
+        branches: 35,
+        statements: 40,
+      },
+      exclude: [
+        'src/i18n/**',
+        'src/types/**',
+        'src/main.tsx',
+        'src/App.tsx',
+        'dist/**',
+      ],
+    },
+  },
+})

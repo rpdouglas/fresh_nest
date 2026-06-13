@@ -81,7 +81,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | Epic | Description | Priority | Primary Persona | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | **F01a** | Monorepo Restructuring | High | Dev Team | Completed ✅ (2026-06-13) |
-| **F01b** | FSM Hosting & Firebase Setup | High | Owner, Dev Team | In Progress ⬜ |
+| **F01b** | FSM Hosting & Firebase Setup | High | Owner, Dev Team | Completed ✅ (2026-06-13) |
 | **F01c** | Staff Auth System | High | Ahmed, Dev Team | In Progress ⬜ |
 
 ---
@@ -592,4 +592,45 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   - [apps/fsm/src/App.tsx](file:///workspaces/fresh_nest/apps/fsm/src/App.tsx)
   - [apps/fsm/src/index.css](file:///workspaces/fresh_nest/apps/fsm/src/index.css)
 * **Close Report:** [F01a-close-2026-06-13.md](file:///workspaces/fresh_nest/docs/reports/F01a-close-2026-06-13.md)
+
+#### F01b — FSM Hosting & Firebase Setup
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-13)
+* **Strategy:** Registered FSM hosting target and created FSM app env configuration. Extended security rules in firestore.rules and firestore.dev.rules to add FSM collections. Aligned referrals rules and expanded jobs update rules to include photos for cleaner's uploads. Configured multi-app build/deploy pipelines in GitHub Actions.
+* **Persona tests:** 
+  - Sarah (P12): Strict security rules on FSM collections, protected audit log and pay rates.
+  - Brenda (P11): Upgraded jobs rule to allow updates to the 'photos' field.
+  - Dev Team (Ryan): Isolated environment configurations and unified build/deploy multi-target pipelines in CI/CD.
+* **Key Assets:**
+  - [.firebaserc](file:///workspaces/fresh_nest/.firebaserc) (added freshnest-fsm target)
+  - [firebase.json](file:///workspaces/fresh_nest/firebase.json) (added freshnest-fsm hosting block with custom CSP)
+  - [firestore.rules](file:///workspaces/fresh_nest/firestore.rules) (added FSM rules and aligned referrals rules)
+  - [firestore.dev.rules](file:///workspaces/fresh_nest/firestore.dev.rules) (added FSM rules)
+  - [apps/fsm/.env.local](file:///workspaces/fresh_nest/apps/fsm/.env.local) (created with dev credentials)
+  - [apps/customer/.env.local](file:///workspaces/fresh_nest/apps/customer/.env.local) (created with dev credentials)
+  - [.github/workflows/firebase-deploy.yml](file:///workspaces/fresh_nest/.github/workflows/firebase-deploy.yml) (updated to deploy both targets)
+  - [.github/workflows/firebase-preview.yml](file:///workspaces/fresh_nest/.github/workflows/firebase-preview.yml) (updated to deploy both targets)
+* **Close Report:** [F01b-close-2026-06-13.md](file:///workspaces/fresh_nest/docs/reports/F01b-close-2026-06-13.md)
+
+#### F01c — FSM Staff Authentication & Login
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-13)
+* **Strategy:** Implemented bilingual (EN/FR) login interface with password and magic link authentication. Restricts login only to approved staff in `/staff` collection. Created `StaffAuthProvider` context and `useStaffAuth` hook. Set up dedicated Vitest testing configuration with 100% clean unit tests and 87% coverage.
+* **Persona tests:** 
+  - Ahmed (P10): Accesses simple login on mobile and authenticates via magic link with no password friction. Interface supports English and French.
+  - Margaret (P3): Strict 16px minimum text size and 48px touch targets on all login inputs and actions.
+  - Sarah (P12): Strict email registration verification blocks unregistered users and prevents access abuse.
+* **Key Assets:**
+  - [apps/fsm/src/context/StaffAuthContext.ts](file:///workspaces/fresh_nest/apps/fsm/src/context/StaffAuthContext.ts)
+  - [apps/fsm/src/context/StaffAuthProvider.tsx](file:///workspaces/fresh_nest/apps/fsm/src/context/StaffAuthProvider.tsx)
+  - [apps/fsm/src/hooks/useStaffAuth.ts](file:///workspaces/fresh_nest/apps/fsm/src/hooks/useStaffAuth.ts)
+  - [apps/fsm/src/components/auth/ProtectedRoute.tsx](file:///workspaces/fresh_nest/apps/fsm/src/components/auth/ProtectedRoute.tsx)
+  - [apps/fsm/src/pages/LoginPage.tsx](file:///workspaces/fresh_nest/apps/fsm/src/pages/LoginPage.tsx)
+  - [apps/fsm/src/i18n/index.ts](file:///workspaces/fresh_nest/apps/fsm/src/i18n/index.ts)
+  - [apps/fsm/vitest.config.ts](file:///workspaces/fresh_nest/apps/fsm/vitest.config.ts)
+  - [apps/fsm/src/hooks/useStaffAuth.test.tsx](file:///workspaces/fresh_nest/apps/fsm/src/hooks/useStaffAuth.test.tsx)
+  - [apps/fsm/src/pages/LoginPage.test.tsx](file:///workspaces/fresh_nest/apps/fsm/src/pages/LoginPage.test.tsx)
+* **Close Report:** [F01c-close-2026-06-13.md](file:///workspaces/fresh_nest/docs/reports/F01c-close-2026-06-13.md)
+
+
 

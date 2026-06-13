@@ -3,7 +3,6 @@ import { initReactI18next } from 'react-i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import en from './locales/en.json'
 import fr from './locales/fr.json'
-import ar from './locales/ar.json'
 
 void i18n
   .use(LanguageDetector)
@@ -12,10 +11,9 @@ void i18n
     resources: {
       en: { translation: en },
       fr: { translation: fr },
-      ar: { translation: ar },
     },
     fallbackLng: 'en',
-    supportedLngs: ['en', 'fr', 'ar'],
+    supportedLngs: ['en', 'fr'],
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],
@@ -27,7 +25,7 @@ void i18n
 
 // Set HTML attributes on language change
 i18n.on('languageChanged', (lng) => {
-  document.documentElement.dir = lng === 'ar' ? 'rtl' : 'ltr'
+  document.documentElement.dir = 'ltr'
   document.documentElement.lang = lng
 })
 

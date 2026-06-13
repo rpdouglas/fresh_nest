@@ -10,6 +10,9 @@
         ],
         "freshnest-dev": [
           "lilypad-freshnest-dev"
+        ],
+        "freshnest-fsm": [
+          "freshnest-fsm"
         ]
       }
     }

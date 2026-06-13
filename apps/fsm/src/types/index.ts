@@ -1,7 +1,7 @@
 // FSM Platform Types — do not merge with customer site types
 // Customer site types live in apps/customer/src/types/index.ts
 
-export type StaffLanguage = 'en' | 'fr' | 'ar'  // P10 Ahmed adds Arabic
+export type StaffLanguage = 'en' | 'fr'
 export type TransportMode = 'personal_vehicle' | 'transit' | 'rideshare' | 'walk'
 export type StaffRole = 'cleaner' | 'lead' | 'supervisor'
 export type StaffStatus = 'onboarding' | 'active' | 'inactive'
