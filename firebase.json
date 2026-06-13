@@ -9,7 +9,7 @@
   "hosting": [
     {
       "target": "freshnest-prod",
-      "public": "dist",
+      "public": "apps/customer/dist",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [{ "source": "**", "destination": "/index.html" }],
       "headers": [
@@ -25,7 +25,7 @@
     },
     {
       "target": "freshnest-dev",
-      "public": "dist",
+      "public": "apps/customer/dist",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [{ "source": "**", "destination": "/index.html" }],
       "headers": [
