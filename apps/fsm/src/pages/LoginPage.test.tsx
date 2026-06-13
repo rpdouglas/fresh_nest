@@ -66,7 +66,7 @@ describe('LoginPage Component', () => {
     expect(mockChangeLanguage).toHaveBeenCalledWith('fr')
   })
 
-  it('calls signInWithPassword on form submission', () => {
+  it('calls signInWithPassword on form submission', async () => {
     render(<LoginPage />)
 
     const emailInput = screen.getByLabelText('fsm.login.emailLabel')
@@ -76,14 +76,15 @@ describe('LoginPage Component', () => {
     fireEvent.change(emailInput, { target: { value: 'test@freshnest.ca' } })
     fireEvent.change(passwordInput, { target: { value: 'password123' } })
     
-    act(() => {
+    await act(async () => {
       fireEvent.click(submitBtn)
+      await Promise.resolve()
     })
 
     expect(mockSignInWithPassword).toHaveBeenCalledWith('test@freshnest.ca', 'password123')
   })
 
-  it('calls sendMagicLink when magic link button is clicked', () => {
+  it('calls sendMagicLink when magic link button is clicked', async () => {
     render(<LoginPage />)
 
     const emailInput = screen.getByLabelText('fsm.login.emailLabel')
@@ -95,8 +96,9 @@ describe('LoginPage Component', () => {
     fireEvent.change(emailInput, { target: { value: 'john@freshnest.ca' } })
     expect(magicLinkBtn).not.toBeDisabled()
 
-    act(() => {
+    await act(async () => {
       fireEvent.click(magicLinkBtn)
+      await Promise.resolve()
     })
 
     expect(mockSendMagicLink).toHaveBeenCalledWith('john@freshnest.ca')
@@ -122,7 +124,7 @@ describe('LoginPage Component', () => {
     expect(errorAlert).toHaveTextContent('fsm.login.errorNoProfile')
   })
 
-  it('triggers completeMagicLinkSignIn on mount if URL contains apiKey', () => {
+  it('triggers completeMagicLinkSignIn on mount if URL contains apiKey', async () => {
     // Temporarily override window.location
     const originalLocation = window.location
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
@@ -133,8 +135,9 @@ describe('LoginPage Component', () => {
       href: 'https://lilypad-freshnest.web.app/login?apiKey=fake-key',
     }
 
-    act(() => {
+    await act(async () => {
       render(<LoginPage />)
+      await Promise.resolve()
     })
 
     expect(mockCompleteMagicLinkSignIn).toHaveBeenCalled()

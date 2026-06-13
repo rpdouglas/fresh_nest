@@ -1,5 +1,5 @@
 import React from 'react'
-import { renderHook, act } from '@testing-library/react'
+import { renderHook, act, waitFor } from '@testing-library/react'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { User } from 'firebase/auth'
 import { StaffAuthProvider } from '../context/StaffAuthProvider'
@@ -28,12 +28,12 @@ const mockOnAuthStateChanged = vi.fn((_auth: unknown, callback: (user: Partial<U
 
 vi.mock('firebase/auth', () => ({
   getAuth: vi.fn(() => ({})),
-  signInWithEmailAndPassword: mockSignInWithEmailAndPassword,
-  sendSignInLinkToEmail: mockSendSignInLinkToEmail,
-  isSignInWithEmailLink: mockIsSignInWithEmailLink,
-  signInWithEmailLink: mockSignInWithEmailLink,
-  signOut: mockSignOut,
-  onAuthStateChanged: mockOnAuthStateChanged,
+  signInWithEmailAndPassword: (auth: unknown, email: unknown, pass: unknown) => mockSignInWithEmailAndPassword(auth, email, pass) as Promise<unknown>,
+  sendSignInLinkToEmail: (auth: unknown, email: unknown, settings: unknown) => mockSendSignInLinkToEmail(auth, email, settings) as Promise<unknown>,
+  isSignInWithEmailLink: (auth: unknown, href: unknown) => mockIsSignInWithEmailLink(auth, href) as boolean,
+  signInWithEmailLink: (auth: unknown, email: unknown, href: unknown) => mockSignInWithEmailLink(auth, email, href) as Promise<unknown>,
+  signOut: (auth: unknown) => mockSignOut(auth) as Promise<unknown>,
+  onAuthStateChanged: (auth: unknown, cb: (user: Partial<User> | null) => void) => mockOnAuthStateChanged(auth, cb),
 }))
 
 const mockGetDoc = vi.fn()
@@ -43,11 +43,11 @@ vi.mock('firebase/firestore', () => ({
   initializeFirestore: vi.fn(),
   persistentLocalCache: vi.fn(),
   doc: vi.fn(),
-  getDoc: mockGetDoc,
+  getDoc: (ref: unknown) => mockGetDoc(ref) as Promise<unknown>,
   collection: vi.fn(),
   query: vi.fn(),
   where: vi.fn(),
-  getDocs: mockGetDocs,
+  getDocs: (q: unknown) => mockGetDocs(q) as Promise<unknown>,
 }))
 
 vi.mock('firebase/app', () => ({
@@ -80,14 +80,16 @@ describe('useStaffAuth Hook', () => {
     <StaffAuthProvider>{children}</StaffAuthProvider>
   )
 
-  it('starts in loading state and resolves to null if no user is authenticated', () => {
+  it('starts in loading state and resolves to null if no user is authenticated', async () => {
     const { result } = renderHook(() => useStaffAuth(), { wrapper })
-    expect(result.current.loading).toBe(false)
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
+    })
     expect(result.current.user).toBeNull()
     expect(result.current.staffProfile).toBeNull()
   })
 
-  it('loads staff profile if authenticated and profile exists in Firestore', () => {
+  it('loads staff profile if authenticated and profile exists in Firestore', async () => {
     mockGetDoc.mockResolvedValueOnce({
       exists: () => true,
       id: 'staff123',
@@ -109,6 +111,10 @@ describe('useStaffAuth Hook', () => {
       }
     })
 
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
+    })
+
     expect(result.current.user).toEqual({ uid: 'staff123', email: 'john@freshnest.ca' })
     expect(result.current.staffProfile).toEqual({
       id: 'staff123',
@@ -118,11 +124,10 @@ describe('useStaffAuth Hook', () => {
       role: 'cleaner',
       status: 'active',
     })
-    expect(result.current.loading).toBe(false)
     expect(result.current.error).toBeNull()
   })
 
-  it('signs out and sets error if authenticated in Auth but has no staff profile in Firestore', () => {
+  it('signs out and sets error if authenticated in Auth but has no staff profile in Firestore', async () => {
     mockGetDoc.mockResolvedValueOnce({
       exists: () => false,
     })
@@ -133,6 +138,10 @@ describe('useStaffAuth Hook', () => {
       if (authStateCallback) {
         authStateCallback({ uid: 'intruder123', email: 'intruder@gmail.com' })
       }
+    })
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
     })
 
     expect(result.current.user).toBeNull()

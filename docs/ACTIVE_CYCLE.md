@@ -82,7 +82,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | :--- | :--- | :--- | :--- | :--- |
 | **F01a** | Monorepo Restructuring | High | Dev Team | Completed ✅ (2026-06-13) |
 | **F01b** | FSM Hosting & Firebase Setup | High | Owner, Dev Team | Completed ✅ (2026-06-13) |
-| **F01c** | Staff Auth System | High | Ahmed, Dev Team | In Progress ⬜ |
+| **F01c** | Staff Auth System | High | Ahmed, Dev Team | Completed ✅ (2026-06-13) |
 
 ---
 
