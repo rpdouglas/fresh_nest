@@ -37,7 +37,24 @@ vi.mock('firebase/auth', () => ({
 }))
 
 const mockGetDoc = vi.fn()
-const mockGetDocs = vi.fn()
+const mockGetDocs = vi.fn().mockResolvedValue({ empty: true })
+const mockSetDoc = vi.fn().mockResolvedValue({})
+const mockDeleteDoc = vi.fn().mockResolvedValue({})
+const mockOnSnapshot = vi.fn((ref: unknown, callback: (snapshot: unknown) => void) => {
+  void Promise.resolve().then(async () => {
+    try {
+      const res = (await mockGetDoc(ref)) as { exists: () => boolean; id: string; data: () => Record<string, unknown> } | undefined
+      if (res) {
+        callback(res)
+      } else {
+        callback({ exists: () => false })
+      }
+    } catch {
+      callback({ exists: () => false })
+    }
+  })
+  return () => {}
+})
 
 vi.mock('firebase/firestore', () => ({
   initializeFirestore: vi.fn(),
@@ -48,6 +65,9 @@ vi.mock('firebase/firestore', () => ({
   query: vi.fn(),
   where: vi.fn(),
   getDocs: (q: unknown) => mockGetDocs(q) as Promise<unknown>,
+  setDoc: (ref: unknown, data: unknown) => mockSetDoc(ref, data) as Promise<unknown>,
+  deleteDoc: (ref: unknown) => mockDeleteDoc(ref) as Promise<unknown>,
+  onSnapshot: (ref: unknown, cb: (snapshot: unknown) => void) => mockOnSnapshot(ref, cb),
 }))
 
 vi.mock('firebase/app', () => ({

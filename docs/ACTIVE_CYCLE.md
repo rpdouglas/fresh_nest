@@ -86,6 +86,13 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 
 ---
 
+### FSM Platform Phase 2 — Staff Foundation
+| Epic | Description | Priority | Primary Persona | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **F02** | Staff Profile & Settings | High | Carla (P7), Jasmine (P8), Mike (P9), Sarah (P12) | Completed ✅ (2026-06-14) |
+
+---
+
 ### Epic Log
 
 #### R01 to R10 — Phase R1: Critical Security Hardening & Initial Fixes
@@ -631,6 +638,33 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   - [apps/fsm/src/hooks/useStaffAuth.test.tsx](file:///workspaces/fresh_nest/apps/fsm/src/hooks/useStaffAuth.test.tsx)
   - [apps/fsm/src/pages/LoginPage.test.tsx](file:///workspaces/fresh_nest/apps/fsm/src/pages/LoginPage.test.tsx)
 * **Close Report:** [F01c-close-2026-06-13.md](file:///workspaces/fresh_nest/docs/reports/F01c-close-2026-06-13.md)
+
+---
+
+#### F02 — Staff Profile & Settings
+
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-14)
+* **Strategy:** Strategy 1 — Consolidated Admin Tab & Visual FSM Profile Dashboard. Added a "Staff Registry" tab to the existing Customer App Admin Panel (Sarah can register new staff via Google OAuth). Built a full FSM Profile dashboard with transport/commute controls, a blocked windows manager, and an ODSP earnings gauge (color-coded progress bar at safe/caution/at_limit thresholds). All UI strings use `t()` in EN/FR. Firestore writes use dot-notation sub-field paths.
+* **Persona tests:**
+  - Carla (P7): ODSP gauge renders correctly at 75% ($750/$1000 limit), displaying amber caution state with correct bilingual message.
+  - Jasmine (P8): Transport mode dropdown shows transit buffer field only when "Public Transit" is selected; field correctly persists to Firestore `constraints.transitBufferMinutes`.
+  - Mike (P9): Blocked windows manager allows adding/removing recurring weekly slots; labels remain private (not shown to other staff). Unit tests confirm add and remove flows.
+  - Sarah (P12): Staff Registry tab in Customer App admin panel lists staff with role/status badges; Register New Staff modal creates a `/staff` document with full schema compliance.
+* **Key Assets:**
+  - [apps/customer/src/components/admin/StaffTable.tsx](file:///workspaces/fresh_nest/apps/customer/src/components/admin/StaffTable.tsx)
+  - [apps/customer/src/components/admin/RegisterStaffModal.tsx](file:///workspaces/fresh_nest/apps/customer/src/components/admin/RegisterStaffModal.tsx)
+  - [apps/customer/src/pages/AdminPage.tsx](file:///workspaces/fresh_nest/apps/customer/src/pages/AdminPage.tsx) (Staff tab added)
+  - [apps/fsm/src/pages/ProfilePage.tsx](file:///workspaces/fresh_nest/apps/fsm/src/pages/ProfilePage.tsx)
+  - [apps/fsm/src/pages/ProfilePage.test.tsx](file:///workspaces/fresh_nest/apps/fsm/src/pages/ProfilePage.test.tsx)
+  - [apps/fsm/src/App.tsx](file:///workspaces/fresh_nest/apps/fsm/src/App.tsx) (profile route added)
+  - [apps/fsm/src/components/layout/FsmLayout.tsx](file:///workspaces/fresh_nest/apps/fsm/src/components/layout/FsmLayout.tsx) (profile nav link)
+  - [apps/fsm/src/i18n/locales/en.json](file:///workspaces/fresh_nest/apps/fsm/src/i18n/locales/en.json) (profile/odsp/blockedWindows keys)
+  - [apps/fsm/src/i18n/locales/fr.json](file:///workspaces/fresh_nest/apps/fsm/src/i18n/locales/fr.json) (profile/odsp/blockedWindows keys)
+  - [apps/customer/src/i18n/locales/en.json](file:///workspaces/fresh_nest/apps/customer/src/i18n/locales/en.json) (admin.staff keys)
+  - [apps/customer/src/i18n/locales/fr.json](file:///workspaces/fresh_nest/apps/customer/src/i18n/locales/fr.json) (admin.staff keys)
+* **Close Report:** [F02-close-2026-06-14.md](file:///workspaces/fresh_nest/docs/reports/F02-close-2026-06-14.md)
+
 
 
 

@@ -24,6 +24,78 @@
       "authenticating": "Signing in...",
       "sendingLink": "Sending link...",
       "completingSignIn": "Completing sign-in, please wait..."
+    },
+    "profile": {
+      "title": "Profile & Settings",
+      "subtitle": "Manage your scheduling constraints, transportation, and earnings limits.",
+      "personalInfo": "Personal Information",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "role": "Role",
+      "roles": {
+        "cleaner": "Cleaner",
+        "lead": "Lead Cleaner",
+        "supervisor": "Supervisor"
+      },
+      "transport": {
+        "title": "Transportation & Commute",
+        "mode": "Transport Mode",
+        "modes": {
+          "personal_vehicle": "Personal Vehicle",
+          "transit": "Public Transit",
+          "rideshare": "Rideshare",
+          "walk": "Walking"
+        },
+        "buffer": "Transit Buffer (Minutes)",
+        "bufferHelp": "Extra time added between shifts to account for travel."
+      },
+      "blockedWindows": {
+        "title": "Weekly Blocked Windows",
+        "subtitle": "Block recurring times when you are unavailable. Shifts overlapping these windows will be hidden from your view.",
+        "addBtn": "Add Blocked Window",
+        "day": "Day of Week",
+        "start": "Start Time",
+        "end": "End Time",
+        "label": "Private Label (e.g. Recovery Meeting)",
+        "labelPlaceholder": "e.g. Recovery Meeting, Childcare",
+        "recurring": "Recurring Weekly",
+        "noWindows": "No blocked windows configured. You are fully available.",
+        "deleteBtn": "Remove",
+        "days": {
+          "0": "Sunday",
+          "1": "Monday",
+          "2": "Tuesday",
+          "3": "Wednesday",
+          "4": "Thursday",
+          "5": "Friday",
+          "6": "Saturday"
+        },
+        "format": "{{day}} {{start}} - {{end}} (Weekly)"
+      },
+      "odsp": {
+        "title": "ODSP Earnings Tracker",
+        "subtitle": "Track your monthly earnings to prevent benefit clawbacks.",
+        "limitLabel": "Monthly Earnings Limit ($)",
+        "limitPlaceholder": "Enter your monthly limit (e.g., 1000)",
+        "currentEarnings": "Current Month Earnings",
+        "remaining": "Remaining Safe to Earn",
+        "overLimit": "Over Limit",
+        "gauge": {
+          "safe": "Safe to Earn",
+          "caution": "Approaching Limit (Within $100)",
+          "at_limit": "Limit Reached / Exceeded"
+        },
+        "messages": {
+          "safe": "Your earnings are within your safe limits.",
+          "caution": "Warning: You are close to your monthly earnings limit.",
+          "at_limit": "Alert: You have reached or exceeded your monthly earnings limit. Claiming more shifts is restricted."
+        }
+      },
+      "saveSuccess": "Profile updated successfully.",
+      "saveError": "Failed to update profile.",
+      "saving": "Saving changes..."
     }
   }
 }

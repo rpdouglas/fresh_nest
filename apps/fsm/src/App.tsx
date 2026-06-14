@@ -2,12 +2,14 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { StaffAuthProvider } from './context/StaffAuthProvider'
 import { ProtectedRoute } from './components/auth/ProtectedRoute'
+import FsmLayout from './components/layout/FsmLayout'
 import LoginPage from './pages/LoginPage'
+import ProfilePage from './pages/ProfilePage'
 
 function PlaceholderPage({ titleKey }: { titleKey: string }) {
   const { t } = useTranslation()
   return (
-    <div className="flex min-h-screen items-center justify-center bg-warm-white p-4">
+    <div className="flex min-h-[60vh] items-center justify-center p-4">
       <div className="text-center">
         <h1 className="font-display text-4xl font-semibold text-charcoal">{t(titleKey)}</h1>
         <p className="mt-2 font-body text-text-muted">{t('fsm.portal')}</p>
@@ -26,16 +28,25 @@ const router = createBrowserRouter([
     element: <ProtectedRoute />,
     children: [
       {
-        path: '/',
-        element: <PlaceholderPage titleKey="fsm.dashboard" />,
-      },
-      {
-        path: '/shifts',
-        element: <PlaceholderPage titleKey="fsm.shifts" />,
-      },
-      {
-        path: '/jobs',
-        element: <PlaceholderPage titleKey="fsm.myJobs" />,
+        element: <FsmLayout />,
+        children: [
+          {
+            path: '/',
+            element: <PlaceholderPage titleKey="fsm.dashboard" />,
+          },
+          {
+            path: '/shifts',
+            element: <PlaceholderPage titleKey="fsm.shifts" />,
+          },
+          {
+            path: '/jobs',
+            element: <PlaceholderPage titleKey="fsm.myJobs" />,
+          },
+          {
+            path: '/profile',
+            element: <ProfilePage />,
+          },
+        ],
       },
     ],
   },
@@ -48,3 +59,4 @@ export default function App() {
     </StaffAuthProvider>
   )
 }
+

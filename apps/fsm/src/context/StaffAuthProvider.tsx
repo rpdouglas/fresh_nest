@@ -8,7 +8,16 @@ import {
   signOut, 
   onAuthStateChanged 
 } from 'firebase/auth'
-import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore'
+import { 
+  doc, 
+  collection, 
+  query, 
+  where, 
+  getDocs, 
+  onSnapshot, 
+  setDoc, 
+  deleteDoc 
+} from 'firebase/firestore'
 import { auth, db } from '../lib/firebase/firebase'
 import { Staff } from '../types'
 import { StaffAuthContext } from './StaffAuthContext'
@@ -20,37 +29,90 @@ export const StaffAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    let unsubscribeProfile: (() => void) | null = null
+
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      const handleAuthChange = async () => {
+      const handleAuthChange = () => {
         setLoading(true)
         setError(null)
         setUser(currentUser)
+
+        if (unsubscribeProfile) {
+          unsubscribeProfile()
+          unsubscribeProfile = null
+        }
+
         if (currentUser) {
           try {
-            const staffDoc = await getDoc(doc(db, 'staff', currentUser.uid))
-            if (staffDoc.exists()) {
-              setStaffProfile({ id: staffDoc.id, ...staffDoc.data() } as Staff)
-            } else {
-              setStaffProfile(null)
-              // Log out if authenticated in Auth but no staff profile exists
-              await signOut(auth)
-              setError('fsm.login.errorNoProfile')
-            }
+            const staffRef = doc(db, 'staff', currentUser.uid)
+            let isLinking = false
+
+            // Set up real-time listener for the user's staff document
+            unsubscribeProfile = onSnapshot(staffRef, (docSnapshot) => {
+              const processSnapshot = async () => {
+                if (docSnapshot.exists()) {
+                  setStaffProfile({ id: docSnapshot.id, ...docSnapshot.data() } as Staff)
+                  setLoading(false)
+                } else {
+                  if (currentUser.email && !isLinking) {
+                    isLinking = true
+                    try {
+                      // Auto-linking: check if a staff document exists with their email
+                      const emailQ = query(
+                        collection(db, 'staff'),
+                        where('email', '==', currentUser.email.toLowerCase().trim())
+                      )
+                      const emailSnapshot = await getDocs(emailQ)
+                      if (!emailSnapshot.empty) {
+                        const legacyDoc = emailSnapshot.docs[0]
+                        const legacyData = legacyDoc.data()
+
+                        // Copy data to new doc with UID as ID
+                        await setDoc(staffRef, {
+                          ...legacyData,
+                          uid: currentUser.uid,
+                        })
+
+                        // Delete legacy doc
+                        await deleteDoc(legacyDoc.ref)
+                        return
+                      }
+                    } catch (err) {
+                      console.error('Error during auto-linking:', err)
+                    }
+                  }
+
+                  setStaffProfile(null)
+                  // If authenticated but no profile exists, sign out
+                  void signOut(auth)
+                  setError('fsm.login.errorNoProfile')
+                  setLoading(false)
+                }
+              }
+              void processSnapshot()
+            }, (err) => {
+              console.error('Error on profile snapshot:', err)
+              setLoading(false)
+            })
           } catch (err) {
-            console.error('Error fetching staff profile:', err)
+            console.error('Error setting up staff profile:', err)
             setStaffProfile(null)
-            await signOut(auth)
+            void signOut(auth)
             setError('fsm.login.errorGeneral')
+            setLoading(false)
           }
         } else {
           setStaffProfile(null)
+          setLoading(false)
         }
-        setLoading(false)
       }
-      void handleAuthChange()
+      handleAuthChange()
     })
 
-    return () => unsubscribe()
+    return () => {
+      unsubscribe()
+      if (unsubscribeProfile) unsubscribeProfile()
+    }
   }, [])
 
   const checkEmailExists = async (email: string): Promise<boolean> => {

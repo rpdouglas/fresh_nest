@@ -11,6 +11,7 @@ import { LoginPanel } from '@/components/admin/LoginPanel'
 import { AccessDeniedPanel } from '@/components/admin/AccessDeniedPanel'
 import { BookingsTable } from '@/components/admin/BookingsTable'
 import { AnalyticsDashboard } from '@/components/admin/AnalyticsDashboard'
+import { StaffTable } from '@/components/admin/StaffTable'
 
 export default function AdminPage() {
   const { t } = useTranslation()
@@ -18,7 +19,7 @@ export default function AdminPage() {
   const bookingsState = useBookings(isAuthorized)
   const analyticsState = useAdminAnalytics(bookingsState.bookings)
 
-  const [activeTab, setActiveTab] = useState<'bookings' | 'analytics'>('bookings')
+  const [activeTab, setActiveTab] = useState<'bookings' | 'analytics' | 'staff'>('bookings')
 
   if (loading) {
     return (
@@ -137,10 +138,21 @@ export default function AdminPage() {
                 >
                   {t('admin.dashboard.tabs.analytics')}
                 </button>
+                <button
+                  onClick={() => setActiveTab('staff')}
+                  className={cn(
+                    'min-h-[48px] py-3 px-6 font-body font-medium text-base border-b-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2',
+                    activeTab === 'staff'
+                      ? 'border-slate-brand text-slate-brand'
+                      : 'border-transparent text-text-muted hover:text-charcoal hover:border-sand'
+                  )}
+                >
+                  {t('admin.dashboard.tabs.staff')}
+                </button>
               </div>
 
               <AnimatePresence mode="wait">
-                {activeTab === 'bookings' ? (
+                {activeTab === 'bookings' && (
                   <motion.div
                     key="tab-bookings"
                     initial={{ opacity: 0, y: 10 }}
@@ -150,7 +162,8 @@ export default function AdminPage() {
                   >
                     <BookingsTable {...bookingsState} />
                   </motion.div>
-                ) : (
+                )}
+                {activeTab === 'analytics' && (
                   <motion.div
                     key="tab-analytics"
                     initial={{ opacity: 0, y: 10 }}
@@ -159,6 +172,17 @@ export default function AdminPage() {
                     transition={{ duration: 0.2 }}
                   >
                     <AnalyticsDashboard {...analyticsState} />
+                  </motion.div>
+                )}
+                {activeTab === 'staff' && (
+                  <motion.div
+                    key="tab-staff"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <StaffTable isAuthorized={isAuthorized} />
                   </motion.div>
                 )}
               </AnimatePresence>

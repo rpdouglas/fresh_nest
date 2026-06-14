@@ -800,7 +800,59 @@
       },
       "tabs": {
         "bookings": "Bookings Management",
-        "analytics": "Marketing Analytics"
+        "analytics": "Marketing Analytics",
+        "staff": "Staff Registry"
+      },
+      "staff": {
+        "title": "Staff Registry",
+        "subtitle": "Manage employee profiles, credentials, role assignments, and scheduling constraints.",
+        "registerBtn": "Register New Staff",
+        "searchPlaceholder": "Search by name, email, or phone...",
+        "filterRole": "Filter by Role",
+        "filterStatus": "Filter by Status",
+        "allRoles": "All Roles",
+        "allStatuses": "All Statuses",
+        "table": {
+          "name": "Staff Member",
+          "contact": "Contact Information",
+          "role": "Role",
+          "status": "Status",
+          "actions": "Actions",
+          "noResults": "No staff members found matching search/filter criteria."
+        },
+        "modal": {
+          "title": "Register New Staff Member",
+          "submit": "Register Staff",
+          "cancel": "Cancel",
+          "success": "Staff member registered successfully.",
+          "error": "Failed to register staff member.",
+          "firstName": "First Name",
+          "lastName": "Last Name",
+          "email": "Email Address",
+          "phone": "Phone Number",
+          "role": "Assign Role",
+          "status": "Initial Status",
+          "language": "Preferred Language",
+          "transport": "Default Transportation Mode",
+          "buffer": "Transit Buffer (Minutes)",
+          "earningsLimit": "Monthly Earnings Limit (Optional)",
+          "roleOption": {
+            "cleaner": "Cleaner",
+            "lead": "Lead Cleaner",
+            "supervisor": "Supervisor"
+          },
+          "statusOption": {
+            "onboarding": "Onboarding",
+            "active": "Active",
+            "inactive": "Inactive"
+          },
+          "transportOption": {
+            "personal_vehicle": "Personal Vehicle",
+            "transit": "Public Transit",
+            "rideshare": "Rideshare",
+            "walk": "Walking"
+          }
+        }
       },
       "analytics": {
         "title": "Marketing & Lead Source Performance",
