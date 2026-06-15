@@ -6,6 +6,7 @@ import FsmLayout from './components/layout/FsmLayout'
 import LoginPage from './pages/LoginPage'
 import ProfilePage from './pages/ProfilePage'
 import ShiftBoardPage from './pages/ShiftBoardPage'
+import MyJobsPage from './pages/MyJobsPage'
 
 function PlaceholderPage({ titleKey }: { titleKey: string }) {
   const { t } = useTranslation()
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
           },
           {
             path: '/jobs',
+            element: <MyJobsPage />,
+          },
+          {
+            path: '/jobs/:id',
             element: <PlaceholderPage titleKey="fsm.myJobs" />,
           },
           {

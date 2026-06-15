@@ -4,7 +4,7 @@ import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase/firebase'
 import { useStaffAuth } from '../hooks/useStaffAuth'
 import type { TransportMode, BlockedWindow } from '../types'
-import { cn } from '../lib/utils/utils'
+import { cn } from '@freshnest/shared'
 
 export const ProfilePage: React.FC = () => {
   const { t } = useTranslation()

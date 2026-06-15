@@ -15,7 +15,27 @@
       "durationHours": "({{count}} hrs)",
       "noShifts": "No available shifts at the moment."
     },
-    "myJobs": "My Jobs",
+    "myJobs": {
+      "title": "My Jobs",
+      "subtitle": "Track your assigned and completed cleanings.",
+      "upcomingTab": "Upcoming Schedule",
+      "completedTab": "Job History",
+      "noJobsUpcoming": "No upcoming jobs assigned.",
+      "noJobsCompleted": "No completed jobs in your history.",
+      "jobCard": {
+        "duration": "({{count}} hrs)",
+        "rate": "${{rate}}/hr",
+        "estPay": "Estimated Pay",
+        "status": {
+          "assigned": "Assigned",
+          "acknowledged": "Acknowledged",
+          "in_progress": "In Progress",
+          "completed": "Completed",
+          "disputed": "Disputed"
+        },
+        "viewDetails": "View Details"
+      }
+    },
     "logout": "Sign Out",
     "epicInProgress": "Fresh Nest Co. — Epic in progress",
     "login": {

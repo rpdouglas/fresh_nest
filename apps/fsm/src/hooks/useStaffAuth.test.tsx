@@ -72,6 +72,8 @@ vi.mock('firebase/firestore', () => ({
 
 vi.mock('firebase/app', () => ({
   initializeApp: vi.fn(),
+  getApps: vi.fn(() => []),
+  getApp: vi.fn(),
 }))
 
 vi.mock('firebase/storage', () => ({

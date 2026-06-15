@@ -94,6 +94,14 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | **F04** | Pay Rates & Operations Dashboard | High | Sarah (P12), Carla (P7) | Completed ✅ (2026-06-15) |
 | **F05** | Earnings Cap | High | Carla (P7), Sarah (P12) | Completed ✅ (2026-06-15) |
 | **F06** | Travel Buffer | High | Jasmine (P8), Sarah (P12) | Completed ✅ (2026-06-15) |
+| **F07** | Blocked Windows | High | Mike (P9), Sarah (P12) | Completed ✅ (2026-06-15) |
+
+---
+
+### FSM Platform Phase 3 — Job Lifecycle & Pipeline
+| Epic | Description | Priority | Primary Persona | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **F08** | Shift Board & `claimJob` | High | Jasmine (P8), Carla (P7), Mike (P9), Sarah (P12) | Completed ✅ (2026-06-15) |
 
 ---
 
@@ -736,6 +744,23 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   - [apps/customer/src/components/admin/BookingDetailPanel.tsx](file:///workspaces/fresh_nest/apps/customer/src/components/admin/BookingDetailPanel.tsx) (intercept manual assignments and show override modal)
   - [apps/customer/src/i18n/locales/en.json](file:///workspaces/fresh_nest/apps/customer/src/i18n/locales/en.json) & [fr.json](file:///workspaces/fresh_nest/apps/customer/src/i18n/locales/fr.json) (override blockedWindowWarning key)
 * **Close Report:** [F07-close-2026-06-15.md](file:///workspaces/fresh_nest/docs/reports/F07-close-2026-06-15.md)
+
+#### F08 — Shift Board & `claimJob`
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-15)
+* **Strategy:** Strategy 1 — Shared Package Refactor + My Jobs Tabbed Page. Extracted duplicate Firebase configuration initialization from both apps into `@freshnest/shared` workspace package, exposing runtime initialization helpers. Designed and implemented `MyJobsPage` at `/jobs` with separate tabs for upcoming schedule list and past job history. Fully integrated English and French translations.
+* **Persona tests:**
+  - Jasmine (P8): Chronological list of upcoming assigned shifts allows visual schedule planning and travel buffer verification.
+  - Carla (P7): Shows completed jobs tab to verify historical cleanings and total monthly earnings.
+  - Sarah (P12): Codebase configuration maintenance simplified by resolving duplicate configuration code.
+* **Key Assets:**
+  - [packages/shared/src/firebase.ts](file:///workspaces/fresh_nest/packages/shared/src/firebase.ts) & [index.ts](file:///workspaces/fresh_nest/packages/shared/src/index.ts) (unified Firebase helpers and exported twMerge utility)
+  - [apps/fsm/src/pages/MyJobsPage.tsx](file:///workspaces/fresh_nest/apps/fsm/src/pages/MyJobsPage.tsx) (My Jobs tabbed component)
+  - [apps/fsm/src/pages/MyJobsPage.test.tsx](file:///workspaces/fresh_nest/apps/fsm/src/pages/MyJobsPage.test.tsx) (vitest unit test suite covering tab selections and filters)
+  - [apps/fsm/src/App.tsx](file:///workspaces/fresh_nest/apps/fsm/src/App.tsx) (registered `/jobs` and `/jobs/:id` routes)
+  - [apps/fsm/src/i18n/locales/en.json](file:///workspaces/fresh_nest/apps/fsm/src/i18n/locales/en.json) & [fr.json](file:///workspaces/fresh_nest/apps/fsm/src/i18n/locales/fr.json) (nested translations for assigned job listings)
+  - [apps/customer/src/lib/firebase/firebase.ts](file:///workspaces/fresh_nest/apps/customer/src/lib/firebase/firebase.ts) & [apps/fsm/src/lib/firebase/firebase.ts](file:///workspaces/fresh_nest/apps/fsm/src/lib/firebase/firebase.ts) (refactored to import shared helpers)
+* **Close Report:** [F08-close-2026-06-15.md](file:///workspaces/fresh_nest/docs/reports/F08-close-2026-06-15.md)
 
 
 

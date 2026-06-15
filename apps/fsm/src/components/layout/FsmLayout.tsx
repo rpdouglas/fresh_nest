@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useStaffAuth } from '../../hooks/useStaffAuth'
-import { cn } from '../../lib/utils/utils'
+import { cn } from '@freshnest/shared'
 
 export const FsmLayout: React.FC = () => {
   const { t, i18n } = useTranslation()

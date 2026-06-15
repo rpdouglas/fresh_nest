@@ -15,7 +15,27 @@
       "durationHours": "({{count}} h)",
       "noShifts": "Aucun quart disponible pour le moment."
     },
-    "myJobs": "Mes mandats",
+    "myJobs": {
+      "title": "Mes mandats",
+      "subtitle": "Suivez vos nettoyages assignés et complétés.",
+      "upcomingTab": "Horaire à venir",
+      "completedTab": "Historique des travaux",
+      "noJobsUpcoming": "Aucun mandat à venir assigné.",
+      "noJobsCompleted": "Aucun mandat complété dans votre historique.",
+      "jobCard": {
+        "duration": "({{count}} h)",
+        "rate": "{{rate}} $/h",
+        "estPay": "Rémunération estimée",
+        "status": {
+          "assigned": "Assigné",
+          "acknowledged": "Accepté",
+          "in_progress": "En cours",
+          "completed": "Complété",
+          "disputed": "En litige"
+        },
+        "viewDetails": "Voir les détails"
+      }
+    },
     "logout": "Déconnexion",
     "epicInProgress": "Fresh Nest Co. — Projet en cours",
     "login": {

@@ -5,7 +5,7 @@ import { functions } from '../lib/firebase/firebase'
 import { useStaffAuth } from '../hooks/useStaffAuth'
 import { useShifts } from '../hooks/useShifts'
 import { useMyAssignedShifts } from '../hooks/useMyAssignedShifts'
-import { cn } from '../lib/utils/utils'
+import { cn } from '@freshnest/shared'
 import type { Job } from '../types'
 
 // F06 Helpers
