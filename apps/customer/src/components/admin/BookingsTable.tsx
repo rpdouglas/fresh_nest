@@ -218,12 +218,15 @@ export function BookingsTable({
               <th className="p-4 font-sub text-base text-charcoal font-bold">
                 {t('admin.dashboard.table.assigned')}
               </th>
+              <th className="p-4 font-sub text-base text-charcoal font-bold">
+                {t('admin.dashboard.table.job')}
+              </th>
             </tr>
           </thead>
           <tbody>
             {filteredBookings.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="p-8 text-center font-body text-base text-text-muted">
+                <tr>
+                <td colSpan={6} className="p-8 text-center font-body text-base text-text-muted">
                   {t('admin.dashboard.table.noResults')}
                 </td>
               </tr>
@@ -273,6 +276,15 @@ export function BookingsTable({
                           <span className="text-text-muted italic">
                             {t('admin.dashboard.details.unassigned')}
                           </span>
+                        )}
+                      </td>
+                      <td className="p-4">
+                        {b.jobId ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded font-body text-sm font-medium border bg-green-50 text-green-800 border-green-200">
+                            ✓ {t('admin.dashboard.table.jobCreated')}
+                          </span>
+                        ) : (
+                          <span className="font-body text-sm text-text-muted">—</span>
                         )}
                       </td>
                     </tr>

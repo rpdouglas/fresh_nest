@@ -90,6 +90,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | Epic | Description | Priority | Primary Persona | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | **F02** | Staff Profile & Settings | High | Carla (P7), Jasmine (P8), Mike (P9), Sarah (P12) | Completed ✅ (2026-06-14) |
+| **F03** | Booking-to-Job Pipeline + Checklist Template Manager | High | Sarah (P12), Brenda (P11) | Completed ✅ (2026-06-15) |
 
 ---
 

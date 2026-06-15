@@ -766,6 +766,8 @@
         "service": "Service",
         "status": "Status",
         "assigned": "Assigned Cleaner",
+        "job": "Job",
+        "jobCreated": "Job Created",
         "noResults": "No bookings found matching your search and filter criteria."
       },
       "details": {
@@ -801,7 +803,8 @@
       "tabs": {
         "bookings": "Bookings Management",
         "analytics": "Marketing Analytics",
-        "staff": "Staff Registry"
+        "staff": "Staff Registry",
+        "templates": "Checklist Templates"
       },
       "staff": {
         "title": "Staff Registry",
@@ -890,6 +893,62 @@
         "referral": "Referral Program",
         "facebook": "Facebook Ads",
         "direct": "Direct Traffic"
+      }
+    },
+    "templates": {
+      "title": "Checklist Templates",
+      "subtitle": "Define reusable task lists for each cleaning service type. Templates are assigned to jobs at booking confirmation.",
+      "createBtn": "New Template",
+      "backBtn": "Back to Templates",
+      "empty": "No templates yet. Create your first checklist template to get started.",
+      "editBtn": "Edit",
+      "deactivateBtn": "Deactivate",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "taskCount": "{{count}} task(s)",
+      "photoCount": "{{count}} require photo",
+      "serviceType": {
+        "standard": "Standard Clean",
+        "deep": "Deep Clean",
+        "moveout": "Move-Out Clean",
+        "postconstruction": "Post-Construction",
+        "airbnb": "Airbnb Turnover",
+        "commercial": "Commercial"
+      },
+      "success": {
+        "created": "Template created successfully.",
+        "updated": "Template updated successfully.",
+        "deactivated": "Template deactivated."
+      },
+      "form": {
+        "name": "Template Name",
+        "namePlaceholder": "e.g. Standard Home Clean",
+        "serviceType": "Service Type",
+        "active": "Active (visible to scheduling)",
+        "tasksHeading": "Checklist Tasks",
+        "taskCount": "{{count}} task(s)",
+        "noTasks": "No tasks yet. Add your first task below.",
+        "addTask": "Add Task",
+        "cancel": "Cancel",
+        "create": "Create Template",
+        "update": "Update Template",
+        "createHeading": "New Checklist Template",
+        "editHeading": "Edit Template",
+        "nameRequired": "Template name is required.",
+        "saveError": "Failed to save template. Please try again."
+      },
+      "task": {
+        "dragHandle": "Drag to reorder",
+        "icon": "Task icon",
+        "labelEn": "Task Label (English)",
+        "labelFr": "Task Label (French)",
+        "labelEnPlaceholder": "e.g. Clean bathroom sink",
+        "labelFrPlaceholder": "ex. Nettoyer le lavabo",
+        "requiresPhoto": "Requires photo",
+        "photoPhase": "Photo phase",
+        "phaseBefore": "Before cleaning",
+        "phaseAfter": "After cleaning",
+        "remove": "Remove"
       }
     }
   },

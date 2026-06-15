@@ -32,6 +32,7 @@ export interface Booking {
   createdAt: Date
   referredBy?: string | null
   referralCode?: string | null
+  jobId?: string
 }
 
 export interface Review {
@@ -115,3 +116,79 @@ export interface Staff {
   createdAt: Date
 }
 
+// ── F03: Job Lifecycle Types ──────────────────────────────────────────────────
+
+export type JobStatus =
+  | 'unassigned'
+  | 'assigned'
+  | 'acknowledged'
+  | 'in_progress'
+  | 'completed'
+  | 'cancelled'
+  | 'disputed'
+
+export interface PayRateSnapshot {
+  rateId: string | null
+  amount: number
+  currency: 'CAD'
+  effectiveAt: string  // ISO timestamp
+  snapshotAt: string   // ISO timestamp
+}
+
+export interface JobPhoto {
+  url: string
+  storagePath: string
+  phase: 'before' | 'after'
+  taskId?: string
+  uploadedAt: Date
+  uploadedBy: string  // staff UID
+  lat?: number
+  lng?: number
+}
+
+export interface ChecklistCompletion {
+  taskId: string
+  completedAt: Date
+  photos: JobPhoto[]
+}
+
+export interface Job {
+  id?: string
+  bookingId: string
+  clientName: string
+  clientAddress: string
+  clientPhone: string
+  clientNotes?: string
+  serviceType: ServiceType
+  scheduledDate: string        // YYYY-MM-DD
+  scheduledStartTime: string   // HH:MM
+  scheduledEndTime: string     // HH:MM
+  status: JobStatus
+  assignedTo: string | null    // staff UID
+  checkedInAt: Date | null
+  checkedInGeo: { lat: number; lng: number } | null
+  completedAt: Date | null
+  payRateSnapshot: PayRateSnapshot
+  checklistTemplate: string    // checklistTemplates doc ID
+  checklistCompletions: ChecklistCompletion[]
+  photos: JobPhoto[]
+  createdAt: Date
+}
+
+export interface ChecklistTask {
+  id: string
+  labelEn: string
+  labelFr: string
+  icon: string
+  requiresPhoto: boolean
+  photoPhase: 'before' | 'after' | null
+  order: number
+}
+
+export interface ChecklistTemplate {
+  id?: string
+  name: string
+  serviceType: ServiceType
+  tasks: ChecklistTask[]
+  active: boolean
+}

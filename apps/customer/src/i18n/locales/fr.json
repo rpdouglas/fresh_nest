@@ -766,6 +766,8 @@
         "service": "Service",
         "status": "Statut",
         "assigned": "Nettoyeur assigné",
+        "job": "Emploi",
+        "jobCreated": "Emploi créé",
         "noResults": "Aucune réservation ne correspond à vos critères de recherche et de filtrage."
       },
       "details": {
@@ -801,7 +803,8 @@
       "tabs": {
         "bookings": "Gestion des réservations",
         "analytics": "Analyses marketing",
-        "staff": "Registre du personnel"
+        "staff": "Registre du personnel",
+        "templates": "Modèles de liste de contrôle"
       },
       "staff": {
         "title": "Registre du personnel",
@@ -890,6 +893,62 @@
         "referral": "Programme de parrainage",
         "facebook": "Publicité Facebook",
         "direct": "Trafic direct"
+      }
+    },
+    "templates": {
+      "title": "Modèles de liste de contrôle",
+      "subtitle": "Définissez des listes de tâches réutilisables pour chaque type de nettoyage. Les modèles sont assignés aux emplois lors de la confirmation de réservation.",
+      "createBtn": "Nouveau modèle",
+      "backBtn": "Retour aux modèles",
+      "empty": "Aucun modèle pour l'instant. Créez votre premier modèle de liste de contrôle pour commencer.",
+      "editBtn": "Modifier",
+      "deactivateBtn": "Désactiver",
+      "statusActive": "Actif",
+      "statusInactive": "Inactif",
+      "taskCount": "{{count}} tâche(s)",
+      "photoCount": "{{count}} nécessite(nt) une photo",
+      "serviceType": {
+        "standard": "Nettoyage standard",
+        "deep": "Nettoyage en profondeur",
+        "moveout": "Nettoyage de déménagement",
+        "postconstruction": "Post-construction",
+        "airbnb": "Rotation Airbnb",
+        "commercial": "Commercial"
+      },
+      "success": {
+        "created": "Modèle créé avec succès.",
+        "updated": "Modèle mis à jour avec succès.",
+        "deactivated": "Modèle désactivé."
+      },
+      "form": {
+        "name": "Nom du modèle",
+        "namePlaceholder": "ex. Nettoyage standard à domicile",
+        "serviceType": "Type de service",
+        "active": "Actif (visible pour la planification)",
+        "tasksHeading": "Tâches de la liste de contrôle",
+        "taskCount": "{{count}} tâche(s)",
+        "noTasks": "Aucune tâche pour l'instant. Ajoutez votre première tâche ci-dessous.",
+        "addTask": "Ajouter une tâche",
+        "cancel": "Annuler",
+        "create": "Créer le modèle",
+        "update": "Mettre à jour le modèle",
+        "createHeading": "Nouveau modèle de liste de contrôle",
+        "editHeading": "Modifier le modèle",
+        "nameRequired": "Le nom du modèle est requis.",
+        "saveError": "Échec de la sauvegarde du modèle. Veuillez réessayer."
+      },
+      "task": {
+        "dragHandle": "Glisser pour réordonner",
+        "icon": "Icône de la tâche",
+        "labelEn": "Libellé de la tâche (anglais)",
+        "labelFr": "Libellé de la tâche (français)",
+        "labelEnPlaceholder": "ex. Clean bathroom sink",
+        "labelFrPlaceholder": "ex. Nettoyer le lavabo",
+        "requiresPhoto": "Nécessite une photo",
+        "photoPhase": "Phase de la photo",
+        "phaseBefore": "Avant le nettoyage",
+        "phaseAfter": "Après le nettoyage",
+        "remove": "Supprimer"
       }
     }
   },

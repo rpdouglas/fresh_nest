@@ -1,11 +1,12 @@
 import { initializeApp } from 'firebase-admin/app'
 import { getFirestore } from 'firebase-admin/firestore'
-import { onDocumentCreated } from 'firebase-functions/v2/firestore'
+import { onDocumentCreated, onDocumentUpdated } from 'firebase-functions/v2/firestore'
 import { onSchedule } from 'firebase-functions/v2/scheduler'
 import { defineSecret } from 'firebase-functions/params'
 import { sendOwnerNotification, sendClientConfirmation } from './sendEmail'
 import { sendSmsConfirmation, sendSmsReminder } from './sendSms'
 import type { BookingData } from './emailTemplates'
+import { createJobFromBooking } from './jobs'
 
 initializeApp()
 
@@ -208,6 +209,33 @@ export const onDailyRecurringRenewal = onSchedule(
           await db.collection('bookings').add(newBookingData)
         }
       }
+    }
+  },
+)
+
+// F03: Booking-to-Job Pipeline
+// Fires when a booking document is updated. Creates a Job document when status transitions to 'confirmed'.
+export const onBookingStatusConfirmed = onDocumentUpdated(
+  {
+    document: 'bookings/{docId}',
+    database: '(default)',
+  },
+  async (event) => {
+    const before = event.data?.before.data() as { status?: string } | undefined
+    const after = event.data?.after.data() as { status?: string; [key: string]: unknown } | undefined
+
+    if (!before || !after) return
+
+    // Guard: only fire when status transitions to 'confirmed'
+    if (before.status === 'confirmed' || after.status !== 'confirmed') return
+
+    const bookingId = event.params['docId']
+    console.log(`[onBookingStatusConfirmed] Booking '${bookingId}' confirmed — initiating job creation.`)
+
+    try {
+      await createJobFromBooking(bookingId, after as Parameters<typeof createJobFromBooking>[1])
+    } catch (err) {
+      console.error(`[onBookingStatusConfirmed] Failed to create job for booking '${bookingId}':`, err)
     }
   },
 )
