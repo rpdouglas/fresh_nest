@@ -289,4 +289,45 @@ describe('ShiftBoardPage Component', () => {
       screen.getByText('⚠️ fsm.shifts.disabledConflict_opt_{"buffer":60,"start":"10:00","end":"12:00"}')
     ).toBeInTheDocument()
   })
+
+  it('hides the shift completely if it overlaps with a blocked window', () => {
+    const blockedProfile = {
+      ...mockStaffProfile,
+      constraints: {
+        transportMode: 'transit',
+        transitBufferMinutes: 30,
+        blockedWindows: [
+          {
+            id: 'block1',
+            dayOfWeek: 6, // Saturday (2026-06-20 is Saturday)
+            startTime: '10:00',
+            endTime: '12:00',
+            recurring: true,
+            label: 'Recovery meeting',
+          },
+          {
+            id: 'block2',
+            dayOfWeek: 0, // Sunday (2026-06-21 is Sunday)
+            startTime: '08:00',
+            endTime: '10:00',
+            recurring: true,
+            label: 'Sunday morning',
+          }
+        ],
+      },
+    }
+
+    vi.mocked(useStaffAuth).mockReturnValueOnce({
+      ...vi.mocked(useStaffAuth)(),
+      staffProfile: blockedProfile as unknown as Staff,
+    })
+
+    render(<ShiftBoardPage />)
+
+    // job1 (2026-06-20 Saturday 09:00 - 11:00) overlaps with block1 (10:00 - 12:00) -> should be hidden
+    expect(screen.queryByText('123 Pitt St, Cornwall ON')).not.toBeInTheDocument()
+
+    // job2 (2026-06-21 Sunday 13:00 - 16:00) does not overlap with block2 (08:00 - 10:00) -> should be visible
+    expect(screen.getByText('456 Montreal Rd, Cornwall ON')).toBeInTheDocument()
+  })
 })

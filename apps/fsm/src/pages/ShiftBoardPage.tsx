@@ -162,6 +162,33 @@ export const ShiftBoardPage: React.FC = () => {
     }
   }
 
+  // Filter shifts that overlap with blocked windows
+  const blockedWindows = staffProfile.constraints?.blockedWindows || []
+  const visibleShifts = shifts.filter((job) => {
+    const shiftDate = job.scheduledDate
+    const shiftDayOfWeek = new Date(shiftDate + 'T00:00:00').getDay()
+    const startS = timeToMinutes(job.scheduledStartTime)
+    const endS = timeToMinutes(job.scheduledEndTime)
+
+    for (const window of blockedWindows) {
+      let isMatch = false
+      if (window.recurring) {
+        isMatch = window.dayOfWeek === shiftDayOfWeek
+      } else if (window.date) {
+        isMatch = window.date === shiftDate
+      }
+
+      if (isMatch) {
+        const startW = timeToMinutes(window.startTime)
+        const endW = timeToMinutes(window.endTime)
+        if (startS < endW && endS > startW) {
+          return false // Hide shift completely
+        }
+      }
+    }
+    return true
+  })
+
   return (
     <main className="min-h-screen bg-warm-white py-12 px-4 md:py-16 md:px-6">
       <div className="max-w-4xl mx-auto flex flex-col gap-8">
@@ -252,14 +279,14 @@ export const ShiftBoardPage: React.FC = () => {
           <div className="p-6 bg-red-50 border border-red-200 text-red-800 rounded font-body text-base">
             {t('fsm.shifts.claimingError')}: {error.message}
           </div>
-        ) : shifts.length === 0 ? (
+        ) : visibleShifts.length === 0 ? (
           <div className="bg-white border border-sand rounded p-8 text-center text-text-muted italic font-body text-base shadow-sm">
             {t('fsm.shifts.noShifts')}
           </div>
         ) : (
           /* Shift Cards Grid */
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {shifts.map((job) => {
+            {visibleShifts.map((job) => {
               const duration = getShiftDurationHours(job.scheduledStartTime, job.scheduledEndTime)
               const rate = job.payRateSnapshot?.amount || 0
               const estPay = rate * duration

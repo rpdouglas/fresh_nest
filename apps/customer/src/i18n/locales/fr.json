@@ -1014,6 +1014,7 @@
       "modalMessage": "L'assignation de ce quart à {{name}} requiert une dérogation administrateur en raison des violations de contraintes suivantes :",
       "earningsWarning": "{{name}} dépasse la limite mensuelle de {{overage}} $",
       "travelWarning": "{{name}} a besoin de {{buffer}} min de trajet avec le quart {{start}}-{{end}}",
+      "blockedWindowWarning": "{{name}} a un créneau bloqué qui chevauche ce quart",
       "reasonLabel": "Raison de la dérogation",
       "reasonPlaceholder": "ex. Remplacement urgent à la demande du client",
       "reasonRequired": "La raison de la dérogation est requise.",

@@ -277,6 +277,9 @@ export const claimJob = onCall(async (request) => {
     if (msg === 'TRAVEL_BUFFER_EXCEEDED') {
       throw new HttpsError('failed-precondition', 'Claiming this shift would violate your travel buffer limit.')
     }
+    if (msg === 'BLOCKED_WINDOW_OVERLAP') {
+      throw new HttpsError('failed-precondition', 'Claiming this shift would conflict with a blocked window on your calendar.')
+    }
     throw new HttpsError('internal', msg || 'Failed to claim shift due to an internal error.')
   }
 })

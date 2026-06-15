@@ -31,6 +31,8 @@ The dashboard is split into four tabs:
 2. Click the booking row to expand the detail panel.
 3. Use the **Status** dropdown to update the status.
 4. Use the **Assigned To** field to assign a cleaner by name (or click custom to type a custom name).
+    *   **Constraint Intercepts:** The system automatically checks cleaner constraints (monthly earnings cap, travel buffers, and **Blocked Windows**). If a violation occurs, a modal prompts you for a mandatory override reason. Overrides are recorded in the audit logs.
+    *   **Privacy Safeguard:** Blocked window labels (e.g. "Recovery meeting") remain strictly confidential and are never exposed in the override warning.
 5. **Referral Metadata:** If a referral code was applied, it is highlighted under the booking metadata in this panel (shows referral code used).
 
 ---

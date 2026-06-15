@@ -326,8 +326,35 @@ export async function executeClaimJob(
         }
       }
 
-      // Travel buffer check
+      // Blocked windows check
       const constraints = staffData.constraints || {}
+      const blockedWindows = constraints.blockedWindows || []
+      const shiftStart = jobData.scheduledStartTime
+      const shiftEnd = jobData.scheduledEndTime
+      const shiftDate = jobData.scheduledDate
+      const shiftDayOfWeek = new Date(shiftDate + 'T00:00:00').getDay()
+      
+      const startS = timeToMinutes(shiftStart)
+      const endS = timeToMinutes(shiftEnd)
+
+      for (const window of blockedWindows) {
+        let isMatch = false
+        if (window.recurring) {
+          isMatch = window.dayOfWeek === shiftDayOfWeek
+        } else if (window.date) {
+          isMatch = window.date === shiftDate
+        }
+        
+        if (isMatch) {
+          const startW = timeToMinutes(window.startTime)
+          const endW = timeToMinutes(window.endTime)
+          if (startS < endW && endS > startW) {
+            throw new Error('BLOCKED_WINDOW_OVERLAP')
+          }
+        }
+      }
+
+      // Travel buffer check
       const transportMode = constraints.transportMode || 'transit'
       const defaultBuffer = transportMode === 'transit' ? 60 : 30
       const bufferMinutes = typeof constraints.transitBufferMinutes === 'number'

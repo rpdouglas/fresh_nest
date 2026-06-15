@@ -134,6 +134,12 @@ export function BookingDetailPanel({
       ? constraints.transitBufferMinutes
       : defaultBuffer
 
+    const cand = {
+      startTime: job?.scheduledStartTime || '09:00',
+      endTime: job?.scheduledEndTime || '11:00',
+      address: b.address,
+    }
+
     try {
       const q = query(
         collection(db, 'jobs'),
@@ -144,12 +150,6 @@ export function BookingDetailPanel({
       const activeJobs = snap.docs
         .map((docSnap) => ({ id: docSnap.id, ...docSnap.data() } as Job))
         .filter((j) => j.status !== 'cancelled' && j.id !== b.jobId)
-
-      const cand = {
-        startTime: job?.scheduledStartTime || '09:00',
-        endTime: job?.scheduledEndTime || '11:00',
-        address: b.address,
-      }
 
       for (const exJob of activeJobs) {
         const ex = {
@@ -165,6 +165,32 @@ export function BookingDetailPanel({
       }
     } catch (err) {
       console.error('Error checking cleaner travel conflicts:', err)
+    }
+
+    // 3. Check blocked windows conflicts
+    let isOverBlockedWindow = false
+    const blockedWindows = selectedStaff.constraints?.blockedWindows || []
+    const shiftDate = b.preferredDate
+    const shiftDayOfWeek = new Date(shiftDate + 'T00:00:00').getDay()
+    const startS = timeToMinutes(cand.startTime)
+    const endS = timeToMinutes(cand.endTime)
+
+    for (const window of blockedWindows) {
+      let isMatch = false
+      if (window.recurring) {
+        isMatch = window.dayOfWeek === shiftDayOfWeek
+      } else if (window.date) {
+        isMatch = window.date === shiftDate
+      }
+
+      if (isMatch) {
+        const startW = timeToMinutes(window.startTime)
+        const endW = timeToMinutes(window.endTime)
+        if (startS < endW && endS > startW) {
+          isOverBlockedWindow = true
+          break
+        }
+      }
     }
 
     const warnings: string[] = []
@@ -192,6 +218,16 @@ export function BookingDetailPanel({
         })
       )
       overrideTypes.push('travel_conflict_exceeded')
+    }
+
+    if (isOverBlockedWindow) {
+      warnings.push(
+        t('admin.override.blockedWindowWarning', {
+          name: newCleanerName,
+          defaultValue: `${newCleanerName} has a blocked window that overlaps with this shift`,
+        })
+      )
+      overrideTypes.push('blocked_window_overlap')
     }
 
     if (warnings.length > 0) {

@@ -721,6 +721,23 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   - [apps/customer/src/lib/firebase/firestore.ts](file:///workspaces/fresh_nest/apps/customer/src/lib/firebase/firestore.ts) (assignment logging overrideType)
 * **Close Report:** [F06-close-2026-06-15.md](file:///workspaces/fresh_nest/docs/reports/F06-close-2026-06-15.md)
 
+#### F07 — Blocked Windows (P9 Mike)
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-15)
+* **Strategy:** Implemented Strategy 1 — Full-safety integration. Created available shifts filtering on the client-side FSM Shift Board to completely hide conflicting shifts. Added backend transactional validation in the `claimJob` Cloud Function to reject claims overlapping with the cleaner's blocked windows. Intercepted manual cleaner assignment in the Admin panel to warn admins and request an override reason, logging overrides to `/auditLog` under overrideType: "blocked_window_overlap" while keeping private labels hidden.
+* **Persona tests:**
+  - Mike (P9): Overlapping shifts are completely hidden on the FSM Shift Board, protecting recovery group commitments. Backend verification transactionally rejects claims.
+  - Sarah (P12): Warns when assigning a conflicting cleaner, prompts for override explanation, logs the transaction to the audit trail, and keeps the blocked window label hidden.
+* **Key Assets:**
+  - [functions/src/jobs.ts](file:///workspaces/fresh_nest/functions/src/jobs.ts) (backend blocked window check inside executeClaimJob)
+  - [functions/src/index.ts](file:///workspaces/fresh_nest/functions/src/index.ts) (catch BLOCKED_WINDOW_OVERLAP and throw HttpsError)
+  - [apps/fsm/src/pages/ShiftBoardPage.tsx](file:///workspaces/fresh_nest/apps/fsm/src/pages/ShiftBoardPage.tsx) (client-side shift board filter)
+  - [apps/fsm/src/pages/ShiftBoardPage.test.tsx](file:///workspaces/fresh_nest/apps/fsm/src/pages/ShiftBoardPage.test.tsx) (vitest unit test suite verifying visibility checks)
+  - [apps/customer/src/components/admin/BookingDetailPanel.tsx](file:///workspaces/fresh_nest/apps/customer/src/components/admin/BookingDetailPanel.tsx) (intercept manual assignments and show override modal)
+  - [apps/customer/src/i18n/locales/en.json](file:///workspaces/fresh_nest/apps/customer/src/i18n/locales/en.json) & [fr.json](file:///workspaces/fresh_nest/apps/customer/src/i18n/locales/fr.json) (override blockedWindowWarning key)
+* **Close Report:** [F07-close-2026-06-15.md](file:///workspaces/fresh_nest/docs/reports/F07-close-2026-06-15.md)
+
+
 
 
 

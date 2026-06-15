@@ -1014,6 +1014,7 @@
       "modalMessage": "Assigning this shift to {{name}} requires an administrator override due to the following constraint violations:",
       "earningsWarning": "{{name}} exceeds monthly earnings limit by ${{overage}}",
       "travelWarning": "{{name}} needs {{buffer}}m travel buffer with shift {{start}}-{{end}}",
+      "blockedWindowWarning": "{{name}} has a blocked window that overlaps with this shift",
       "reasonLabel": "Override Reason",
       "reasonPlaceholder": "e.g. Urgent replacement requested by client",
       "reasonRequired": "Override reason is required.",
