@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useStaffAuth } from '../../hooks/useStaffAuth'
+import { LanguageSelectionOverlay } from '../auth/LanguageSelectionOverlay'
 import { cn } from '@freshnest/shared'
 
 export const FsmLayout: React.FC = () => {
@@ -20,7 +21,9 @@ export const FsmLayout: React.FC = () => {
   }
 
   const toggleLanguage = () => {
-    const nextLng = i18n.language === 'fr' ? 'en' : 'fr'
+    const languages = ['en', 'fr', 'ar']
+    const currentIndex = languages.indexOf(i18n.language)
+    const nextLng = languages[(currentIndex + 1) % languages.length]
     void i18n.changeLanguage(nextLng)
   }
 
@@ -78,7 +81,7 @@ export const FsmLayout: React.FC = () => {
               )}
               aria-label="Toggle language"
             >
-              {i18n.language === 'fr' ? 'EN' : 'FR'}
+              {i18n.language === 'ar' ? 'العربية' : i18n.language.toUpperCase()}
             </button>
 
             {/* Profile Avatar & Info (Desktop) */}
@@ -207,6 +210,7 @@ export const FsmLayout: React.FC = () => {
         </div>
       </footer>
 
+      <LanguageSelectionOverlay />
     </div>
   )
 }

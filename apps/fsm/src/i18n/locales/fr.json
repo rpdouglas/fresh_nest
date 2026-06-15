@@ -22,18 +22,48 @@
       "completedTab": "Historique des travaux",
       "noJobsUpcoming": "Aucun mandat à venir assigné.",
       "noJobsCompleted": "Aucun mandat complété dans votre historique.",
+      "syncStatus": {
+        "pending": "Mise à jour... {{count}} photo(s) en attente",
+        "uploading": "Téléchargement des photos...",
+        "offline": "Mode hors ligne",
+        "online": "En ligne",
+        "offlineBadge": "Local"
+      },
       "jobCard": {
         "duration": "({{count}} h)",
         "rate": "{{rate}} $/h",
         "estPay": "Rémunération estimée",
-        "status": {
-          "assigned": "Assigné",
-          "acknowledged": "Accepté",
-          "in_progress": "En cours",
-          "completed": "Complété",
-          "disputed": "En litige"
-        },
-        "viewDetails": "Voir les détails"
+        "estPayLabel": "Rémunération estimée",
+        "contactClient": "Contact client",
+        "viewDetails": "Voir les détails",
+        "backToList": "Retour à mes mandats",
+        "errorTitle": "Mandat introuvable",
+        "errorMessage": "Ce mandat n'a pas pu être chargé.",
+        "welcomeTitle": "Prêt(e) à commencer votre quart ?",
+        "checkInPrompt": "Veuillez enregistrer votre arrivée à l'adresse du client pour déverrouiller la liste des tâches de nettoyage.",
+        "checkInBtn": "Enregistrer l'arrivée",
+        "checkingIn": "Enregistrement de l'arrivée...",
+        "checkInError": "Échec de l'enregistrement de l'arrivée. Veuillez réessayer.",
+        "checklistTitle": "Tâches de nettoyage",
+        "completedLabel": "Complété",
+        "noTasks": "Aucune tâche configurée pour ce modèle.",
+        "photoRequired": "Photo obligatoire",
+        "photoRequiredWarning": "Une photo est obligatoire avant de pouvoir cocher cette tâche.",
+        "verificationPhoto": "Photo de vérification",
+        "takePhoto": "Prendre une photo",
+        "retakePhoto": "Reprendre la photo",
+        "photoUploadError": "Échec de l'enregistrement de la photo. Veuillez réessayer.",
+        "undoComplete": "Marquer comme incomplète",
+        "confirmDone": "Confirmer l'achèvement",
+        "taskConfirmError": "Échec de la mise à jour de la tâche.",
+        "checkingOut": "Enregistrement du départ...",
+        "checkOutBtn": "Terminer le travail & Enregistrer le départ",
+        "checkoutDisabledWarning": "Veuillez compléter toutes les tâches pour pouvoir enregistrer votre départ.",
+        "checkOutError": "Échec de l'enregistrement du départ. Veuillez réessayer.",
+        "completedTitle": "Travail complété !",
+        "completedMessage": "Ce quart a été complété et vérifié. Merci pour votre travail !",
+        "checkedInAtLabel": "Heure d'arrivée",
+        "checkedOutAtLabel": "Heure de départ"
       }
     },
     "logout": "Déconnexion",
@@ -128,6 +158,26 @@
       "saveSuccess": "Profil mis à jour avec succès.",
       "saveError": "Échec de la mise à jour du profil.",
       "saving": "Enregistrement en cours..."
+    },
+    "tasks": {
+      "stoveDeep": "Nettoyage en profondeur du four",
+      "fridgeDeep": "Nettoyage en profondeur du réfrigérateur",
+      "bathroomPrimary": "Détails de la salle de bain principale",
+      "propertyEntry": "Photo de l'entrée du bâtiment",
+      "kitchenCounters": "Désinfecter les comptoirs de cuisine",
+      "vacuumFloors": "Aspirer tous les sols",
+      "trashEmpty": "Vider les corbeilles",
+      "bedChange": "Changer les draps & Faire les lits",
+      "desc": {
+        "stoveDeep": "Nettoyer toute la graisse et les taches du four, des brûleurs de la cuisinière et des surfaces actives.",
+        "fridgeDeep": "Nettoyer soigneusement toutes les étagères, tiroirs et compartiments intérieurs.",
+        "bathroomPrimary": "Nettoyer la toilette, la baignoire, le meuble-lavabo, le miroir et les robinets.",
+        "propertyEntry": "Prendre une photo de la porte d'entrée du bâtiment à l'arrivée.",
+        "kitchenCounters": "Nettoyer et désinfecter toutes les surfaces de comptoir et les dosserets.",
+        "vacuumFloors": "Aspirer tous les tapis, carpettes et sols durs.",
+        "trashEmpty": "Vider toutes les corbeilles à papier et remplacer les sacs.",
+        "bedChange": "Retirer les draps de lit, les laver/les remplacer par des draps propres et faire le lit proprement."
+      }
     }
   }
 }

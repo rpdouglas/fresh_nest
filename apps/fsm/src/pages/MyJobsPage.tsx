@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { doc, onSnapshot } from 'firebase/firestore'
+import { db } from '../lib/firebase/firebase'
 import { useStaffAuth } from '../hooks/useStaffAuth'
 import { useMyAssignedShifts } from '../hooks/useMyAssignedShifts'
 import { cn } from '@freshnest/shared'
@@ -42,14 +44,6 @@ export const MyJobsPage: React.FC = () => {
     }
   }
 
-  if (!staffProfile) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-warm-white">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-slate-brand"></div>
-      </div>
-    )
-  }
-
   // Split shifts into Upcoming vs Completed
   const upcomingJobs = assignedShifts.filter((job) =>
     ['assigned', 'acknowledged', 'in_progress'].includes(job.status)
@@ -59,7 +53,31 @@ export const MyJobsPage: React.FC = () => {
     ['completed', 'disputed'].includes(job.status)
   )
 
+  // Prefetch templates for caching (mitigates offline opening risk)
+  useEffect(() => {
+    if (upcomingJobs.length === 0) return
+    const unsubscribes = upcomingJobs.map((job) => {
+      if (!job.checklistTemplate) return () => {}
+      const templateRef = doc(db, 'checklistTemplates', job.checklistTemplate)
+      return onSnapshot(templateRef, () => {})
+    })
+    return () => {
+      unsubscribes.forEach((unsub) => {
+        if (unsub) unsub()
+      })
+    }
+  }, [upcomingJobs])
+
+  if (!staffProfile) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-warm-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-slate-brand"></div>
+      </div>
+    )
+  }
+
   const displayedJobs = activeTab === 'upcoming' ? upcomingJobs : completedJobs
+
 
   return (
     <main className="min-h-screen bg-warm-white py-12 px-4 md:py-16 md:px-6">

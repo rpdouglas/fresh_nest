@@ -22,18 +22,48 @@
       "completedTab": "Job History",
       "noJobsUpcoming": "No upcoming jobs assigned.",
       "noJobsCompleted": "No completed jobs in your history.",
+      "syncStatus": {
+        "pending": "Syncing... {{count}} photo(s) pending",
+        "uploading": "Uploading photos...",
+        "offline": "Offline Mode",
+        "online": "Online",
+        "offlineBadge": "Offline"
+      },
       "jobCard": {
         "duration": "({{count}} hrs)",
         "rate": "${{rate}}/hr",
         "estPay": "Estimated Pay",
-        "status": {
-          "assigned": "Assigned",
-          "acknowledged": "Acknowledged",
-          "in_progress": "In Progress",
-          "completed": "Completed",
-          "disputed": "Disputed"
-        },
-        "viewDetails": "View Details"
+        "estPayLabel": "Estimated Pay",
+        "contactClient": "Client Contact",
+        "viewDetails": "View Details",
+        "backToList": "Back to My Jobs",
+        "errorTitle": "Job Not Found",
+        "errorMessage": "This job could not be loaded.",
+        "welcomeTitle": "Ready to start your shift?",
+        "checkInPrompt": "Please check in when you arrive at the client address to unlock the cleaning checklist.",
+        "checkInBtn": "Check In",
+        "checkingIn": "Checking In...",
+        "checkInError": "Failed to check in. Please try again.",
+        "checklistTitle": "Cleaning Tasks",
+        "completedLabel": "Completed",
+        "noTasks": "No tasks configured in this template.",
+        "photoRequired": "Photo Required",
+        "photoRequiredWarning": "A photo is required before this task can be checked off.",
+        "verificationPhoto": "Verification Photo",
+        "takePhoto": "Take Photo",
+        "retakePhoto": "Retake Photo",
+        "photoUploadError": "Failed to save photo. Please try again.",
+        "undoComplete": "Mark Incomplete",
+        "confirmDone": "Confirm Done",
+        "taskConfirmError": "Failed to update task completion status.",
+        "checkingOut": "Checking Out...",
+        "checkOutBtn": "Complete Clean & Check Out",
+        "checkoutDisabledWarning": "Please complete all tasks to check out.",
+        "checkOutError": "Failed to check out. Please try again.",
+        "completedTitle": "Job Completed!",
+        "completedMessage": "This shift has been completed and verified. Thank you for your work!",
+        "checkedInAtLabel": "Checked In",
+        "checkedOutAtLabel": "Checked Out"
       }
     },
     "logout": "Sign Out",
@@ -128,6 +158,26 @@
       "saveSuccess": "Profile updated successfully.",
       "saveError": "Failed to update profile.",
       "saving": "Saving changes..."
+    },
+    "tasks": {
+      "stoveDeep": "Stove Deep Clean",
+      "fridgeDeep": "Refrigerator Deep Clean",
+      "bathroomPrimary": "Primary Bathroom Details",
+      "propertyEntry": "Property Entry Photo",
+      "kitchenCounters": "Sanitize Kitchen Counters",
+      "vacuumFloors": "Vacuum All Floors",
+      "trashEmpty": "Empty Trash Bins",
+      "bedChange": "Change Linen & Make Beds",
+      "desc": {
+        "stoveDeep": "Clean all grease and stains from oven, stovetop burners, and dynamic surfaces.",
+        "fridgeDeep": "Thoroughly clean all shelves, drawers, and interior compartments.",
+        "bathroomPrimary": "Clean toilet, tub, vanity, mirror, and fixtures.",
+        "propertyEntry": "Take a photo of the property front door upon arrival.",
+        "kitchenCounters": "Clean and sanitize all countertop surfaces and splashbacks.",
+        "vacuumFloors": "Vacuum all carpets, rugs, and hard floors.",
+        "trashEmpty": "Empty all waste baskets and replace liners.",
+        "bedChange": "Strip bed linens, wash/replace with fresh sheets, and neatly make the bed."
+      }
     }
   }
 }

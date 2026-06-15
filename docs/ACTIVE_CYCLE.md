@@ -102,6 +102,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | Epic | Description | Priority | Primary Persona | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | **F08** | Shift Board & `claimJob` | High | Jasmine (P8), Carla (P7), Mike (P9), Sarah (P12) | Completed ✅ (2026-06-15) |
+| **F09** | Job Execution & Offline PWA | High | Ahmed (P10), Brenda (P11), Jasmine (P8), Sarah (P12) | Completed ✅ (2026-06-15) |
 
 ---
 
@@ -761,6 +762,25 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   - [apps/fsm/src/i18n/locales/en.json](file:///workspaces/fresh_nest/apps/fsm/src/i18n/locales/en.json) & [fr.json](file:///workspaces/fresh_nest/apps/fsm/src/i18n/locales/fr.json) (nested translations for assigned job listings)
   - [apps/customer/src/lib/firebase/firebase.ts](file:///workspaces/fresh_nest/apps/customer/src/lib/firebase/firebase.ts) & [apps/fsm/src/lib/firebase/firebase.ts](file:///workspaces/fresh_nest/apps/fsm/src/lib/firebase/firebase.ts) (refactored to import shared helpers)
 * **Close Report:** [F08-close-2026-06-15.md](file:///workspaces/fresh_nest/docs/reports/F08-close-2026-06-15.md)
+
+#### F09 — Job Execution & Offline PWA
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-15)
+* **Strategy:** Strategy 1 — Offline PWA Job Page + Native IndexedDB Queue + Geolocation + Arabic RTL (approved by human). Implemented JobPage at `/jobs/:id` with complete offline check-in, check-out, and checklist completion caching. Designed native IndexedDB wrapper for queueing photo uploads. Built `OfflineUploadProvider` to manage background sync of IndexedDB blobs when returning online. Implemented first-login language selection modal gating FSM portal until preferences are configured.
+* **Persona tests:**
+  - Ahmed (P10): Interactive language overlay prompt configuration with Arabic RTL toggling support, dynamic layout changes, and visual task cards.
+  - Brenda (P11): Photo requirement validation prevents completing task until photo is captured with location metadata.
+  - Jasmine (P8): Cache-enabled check-in/out and checklist updates, IndexedDB upload queueing, and automatic upload background sync.
+  - Sarah (P12): Geolocation and timestamp verification audit trail.
+* **Key Assets:**
+  - [apps/fsm/src/lib/utils/indexedDb.ts](file:///workspaces/fresh_nest/apps/fsm/src/lib/utils/indexedDb.ts) (native IndexedDB photo queue)
+  - [apps/fsm/src/context/OfflineUploadContext.ts](file:///workspaces/fresh_nest/apps/fsm/src/context/OfflineUploadContext.ts) & [OfflineUploadProvider.tsx](file:///workspaces/fresh_nest/apps/fsm/src/context/OfflineUploadProvider.tsx) (connection and sync manager)
+  - [apps/fsm/src/hooks/useOfflineUploads.ts](file:///workspaces/fresh_nest/apps/fsm/src/hooks/useOfflineUploads.ts) (context consumer hook)
+  - [apps/fsm/src/components/auth/LanguageSelectionOverlay.tsx](file:///workspaces/fresh_nest/apps/fsm/src/components/auth/LanguageSelectionOverlay.tsx) (language select gate)
+  - [apps/fsm/src/components/ui/TaskIcon.tsx](file:///workspaces/fresh_nest/apps/fsm/src/components/ui/TaskIcon.tsx) (visual checklist icons)
+  - [apps/fsm/src/pages/JobPage.tsx](file:///workspaces/fresh_nest/apps/fsm/src/pages/JobPage.tsx) (check-in/out checklist UI)
+  - [apps/fsm/src/pages/JobPage.test.tsx](file:///workspaces/fresh_nest/apps/fsm/src/pages/JobPage.test.tsx) (vitest unit test suite)
+* **Close Report:** [F09-close-2026-06-15.md](file:///workspaces/fresh_nest/docs/reports/F09-close-2026-06-15.md)
 
 
 
