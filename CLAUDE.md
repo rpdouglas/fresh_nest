@@ -125,7 +125,10 @@ These are not aspirational — they are done conditions.
 3. Invoke Data_Steward: confirm no invented Firestore fields
 4. Invoke Linguistic_Auditor: confirm all UI strings use t(), no hardcoded EN/FR
 5. Run: npm run build && npm run lint
-6. Both pass → Phase C. Either fails → halt + write failure report + await human.
+6. If Firestore rules, indexes, or Cloud Functions were modified:
+   - Build functions (npm run build in functions/)
+   - Deploy updates using `npx firebase deploy --only functions,firestore:rules,firestore:indexes`
+7. All steps pass → Phase C. Any fails → halt + write failure report + await human.
 
 ### Phase C — Ticket Close
 1. Update docs/ACTIVE_CYCLE.md

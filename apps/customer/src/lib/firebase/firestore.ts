@@ -8,6 +8,7 @@ import {
   onSnapshot,
   doc,
   updateDoc,
+  runTransaction,
 } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
 import type { BookingFormData } from '@/lib/schemas/bookingSchema'
@@ -44,7 +45,7 @@ export async function submitBooking(
     status:            'pending',
     assignedTo:        null,
     isAirbnb:          data.serviceType === 'airbnb',
-    photoConfirmation: data.serviceType === 'airbnb' || data.serviceType === 'commercial',
+    photoConfirmation: data.serviceType === 'airbnb',
     fsmAppointmentId:  null,
     createdAt:         serverTimestamp(),
   }
@@ -68,7 +69,7 @@ export function subscribeToBookings(callback: (bookings: Booking[]) => void): ()
       bookings.push({
         id: docSnap.id,
         ...data,
-        createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toDate() : new Date(),
+        createdAt: data['createdAt'] instanceof Timestamp ? data['createdAt'].toDate() : new Date(),
       } as Booking)
     })
     callback(bookings)
@@ -83,6 +84,87 @@ export async function updateBookingStatus(bookingId: string, status: BookingStat
 export async function updateBookingAssignment(bookingId: string, cleanerName: string | null): Promise<void> {
   const docRef = doc(db, 'bookings', bookingId)
   await updateDoc(docRef, { assignedTo: cleanerName })
+}
+
+export async function assignCleanerTransaction({
+  bookingId,
+  jobId,
+  cleanerId,
+  cleanerName,
+  oldCleanerId,
+  estimatedPay,
+  overrideReason = null,
+  overrideType = null,
+  changedByEmail,
+}: {
+  bookingId: string
+  jobId: string | null
+  cleanerId: string | null
+  cleanerName: string | null
+  oldCleanerId: string | null
+  estimatedPay: number
+  overrideReason?: string | null
+  overrideType?: string | null
+  changedByEmail: string
+}): Promise<void> {
+  await runTransaction(db, async (transaction) => {
+    // 1. Booking update
+    const bookingRef = doc(db, 'bookings', bookingId)
+    transaction.update(bookingRef, { assignedTo: cleanerName })
+
+    // 2. Job update
+    if (jobId) {
+      const jobRef = doc(db, 'jobs', jobId)
+      transaction.update(jobRef, {
+        assignedTo: cleanerId,
+        status: cleanerId ? 'assigned' : 'unassigned',
+      })
+    }
+
+    // 3. Increment new cleaner's earnings
+    if (cleanerId) {
+      const newStaffRef = doc(db, 'staff', cleanerId)
+      const newStaffSnap = await transaction.get(newStaffRef)
+      if (newStaffSnap.exists()) {
+        const staffData = newStaffSnap.data() as { financials?: { currentMonthEarnings?: number } } | undefined
+        const financials = staffData?.financials || {}
+        const current = financials.currentMonthEarnings ?? 0
+        transaction.update(newStaffRef, {
+          'financials.currentMonthEarnings': current + estimatedPay,
+        })
+      }
+    }
+
+    // 4. Decrement old cleaner's earnings
+    if (oldCleanerId) {
+      const oldStaffRef = doc(db, 'staff', oldCleanerId)
+      const oldStaffSnap = await transaction.get(oldStaffRef)
+      if (oldStaffSnap.exists()) {
+        const staffData = oldStaffSnap.data() as { financials?: { currentMonthEarnings?: number } } | undefined
+        const financials = staffData?.financials || {}
+        const current = financials.currentMonthEarnings ?? 0
+        transaction.update(oldStaffRef, {
+          'financials.currentMonthEarnings': Math.max(0, current - estimatedPay),
+        })
+      }
+    }
+
+    // 5. Create Audit Log if it is an override
+    if (overrideReason && overrideType) {
+      const auditLogRef = doc(collection(db, 'auditLog'))
+      transaction.set(auditLogRef, {
+        collection: 'jobs',
+        documentId: jobId || bookingId,
+        field: 'assignedTo',
+        oldValue: oldCleanerId || null,
+        newValue: cleanerId || null,
+        changedBy: changedByEmail,
+        changedAt: new Date(),
+        reason: overrideReason,
+        overrideType: overrideType,
+      })
+    }
+  })
 }
 
 // ── F03: Jobs ────────────────────────────────────────────────────────────────

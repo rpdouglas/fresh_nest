@@ -2,7 +2,18 @@
   "fsm": {
     "portal": "Portail du personnel",
     "dashboard": "Tableau de bord",
-    "shifts": "Quarts disponibles",
+    "shifts": {
+      "title": "Quarts disponibles",
+      "subtitle": "Réclamez les quarts qui correspondent à votre horaire et à vos préférences.",
+      "estimatedPay": "Rémunération estimée : {{pay}} $ ({{hours}}h @ {{rate}} $/h)",
+      "claimBtn": "Réclamer le quart",
+      "claimingBtn": "Réclamation...",
+      "claimingSuccess": "Quart réclamé avec succès !",
+      "claimingError": "Échec de la réclamation du quart.",
+      "disabledOverage": "Dépasse la limite mensuelle de {{overage}} $",
+      "durationHours": "({{count}} h)",
+      "noShifts": "Aucun quart disponible pour le moment."
+    },
     "myJobs": "Mes mandats",
     "logout": "Déconnexion",
     "epicInProgress": "Fresh Nest Co. — Projet en cours",

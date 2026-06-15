@@ -5,6 +5,7 @@ import { ProtectedRoute } from './components/auth/ProtectedRoute'
 import FsmLayout from './components/layout/FsmLayout'
 import LoginPage from './pages/LoginPage'
 import ProfilePage from './pages/ProfilePage'
+import ShiftBoardPage from './pages/ShiftBoardPage'
 
 function PlaceholderPage({ titleKey }: { titleKey: string }) {
   const { t } = useTranslation()
@@ -36,7 +37,7 @@ const router = createBrowserRouter([
           },
           {
             path: '/shifts',
-            element: <PlaceholderPage titleKey="fsm.shifts" />,
+            element: <ShiftBoardPage />,
           },
           {
             path: '/jobs',

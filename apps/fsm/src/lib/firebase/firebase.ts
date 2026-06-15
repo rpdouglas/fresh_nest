@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app'
 import { initializeFirestore, persistentLocalCache } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth'
 import { getStorage } from 'firebase/storage'
+import { getFunctions } from 'firebase/functions'
 
 const app = initializeApp({
   apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,
@@ -21,4 +22,5 @@ export const db = initializeFirestore(app, {
 
 export const auth = getAuth(app)
 export const storage = getStorage(app)  // P11 Brenda — photo evidence
+export const functions = getFunctions(app)
 export default app

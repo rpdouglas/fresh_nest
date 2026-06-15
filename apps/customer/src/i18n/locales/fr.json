@@ -1008,6 +1008,15 @@
         "weeklyTrend": "Tendances Opérationnelles",
         "jobsCompleted": "Emplois Complétés"
       }
+    },
+    "override": {
+      "modalTitle": "Assigner un personnel au-delà de la limite",
+      "modalMessage": "L'assignation de ce quart dépassera la limite de gains mensuelle de {{name}}. Une dérogation administrateur est requise.",
+      "reasonLabel": "Raison de la dérogation",
+      "reasonPlaceholder": "ex. Remplacement urgent à la demande du client",
+      "reasonRequired": "La raison de la dérogation est requise.",
+      "confirm": "Déroger & Assigner",
+      "cancel": "Annuler"
     }
   },
   "blog": {

@@ -28,7 +28,6 @@ interface BookingsTableProps {
   showCustomInput: Record<string, boolean>
   handleStatusChange: (bookingId: string, status: BookingStatus) => Promise<void> | void
   handleAssignmentChange: (bookingId: string, value: string) => Promise<void> | void
-  handleCustomCleanerSave: (bookingId: string) => Promise<void> | void
 }
 
 export function BookingsTable({
@@ -55,7 +54,6 @@ export function BookingsTable({
   showCustomInput,
   handleStatusChange,
   handleAssignmentChange,
-  handleCustomCleanerSave,
 }: BookingsTableProps) {
   const { t } = useTranslation()
 
@@ -299,7 +297,6 @@ export function BookingsTable({
                           setCustomCleanerNames={setCustomCleanerNames}
                           handleStatusChange={handleStatusChange}
                           handleAssignmentChange={handleAssignmentChange}
-                          handleCustomCleanerSave={handleCustomCleanerSave}
                         />
                       )}
                     </AnimatePresence>

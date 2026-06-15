@@ -78,6 +78,10 @@ vi.mock('firebase/storage', () => ({
   getStorage: vi.fn(),
 }))
 
+vi.mock('firebase/functions', () => ({
+  getFunctions: vi.fn(),
+}))
+
 // Mock translations
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({

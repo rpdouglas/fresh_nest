@@ -2,7 +2,18 @@
   "fsm": {
     "portal": "Staff Portal",
     "dashboard": "Dashboard",
-    "shifts": "Available Shifts",
+    "shifts": {
+      "title": "Available Shifts",
+      "subtitle": "Claim shifts that match your schedule and preferences.",
+      "estimatedPay": "Estimated Pay: ${{pay}} ({{hours}}h @ ${{rate}}/h)",
+      "claimBtn": "Claim Shift",
+      "claimingBtn": "Claiming...",
+      "claimingSuccess": "Shift claimed successfully!",
+      "claimingError": "Failed to claim shift.",
+      "disabledOverage": "Exceeds monthly limit by ${{overage}}",
+      "durationHours": "({{count}} hrs)",
+      "noShifts": "No available shifts at the moment."
+    },
     "myJobs": "My Jobs",
     "logout": "Sign Out",
     "epicInProgress": "Fresh Nest Co. — Epic in progress",

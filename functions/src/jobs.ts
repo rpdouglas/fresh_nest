@@ -198,3 +198,128 @@ export async function createJobFromBooking(
 
   console.log(`[createJobFromBooking] Successfully created job for booking '${bookingId}'`)
 }
+
+/**
+ * F05: Transactional Claim Job Logic
+ *
+ * @param staffId - The UID of the claiming cleaner
+ * @param jobId   - The Firestore document ID of the job
+ */
+export async function executeClaimJob(
+  staffId: string,
+  jobId: string,
+): Promise<{ success: boolean; newEarnings: number }> {
+  const db = getFirestore('(default)')
+
+  try {
+    const result = await db.runTransaction(async (transaction) => {
+      const jobRef = db.collection('jobs').doc(jobId)
+      const jobSnap = await transaction.get(jobRef)
+
+      if (!jobSnap.exists) {
+        throw new Error('JOB_NOT_FOUND')
+      }
+
+      const jobData = jobSnap.data()!
+      if (jobData.status !== 'unassigned' || jobData.assignedTo !== null) {
+        throw new Error('JOB_ALREADY_ASSIGNED')
+      }
+
+      // Read staff profile
+      const staffRef = db.collection('staff').doc(staffId)
+      const staffSnap = await transaction.get(staffRef)
+
+      if (!staffSnap.exists) {
+        throw new Error('STAFF_PROFILE_NOT_FOUND')
+      }
+
+      const staffData = staffSnap.data()!
+      if (staffData.status !== 'active') {
+        throw new Error('STAFF_INACTIVE')
+      }
+
+      // Calculate shift pay
+      const payRate = jobData.payRateSnapshot?.amount || 0
+      // Get duration
+      let durationHours = 2 // default fallback
+      try {
+        const [startH, startM] = jobData.scheduledStartTime.split(':').map(Number)
+        const [endH, endM] = jobData.scheduledEndTime.split(':').map(Number)
+        const diff = (endH + endM / 60) - (startH + startM / 60)
+        if (diff > 0) durationHours = diff
+      } catch (err) {
+        console.warn('Error parsing times for job:', jobId, err)
+      }
+
+      const estimatedShiftPay = payRate * durationHours
+
+      // Earnings cap check
+      const monthlyEarningsLimit = staffData.financials?.monthlyEarningsLimit ?? null
+      const currentMonthEarnings = staffData.financials?.currentMonthEarnings ?? 0
+
+      if (monthlyEarningsLimit !== null && monthlyEarningsLimit !== undefined) {
+        const remaining = monthlyEarningsLimit - currentMonthEarnings
+        if (estimatedShiftPay > remaining) {
+          throw new Error('EARNINGS_CAP_EXCEEDED')
+        }
+      }
+
+      // Perform updates
+      transaction.update(jobRef, {
+        status: 'assigned',
+        assignedTo: staffId,
+      })
+
+      transaction.update(staffRef, {
+        'financials.currentMonthEarnings': currentMonthEarnings + estimatedShiftPay,
+      })
+
+      return { success: true, newEarnings: currentMonthEarnings + estimatedShiftPay }
+    })
+
+    return result
+  } catch (err) {
+    throw err
+  }
+}
+
+/**
+ * F05: Earnings Cap Monthly Rollover
+ * Resets currentMonthEarnings to 0 and archives past month's earnings.
+ */
+export async function rollOverAllStaffEarnings(): Promise<void> {
+  const db = getFirestore('(default)')
+  const lastMonth = new Date()
+  lastMonth.setUTCDate(1)
+  lastMonth.setUTCMonth(lastMonth.getUTCMonth() - 1)
+  const lastMonthStr = `${lastMonth.getUTCFullYear()}-${String(lastMonth.getUTCMonth() + 1).padStart(2, '0')}`
+
+  const staffSnap = await db.collection('staff').get()
+  if (staffSnap.empty) {
+    console.log('[rollOverAllStaffEarnings] No staff members found to rollover.')
+    return
+  }
+
+  const batch = db.batch()
+  let rolloverCount = 0
+
+  staffSnap.docs.forEach((docSnap) => {
+    const data = docSnap.data()
+    const currentMonthEarnings = data.financials?.currentMonthEarnings ?? 0
+    const earningsHistory = data.financials?.earningsHistory ?? []
+
+    const newHistory = [...earningsHistory, { month: lastMonthStr, total: currentMonthEarnings }]
+
+    batch.update(docSnap.ref, {
+      'financials.currentMonthEarnings': 0,
+      'financials.earningsHistory': newHistory,
+    })
+    rolloverCount++
+  })
+
+  if (rolloverCount > 0) {
+    await batch.commit()
+  }
+  console.log(`[rollOverAllStaffEarnings] Successfully rolled over earnings for ${rolloverCount} staff member(s) to month ${lastMonthStr}`)
+}
+

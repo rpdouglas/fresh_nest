@@ -1,7 +1,14 @@
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
+import { useQueryClient } from '@tanstack/react-query'
+import { doc, getDoc } from 'firebase/firestore'
+import { db, auth } from '@/lib/firebase/firebase'
+import { useStaff } from './hooks/useStaff'
+import { assignCleanerTransaction } from '@/lib/firebase/firestore'
+import { OverrideModal } from './OverrideModal'
 import { cn } from '@/lib/utils/utils'
-import type { Booking, BookingStatus } from '@/types'
+import type { Booking, BookingStatus, Job } from '@/types'
 
 interface BookingDetailPanelProps {
   booking: Booking
@@ -10,7 +17,6 @@ interface BookingDetailPanelProps {
   setCustomCleanerNames: React.Dispatch<React.SetStateAction<Record<string, string>>>
   handleStatusChange: (bookingId: string, status: BookingStatus) => Promise<void> | void
   handleAssignmentChange: (bookingId: string, value: string) => Promise<void> | void
-  handleCustomCleanerSave: (bookingId: string) => Promise<void> | void
 }
 
 export function BookingDetailPanel({
@@ -20,9 +26,179 @@ export function BookingDetailPanel({
   setCustomCleanerNames,
   handleStatusChange,
   handleAssignmentChange,
-  handleCustomCleanerSave,
 }: BookingDetailPanelProps) {
   const { t, i18n } = useTranslation()
+  const queryClient = useQueryClient()
+  const { staffList } = useStaff(true)
+
+  const [job, setJob] = useState<Job | null>(null)
+  const [isOverrideOpen, setIsOverrideOpen] = useState(false)
+  const [pendingAssignment, setPendingAssignment] = useState<{
+    cleanerId: string | null
+    cleanerName: string | null
+    oldCleanerId: string | null
+    estimatedPay: number
+  } | null>(null)
+
+  // Fetch job details dynamically when panel expands
+  useEffect(() => {
+    if (b.jobId) {
+      const jobRef = doc(db, 'jobs', b.jobId)
+      getDoc(jobRef)
+        .then((snap) => {
+          if (snap.exists()) {
+            setJob({ id: snap.id, ...snap.data() } as Job)
+          }
+        })
+        .catch((err) => console.error('Error fetching job details:', err))
+    }
+  }, [b.jobId])
+
+  // Get job duration
+  const getJobDurationHours = (jobDoc: Job): number => {
+    try {
+      const [startH, startM] = jobDoc.scheduledStartTime.split(':').map(Number)
+      const [endH, endM] = jobDoc.scheduledEndTime.split(':').map(Number)
+      const diff = (endH + endM / 60) - (startH + startM / 60)
+      return diff > 0 ? diff : 2
+    } catch {
+      return 2
+    }
+  }
+
+  // Map cleaner UIDs to select value
+  const getSelectedValue = () => {
+    if (showCustomInput[b.id!]) return 'custom'
+    if (!b.assignedTo) return 'unassigned'
+
+    const matchedStaff = staffList.find(
+      (s) => `${s.firstName} ${s.lastName}` === b.assignedTo
+    )
+    if (matchedStaff) return matchedStaff.id
+
+    return 'custom'
+  }
+
+  const handleSelectCleaner = async (selectedVal: string) => {
+    if (selectedVal === 'custom') {
+      await handleAssignmentChange(b.id!, 'custom')
+      return
+    }
+
+    const currentlyAssignedStaffUid = staffList.find(
+      (s) => `${s.firstName} ${s.lastName}` === b.assignedTo
+    )?.id || null
+
+    const payRate = job?.payRateSnapshot?.amount || 25
+    const duration = job ? getJobDurationHours(job) : 2
+    const estPay = payRate * duration
+
+    if (selectedVal === 'unassigned') {
+      try {
+        await assignCleanerTransaction({
+          bookingId: b.id!,
+          jobId: b.jobId || null,
+          cleanerId: null,
+          cleanerName: null,
+          oldCleanerId: currentlyAssignedStaffUid,
+          estimatedPay: estPay,
+          changedByEmail: auth.currentUser?.email || 'admin@freshnest.ca',
+        })
+        await queryClient.invalidateQueries({ queryKey: ['bookings'] })
+      } catch (err) {
+        console.error('Error unassigning cleaner:', err)
+      }
+      return
+    }
+
+    const selectedStaff = staffList.find((s) => s.id === selectedVal)
+    if (!selectedStaff) return
+
+    const newCleanerName = `${selectedStaff.firstName} ${selectedStaff.lastName}`
+
+    // Check earnings cap
+    const limit = selectedStaff.financials?.monthlyEarningsLimit ?? null
+    const current = selectedStaff.financials?.currentMonthEarnings ?? 0
+
+    if (limit !== null && current + estPay > limit) {
+      setPendingAssignment({
+        cleanerId: selectedStaff.id,
+        cleanerName: newCleanerName,
+        oldCleanerId: currentlyAssignedStaffUid,
+        estimatedPay: estPay,
+      })
+      setIsOverrideOpen(true)
+    } else {
+      try {
+        await assignCleanerTransaction({
+          bookingId: b.id!,
+          jobId: b.jobId || null,
+          cleanerId: selectedStaff.id,
+          cleanerName: newCleanerName,
+          oldCleanerId: currentlyAssignedStaffUid,
+          estimatedPay: estPay,
+          changedByEmail: auth.currentUser?.email || 'admin@freshnest.ca',
+        })
+        await queryClient.invalidateQueries({ queryKey: ['bookings'] })
+      } catch (err) {
+        console.error('Error assigning cleaner:', err)
+      }
+    }
+  }
+
+  const handleOverrideConfirm = async (reason: string) => {
+    setIsOverrideOpen(false)
+    if (!pendingAssignment) return
+
+    try {
+      await assignCleanerTransaction({
+        bookingId: b.id!,
+        jobId: b.jobId || null,
+        cleanerId: pendingAssignment.cleanerId,
+        cleanerName: pendingAssignment.cleanerName,
+        oldCleanerId: pendingAssignment.oldCleanerId,
+        estimatedPay: pendingAssignment.estimatedPay,
+        overrideReason: reason,
+        overrideType: 'earnings_cap_exceeded',
+        changedByEmail: auth.currentUser?.email || 'admin@freshnest.ca',
+      })
+      await queryClient.invalidateQueries({ queryKey: ['bookings'] })
+    } catch (err) {
+      console.error('Error assigning with override:', err)
+    } finally {
+      setPendingAssignment(null)
+    }
+  }
+
+  const handleSaveCustomCleaner = async () => {
+    const customName = customCleanerNames[b.id!]?.trim() || b.assignedTo || ''
+    if (!customName) return
+
+    const currentlyAssignedStaffUid = staffList.find(
+      (s) => `${s.firstName} ${s.lastName}` === b.assignedTo
+    )?.id || null
+
+    const payRate = job?.payRateSnapshot?.amount || 25
+    const duration = job ? getJobDurationHours(job) : 2
+    const estPay = payRate * duration
+
+    try {
+      await assignCleanerTransaction({
+        bookingId: b.id!,
+        jobId: b.jobId || null,
+        cleanerId: null,
+        cleanerName: customName,
+        oldCleanerId: currentlyAssignedStaffUid,
+        estimatedPay: estPay,
+        changedByEmail: auth.currentUser?.email || 'admin@freshnest.ca',
+      })
+      setCustomCleanerNames((prev) => ({ ...prev, [b.id!]: '' }))
+      await handleAssignmentChange(b.id!, customName)
+      await queryClient.invalidateQueries({ queryKey: ['bookings'] })
+    } catch (err) {
+      console.error('Error saving custom cleaner:', err)
+    }
+  }
 
   return (
     <tr>
@@ -136,23 +312,20 @@ export function BookingDetailPanel({
                 </label>
                 <select
                   id={`cleaner-select-${b.id}`}
-                  value={
-                    showCustomInput[b.id!]
-                      ? 'custom'
-                      : b.assignedTo === null
-                      ? 'unassigned'
-                      : b.assignedTo && ['Lauren S.', 'Sarah M.'].includes(b.assignedTo)
-                      ? b.assignedTo
-                      : 'custom'
-                  }
-                  onChange={(e) => { void handleAssignmentChange(b.id!, e.target.value) }}
+                  value={getSelectedValue()}
+                  onChange={(e) => { void handleSelectCleaner(e.target.value) }}
                   className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-white focus:outline-none focus:ring-2 focus:ring-slate-brand"
                 >
                   <option value="unassigned">
                     {t('admin.dashboard.details.unassigned')}
                   </option>
-                  <option value="Lauren S.">Lauren S.</option>
-                  <option value="Sarah M.">Sarah M.</option>
+                  {staffList
+                    .filter((s) => s.role === 'cleaner' || s.role === 'lead')
+                    .map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.firstName} {s.lastName} ({t(`admin.staff.modal.roleOption.${s.role}`)})
+                      </option>
+                    ))}
                   <option value="custom">
                     {t('admin.dashboard.details.customOption')}
                   </option>
@@ -161,7 +334,7 @@ export function BookingDetailPanel({
                 {/* Custom cleaner text input fallback */}
                 {(showCustomInput[b.id!] ||
                   (b.assignedTo &&
-                    !['Lauren S.', 'Sarah M.'].includes(b.assignedTo))) && (
+                    !staffList.some((s) => `${s.firstName} ${s.lastName}` === b.assignedTo))) && (
                   <div className="flex flex-col gap-1.5 mt-2">
                     <label
                       htmlFor={`custom-cleaner-input-${b.id}`}
@@ -190,7 +363,7 @@ export function BookingDetailPanel({
                         />
                       </div>
                       <button
-                        onClick={() => { void handleCustomCleanerSave(b.id!) }}
+                        onClick={() => { void handleSaveCustomCleaner() }}
                         className={cn(
                           'bg-slate-brand text-white font-body font-medium rounded',
                           'min-h-[48px] px-4 py-2 hover:bg-slate-dark transition-colors duration-200',
@@ -294,6 +467,15 @@ export function BookingDetailPanel({
               )}
             </p>
           </div>
+          <OverrideModal
+            isOpen={isOverrideOpen}
+            cleanerName={pendingAssignment?.cleanerName || ''}
+            onConfirm={(reason) => { void handleOverrideConfirm(reason) }}
+            onCancel={() => {
+              setIsOverrideOpen(false)
+              setPendingAssignment(null)
+            }}
+          />
         </motion.div>
       </td>
     </tr>

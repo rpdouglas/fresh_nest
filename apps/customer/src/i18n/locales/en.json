@@ -1008,6 +1008,15 @@
         "weeklyTrend": "Operational Trends",
         "jobsCompleted": "Completed Jobs"
       }
+    },
+    "override": {
+      "modalTitle": "Assign Over-Limit Cleaner",
+      "modalMessage": "Assigning this shift will push {{name}} over their monthly earnings limit. An administrator override is required.",
+      "reasonLabel": "Override Reason",
+      "reasonPlaceholder": "e.g. Urgent replacement requested by client",
+      "reasonRequired": "Override reason is required.",
+      "confirm": "Override & Assign",
+      "cancel": "Cancel"
     }
   },
   "blog": {

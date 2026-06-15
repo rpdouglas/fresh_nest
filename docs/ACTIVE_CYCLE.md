@@ -91,6 +91,8 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | :--- | :--- | :--- | :--- | :--- |
 | **F02** | Staff Profile & Settings | High | Carla (P7), Jasmine (P8), Mike (P9), Sarah (P12) | Completed ✅ (2026-06-14) |
 | **F03** | Booking-to-Job Pipeline + Checklist Template Manager | High | Sarah (P12), Brenda (P11) | Completed ✅ (2026-06-15) |
+| **F04** | Pay Rates & Operations Dashboard | High | Sarah (P12), Carla (P7) | Completed ✅ (2026-06-15) |
+| **F05** | Earnings Cap | High | Carla (P7), Sarah (P12) | Completed ✅ (2026-06-15) |
 
 ---
 
@@ -684,6 +686,22 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   - [apps/customer/src/i18n/locales/en.json](file:///workspaces/fresh_nest/apps/customer/src/i18n/locales/en.json) (admin.payRates and admin.operations keys)
   - [apps/customer/src/i18n/locales/fr.json](file:///workspaces/fresh_nest/apps/customer/src/i18n/locales/fr.json) (admin.payRates and admin.operations keys)
 * **Close Report:** [F04-close-2026-06-15.md](file:///workspaces/fresh_nest/docs/reports/F04-close-2026-06-15.md)
+
+#### F05 — Earnings Cap (P7 Carla)
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-15)
+* **Strategy:** Implemented vertical slice with transactional claimJob Cloud Function and strict Firestore rules preventing client-side edits to cleaner financials. Scaffolded the `/shifts` Shift Board in FSM featuring an ODSP earnings tracking gauge and inline overage check validation. Created the administrator override intercept modal in the Customer Booking Dashboard, logging reasoned transactions to the `/auditLog` under overrideType: "earnings_cap_exceeded".
+* **Persona tests:**
+  - Carla (P7): Real-time gauge updates safely under limits, disables Claim button when shifts exceed limit, and displays overage amount.
+  - Sarah (P12): Prompts modal requiring explanation upon manual over-limit assignment, saving transactions securely and recording audit logs.
+* **Key Assets:**
+  - [firestore.rules](file:///workspaces/fresh_nest/firestore.rules) & [firestore.dev.rules](file:///workspaces/fresh_nest/firestore.dev.rules) (financial fields write restrictions)
+  - [functions/src/jobs.ts](file:///workspaces/fresh_nest/functions/src/jobs.ts) (claimJob and rollover cloud triggers)
+  - [apps/fsm/src/pages/ShiftBoardPage.tsx](file:///workspaces/fresh_nest/apps/fsm/src/pages/ShiftBoardPage.tsx) (Shift board UI and cap validator)
+  - [apps/fsm/src/pages/ShiftBoardPage.test.tsx](file:///workspaces/fresh_nest/apps/fsm/src/pages/ShiftBoardPage.test.tsx) (vitest unit test suite)
+  - [apps/customer/src/components/admin/BookingDetailPanel.tsx](file:///workspaces/fresh_nest/apps/customer/src/components/admin/BookingDetailPanel.tsx) & [OverrideModal.tsx](file:///workspaces/fresh_nest/apps/customer/src/components/admin/OverrideModal.tsx) (override popups)
+  - [apps/customer/src/lib/firebase/firestore.ts](file:///workspaces/fresh_nest/apps/customer/src/lib/firebase/firestore.ts) (assignCleanerTransaction admin override method)
+* **Close Report:** [F05-close-2026-06-15.md](file:///workspaces/fresh_nest/docs/reports/F05-close-2026-06-15.md)
 
 
 
