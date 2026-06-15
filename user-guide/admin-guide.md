@@ -8,11 +8,12 @@
 
 Navigate to [lilypad-freshnest.web.app/admin](https://lilypad-freshnest.web.app/admin) and sign in with your authorized Google account. 
 
-The dashboard is split into four tabs:
+The dashboard is split into five tabs:
 1. **Bookings Management:** Track and manage operational client bookings.
 2. **Analytics & Metrics:** Monitor business, marketing, and operational metrics.
 3. **Staff Registry:** Manage staff profiles, roles, and registration.
 4. **Pay Rate Management:** Configure and monitor hourly pay rates per role.
+5. **Audit Logs:** View administrative security override tracking (e.g., travel buffers, earnings caps, and blocked windows overrides).
 
 ---
 

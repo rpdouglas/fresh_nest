@@ -178,6 +178,18 @@
         "trashEmpty": "Empty all waste baskets and replace liners.",
         "bedChange": "Strip bed linens, wash/replace with fresh sheets, and neatly make the bed."
       }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "markAllRead": "Mark all as read",
+      "empty": "No new notifications.",
+      "bell": "Notification Center",
+      "types": {
+        "shift_assigned": "Shift Assigned",
+        "shift_unassigned": "Shift Unassigned",
+        "shift_cancelled": "Shift Cancelled",
+        "new_shift_board_posting": "New Shift Available"
+      }
     }
   }
 }

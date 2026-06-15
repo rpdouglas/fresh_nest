@@ -178,6 +178,18 @@
         "trashEmpty": "Vider toutes les corbeilles à papier et remplacer les sacs.",
         "bedChange": "Retirer les draps de lit, les laver/les remplacer par des draps propres et faire le lit proprement."
       }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "markAllRead": "Tout marquer comme lu",
+      "empty": "Aucune nouvelle notification.",
+      "bell": "Centre de notifications",
+      "types": {
+        "shift_assigned": "Quart assigné",
+        "shift_unassigned": "Quart désassigné",
+        "shift_cancelled": "Quart annulé",
+        "new_shift_board_posting": "Nouveau quart disponible"
+      }
     }
   }
 }

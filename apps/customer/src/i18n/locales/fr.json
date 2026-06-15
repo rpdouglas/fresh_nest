@@ -805,7 +805,8 @@
         "analytics": "Analyses et Métriques",
         "staff": "Registre du personnel",
         "templates": "Modèles de liste de contrôle",
-        "payRates": "Taux de Rémunération"
+        "payRates": "Taux de Rémunération",
+        "auditLogs": "Journaux d'audit"
       },
       "staff": {
         "title": "Registre du personnel",
@@ -1020,6 +1021,32 @@
       "reasonRequired": "La raison de la dérogation est requise.",
       "confirm": "Déroger & Assigner",
       "cancel": "Annuler"
+    },
+    "audit": {
+      "title": "Journaux d'Audit des Dérogations",
+      "subtitle": "Tracez les dérogations opérationnelles et les modifications du système.",
+      "filters": {
+        "searchLabel": "Rechercher",
+        "search": "Rechercher par administrateur ou raison...",
+        "collection": "Collection",
+        "overrideType": "Type de dérogation",
+        "all": "Tout"
+      },
+      "table": {
+        "changedAt": "Date/Heure",
+        "changedBy": "Administrateur",
+        "action": "Action/Dérogation",
+        "details": "Détails",
+        "reason": "Raison"
+      },
+      "types": {
+        "none": "N/A",
+        "earnings_cap_exceeded": "Plafond de gains dépassé",
+        "travel_conflict_exceeded": "Violation du tampon de trajet",
+        "blocked_window_overlap": "Chevauchement de créneau bloqué"
+      },
+      "noLogs": "Aucune entrée de journal d'audit trouvée.",
+      "loading": "Chargement des journaux d'audit..."
     }
   },
   "blog": {

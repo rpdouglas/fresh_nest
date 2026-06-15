@@ -106,6 +106,14 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 
 ---
 
+### FSM Platform Phase 4 — Operations & Compliance
+| Epic | Description | Priority | Primary Persona | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **F11** | Administrative Compliance Auditing (Audit Logs) | High | Sarah (P12) | Completed ✅ (2026-06-15) |
+| **F15** | Staff Scheduling Alerts & In-App Notifications | High | Travis (P2), Ahmed (P10), Jasmine (P8) | Completed ✅ (2026-06-15) |
+
+---
+
 ### Epic Log
 
 #### R01 to R10 — Phase R1: Critical Security Hardening & Initial Fixes
@@ -782,8 +790,20 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   - [apps/fsm/src/pages/JobPage.test.tsx](file:///workspaces/fresh_nest/apps/fsm/src/pages/JobPage.test.tsx) (vitest unit test suite)
 * **Close Report:** [F09-close-2026-06-15.md](file:///workspaces/fresh_nest/docs/reports/F09-close-2026-06-15.md)
 
-
-
-
-
-
+#### F11 & F15 — Audit Logs & SMS Alerts / Staff Notifications
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-15)
+* **Strategy:** Strategy 1 — Real-Time Cloud Function Triggers + Admin Audit Tab + Header Bell Notification Dropdown. Created Cloud Functions for monitoring job additions and assignments, triggering localized SMS via Twilio. Configured Firestore rules to permit admin audit log creation. Designed in-app notification subcollection caching on top of real-time subscriptions, and built an administrative audit override tracking interface.
+* **Persona tests:**
+  - Sarah (P12): View compliance override logs detailing emails, dates, target fields, old/new values, and override reasons directly inside the Admin panel.
+  - Travis (P2): Real-time bilingual scheduled shift assignments or updates delivered via Twilio SMS push notifications.
+  - Ahmed (P10): Real-time, visible notification bell dropdown with an unread badge indicating new shift postings on the Shift Board.
+  - Jasmine (P8): Offline caching of FSM notifications allows tracking in-app alerts inside dead zones, syncing read status back when online.
+* **Key Assets:**
+  - [apps/customer/src/components/admin/hooks/useAuditLogs.ts](file:///workspaces/fresh_nest/apps/customer/src/components/admin/hooks/useAuditLogs.ts) (Admin audit logs subscription hook)
+  - [apps/customer/src/components/admin/AuditLogsTable.tsx](file:///workspaces/fresh_nest/apps/customer/src/components/admin/AuditLogsTable.tsx) (Admin audit logs visual table)
+  - [apps/fsm/src/hooks/useNotifications.ts](file:///workspaces/fresh_nest/apps/fsm/src/hooks/useNotifications.ts) (FSM in-app notifications subscription hook)
+  - [apps/fsm/src/components/layout/FsmLayout.tsx](file:///workspaces/fresh_nest/apps/fsm/src/components/layout/FsmLayout.tsx) (Header Bell icon and dropdown panel implementation)
+  - [functions/src/notifications.ts](file:///workspaces/fresh_nest/functions/src/notifications.ts) (SMS templates and send helpers)
+  - [functions/src/index.ts](file:///workspaces/fresh_nest/functions/src/index.ts) (Trigger exports for `onJobCreatedTrigger` and `onJobUpdatedTrigger`)
+* **Close Report:** [F11_F15-close-2026-06-15.md](file:///workspaces/fresh_nest/docs/reports/F11_F15-close-2026-06-15.md)

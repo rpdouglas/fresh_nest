@@ -169,7 +169,23 @@ Stores modifications and security overrides performed by administrators.
 
 ---
 
-## 10. Database Targeting Asymmetry (Cloud Functions)
+## 10. Collection: `notifications` (Subcollection: `messages`)
+Stores in-app messages and shift notifications dispatched to staff members.
+
+**Path:** `/notifications/{staffId}/messages/{messageId}`
+
+| Field Name | Type | Required | Description / Allowed Values |
+| :--- | :--- | :--- | :--- |
+| `title` | `string` | ✅ | Localized notification title |
+| `body` | `string` | ✅ | Localized notification text body |
+| `type` | `string` | ✅ | `'shift_assigned' \| 'shift_unassigned' \| 'shift_cancelled' \| 'new_shift_board_posting'` |
+| `jobId` | `string \| null` | ✅ | Associated job document ID backlink, or `null` |
+| `read` | `boolean` | ✅ | Read status (`false` initially) |
+| `createdAt` | `Timestamp` | ✅ | Timestamp of notification dispatch |
+
+---
+
+## 11. Database Targeting Asymmetry (Cloud Functions)
 
 ### Scheduler Functions (`onDailyReminderCheck`)
 The daily scheduler function always targets the production `(default)` database explicitly:

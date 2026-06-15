@@ -15,6 +15,7 @@ import { StaffTable } from '@/components/admin/StaffTable'
 import { ChecklistTemplateManager } from '@/components/admin/ChecklistTemplateManager'
 import { PayRatesManager } from '@/components/admin/PayRatesManager'
 import { OperationsDashboard } from '@/components/admin/OperationsDashboard'
+import { AuditLogsTable } from '@/components/admin/AuditLogsTable'
 
 export default function AdminPage() {
   const { t } = useTranslation()
@@ -22,7 +23,7 @@ export default function AdminPage() {
   const bookingsState = useBookings(isAuthorized)
   const analyticsState = useAdminAnalytics(bookingsState.bookings)
 
-  const [activeTab, setActiveTab] = useState<'bookings' | 'analytics' | 'staff' | 'templates' | 'payRates'>('bookings')
+  const [activeTab, setActiveTab] = useState<'bookings' | 'analytics' | 'staff' | 'templates' | 'payRates' | 'auditLogs'>('bookings')
   const [analyticsSubTab, setAnalyticsSubTab] = useState<'marketing' | 'operations'>('marketing')
 
   if (loading) {
@@ -175,6 +176,17 @@ export default function AdminPage() {
                 >
                   {t('admin.dashboard.tabs.payRates')}
                 </button>
+                <button
+                  onClick={() => setActiveTab('auditLogs')}
+                  className={cn(
+                    'min-h-[48px] py-3 px-6 font-body font-medium text-base border-b-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2 shrink-0',
+                    activeTab === 'auditLogs'
+                      ? 'border-slate-brand text-slate-brand'
+                      : 'border-transparent text-text-muted hover:text-charcoal hover:border-sand'
+                  )}
+                >
+                  {t('admin.dashboard.tabs.auditLogs', 'Audit Logs')}
+                </button>
               </div>
 
               <AnimatePresence mode="wait">
@@ -262,6 +274,17 @@ export default function AdminPage() {
                     transition={{ duration: 0.2 }}
                   >
                     <PayRatesManager isAuthorized={isAuthorized} />
+                  </motion.div>
+                )}
+                {activeTab === 'auditLogs' && (
+                  <motion.div
+                    key="tab-auditLogs"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <AuditLogsTable isAuthorized={isAuthorized} />
                   </motion.div>
                 )}
               </AnimatePresence>

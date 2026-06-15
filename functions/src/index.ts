@@ -8,6 +8,7 @@ import { sendOwnerNotification, sendClientConfirmation } from './sendEmail'
 import { sendSmsConfirmation, sendSmsReminder } from './sendSms'
 import type { BookingData } from './emailTemplates'
 import { createJobFromBooking, executeClaimJob, rollOverAllStaffEarnings } from './jobs'
+import { notifyStaffMember, notifyAllActiveStaff } from './notifications'
 
 initializeApp()
 
@@ -295,6 +296,142 @@ export const onMonthlyEarningsRollover = onSchedule(
       await rollOverAllStaffEarnings()
     } catch (err) {
       console.error('[onMonthlyEarningsRollover] Rollover failed:', err)
+    }
+  },
+)
+
+// F15: Firestore triggers for job creation (posting to Shift Board)
+export const onJobCreatedTrigger = onDocumentCreated(
+  {
+    document: 'jobs/{docId}',
+    database: '(default)',
+    secrets:  [TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER],
+  },
+  async (event) => {
+    const job = event.data?.data()
+    if (!job) return
+
+    const jobId = event.params['docId']
+    console.log(`[onJobCreatedTrigger] Job '${jobId}' created (status: ${job.status}).`)
+
+    const smsConfig = {
+      accountSid: TWILIO_ACCOUNT_SID.value(),
+      authToken:  TWILIO_AUTH_TOKEN.value(),
+      fromNumber: TWILIO_PHONE_NUMBER.value(),
+    }
+
+    const db = getFirestore('(default)')
+
+    // Notify all active staff about the new unassigned shift posting
+    if (job.status === 'unassigned' && !job.assignedTo) {
+      await notifyAllActiveStaff(
+        db,
+        'new_shift_board_posting',
+        job.scheduledDate,
+        job.scheduledStartTime,
+        job.scheduledEndTime,
+        jobId,
+        smsConfig
+      )
+    }
+    // Direct assignment on creation
+    else if (job.assignedTo) {
+      await notifyStaffMember(
+        db,
+        job.assignedTo,
+        'shift_assigned',
+        job.scheduledDate,
+        job.scheduledStartTime,
+        job.scheduledEndTime,
+        jobId,
+        smsConfig
+      )
+    }
+  },
+)
+
+// F15: Firestore triggers for job updates (assignment modifications / cancellations)
+export const onJobUpdatedTrigger = onDocumentUpdated(
+  {
+    document: 'jobs/{docId}',
+    database: '(default)',
+    secrets:  [TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER],
+  },
+  async (event) => {
+    const before = event.data?.before.data()
+    const after = event.data?.after.data()
+    if (!before || !after) return
+
+    const jobId = event.params['docId']
+    const db = getFirestore('(default)')
+
+    const smsConfig = {
+      accountSid: TWILIO_ACCOUNT_SID.value(),
+      authToken:  TWILIO_AUTH_TOKEN.value(),
+      fromNumber: TWILIO_PHONE_NUMBER.value(),
+    }
+
+    // 1. Shift Cancellation
+    if (before.status !== 'cancelled' && after.status === 'cancelled') {
+      const recipient = after.assignedTo || before.assignedTo
+      if (recipient) {
+        await notifyStaffMember(
+          db,
+          recipient,
+          'shift_cancelled',
+          after.scheduledDate,
+          after.scheduledStartTime,
+          after.scheduledEndTime,
+          jobId,
+          smsConfig
+        )
+      }
+      return
+    }
+
+    // 2. Assignment change
+    if (before.assignedTo !== after.assignedTo) {
+      // Case A: Cleaner unassigned
+      if (before.assignedTo && !after.assignedTo) {
+        await notifyStaffMember(
+          db,
+          before.assignedTo,
+          'shift_unassigned',
+          after.scheduledDate,
+          after.scheduledStartTime,
+          after.scheduledEndTime,
+          jobId,
+          smsConfig
+        )
+      }
+      // Case B: Cleaner assigned
+      else if (after.assignedTo) {
+        // If it was reassigned from someone else, notify the old cleaner
+        if (before.assignedTo) {
+          await notifyStaffMember(
+            db,
+            before.assignedTo,
+            'shift_unassigned',
+            after.scheduledDate,
+            after.scheduledStartTime,
+            after.scheduledEndTime,
+            jobId,
+            smsConfig
+          )
+        }
+
+        // Notify the new cleaner
+        await notifyStaffMember(
+          db,
+          after.assignedTo,
+          'shift_assigned',
+          after.scheduledDate,
+          after.scheduledStartTime,
+          after.scheduledEndTime,
+          jobId,
+          smsConfig
+        )
+      }
     }
   },
 )

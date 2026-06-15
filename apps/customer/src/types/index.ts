@@ -204,3 +204,17 @@ export interface PayRate {
   createdAt: Date
 }
 
+export interface AuditEntry {
+  id: string
+  collection: string
+  documentId: string
+  field: string
+  oldValue: unknown
+  newValue: unknown
+  changedBy: string
+  changedAt: Date
+  reason: string | null
+  overrideType: string | null
+}
+
+

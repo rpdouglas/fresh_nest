@@ -805,7 +805,8 @@
         "analytics": "Analytics & Metrics",
         "staff": "Staff Registry",
         "templates": "Checklist Templates",
-        "payRates": "Pay Rates"
+        "payRates": "Pay Rates",
+        "auditLogs": "Audit Logs"
       },
       "staff": {
         "title": "Staff Registry",
@@ -1020,6 +1021,32 @@
       "reasonRequired": "Override reason is required.",
       "confirm": "Override & Assign",
       "cancel": "Cancel"
+    },
+    "audit": {
+      "title": "Override Audit Logs",
+      "subtitle": "Trace operational overrides and system changes.",
+      "filters": {
+        "searchLabel": "Search",
+        "search": "Search by admin or reason...",
+        "collection": "Collection",
+        "overrideType": "Override Type",
+        "all": "All"
+      },
+      "table": {
+        "changedAt": "Date/Time",
+        "changedBy": "Administrator",
+        "action": "Action/Override",
+        "details": "Details",
+        "reason": "Reason"
+      },
+      "types": {
+        "none": "N/A",
+        "earnings_cap_exceeded": "Earnings Cap Exceeded",
+        "travel_conflict_exceeded": "Travel Buffer Violations",
+        "blocked_window_overlap": "Blocked Window Overlap"
+      },
+      "noLogs": "No audit log entries found.",
+      "loading": "Loading audit logs..."
     }
   },
   "blog": {

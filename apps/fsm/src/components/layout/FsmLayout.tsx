@@ -4,12 +4,16 @@ import { useTranslation } from 'react-i18next'
 import { useStaffAuth } from '../../hooks/useStaffAuth'
 import { LanguageSelectionOverlay } from '../auth/LanguageSelectionOverlay'
 import { cn } from '@freshnest/shared'
+import { useNotifications } from '../../hooks/useNotifications'
 
 export const FsmLayout: React.FC = () => {
   const { t, i18n } = useTranslation()
   const { staffProfile, logout } = useStaffAuth()
   const navigate = useNavigate()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [notificationsOpen, setNotificationsOpen] = useState(false)
+
+  const { notifications, unreadCount, markAllAsRead } = useNotifications()
 
   const handleLogout = async () => {
     try {
@@ -83,6 +87,84 @@ export const FsmLayout: React.FC = () => {
             >
               {i18n.language === 'ar' ? 'العربية' : i18n.language.toUpperCase()}
             </button>
+
+            {/* Notifications Bell Dropdown */}
+            {staffProfile && (
+              <div className="relative">
+                <button
+                  onClick={() => setNotificationsOpen(!notificationsOpen)}
+                  className="min-h-[48px] min-w-[48px] flex items-center justify-center text-charcoal hover:text-slate-brand transition-colors focus:outline-none focus:ring-2 focus:ring-slate-brand rounded relative"
+                  aria-label={t('fsm.notifications.bell', { defaultValue: 'Notification Center' })}
+                  aria-expanded={notificationsOpen}
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  </svg>
+                  {unreadCount > 0 && (
+                    <span className="absolute top-2 right-2 bg-red-600 text-white rounded-full text-xs font-bold w-5 h-5 flex items-center justify-center animate-pulse">
+                      {unreadCount}
+                    </span>
+                  )}
+                </button>
+
+                {/* Dropdown Panel */}
+                {notificationsOpen && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white border border-sand rounded shadow-lg z-50 overflow-hidden text-left">
+                    <div className="px-4 py-3 bg-cream border-b border-sand flex items-center justify-between">
+                      <span className="font-semibold text-charcoal text-base">
+                        {t('fsm.notifications.title', { defaultValue: 'Notifications' })}
+                      </span>
+                      {unreadCount > 0 && (
+                        <button
+                          onClick={() => {
+                            void markAllAsRead()
+                          }}
+                          className="text-xs text-slate-brand hover:text-slate-dark font-medium min-h-[32px] px-2 flex items-center justify-center focus:outline-none"
+                        >
+                          {t('fsm.notifications.markAllRead', { defaultValue: 'Mark all as read' })}
+                        </button>
+                      )}
+                    </div>
+                    
+                    <div className="max-h-64 overflow-y-auto divide-y divide-sand">
+                      {notifications.length === 0 ? (
+                        <div className="px-4 py-6 text-center text-text-muted text-sm font-medium">
+                          {t('fsm.notifications.empty', { defaultValue: 'No notifications.' })}
+                        </div>
+                      ) : (
+                        notifications.map((n) => (
+                          <div
+                            key={n.id}
+                            onClick={() => {
+                              setNotificationsOpen(false)
+                              if (n.jobId) {
+                                void navigate(`/jobs/${n.jobId}`)
+                              } else {
+                                void navigate('/shifts')
+                              }
+                            }}
+                            className={cn(
+                              "px-4 py-3 hover:bg-cream transition-colors cursor-pointer text-sm",
+                              !n.read && "bg-slate-pale/30 border-l-4 border-slate-brand font-medium"
+                            )}
+                          >
+                            <div className="flex justify-between items-start gap-2 mb-1">
+                              <span className="font-semibold text-charcoal text-xs">
+                                {t(`fsm.notifications.types.${n.type}`, { defaultValue: n.title })}
+                              </span>
+                              <span className="text-text-muted text-[10px] whitespace-nowrap">
+                                {new Date(n.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                              </span>
+                            </div>
+                            <p className="text-charcoal leading-tight text-xs">{n.body}</p>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Profile Avatar & Info (Desktop) */}
             {staffProfile && (

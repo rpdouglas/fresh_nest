@@ -142,3 +142,14 @@ export interface AuditEntry {
   reason: string | null
   overrideType: string | null
 }
+
+export interface Notification {
+  id: string
+  title: string
+  body: string
+  type: 'shift_assigned' | 'shift_unassigned' | 'shift_cancelled' | 'new_shift_board_posting'
+  jobId: string | null
+  read: boolean
+  createdAt: Date
+}
+
