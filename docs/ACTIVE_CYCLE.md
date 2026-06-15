@@ -93,6 +93,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | **F03** | Booking-to-Job Pipeline + Checklist Template Manager | High | Sarah (P12), Brenda (P11) | Completed ✅ (2026-06-15) |
 | **F04** | Pay Rates & Operations Dashboard | High | Sarah (P12), Carla (P7) | Completed ✅ (2026-06-15) |
 | **F05** | Earnings Cap | High | Carla (P7), Sarah (P12) | Completed ✅ (2026-06-15) |
+| **F06** | Travel Buffer | High | Jasmine (P8), Sarah (P12) | Completed ✅ (2026-06-15) |
 
 ---
 
@@ -702,6 +703,23 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   - [apps/customer/src/components/admin/BookingDetailPanel.tsx](file:///workspaces/fresh_nest/apps/customer/src/components/admin/BookingDetailPanel.tsx) & [OverrideModal.tsx](file:///workspaces/fresh_nest/apps/customer/src/components/admin/OverrideModal.tsx) (override popups)
   - [apps/customer/src/lib/firebase/firestore.ts](file:///workspaces/fresh_nest/apps/customer/src/lib/firebase/firestore.ts) (assignCleanerTransaction admin override method)
 * **Close Report:** [F05-close-2026-06-15.md](file:///workspaces/fresh_nest/docs/reports/F05-close-2026-06-15.md)
+
+#### F06 — Travel Buffer (P8 Jasmine)
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-15)
+* **Strategy:** Implemented client-side travel conflict detection on the Shift Board and within the Admin assignment panel. Implemented backend travel buffer validation inside the transactional claimJob Cloud Function. Designed a robust regex-based FSA postal prefix extraction to waive buffer times when shifts are clustered in the same area. Configured defaults (60m for transit, 30m for other modes) and fully supported administrator overrides logging reasoned transactions to the `/auditLog` under overrideType: "travel_conflict_exceeded".
+* **Persona tests:**
+  - Jasmine (P8): Disables Shift Board claim actions with a clear travel conflict explanation when shifts violate transit commute buffers, waiving the buffer for identical FSA postal prefixes.
+  - Sarah (P12): Alerts admins to travel conflicts on cleaner selection, prompting the Override modal to collect reasons, saving logs securely.
+* **Key Assets:**
+  - [functions/src/jobs.ts](file:///workspaces/fresh_nest/functions/src/jobs.ts) (backend hasTravelConflict check and executeClaimJob validator)
+  - [functions/src/index.ts](file:///workspaces/fresh_nest/functions/src/index.ts) (claimJob Callable HttpsError mapping)
+  - [apps/fsm/src/hooks/useMyAssignedShifts.ts](file:///workspaces/fresh_nest/apps/fsm/src/hooks/useMyAssignedShifts.ts) (hook querying cleaner's active jobs)
+  - [apps/fsm/src/pages/ShiftBoardPage.tsx](file:///workspaces/fresh_nest/apps/fsm/src/pages/ShiftBoardPage.tsx) (Shift board travel buffer validator and inline warnings)
+  - [apps/fsm/src/pages/ShiftBoardPage.test.tsx](file:///workspaces/fresh_nest/apps/fsm/src/pages/ShiftBoardPage.test.tsx) (unit test verifying travel conflict behavior)
+  - [apps/customer/src/components/admin/BookingDetailPanel.tsx](file:///workspaces/fresh_nest/apps/customer/src/components/admin/BookingDetailPanel.tsx) & [OverrideModal.tsx](file:///workspaces/fresh_nest/apps/customer/src/components/admin/OverrideModal.tsx) (combined override panel warnings)
+  - [apps/customer/src/lib/firebase/firestore.ts](file:///workspaces/fresh_nest/apps/customer/src/lib/firebase/firestore.ts) (assignment logging overrideType)
+* **Close Report:** [F06-close-2026-06-15.md](file:///workspaces/fresh_nest/docs/reports/F06-close-2026-06-15.md)
 
 
 

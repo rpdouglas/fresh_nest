@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils/utils'
 interface OverrideModalProps {
   isOpen: boolean
   cleanerName: string
+  warnings: string[]
   onConfirm: (reason: string) => void
   onCancel: () => void
 }
@@ -12,6 +13,7 @@ interface OverrideModalProps {
 export const OverrideModal: React.FC<OverrideModalProps> = ({
   isOpen,
   cleanerName,
+  warnings,
   onConfirm,
   onCancel,
 }) => {
@@ -41,7 +43,7 @@ export const OverrideModal: React.FC<OverrideModalProps> = ({
         {/* Header */}
         <div className="px-6 py-4 border-b border-sand bg-warm-white">
           <h3 className="font-sub text-xl text-charcoal font-bold">
-            {t('admin.override.modalTitle', { defaultValue: 'Assign Over-Limit Cleaner' })}
+            {t('admin.override.modalTitle', { defaultValue: 'Administrator Override Required' })}
           </h3>
         </div>
 
@@ -50,9 +52,20 @@ export const OverrideModal: React.FC<OverrideModalProps> = ({
           <p className="font-body text-base text-charcoal leading-relaxed">
             {t('admin.override.modalMessage', {
               name: cleanerName,
-              defaultValue: `Assigning this shift will push ${cleanerName} over their monthly earnings limit. An administrator override is required.`,
+              defaultValue: `Assigning this shift to ${cleanerName} requires an administrator override due to the following constraint violations:`,
             })}
           </p>
+
+          {warnings.length > 0 && (
+            <div className="flex flex-col gap-2 p-4 bg-red-50/50 border border-red-200 text-red-800 rounded">
+              {warnings.map((warn, index) => (
+                <div key={index} className="font-body text-sm font-semibold flex items-start gap-1.5">
+                  <span className="shrink-0">⚠️</span>
+                  <span>{warn}</span>
+                </div>
+              ))}
+            </div>
+          )}
 
           <div className="flex flex-col gap-1.5 mt-2">
             <label htmlFor="override-reason" className="font-body text-sm text-text-muted font-medium">

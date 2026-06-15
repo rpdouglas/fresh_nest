@@ -4,12 +4,75 @@ import { httpsCallable } from 'firebase/functions'
 import { functions } from '../lib/firebase/firebase'
 import { useStaffAuth } from '../hooks/useStaffAuth'
 import { useShifts } from '../hooks/useShifts'
+import { useMyAssignedShifts } from '../hooks/useMyAssignedShifts'
 import { cn } from '../lib/utils/utils'
+import type { Job } from '../types'
+
+// F06 Helpers
+const timeToMinutes = (timeStr: string): number => {
+  try {
+    const [h, m] = timeStr.split(':').map(Number)
+    return h * 60 + m
+  } catch {
+    return 0
+  }
+}
+
+const extractPostalPrefix = (address: string): string | null => {
+  if (!address) return null
+  const match = address.match(/([A-Za-z]\d[A-Za-z])/i)
+  return match ? match[1].toUpperCase() : null
+}
+
+interface TravelShift {
+  startTime: string
+  endTime: string
+  address: string
+}
+
+const hasTravelConflict = (
+  candidate: TravelShift,
+  existing: TravelShift,
+  bufferMinutes: number
+): boolean => {
+  const startC = timeToMinutes(candidate.startTime)
+  const endC = timeToMinutes(candidate.endTime)
+  const startA = timeToMinutes(existing.startTime)
+  const endA = timeToMinutes(existing.endTime)
+
+  // 1. Direct overlap check
+  if (startC < endA && endC > startA) {
+    return true
+  }
+
+  // 2. Waive buffer if they share the same postal prefix
+  const fsaC = extractPostalPrefix(candidate.address)
+  const fsaA = extractPostalPrefix(existing.address)
+  if (fsaC && fsaA && fsaC === fsaA) {
+    return false
+  }
+
+  // 3. Buffer check
+  if (endC <= startA) {
+    const gap = startA - endC
+    if (gap < bufferMinutes) {
+      return true
+    }
+  } else if (endA <= startC) {
+    const gap = startC - endA
+    if (gap < bufferMinutes) {
+      return true
+    }
+  }
+
+  return false
+}
 
 export const ShiftBoardPage: React.FC = () => {
   const { t, i18n } = useTranslation()
   const { staffProfile } = useStaffAuth()
   const { shifts, isLoading, error } = useShifts(!!staffProfile)
+  const { assignedShifts } = useMyAssignedShifts(staffProfile?.uid, !!staffProfile)
 
   // Feedback states
   const [claimingId, setClaimingId] = useState<string | null>(null)
@@ -206,12 +269,42 @@ export const ShiftBoardPage: React.FC = () => {
               const isOverLimit = remainingLimit !== null && estPay > remainingLimit
               const overage = remainingLimit !== null && isOverLimit ? estPay - remainingLimit : 0
 
+              // Travel buffer checks
+              const constraints = staffProfile.constraints || {}
+              const transportMode = constraints.transportMode || 'transit'
+              const defaultBuffer = transportMode === 'transit' ? 60 : 30
+              const bufferMinutes = typeof constraints.transitBufferMinutes === 'number'
+                ? constraints.transitBufferMinutes
+                : defaultBuffer
+
+              const sameDayAssigned = assignedShifts.filter((s) => s.scheduledDate === job.scheduledDate)
+              let travelConflictShift: Job | null = null
+              for (const existing of sameDayAssigned) {
+                const cand = {
+                  startTime: job.scheduledStartTime,
+                  endTime: job.scheduledEndTime,
+                  address: job.clientAddress,
+                }
+                const ex = {
+                  startTime: existing.scheduledStartTime,
+                  endTime: existing.scheduledEndTime,
+                  address: existing.clientAddress,
+                }
+                if (hasTravelConflict(cand, ex, bufferMinutes)) {
+                  travelConflictShift = existing
+                  break
+                }
+              }
+              const isConflict = !!travelConflictShift
+
               return (
                 <div 
                   key={job.id} 
                   className={cn(
                     'bg-white border border-sand rounded p-6 shadow-sm flex flex-col justify-between gap-6 transition-all duration-200',
-                    isOverLimit && 'opacity-75 border-red-100 bg-red-50/5'
+                    (isOverLimit || isConflict) && 'opacity-75',
+                    isOverLimit && 'border-red-100 bg-red-50/5',
+                    isConflict && 'border-amber-100 bg-amber-50/5'
                   )}
                 >
                   <div className="flex flex-col gap-3">
@@ -254,13 +347,23 @@ export const ShiftBoardPage: React.FC = () => {
                       </span>
                     )}
 
+                    {isConflict && travelConflictShift && (
+                      <span className="font-body text-xs font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-3 py-2 rounded text-center">
+                        ⚠️ {t('fsm.shifts.disabledConflict', { 
+                          buffer: bufferMinutes, 
+                          start: travelConflictShift.scheduledStartTime, 
+                          end: travelConflictShift.scheduledEndTime 
+                        })}
+                      </span>
+                    )}
+
                     <button
                       type="button"
-                      disabled={isOverLimit || claimingId !== null}
+                      disabled={isOverLimit || isConflict || claimingId !== null}
                       onClick={() => { void handleClaimShift(job.id) }}
                       className={cn(
                         'min-h-[48px] w-full font-body font-medium rounded text-base flex items-center justify-center transition-colors duration-200',
-                        isOverLimit
+                        (isOverLimit || isConflict)
                           ? 'bg-slate-pale text-text-muted border border-sand cursor-not-allowed'
                           : claimingId === job.id
                           ? 'bg-slate-pale text-slate-brand border border-slate-brand'

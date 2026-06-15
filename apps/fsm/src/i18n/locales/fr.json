@@ -11,6 +11,7 @@
       "claimingSuccess": "Quart réclamé avec succès !",
       "claimingError": "Échec de la réclamation du quart.",
       "disabledOverage": "Dépasse la limite mensuelle de {{overage}} $",
+      "disabledConflict": "Conflit de trajet : marge de {{buffer}} min requise avec le quart {{start}}-{{end}}",
       "durationHours": "({{count}} h)",
       "noShifts": "Aucun quart disponible pour le moment."
     },

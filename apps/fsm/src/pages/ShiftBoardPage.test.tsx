@@ -3,6 +3,7 @@ import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { ShiftBoardPage } from './ShiftBoardPage'
 import { useStaffAuth } from '../hooks/useStaffAuth'
 import { useShifts } from '../hooks/useShifts'
+import { useMyAssignedShifts } from '../hooks/useMyAssignedShifts'
 import { User } from 'firebase/auth'
 import { Staff, Job } from '../types'
 
@@ -11,6 +12,9 @@ vi.mock('../hooks/useStaffAuth')
 
 // Mock useShifts hook
 vi.mock('../hooks/useShifts')
+
+// Mock useMyAssignedShifts hook
+vi.mock('../hooks/useMyAssignedShifts')
 
 // Mock firebase functions
 const mockClaimJobFn = vi.fn().mockResolvedValue({ data: { success: true, newEarnings: 800 } })
@@ -86,6 +90,12 @@ describe('ShiftBoardPage Component', () => {
 
     vi.mocked(useShifts).mockReturnValue({
       shifts: mockShifts as unknown as Job[],
+      isLoading: false,
+      error: null,
+    })
+
+    vi.mocked(useMyAssignedShifts).mockReturnValue({
+      assignedShifts: [],
       isLoading: false,
       error: null,
     })
@@ -236,5 +246,47 @@ describe('ShiftBoardPage Component', () => {
 
     expect(mockClaimJobFn).toHaveBeenCalledWith({ jobId: 'job1' })
     expect(screen.getByText('fsm.shifts.claimingSuccess')).toBeInTheDocument()
+  })
+
+  it('disables the claim button and shows travel conflict warning if shift violates travel buffer', () => {
+    const mockAssignedShifts = [
+      {
+        id: 'assignedJob1',
+        serviceType: 'standard',
+        scheduledDate: '2026-06-20',
+        scheduledStartTime: '10:00',
+        scheduledEndTime: '12:00',
+        clientAddress: '123 Pitt St, Cornwall ON',
+        payRateSnapshot: { amount: 25 },
+        status: 'assigned',
+      }
+    ]
+
+    vi.mocked(useMyAssignedShifts).mockReturnValue({
+      assignedShifts: mockAssignedShifts as unknown as Job[],
+      isLoading: false,
+      error: null,
+    })
+
+    const transitProfile = {
+      ...mockStaffProfile,
+      constraints: {
+        transportMode: 'transit',
+        transitBufferMinutes: 60,
+      }
+    }
+
+    vi.mocked(useStaffAuth).mockReturnValueOnce({
+      ...vi.mocked(useStaffAuth)(),
+      staffProfile: transitProfile as unknown as Staff,
+    })
+
+    render(<ShiftBoardPage />)
+
+    const buttons = screen.getAllByRole('button', { name: 'fsm.shifts.claimBtn' })
+    expect(buttons[0]).toBeDisabled()
+    expect(
+      screen.getByText('⚠️ fsm.shifts.disabledConflict_opt_{"buffer":60,"start":"10:00","end":"12:00"}')
+    ).toBeInTheDocument()
   })
 })

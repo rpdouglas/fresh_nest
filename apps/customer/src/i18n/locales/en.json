@@ -1010,8 +1010,10 @@
       }
     },
     "override": {
-      "modalTitle": "Assign Over-Limit Cleaner",
-      "modalMessage": "Assigning this shift will push {{name}} over their monthly earnings limit. An administrator override is required.",
+      "modalTitle": "Administrator Override Required",
+      "modalMessage": "Assigning this shift to {{name}} requires an administrator override due to the following constraint violations:",
+      "earningsWarning": "{{name}} exceeds monthly earnings limit by ${{overage}}",
+      "travelWarning": "{{name}} needs {{buffer}}m travel buffer with shift {{start}}-{{end}}",
       "reasonLabel": "Override Reason",
       "reasonPlaceholder": "e.g. Urgent replacement requested by client",
       "reasonRequired": "Override reason is required.",

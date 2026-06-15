@@ -200,6 +200,68 @@ export async function createJobFromBooking(
 }
 
 /**
+ * F06 Helpers: Time parsing, postal code FSA extraction, and conflict checking logic.
+ */
+export function timeToMinutes(timeStr: string): number {
+  try {
+    const [h, m] = timeStr.split(':').map(Number)
+    return h * 60 + m
+  } catch {
+    return 0
+  }
+}
+
+export function extractPostalPrefix(address: string): string | null {
+  if (!address) return null
+  const match = address.match(/([A-Za-z]\d[A-Za-z])/i)
+  return match ? match[1].toUpperCase() : null
+}
+
+export interface TravelShift {
+  startTime: string
+  endTime: string
+  address: string
+}
+
+export function hasTravelConflict(
+  candidate: TravelShift,
+  existing: TravelShift,
+  bufferMinutes: number
+): boolean {
+  const startC = timeToMinutes(candidate.startTime)
+  const endC = timeToMinutes(candidate.endTime)
+  const startA = timeToMinutes(existing.startTime)
+  const endA = timeToMinutes(existing.endTime)
+
+  // 1. Direct overlap check
+  if (startC < endA && endC > startA) {
+    return true
+  }
+
+  // 2. Waive buffer if they share the same postal prefix
+  const fsaC = extractPostalPrefix(candidate.address)
+  const fsaA = extractPostalPrefix(existing.address)
+  if (fsaC && fsaA && fsaC === fsaA) {
+    return false
+  }
+
+  // 3. Buffer check
+  if (endC <= startA) {
+    const gap = startA - endC
+    if (gap < bufferMinutes) {
+      return true
+    }
+  } else if (endA <= startC) {
+    const gap = startC - endA
+    if (gap < bufferMinutes) {
+      return true
+    }
+  }
+
+  return false
+}
+
+/**
  * F05: Transactional Claim Job Logic
  *
  * @param staffId - The UID of the claiming cleaner
@@ -261,6 +323,41 @@ export async function executeClaimJob(
         const remaining = monthlyEarningsLimit - currentMonthEarnings
         if (estimatedShiftPay > remaining) {
           throw new Error('EARNINGS_CAP_EXCEEDED')
+        }
+      }
+
+      // Travel buffer check
+      const constraints = staffData.constraints || {}
+      const transportMode = constraints.transportMode || 'transit'
+      const defaultBuffer = transportMode === 'transit' ? 60 : 30
+      const bufferMinutes = typeof constraints.transitBufferMinutes === 'number'
+        ? constraints.transitBufferMinutes
+        : defaultBuffer
+
+      // Query active jobs assigned to this cleaner on the same scheduledDate
+      const queryRef = db.collection('jobs')
+        .where('assignedTo', '==', staffId)
+        .where('scheduledDate', '==', jobData.scheduledDate)
+
+      const querySnap = await transaction.get(queryRef)
+      const existingActiveJobs = querySnap.docs
+        .map((d) => d.data())
+        .filter((j) => j.status !== 'cancelled')
+
+      const candidateShift: TravelShift = {
+        startTime: jobData.scheduledStartTime,
+        endTime: jobData.scheduledEndTime,
+        address: jobData.clientAddress,
+      }
+
+      for (const j of existingActiveJobs) {
+        const existingShift: TravelShift = {
+          startTime: j.scheduledStartTime,
+          endTime: j.scheduledEndTime,
+          address: j.clientAddress,
+        }
+        if (hasTravelConflict(candidateShift, existingShift, bufferMinutes)) {
+          throw new Error('TRAVEL_BUFFER_EXCEEDED')
         }
       }
 

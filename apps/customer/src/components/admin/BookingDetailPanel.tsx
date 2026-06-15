@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { useQueryClient } from '@tanstack/react-query'
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore'
 import { db, auth } from '@/lib/firebase/firebase'
 import { useStaff } from './hooks/useStaff'
 import { assignCleanerTransaction } from '@/lib/firebase/firestore'
@@ -38,6 +38,8 @@ export function BookingDetailPanel({
     cleanerName: string | null
     oldCleanerId: string | null
     estimatedPay: number
+    warnings: string[]
+    overrideTypes: string[]
   } | null>(null)
 
   // Fetch job details dynamically when panel expands
@@ -116,16 +118,90 @@ export function BookingDetailPanel({
 
     const newCleanerName = `${selectedStaff.firstName} ${selectedStaff.lastName}`
 
-    // Check earnings cap
+    // 1. Check earnings cap
     const limit = selectedStaff.financials?.monthlyEarningsLimit ?? null
     const current = selectedStaff.financials?.currentMonthEarnings ?? 0
+    const isOverEarnings = limit !== null && current + estPay > limit
+    const overage = limit !== null && isOverEarnings ? (current + estPay) - limit : 0
 
-    if (limit !== null && current + estPay > limit) {
+    // 2. Check travel buffer conflicts
+    let isOverTravel = false
+    let conflictingShift: Job | null = null
+    const constraints = selectedStaff.constraints || {}
+    const transportMode = constraints.transportMode || 'transit'
+    const defaultBuffer = transportMode === 'transit' ? 60 : 30
+    const bufferMinutes = typeof constraints.transitBufferMinutes === 'number'
+      ? constraints.transitBufferMinutes
+      : defaultBuffer
+
+    try {
+      const q = query(
+        collection(db, 'jobs'),
+        where('assignedTo', '==', selectedStaff.id),
+        where('scheduledDate', '==', b.preferredDate)
+      )
+      const snap = await getDocs(q)
+      const activeJobs = snap.docs
+        .map((docSnap) => ({ id: docSnap.id, ...docSnap.data() } as Job))
+        .filter((j) => j.status !== 'cancelled' && j.id !== b.jobId)
+
+      const cand = {
+        startTime: job?.scheduledStartTime || '09:00',
+        endTime: job?.scheduledEndTime || '11:00',
+        address: b.address,
+      }
+
+      for (const exJob of activeJobs) {
+        const ex = {
+          startTime: exJob.scheduledStartTime,
+          endTime: exJob.scheduledEndTime,
+          address: exJob.clientAddress,
+        }
+        if (hasTravelConflict(cand, ex, bufferMinutes)) {
+          isOverTravel = true
+          conflictingShift = exJob
+          break
+        }
+      }
+    } catch (err) {
+      console.error('Error checking cleaner travel conflicts:', err)
+    }
+
+    const warnings: string[] = []
+    const overrideTypes: string[] = []
+
+    if (isOverEarnings) {
+      warnings.push(
+        t('admin.override.earningsWarning', {
+          name: newCleanerName,
+          overage,
+          defaultValue: `${newCleanerName} exceeds monthly earnings limit by $${overage}`,
+        })
+      )
+      overrideTypes.push('earnings_cap_exceeded')
+    }
+
+    if (isOverTravel && conflictingShift) {
+      warnings.push(
+        t('admin.override.travelWarning', {
+          name: newCleanerName,
+          buffer: bufferMinutes,
+          start: conflictingShift.scheduledStartTime,
+          end: conflictingShift.scheduledEndTime,
+          defaultValue: `${newCleanerName} needs ${bufferMinutes}m travel buffer with shift ${conflictingShift.scheduledStartTime}-${conflictingShift.scheduledEndTime}`,
+        })
+      )
+      overrideTypes.push('travel_conflict_exceeded')
+    }
+
+    if (warnings.length > 0) {
       setPendingAssignment({
         cleanerId: selectedStaff.id,
         cleanerName: newCleanerName,
         oldCleanerId: currentlyAssignedStaffUid,
         estimatedPay: estPay,
+        warnings,
+        overrideTypes,
       })
       setIsOverrideOpen(true)
     } else {
@@ -159,7 +235,7 @@ export function BookingDetailPanel({
         oldCleanerId: pendingAssignment.oldCleanerId,
         estimatedPay: pendingAssignment.estimatedPay,
         overrideReason: reason,
-        overrideType: 'earnings_cap_exceeded',
+        overrideType: pendingAssignment.overrideTypes.join(','),
         changedByEmail: auth.currentUser?.email || 'admin@freshnest.ca',
       })
       await queryClient.invalidateQueries({ queryKey: ['bookings'] })
@@ -470,6 +546,7 @@ export function BookingDetailPanel({
           <OverrideModal
             isOpen={isOverrideOpen}
             cleanerName={pendingAssignment?.cleanerName || ''}
+            warnings={pendingAssignment?.warnings || []}
             onConfirm={(reason) => { void handleOverrideConfirm(reason) }}
             onCancel={() => {
               setIsOverrideOpen(false)
@@ -480,4 +557,64 @@ export function BookingDetailPanel({
       </td>
     </tr>
   )
+}
+
+// F06 Helpers
+function timeToMinutes(timeStr: string): number {
+  try {
+    const [h, m] = timeStr.split(':').map(Number)
+    return h * 60 + m
+  } catch {
+    return 0
+  }
+}
+
+function extractPostalPrefix(address: string): string | null {
+  if (!address) return null
+  const match = address.match(/([A-Za-z]\d[A-Za-z])/i)
+  return match ? match[1].toUpperCase() : null
+}
+
+interface TravelShift {
+  startTime: string
+  endTime: string
+  address: string
+}
+
+function hasTravelConflict(
+  candidate: TravelShift,
+  existing: TravelShift,
+  bufferMinutes: number
+): boolean {
+  const startC = timeToMinutes(candidate.startTime)
+  const endC = timeToMinutes(candidate.endTime)
+  const startA = timeToMinutes(existing.startTime)
+  const endA = timeToMinutes(existing.endTime)
+
+  // 1. Direct overlap check
+  if (startC < endA && endC > startA) {
+    return true
+  }
+
+  // 2. Waive buffer if they share the same postal prefix
+  const fsaC = extractPostalPrefix(candidate.address)
+  const fsaA = extractPostalPrefix(existing.address)
+  if (fsaC && fsaA && fsaC === fsaA) {
+    return false
+  }
+
+  // 3. Buffer check
+  if (endC <= startA) {
+    const gap = startA - endC
+    if (gap < bufferMinutes) {
+      return true
+    }
+  } else if (endA <= startC) {
+    const gap = startC - endA
+    if (gap < bufferMinutes) {
+      return true
+    }
+  }
+
+  return false
 }

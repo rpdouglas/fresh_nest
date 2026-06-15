@@ -1010,8 +1010,10 @@
       }
     },
     "override": {
-      "modalTitle": "Assigner un personnel au-delà de la limite",
-      "modalMessage": "L'assignation de ce quart dépassera la limite de gains mensuelle de {{name}}. Une dérogation administrateur est requise.",
+      "modalTitle": "Dérogation Administrateur Requise",
+      "modalMessage": "L'assignation de ce quart à {{name}} requiert une dérogation administrateur en raison des violations de contraintes suivantes :",
+      "earningsWarning": "{{name}} dépasse la limite mensuelle de {{overage}} $",
+      "travelWarning": "{{name}} a besoin de {{buffer}} min de trajet avec le quart {{start}}-{{end}}",
       "reasonLabel": "Raison de la dérogation",
       "reasonPlaceholder": "ex. Remplacement urgent à la demande du client",
       "reasonRequired": "La raison de la dérogation est requise.",

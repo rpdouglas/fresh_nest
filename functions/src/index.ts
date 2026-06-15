@@ -274,6 +274,9 @@ export const claimJob = onCall(async (request) => {
     if (msg === 'EARNINGS_CAP_EXCEEDED') {
       throw new HttpsError('failed-precondition', 'Claiming this shift would exceed your monthly earnings limit.')
     }
+    if (msg === 'TRAVEL_BUFFER_EXCEEDED') {
+      throw new HttpsError('failed-precondition', 'Claiming this shift would violate your travel buffer limit.')
+    }
     throw new HttpsError('internal', msg || 'Failed to claim shift due to an internal error.')
   }
 })

@@ -11,6 +11,7 @@
       "claimingSuccess": "Shift claimed successfully!",
       "claimingError": "Failed to claim shift.",
       "disabledOverage": "Exceeds monthly limit by ${{overage}}",
+      "disabledConflict": "Travel conflict: Needs {{buffer}}m buffer with shift {{start}}-{{end}}",
       "durationHours": "({{count}} hrs)",
       "noShifts": "No available shifts at the moment."
     },
