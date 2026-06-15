@@ -192,3 +192,15 @@ export interface ChecklistTemplate {
   tasks: ChecklistTask[]
   active: boolean
 }
+
+export interface PayRate {
+  id?: string
+  role: StaffRole
+  amount: number
+  currency: 'CAD'
+  effectiveFrom: Date
+  effectiveTo: Date | null
+  createdBy: string
+  createdAt: Date
+}
+

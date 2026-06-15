@@ -802,9 +802,10 @@
       },
       "tabs": {
         "bookings": "Bookings Management",
-        "analytics": "Marketing Analytics",
+        "analytics": "Analytics & Metrics",
         "staff": "Staff Registry",
-        "templates": "Checklist Templates"
+        "templates": "Checklist Templates",
+        "payRates": "Pay Rates"
       },
       "staff": {
         "title": "Staff Registry",
@@ -858,7 +859,11 @@
         }
       },
       "analytics": {
-        "title": "Marketing & Lead Source Performance",
+        "title": "Performance Analytics Dashboard",
+        "subtabs": {
+          "marketing": "Marketing & Sales",
+          "operations": "Operations & Fulfillment"
+        },
         "rangeLabel": "Time Range",
         "ranges": {
           "all": "All Time",
@@ -950,9 +955,63 @@
         "phaseAfter": "After cleaning",
         "remove": "Remove"
       }
+    },
+    "payRates": {
+      "title": "Pay Rate Management",
+      "subtitle": "Configure and track employee pay rates per role. Changes are recorded immutably to preserve historical payroll accuracy.",
+      "createBtn": "Configure New Rate",
+      "activeHeader": "Active Pay Rates",
+      "historyHeader": "Chronological Rate History",
+      "hourly": "{{amount}} / hr",
+      "role": "Role",
+      "amount": "Hourly Rate (CAD)",
+      "effectiveFrom": "Effective From Date",
+      "effectiveImmediately": "Immediate Effect",
+      "scheduled": "Scheduled",
+      "active": "Active",
+      "historical": "Historical",
+      "createdBy": "Created By: {{email}}",
+      "createdAt": "Configured: {{date}}",
+      "form": {
+        "title": "Configure New Pay Rate",
+        "submit": "Create Rate",
+        "cancel": "Cancel",
+        "rolePlaceholder": "Select a role",
+        "amountPlaceholder": "Enter rate amount (e.g. 25.00)",
+        "errors": {
+          "role": "Role selection is required.",
+          "amount": "A valid amount greater than 0 is required.",
+          "date": "Effective date is required."
+        },
+        "success": "Pay rate configured successfully."
+      }
+    },
+    "operations": {
+      "title": "Operations Dashboard",
+      "subtitle": "Track real-time service fulfillment, staffing metrics, and labor costs.",
+      "completionRate": "Job Completion Rate",
+      "utilization": "Cleaner Utilization",
+      "payroll": "Total Labor Cost",
+      "avgDuration": "Avg Job Duration",
+      "hours": "{{val}} hrs",
+      "utilizationTable": {
+        "title": "Staff Utilization Breakdown",
+        "subtitle": "Workload summary per active cleaner for selected period.",
+        "cleaner": "Cleaner",
+        "assigned": "Shifts Assigned",
+        "completed": "Shifts Completed",
+        "completionRate": "Completion Rate"
+      },
+      "charts": {
+        "payrollByRole": "Labor Cost Breakdown by Role",
+        "completionBreakdown": "Fulfillment Status Share",
+        "weeklyTrend": "Operational Trends",
+        "jobsCompleted": "Completed Jobs"
+      }
     }
   },
   "blog": {
+
     "meta": {
       "title": "Fresh Nest Co. Blog — Cleaning & Organizing Tips",
       "description": "Read cleaning checklists, pricing guides, and seasonal tips from Fresh Nest Co. serving Cornwall and Akwesasne."

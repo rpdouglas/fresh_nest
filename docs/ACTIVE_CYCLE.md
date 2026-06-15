@@ -666,6 +666,26 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   - [apps/customer/src/i18n/locales/fr.json](file:///workspaces/fresh_nest/apps/customer/src/i18n/locales/fr.json) (admin.staff keys)
 * **Close Report:** [F02-close-2026-06-14.md](file:///workspaces/fresh_nest/docs/reports/F02-close-2026-06-14.md)
 
+#### F04 — Pay Rates & Operations Dashboard
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-15)
+* **Strategy:** Strategy 1 — Standalone Pay Rates Tab & Tabbed Operations Dashboard. Added a "Pay Rates" tab in the Admin panel to configure immutable pay rates per role with immediate or custom effective date. Extended the "Analytics" tab by adding a sub-tab navigation to switch between "Marketing & Sales" and "Operations". Operations dashboard calculates completed jobs metrics (completion rate, workload/utilization per cleaner, total payroll cost, average job duration) across customizable date ranges. All code is 100% type-safe, passes standard builds/lints, and uses translation files in EN/FR.
+* **Persona tests:**
+  - Sarah (P12): Fully logs rate changes with effective from dates, tracks historical pay rate lists in a chronological log, and analyzes fulfillment KPIs with full date range controls.
+  - Carla (P7): Snapshot active pay rates at job confirmation are tracked and displayed without retroactive changes.
+* **Key Assets:**
+  - [apps/customer/src/types/index.ts](file:///workspaces/fresh_nest/apps/customer/src/types/index.ts) (added `PayRate` interface)
+  - [apps/customer/src/lib/firebase/firestore.ts](file:///workspaces/fresh_nest/apps/customer/src/lib/firebase/firestore.ts) (added payRates collection helpers)
+  - [apps/customer/src/components/admin/hooks/usePayRates.ts](file:///workspaces/fresh_nest/apps/customer/src/components/admin/hooks/usePayRates.ts) (TanStack hook for rates CRUD)
+  - [apps/customer/src/components/admin/hooks/useOperationsDashboard.ts](file:///workspaces/fresh_nest/apps/customer/src/components/admin/hooks/useOperationsDashboard.ts) (TanStack hook for operations KPI logic)
+  - [apps/customer/src/components/admin/PayRatesManager.tsx](file:///workspaces/fresh_nest/apps/customer/src/components/admin/PayRatesManager.tsx) (UI for rate forms and historical logs)
+  - [apps/customer/src/components/admin/OperationsDashboard.tsx](file:///workspaces/fresh_nest/apps/customer/src/components/admin/OperationsDashboard.tsx) (Operations KPIs, graphs, and cleaner workloads)
+  - [apps/customer/src/pages/AdminPage.tsx](file:///workspaces/fresh_nest/apps/customer/src/pages/AdminPage.tsx) (Integrated new tabs and subtabs)
+  - [apps/customer/src/i18n/locales/en.json](file:///workspaces/fresh_nest/apps/customer/src/i18n/locales/en.json) (admin.payRates and admin.operations keys)
+  - [apps/customer/src/i18n/locales/fr.json](file:///workspaces/fresh_nest/apps/customer/src/i18n/locales/fr.json) (admin.payRates and admin.operations keys)
+* **Close Report:** [F04-close-2026-06-15.md](file:///workspaces/fresh_nest/docs/reports/F04-close-2026-06-15.md)
+
+
 
 
 

@@ -8,9 +8,11 @@
 
 Navigate to [lilypad-freshnest.web.app/admin](https://lilypad-freshnest.web.app/admin) and sign in with your authorized Google account. 
 
-The dashboard is split into two tabs:
+The dashboard is split into four tabs:
 1. **Bookings Management:** Track and manage operational client bookings.
-2. **Marketing Analytics:** Monitor marketing lead source volumes, trends, and estimated ROI.
+2. **Analytics & Metrics:** Monitor business, marketing, and operational metrics.
+3. **Staff Registry:** Manage staff profiles, roles, and registration.
+4. **Pay Rate Management:** Configure and monitor hourly pay rates per role.
 
 ---
 
@@ -33,14 +35,39 @@ The dashboard is split into two tabs:
 
 ---
 
-## Marketing Analytics Tab
+## Analytics & Metrics Tab
 
-Toggle to the **Marketing Analytics** tab to view marketing performance metrics:
-- **KPI Cards:** Track estimated total bookings count, estimated revenues (calculated dynamically in-memory based on property specs), average booking values, and **Referred Bookings** (total volume of cleans generated via referral codes).
-- **Time Range Filter:** Filter your charts by *All Time*, *Last 30 Days*, *Last 90 Days*, *Year to Date (YTD)*, or *This Month*.
-- **Lead Source Distribution:** A visual donut chart showing booking distribution by marketing channels (organic, google ads, referrals, facebook ads, direct).
-- **Monthly Trends:** A bar chart tracking estimated revenues month-over-month.
-- **Performance Table:** Shows booking count, total estimated revenue, average value, and percentage conversion share for each lead channel.
+The **Analytics & Metrics** tab contains two sub-tabs to segment marketing/sales performance from operations:
+
+### A. Marketing & Sales
+*   **KPI Cards:** Track estimated total bookings count, estimated revenues (calculated dynamically in-memory based on property specs), average booking values, and **Referred Bookings** (total volume of cleans generated via referral codes).
+*   **Time Range Filter:** Filter your charts by *All Time*, *Last 30 Days*, *Last 90 Days*, *Year to Date (YTD)*, or *This Month*.
+*   **Lead Source Distribution:** A visual donut chart showing booking distribution by marketing channels (organic, google ads, referrals, facebook ads, direct).
+*   **Monthly Trends:** A bar chart tracking estimated revenues month-over-month.
+*   **Performance Table:** Shows booking count, total estimated revenue, average value, and percentage conversion share for each lead channel.
+
+### B. Operations & Fulfillment
+*   **KPI Cards:** Track **Job Completion Rate** (percentage of completed vs scheduled jobs), **Shifts Completed** (total jobs finished), **Total Labor Cost** (payroll expenses calculated using job scheduled durations and snapshot rates), and **Avg Job Duration** (average check-in to check-out time).
+*   **Time Range Filter:** Filter metrics by *Today*, *This Week*, *This Month*, or *Custom Range* (using date-pickers).
+*   **Fulfillment Share Chart:** A visual chart of jobs breakdown (completed, in-progress, assigned, unassigned).
+*   **Labor Cost Breakdown:** A chart dividing labor expenses by cleaner roles.
+*   **Staff Utilization Breakdown:** A table listing each active cleaner, their assigned shifts, completed shifts, and completion rate.
+
+---
+
+## Staff Registry Tab
+
+*   **View Registry:** Lists all employees with their names, roles, statuses, and contact information.
+*   **Register New Staff:** Click **Register New Staff** to open the creation modal. Fill in the employee's name, email, phone, role (cleaner, lead, supervisor), default transport mode, transit buffer minutes, and monthly earnings limit (useful for ODSP tracking). Creating the profile registers the staff email to allow secure login.
+
+---
+
+## Pay Rate Management Tab
+
+*   **Active Pay Rates:** Displays the current active hourly rate in CAD for Cleaners, Lead Cleaners, and Supervisors.
+*   **Configure New Rate:** Set a new hourly rate for any role. You can choose to have it take **Immediate Effect** or uncheck it to select a custom future date and time for scheduled rate adjustments.
+*   **Chronological Rate History:** A table listing all configured rates sorted by effective date, displaying their status (Active, Scheduled, or Historical) and who created them.
+
 
 ---
 

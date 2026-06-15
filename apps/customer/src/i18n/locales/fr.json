@@ -802,9 +802,10 @@
       },
       "tabs": {
         "bookings": "Gestion des réservations",
-        "analytics": "Analyses marketing",
+        "analytics": "Analyses et Métriques",
         "staff": "Registre du personnel",
-        "templates": "Modèles de liste de contrôle"
+        "templates": "Modèles de liste de contrôle",
+        "payRates": "Taux de Rémunération"
       },
       "staff": {
         "title": "Registre du personnel",
@@ -858,7 +859,11 @@
         }
       },
       "analytics": {
-        "title": "Performance des sources de pistes marketing",
+        "title": "Tableau de bord des analyses",
+        "subtabs": {
+          "marketing": "Marketing & Ventes",
+          "operations": "Opérations & Réalisation"
+        },
         "rangeLabel": "Période",
         "ranges": {
           "all": "Tout temps",
@@ -950,9 +955,63 @@
         "phaseAfter": "Après le nettoyage",
         "remove": "Supprimer"
       }
+    },
+    "payRates": {
+      "title": "Gestion des Taux de Rémunération",
+      "subtitle": "Configurez et suivez les taux de rémunération des employés par rôle. Les modifications sont enregistrées de manière immuable pour préserver la précision historique de la paie.",
+      "createBtn": "Configurer un Nouveau Taux",
+      "activeHeader": "Taux de Rémunération Actifs",
+      "historyHeader": "Historique Chronologique des Taux",
+      "hourly": "{{amount}} / h",
+      "role": "Rôle",
+      "amount": "Taux horaire (CAD)",
+      "effectiveFrom": "Date d'entrée en vigueur",
+      "effectiveImmediately": "Effet immédiat",
+      "scheduled": "Planifié",
+      "active": "Actif",
+      "historical": "Historique",
+      "createdBy": "Créé par : {{email}}",
+      "createdAt": "Configured: {{date}}",
+      "form": {
+        "title": "Configurer un Nouveau Taux de Rémunération",
+        "submit": "Créer le taux",
+        "cancel": "Annuler",
+        "rolePlaceholder": "Sélectionner un rôle",
+        "amountPlaceholder": "Saisir le montant du taux (ex. 25.00)",
+        "errors": {
+          "role": "Le choix du rôle est obligatoire.",
+          "amount": "Un montant valide supérieur à 0 est requis.",
+          "date": "La date d'entrée en vigueur est requise."
+        },
+        "success": "Taux de rémunération configuré avec succès."
+      }
+    },
+    "operations": {
+      "title": "Tableau de Bord des Opérations",
+      "subtitle": "Suivez en temps réel la réalisation des services, les indicateurs de personnel et les coûts de main-d'œuvre.",
+      "completionRate": "Taux de Réalisation des Emplois",
+      "utilization": "Utilisation du Personnel",
+      "payroll": "Coût Total de la Main-d'œuvre",
+      "avgDuration": "Durée Moyenne de l'Emploi",
+      "hours": "{{val}} h",
+      "utilizationTable": {
+        "title": "Répartition de l'Utilisation du Personnel",
+        "subtitle": "Résumé de la charge de travail par nettoyeur actif pour la période sélectionnée.",
+        "cleaner": "Nettoyeur / Nettoyeuse",
+        "assigned": "Quarts Assignés",
+        "completed": "Quarts Complétés",
+        "completionRate": "Taux de Réalisation"
+      },
+      "charts": {
+        "payrollByRole": "Répartition du Coût de Main-d'œuvre par Rôle",
+        "completionBreakdown": "Part des Statuts de Réalisation",
+        "weeklyTrend": "Tendances Opérationnelles",
+        "jobsCompleted": "Emplois Complétés"
+      }
     }
   },
   "blog": {
+
     "meta": {
       "title": "Blogue de Fresh Nest Co. — Conseils de Nettoyage",
       "description": "Lisez nos guides de prix, listes de déménagement et astuces de nettoyage à Cornwall et Akwesasne."

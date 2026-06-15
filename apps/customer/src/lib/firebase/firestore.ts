@@ -11,7 +11,8 @@ import {
 } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
 import type { BookingFormData } from '@/lib/schemas/bookingSchema'
-import type { Language, Booking, BookingStatus, Job, ChecklistTemplate } from '@/types'
+import type { Language, Booking, BookingStatus, Job, ChecklistTemplate, PayRate } from '@/types'
+
 
 export type LeadSource = 'organic' | 'google' | 'referral' | 'facebook' | 'direct'
 
@@ -145,4 +146,42 @@ export async function deleteChecklistTemplate(templateId: string): Promise<void>
   const docRef = doc(db, 'checklistTemplates', templateId)
   await updateDoc(docRef, { active: false })
 }
+
+// ── F04: Pay Rates ───────────────────────────────────────────────────────────
+
+export function subscribeToPayRates(
+  isAuthorized: boolean,
+  callback: (rates: PayRate[]) => void,
+): () => void {
+  if (!isAuthorized) return () => {}
+  const q = query(collection(db, 'payRates'), orderBy('effectiveFrom', 'desc'))
+  return onSnapshot(q, (snapshot) => {
+    const rates: PayRate[] = []
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data()
+      rates.push({
+        id: docSnap.id,
+        ...data,
+        effectiveFrom: data['effectiveFrom'] instanceof Timestamp ? data['effectiveFrom'].toDate() : new Date(),
+        effectiveTo: data['effectiveTo'] instanceof Timestamp ? data['effectiveTo'].toDate() : null,
+        createdAt: data['createdAt'] instanceof Timestamp ? data['createdAt'].toDate() : new Date(),
+      } as PayRate)
+    })
+    callback(rates)
+  })
+}
+
+export async function createPayRate(
+  rate: Omit<PayRate, 'id' | 'createdAt'>,
+): Promise<string> {
+  const docData = {
+    ...rate,
+    effectiveFrom: Timestamp.fromDate(rate.effectiveFrom),
+    effectiveTo: rate.effectiveTo ? Timestamp.fromDate(rate.effectiveTo) : null,
+    createdAt: serverTimestamp(),
+  }
+  const ref = await addDoc(collection(db, 'payRates'), docData)
+  return ref.id
+}
+
 
