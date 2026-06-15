@@ -96,7 +96,7 @@ service cloud.firestore {
       allow update: if isAdmin()
         || (request.auth != null
             && request.auth.uid == staffId
-            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['constraints', 'preferences', 'financials'])
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['constraints', 'preferences', 'financials', 'compliance'])
             && (!request.resource.data.financials.diff(resource.data.financials).affectedKeys().hasAny(['currentMonthEarnings', 'earningsHistory']))
            );
       allow delete: if false;

@@ -190,6 +190,25 @@
         "shift_cancelled": "Quart annulé",
         "new_shift_board_posting": "Nouveau quart disponible"
       }
+    },
+    "compliance": {
+      "terms": {
+        "title": "Conditions d'utilisation et directives de travail",
+        "subtitle": "Veuillez lire et accepter nos dernières directives avant de continuer.",
+        "checkbox": "J'ai lu, compris et j'accepte de suivre ces conditions d'utilisation et directives de travail.",
+        "acceptBtn": "Accepter et continuer",
+        "accepting": "Acceptation en cours...",
+        "ipLabel": "Adresse IP : {{ip}}",
+        "versionLabel": "Version {{version}}",
+        "sec1Title": "1. Tableau des quarts et affectation des réservations",
+        "sec1Text": "Les nettoyeurs doivent réclamer les quarts disponibles du tableau des quarts qui correspondent à leurs disponibilités et à leurs contraintes de déplacement. Une fois qu'un quart est réclamé ou assigné, il est de la responsabilité du nettoyeur d'arriver à l'heure et d'effectuer le nettoyage prévu.",
+        "sec2Title": "2. Précision de l'enregistrement de l'arrivée et du départ",
+        "sec2Text": "Tous les membres du personnel doivent s'enregistrer à l'arrivée (Check In) à l'aide de l'application mobile dès leur arrivée à la propriété du client, et s'enregistrer au départ (Check Out) une fois toutes les tâches terminées. La géolocalisation est activée pour vérifier les heures d'arrivée et protéger contre les litiges de facturation.",
+        "sec3Title": "3. Liste des tâches et preuve photo",
+        "sec3Text": "Chaque travail comprend une liste de tâches obligatoire. Les tâches désignées à valeur élevée (par exemple, le nettoyage en profondeur de la cuisinière, les accessoires de salle de bain principale) nécessitent le téléversement de photos de vérification. L'achèvement de la liste des tâches est obligatoire pour pouvoir s'enregistrer au départ.",
+        "sec4Title": "4. Contraintes liées au plafond de gains du POSPH",
+        "sec4Text": "Pour les membres du personnel ayant des limites de gains mensuels (par exemple, les bénéficiaires du POSPH), le système impose des limites pour éviter les récupérations de prestations. Le contournement ou la tentative de manipulation du suivi des gains est strictement interdit."
+      }
     }
   }
 }

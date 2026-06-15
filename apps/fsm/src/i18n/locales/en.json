@@ -190,6 +190,25 @@
         "shift_cancelled": "Shift Cancelled",
         "new_shift_board_posting": "New Shift Available"
       }
+    },
+    "compliance": {
+      "terms": {
+        "title": "Terms of Service & Workplace Guidelines",
+        "subtitle": "Please review and accept our latest guidelines before continuing.",
+        "checkbox": "I have read, understood, and agree to follow these Terms of Service and Workplace Guidelines.",
+        "acceptBtn": "Accept & Continue",
+        "accepting": "Accepting...",
+        "ipLabel": "IP Address: {{ip}}",
+        "versionLabel": "Version {{version}}",
+        "sec1Title": "1. Shift Board & Booking Assignments",
+        "sec1Text": "Cleaners are expected to claim shifts from the Shift Board that align with their availability and travel constraints. Once a shift is claimed or assigned, it is the cleaner's responsibility to arrive on time and complete the scheduled clean.",
+        "sec2Title": "2. Check-In & Check-Out Accuracy",
+        "sec2Text": "All staff must check in using the mobile app immediately upon arrival at the client property and check out once all tasks are completed. Geotagging is enabled to verify arrival times and protect against billing disputes.",
+        "sec3Title": "3. Cleaning Checklist & Photo Proof",
+        "sec3Text": "Every job includes a mandatory checklist of tasks. Designated high-value tasks (e.g. deep cleaning the stove, primary bathroom fixtures) require uploading verification photos. Checklist completion is mandatory for job checkout.",
+        "sec4Title": "4. ODSP Earnings Cap Constraints",
+        "sec4Text": "For staff with monthly earnings limits (e.g. ODSP recipients), the system enforces limits to prevent clawbacks. Bypassing or attempting to manipulate the earnings tracker is strictly prohibited."
+      }
     }
   }
 }

@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useStaffAuth } from '../../hooks/useStaffAuth'
 import { LanguageSelectionOverlay } from '../auth/LanguageSelectionOverlay'
+import { TermsConsentOverlay } from '../auth/TermsConsentOverlay'
 import { cn } from '@freshnest/shared'
 import { useNotifications } from '../../hooks/useNotifications'
 
@@ -293,6 +294,7 @@ export const FsmLayout: React.FC = () => {
       </footer>
 
       <LanguageSelectionOverlay />
+      <TermsConsentOverlay />
     </div>
   )
 }

@@ -807,3 +807,22 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   - [functions/src/notifications.ts](file:///workspaces/fresh_nest/functions/src/notifications.ts) (SMS templates and send helpers)
   - [functions/src/index.ts](file:///workspaces/fresh_nest/functions/src/index.ts) (Trigger exports for `onJobCreatedTrigger` and `onJobUpdatedTrigger`)
 * **Close Report:** [F11_F15-close-2026-06-15.md](file:///workspaces/fresh_nest/docs/reports/F11_F15-close-2026-06-15.md)
+
+#### F12/F13 — Terms Consent Gate & Employment Record Exports
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-15)
+* **Strategy:** Strategy 1 — Client-Side Consent Gate with Backend Audit Triggers. Implemented a full-screen blocking `TermsConsentOverlay` in the FSM portal that activates whenever `staffProfile.compliance.acceptedTermsVersion` does not match `VITE_CURRENT_TERMS_VERSION`. Staff must read the bilingual (EN/FR) guidelines, check the mandatory checkbox, and click Accept — at which point their `/staff/{uid}` document is updated with the new version and a timestamped IP-recorded `termsHistory` entry. An `onStaffUpdatedTrigger` Cloud Function backend trigger automatically writes immutable `/auditLog` records when compliance version, status, role, or earnings limit fields change. On the Admin side, an "Export" action column was added to the Staff Table, launching `ExportRecordModal` which generates either a payroll CSV (completed jobs with duration/rate/pay calculations filtered by date range) or a full compliance JSON (profile + terms history + job log + audit trail).
+* **Persona tests:**
+  - Sarah (P12): ✅ Staff without current terms version acceptance are blocked from claiming shifts or viewing jobs. Audit log entry is automatically generated on acceptance. Export modal generates downloadable payroll CSV and compliance JSON.
+  - Diane (P1) / Sophie (P5): ✅ Terms overlay fully rendered in French when portal language is `fr`. All UI chrome via `t()` — no hardcoded strings.
+* **Key Assets:**
+  - [apps/fsm/src/components/auth/TermsConsentOverlay.tsx](file:///workspaces/fresh_nest/apps/fsm/src/components/auth/TermsConsentOverlay.tsx) (Blocking full-screen terms consent modal)
+  - [apps/fsm/src/components/auth/TermsConsentOverlay.test.tsx](file:///workspaces/fresh_nest/apps/fsm/src/components/auth/TermsConsentOverlay.test.tsx) (4-test vitest suite — all passing)
+  - [apps/fsm/src/components/layout/FsmLayout.tsx](file:///workspaces/fresh_nest/apps/fsm/src/components/layout/FsmLayout.tsx) (Overlay injected at layout level)
+  - [apps/fsm/src/i18n/locales/en.json](file:///workspaces/fresh_nest/apps/fsm/src/i18n/locales/en.json) & [fr.json](file:///workspaces/fresh_nest/apps/fsm/src/i18n/locales/fr.json) (structured `fsm.compliance.terms.*` keys)
+  - [apps/customer/src/components/admin/ExportRecordModal.tsx](file:///workspaces/fresh_nest/apps/customer/src/components/admin/ExportRecordModal.tsx) (CSV + JSON exporter modal)
+  - [apps/customer/src/components/admin/StaffTable.tsx](file:///workspaces/fresh_nest/apps/customer/src/components/admin/StaffTable.tsx) (Actions column with Export trigger)
+  - [functions/src/index.ts](file:///workspaces/fresh_nest/functions/src/index.ts) (`onStaffUpdatedTrigger` — writes audit logs on compliance/status/role/financials changes)
+  - [firestore.rules](file:///workspaces/fresh_nest/firestore.rules) & [firestore.dev.rules](file:///workspaces/fresh_nest/firestore.dev.rules) (`compliance` added to allowed staff self-update keys)
+* **Close Report:** [F12-close-2026-06-15.md](file:///workspaces/fresh_nest/docs/reports/F12-close-2026-06-15.md)
+

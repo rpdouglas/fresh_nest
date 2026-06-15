@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils/utils'
-import type { StaffRole, StaffStatus } from '@/types'
+import type { StaffRole, StaffStatus, Staff } from '@/types'
 import { RegisterStaffModal } from './RegisterStaffModal'
+import { ExportRecordModal } from './ExportRecordModal'
 import { useStaff, RegisterStaffInput } from './hooks/useStaff'
 
 interface StaffTableProps {
@@ -13,6 +14,10 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
   const { t } = useTranslation()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  
+  // Export modal state
+  const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null)
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false)
 
   const {
     filteredStaff,
@@ -182,6 +187,9 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
                   <th className="p-4 font-body text-base font-semibold text-charcoal">
                     {t('admin.staff.modal.transport')}
                   </th>
+                  <th className="p-4 font-body text-base font-semibold text-charcoal text-right">
+                    {t('admin.staff.table.actions', { defaultValue: 'Actions' })}
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -237,6 +245,20 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
                         )}
                       </div>
                     </td>
+
+                    {/* Actions */}
+                    <td className="p-4 font-body text-base text-charcoal text-right">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedStaff(s)
+                          setIsExportModalOpen(true)
+                        }}
+                        className="text-slate-brand hover:text-slate-dark font-medium min-h-[48px] px-3 rounded hover:bg-slate-pale transition-colors duration-150"
+                      >
+                        {t('admin.staff.table.export', { defaultValue: 'Export' })}
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -249,6 +271,15 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onRegister={handleRegister}
+      />
+
+      <ExportRecordModal
+        isOpen={isExportModalOpen}
+        onClose={() => {
+          setIsExportModalOpen(false)
+          setSelectedStaff(null)
+        }}
+        staff={selectedStaff}
       />
     </div>
   )
