@@ -110,6 +110,7 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | Epic | Description | Priority | Primary Persona | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | **F11** | Administrative Compliance Auditing (Audit Logs) | High | Sarah (P12) | Completed ✅ (2026-06-15) |
+| **F14** | Operations Dashboard | High | Sarah (P12) | Completed ✅ (2026-06-15) |
 | **F15** | Staff Scheduling Alerts & In-App Notifications | High | Travis (P2), Ahmed (P10), Jasmine (P8) | Completed ✅ (2026-06-15) |
 | **F12/F13** | Terms Consent & Employment Record Export | High | Sarah (P12), Diane (P1), Sophie (P5), Ahmed (P10) | Completed ✅ (2026-06-15) |
 
@@ -133,6 +134,28 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
   * [apps/fsm/.env.local](file:///workspaces/fresh_nest/apps/fsm/.env.local)
   * [functions/src/index.ts](file:///workspaces/fresh_nest/functions/src/index.ts)
 * **Close Report:** [F12_F13-close-2026-06-15.md](file:///workspaces/fresh_nest/docs/reports/F12_F13-close-2026-06-15.md)
+
+---
+
+#### F14 — Operations Dashboard
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-15)
+* **Strategy:** Strategy 1 — Retrospective Audit. Implementation delivered as part of the F04/F14 combined execution cycle. No new code in Phase B — all deliverables verified against spec via code inspection.
+* **Persona tests:**
+  - P12 Sarah: Analytics tab → "Operations & Fulfillment" sub-tab renders 4 KPI cards (Completion Rate, Jobs Completed, Total Payroll, Avg Duration). All 4 date range presets (Today / This Week / This Month / Custom) filter correctly. Cleaner Utilization table lists staff with assigned/completed counts. ✅
+  - P7 Carla: Payroll expenses use immutable `payRateSnapshot.amount` — cap calculations are unaffected by rate changes. ✅
+* **Known Limitations (non-blocking):**
+  - L01: Payroll-by-Role pie chart groups all cost under `cleaner` (snapshot lacks role field)
+  - L02: Avg Duration falls back to scheduled time when `checkedInAt`/`completedAt` absent (self-resolving as F09 is exercised)
+  - L03: Client-side JS date filtering — adequate for current scale
+* **Key Assets:**
+  * [apps/customer/src/components/admin/OperationsDashboard.tsx](file:///workspaces/fresh_nest/apps/customer/src/components/admin/OperationsDashboard.tsx)
+  * [apps/customer/src/components/admin/hooks/useOperationsDashboard.ts](file:///workspaces/fresh_nest/apps/customer/src/components/admin/hooks/useOperationsDashboard.ts)
+  * [apps/customer/src/pages/AdminPage.tsx](file:///workspaces/fresh_nest/apps/customer/src/pages/AdminPage.tsx)
+  * [apps/customer/src/i18n/locales/en.json](file:///workspaces/fresh_nest/apps/customer/src/i18n/locales/en.json)
+  * [apps/customer/src/i18n/locales/fr.json](file:///workspaces/fresh_nest/apps/customer/src/i18n/locales/fr.json)
+* **Plan:** [F14_PLAN.md](file:///workspaces/fresh_nest/docs/plans/F14_PLAN.md)
+* **Close Report:** [F14-close-2026-06-15.md](file:///workspaces/fresh_nest/docs/reports/F14-close-2026-06-15.md)
 
 ---
 
