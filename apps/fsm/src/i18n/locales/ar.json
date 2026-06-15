@@ -159,6 +159,26 @@
       "saveError": "فشل تحديث الملف الشخصي.",
       "saving": "جاري حفظ التغييرات..."
     },
+    "compliance": {
+      "terms": {
+        "_note": "TODO: Native Arabic speaker review required before production — values below are EN placeholders",
+        "title": "Terms of Service & Workplace Guidelines [TRANSLATION PENDING]",
+        "subtitle": "Please review and accept our latest guidelines before continuing. [TRANSLATION PENDING]",
+        "checkbox": "I have read, understood, and agree to follow these Terms of Service and Workplace Guidelines. [TRANSLATION PENDING]",
+        "acceptBtn": "Accept & Continue [TRANSLATION PENDING]",
+        "accepting": "Accepting... [TRANSLATION PENDING]",
+        "ipLabel": "IP Address: {{ip}} [TRANSLATION PENDING]",
+        "versionLabel": "Version {{version}} [TRANSLATION PENDING]",
+        "sec1Title": "1. Shift Board & Booking Assignments [TRANSLATION PENDING]",
+        "sec1Text": "Cleaners are expected to claim shifts from the Shift Board that align with their availability and travel constraints. Once a shift is claimed or assigned, it is the cleaner's responsibility to arrive on time and complete the scheduled clean. [TRANSLATION PENDING]",
+        "sec2Title": "2. Check-In & Check-Out Accuracy [TRANSLATION PENDING]",
+        "sec2Text": "All staff must check in using the mobile app immediately upon arrival at the client property and check out once all tasks are completed. Geotagging is enabled to verify arrival times and protect against billing disputes. [TRANSLATION PENDING]",
+        "sec3Title": "3. Cleaning Checklist & Photo Proof [TRANSLATION PENDING]",
+        "sec3Text": "Every job includes a mandatory checklist of tasks. Designated high-value tasks (e.g. deep cleaning the stove, primary bathroom fixtures) require uploading verification photos. Checklist completion is mandatory for job checkout. [TRANSLATION PENDING]",
+        "sec4Title": "4. ODSP Earnings Cap Constraints [TRANSLATION PENDING]",
+        "sec4Text": "For staff with monthly earnings limits (e.g. ODSP recipients), the system enforces limits to prevent clawbacks. Bypassing or attempting to manipulate the earnings tracker is strictly prohibited. [TRANSLATION PENDING]"
+      }
+    },
     "tasks": {
       "stoveDeep": "تنظيف عميق للفرن",
       "fridgeDeep": "تنظيف عميق للثلاجة",

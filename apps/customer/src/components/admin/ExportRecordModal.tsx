@@ -241,7 +241,7 @@ export const ExportRecordModal: React.FC<ExportRecordModalProps> = ({
         </div>
 
         {errorMessage && (
-          <div className="p-3 bg-red-50 border border-red-200 text-red-800 rounded font-body text-sm">
+        <div className="p-3 bg-cream border border-sand-dark text-charcoal rounded font-body text-base">
             {errorMessage}
           </div>
         )}

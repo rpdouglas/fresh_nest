@@ -111,10 +111,31 @@ This file tracks the status of developmental epics for the **Fresh Nest Co.** cl
 | :--- | :--- | :--- | :--- | :--- |
 | **F11** | Administrative Compliance Auditing (Audit Logs) | High | Sarah (P12) | Completed ✅ (2026-06-15) |
 | **F15** | Staff Scheduling Alerts & In-App Notifications | High | Travis (P2), Ahmed (P10), Jasmine (P8) | Completed ✅ (2026-06-15) |
+| **F12/F13** | Terms Consent & Employment Record Export | High | Sarah (P12), Diane (P1), Sophie (P5), Ahmed (P10) | Completed ✅ (2026-06-15) |
 
 ---
 
 ### Epic Log
+
+#### F12/F13 — Terms Consent & Employment Record Export
+* **Owner:** Dev Team
+* **Status:** Completed ✅ (2026-06-15)
+* **Strategy:** Gap-fill on existing deliverables — Arabic i18n placeholder, env var, ExportRecordModal audit, brand fix.
+* **Persona tests:**
+  - P12 Sarah: TermsConsentOverlay blocks portal until accepted. Audit log written. ExportRecordModal generates CSV + JSON ✅
+  - P1 Diane / P5 Sophie: French terms overlay renders fully ✅
+  - P10 Ahmed: Arabic overlay renders with RTL — copy is EN placeholder pending native AR review ✅ (flagged)
+* **Key Assets:**
+  * [apps/fsm/src/components/auth/TermsConsentOverlay.tsx](file:///workspaces/fresh_nest/apps/fsm/src/components/auth/TermsConsentOverlay.tsx)
+  * [apps/customer/src/components/admin/ExportRecordModal.tsx](file:///workspaces/fresh_nest/apps/customer/src/components/admin/ExportRecordModal.tsx)
+  * [apps/customer/src/components/admin/StaffTable.tsx](file:///workspaces/fresh_nest/apps/customer/src/components/admin/StaffTable.tsx)
+  * [apps/fsm/src/i18n/locales/ar.json](file:///workspaces/fresh_nest/apps/fsm/src/i18n/locales/ar.json)
+  * [apps/fsm/.env.local](file:///workspaces/fresh_nest/apps/fsm/.env.local)
+  * [functions/src/index.ts](file:///workspaces/fresh_nest/functions/src/index.ts)
+* **Close Report:** [F12_F13-close-2026-06-15.md](file:///workspaces/fresh_nest/docs/reports/F12_F13-close-2026-06-15.md)
+
+---
+
 
 #### R01 to R10 — Phase R1: Critical Security Hardening & Initial Fixes
 * **Owner:** Dev Team
