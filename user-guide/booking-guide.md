@@ -25,6 +25,7 @@
 - You will receive an **SMS confirmation** to your mobile number within 60 seconds.
 - A team member will confirm your booking within 24 hours.
 - You will receive a **reminder SMS** 48 hours before your scheduled clean.
+- You will receive an **"On My Way" SMS** immediately when your cleaner checks in to start the job.
 
 ---
 

@@ -26,6 +26,7 @@ This file tracks the active cycle status of the developmental epics for the **Fr
 | :--- | :--- | :--- | :--- | :--- |
 | **P2-E1** | Customer Account Portal | P0 | Diane (P1), Margaret (P3) | ✅ Completed |
 | **P2-E2** | Post-Job Review Automation | P1 | Travis (P2), Margaret (P3), Sarah (P12) | ✅ Completed |
+| **P2-E3** | "On My Way" Customer Notification | P1 | Travis (P2), Gallagher (P6) | ✅ Completed |
 
 ---
 

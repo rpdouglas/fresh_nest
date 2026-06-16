@@ -7,7 +7,7 @@ import { getAuth } from 'firebase-admin/auth'
 import * as functionsV1 from 'firebase-functions/v1'
 import { defineSecret } from 'firebase-functions/params'
 import { sendOwnerNotification, sendClientConfirmation, sendReviewRequestEmail } from './sendEmail'
-import { sendSmsConfirmation, sendSmsReminder } from './sendSms'
+import { sendSmsConfirmation, sendSmsReminder, sendOnMyWaySms } from './sendSms'
 import type { BookingData } from './emailTemplates'
 import { createJobFromBooking, executeClaimJob, rollOverAllStaffEarnings } from './jobs'
 import { notifyStaffMember, notifyAllActiveStaff } from './notifications'
@@ -433,6 +433,63 @@ export const onJobUpdatedTrigger = onDocumentUpdated(
           jobId,
           smsConfig
         )
+      }
+    }
+
+    // 3. Customer check-in notification
+    const isCheckInTransition =
+      (!before.checkedInAt && after.checkedInAt) &&
+      (before.status === 'assigned' || before.status === 'acknowledged') &&
+      after.status === 'in_progress'
+
+    if (isCheckInTransition) {
+      console.log(`[onJobUpdatedTrigger] Job '${jobId}' cleaner checked in. Initiating customer notification.`)
+
+      // A. Retrieve parent booking to get language preference
+      let bookingLanguage = 'en'
+      if (after.bookingId) {
+        try {
+          const bookingSnap = await db.collection('bookings').doc(after.bookingId).get()
+          if (bookingSnap.exists) {
+            const bookingData = bookingSnap.data()
+            if (bookingData && bookingData.language) {
+              bookingLanguage = bookingData.language
+            }
+          }
+        } catch (err) {
+          console.error(`[onJobUpdatedTrigger] Failed to retrieve booking '${after.bookingId}':`, err)
+        }
+      }
+
+      // B. Retrieve cleaner's name
+      let cleanerName = ''
+      if (after.assignedTo) {
+        try {
+          const staffSnap = await db.collection('staff').doc(after.assignedTo).get()
+          if (staffSnap.exists) {
+            const staffData = staffSnap.data()
+            if (staffData && staffData.firstName) {
+              cleanerName = staffData.firstName
+            }
+          }
+        } catch (err) {
+          console.error(`[onJobUpdatedTrigger] Failed to retrieve staff profile for '${after.assignedTo}':`, err)
+        }
+      }
+
+      const displayCleanerName = cleanerName || (bookingLanguage === 'fr' ? 'votre préposé(e)' : 'your cleaner')
+
+      // C. Get customer's phone number from job (clientPhone) or booking
+      const phone = after.clientPhone || ''
+      if (phone) {
+        try {
+          await sendOnMyWaySms(phone, bookingLanguage, displayCleanerName, smsConfig)
+          console.log(`[onJobUpdatedTrigger] SMS check-in alert successfully sent to customer phone: ${phone}`)
+        } catch (smsErr) {
+          console.error(`[onJobUpdatedTrigger] Failed to send SMS check-in alert to customer:`, smsErr)
+        }
+      } else {
+        console.warn(`[onJobUpdatedTrigger] No customer phone number found on job '${jobId}'. Skipping SMS.`)
       }
     }
   },

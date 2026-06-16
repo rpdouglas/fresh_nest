@@ -35,3 +35,10 @@ export function reminderSms(preferredDate: string, lang: 'en' | 'fr'): string {
     ? `Fresh Nest Co. : Rappel — votre ménage est demain (${preferredDate}). Nous vous contacterons avec l'heure d'arrivée. (613) 935-3555`
     : `Fresh Nest Co.: Just a reminder — your cleaning is tomorrow (${preferredDate}). We'll be in touch with your arrival time. (613) 935-3555`
 }
+
+export function onMyWaySms(cleanerName: string, lang: 'en' | 'fr'): string {
+  return lang === 'fr'
+    ? `Fresh Nest Co. : Votre préposé(e) ${cleanerName} est en route ! Arrivée prévue près de votre plage de début programmée. (613) 935-3555`
+    : `Fresh Nest Co.: Your cleaner ${cleanerName} is on the way! Estimated arrival is near your scheduled start window. (613) 935-3555`
+}
+

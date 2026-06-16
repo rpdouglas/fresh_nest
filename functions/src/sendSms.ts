@@ -1,6 +1,6 @@
 import twilio from 'twilio'
 import type { BookingData } from './emailTemplates'
-import { confirmationSms, reminderSms } from './smsTemplates'
+import { confirmationSms, reminderSms, onMyWaySms } from './smsTemplates'
 
 export interface SmsConfig {
   accountSid: string
@@ -43,3 +43,21 @@ export async function sendSmsReminder(
   const client = twilio(config.accountSid, config.authToken)
   await client.messages.create({ body, from: config.fromNumber, to })
 }
+
+export async function sendOnMyWaySms(
+  phone: string,
+  language: string,
+  cleanerName: string,
+  config: SmsConfig,
+): Promise<void> {
+  const to = normalizePhone(phone)
+  if (!to) {
+    console.warn(`[sendOnMyWaySms] Invalid phone "${phone}" — skipping`)
+    return
+  }
+  const lang: 'en' | 'fr' = language === 'fr' ? 'fr' : 'en'
+  const body = onMyWaySms(cleanerName, lang)
+  const client = twilio(config.accountSid, config.authToken)
+  await client.messages.create({ body, from: config.fromNumber, to })
+}
+
