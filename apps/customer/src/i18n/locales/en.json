@@ -1190,5 +1190,61 @@
       "reject": "Reject",
       "noPending": "There are no pending reviews waiting for moderation."
     }
+  },
+  "aboutPage": {
+    "metaTitle": "About Us | Fresh Nest Co.",
+    "metaDesc": "Learn about Fresh Nest Co. — our story, mission, eco-friendly values, and service coverage in Cornwall, Akwesasne, and Snye QC.",
+    "title": "About Us",
+    "story": {
+      "title": "Our Story",
+      "content": "Fresh Nest Co. was founded in Cornwall, Ontario with a simple mission: to provide premium, reliable, and eco-friendly cleaning services that local families can trust. As a local, family-owned business, we care deeply about our neighbors, our team, and the environment."
+    },
+    "mission": {
+      "title": "Our Mission & Values",
+      "content": "To deliver exceptional cleaning services while prioritizing sustainability, community respect, and fair employment. We believe that a clean home is a happy home, and that starts with an empowered, background-checked team."
+    },
+    "community": {
+      "title": "Community Commitment",
+      "content": "We are proud to serve the entire Cornwall and Akwesasne region. Unlike other services, we explicitly serve Cornwall Island (Akwesasne) and cross the provincial border to Snye, QC. We respect the unique logistics and community structures of each area we serve and are proud to be a trusted local partner."
+    },
+    "eco": {
+      "title": "Eco-Friendly & Baby-Safe",
+      "content": "We care about the health of your family, your pets, and our planet. That's why we use 100% baby-safe, eco-friendly, and non-toxic products on every clean. From new babies to beloved pets, we keep your home spotless without harmful chemicals or strong fragrances."
+    }
+  },
+  "careersPage": {
+    "metaTitle": "Careers | Fresh Nest Co.",
+    "metaDesc": "Join the Fresh Nest Co. team. We offer competitive pay, paid training, and eco-friendly cleaning positions in Cornwall, ON.",
+    "title": "Join Our Team",
+    "subhead": "Build a rewarding career with a supportive, local business that values your work.",
+    "benefits": {
+      "title": "Why Work With Us?",
+      "payTitle": "Competitive Pay",
+      "payDesc": "We offer industry-leading wages and performance bonuses.",
+      "ecoTitle": "Eco-Friendly",
+      "ecoDesc": "Work with 100% non-toxic, baby-safe, and fragrance-free cleaning products.",
+      "trainingTitle": "Paid Training",
+      "trainingDesc": "No experience? No problem. We provide paid training and ongoing support.",
+      "hoursTitle": "Flexible Hours",
+      "hoursDesc": "Create a schedule that fits your life and family commitments."
+    },
+    "openings": {
+      "title": "Current Openings",
+      "roleTitle": "Residential Cleaning Specialist",
+      "roleType": "Full-Time & Part-Time",
+      "roleLocation": "Cornwall, ON, Akwesasne & Snye, QC",
+      "roleDesc": "We are looking for detail-oriented, reliable individuals to join our growing team. You will perform standard and deep cleaning services for local residential clients.",
+      "reqTitle": "Requirements",
+      "req1": "Legal to work in Canada",
+      "req2": "Clean background check (provided upon offer)",
+      "req3": "Reliable transportation or transit access",
+      "req4": "Detail-oriented and customer-focused"
+    },
+    "apply": {
+      "title": "How to Apply",
+      "content": "Ready to join the nest? Please send your resume and a brief description of your availability to hello@freshnestco.ca or call us at (613) 935-3555.",
+      "btnText": "Email Your Resume",
+      "emailSubject": "Job Application: Residential Cleaning Specialist"
+    }
   }
 }

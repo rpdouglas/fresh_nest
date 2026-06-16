@@ -2,7 +2,6 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Layout from '@/components/layout/Layout'
 import Home from '@/pages/Home'
 import Gallery from '@/pages/Gallery'
-import PlaceholderPage from '@/pages/PlaceholderPage'
 import { CORNWALL_ON, AKWESASNE, SNYE_QC, LONG_SAULT, MORRISBURG } from '@/lib/data/locationData'
 import LocationPage from '@/pages/LocationPage'
 import LocationsOverview from '@/pages/LocationsOverview'
@@ -19,6 +18,9 @@ import Blog from '@/pages/Blog'
 import BlogPost from '@/pages/BlogPost'
 import LeaveReviewPage from '@/pages/LeaveReviewPage'
 import ReviewsPage from '@/pages/ReviewsPage'
+import AboutPage from '@/pages/AboutPage'
+import CareersPage from '@/pages/CareersPage'
+import PrivacyPage from '@/pages/PrivacyPage'
 import LoginPage from '@/pages/customer/LoginPage'
 import LoginConfirmPage from '@/pages/customer/LoginConfirmPage'
 import CustomerPortalLayout from '@/components/layout/CustomerPortalLayout'
@@ -97,12 +99,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'about',
-        element: (
-          <PlaceholderPage
-            titleKey="footer.aboutUs"
-            epicNote="About Us / How It Works — built in E10."
-          />
-        ),
+        element: <AboutPage />,
       },
       {
         path: 'reviews',
@@ -114,21 +111,11 @@ const router = createBrowserRouter([
       },
       {
         path: 'privacy',
-        element: (
-          <PlaceholderPage
-            titleKey="footer.privacy"
-            epicNote="Privacy Policy — static page."
-          />
-        ),
+        element: <PrivacyPage />,
       },
       {
         path: 'careers',
-        element: (
-          <PlaceholderPage
-            titleKey="footer.careers"
-            epicNote="Careers page — static page."
-          />
-        ),
+        element: <CareersPage />,
       },
 
       // ── Phase 4: Blog ──

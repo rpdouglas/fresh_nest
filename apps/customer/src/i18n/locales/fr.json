@@ -1190,5 +1190,61 @@
       "reject": "Rejeter",
       "noPending": "Il n'y a aucun avis en attente de modération."
     }
+  },
+  "aboutPage": {
+    "metaTitle": "À propos de nous | Fresh Nest Co.",
+    "metaDesc": "Découvrez Fresh Nest Co. — notre histoire, notre mission, nos valeurs écologiques et notre couverture de service à Cornwall, Akwesasne et Snye QC.",
+    "title": "À propos",
+    "story": {
+      "title": "Notre histoire",
+      "content": "Fresh Nest Co. a été fondée à Cornwall, en Ontario, avec une mission simple : offrir des services de nettoyage de qualité supérieure, fiables et respectueux de l'environnement auxquels les familles locales peuvent faire confiance. En tant qu'entreprise familiale locale, nous nous soucions profondément de nos voisins, de notre équipe et de l'environnement."
+    },
+    "mission": {
+      "title": "Notre mission et nos valeurs",
+      "content": "Offrir des services de nettoyage exceptionnels tout en accordant la priorité à la durabilité, au respect de la communauté et à des emplois équitables. Nous croyons qu'un foyer propre est un foyer heureux, et cela commence par une équipe valorisée et dont les antécédents ont été vérifiés."
+    },
+    "community": {
+      "title": "Engagement communautaire",
+      "content": "Nous sommes fiers de servir toute la région de Cornwall et d'Akwesasne. Contrairement à d'autres services, nous desservons explicitement l'île de Cornwall (Akwesasne) et traversons la frontière provinciale vers Snye, QC. Nous respectons la logistique unique et les structures communautaires de chaque zone que nous servons et sommes fiers d'être un partenaire local de confiance."
+    },
+    "eco": {
+      "title": "Écologique et sans danger pour les bébés",
+      "content": "Nous nous soucions de la santé de votre famille, de vos animaux de compagnie et de notre planète. C'est pourquoi nous utilisons des produits 100 % écologiques, sans danger pour les bébés et non toxiques pour chaque nettoyage. Des nouveaux-nés aux animaux adorés, nous gardons votre maison impeccable sans produits chimiques nocifs ni parfums forts."
+    }
+  },
+  "careersPage": {
+    "metaTitle": "Carrières | Fresh Nest Co.",
+    "metaDesc": "Rejoignez l'équipe de Fresh Nest Co. Nous offrons des salaires compétitifs, des formations rémunérées et des postes de nettoyage écologiques à Cornwall, ON.",
+    "title": "Rejoignez notre équipe",
+    "subhead": "Bâtissez une carrière enrichissante au sein d'une entreprise locale et solidaire qui valorise votre travail.",
+    "benefits": {
+      "title": "Pourquoi travailler avec nous ?",
+      "payTitle": "Salaire compétitif",
+      "payDesc": "Nous offrons des salaires de premier ordre dans l'industrie et des primes de rendement.",
+      "ecoTitle": "Respectueux de l'environnement",
+      "ecoDesc": "Travaillez avec des produits de nettoyage 100 % non toxiques, sans danger pour les bébés et sans parfum.",
+      "trainingTitle": "Formation rémunérée",
+      "trainingDesc": "Aucune expérience ? Aucun problème. Nous offrons une formation rémunérée et un soutien continu.",
+      "hoursTitle": "Horaires flexibles",
+      "hoursDesc": "Créez un horaire qui s'adapte à votre vie et à vos engagements familiaux."
+    },
+    "openings": {
+      "title": "Postes disponibles",
+      "roleTitle": "Spécialiste du nettoyage résidentiel",
+      "roleType": "Temps plein et temps partiel",
+      "roleLocation": "Cornwall, ON, Akwesasne et Snye, QC",
+      "roleDesc": "Nous recherchons des personnes fiables et soucieuses du détail pour rejoindre notre équipe en pleine croissance. Vous effectuerez des services de nettoyage standard et en profondeur pour des clients résidentiels locaux.",
+      "reqTitle": "Exigences",
+      "req1": "Légalement autorisé à travailler au Canada",
+      "req2": "Vérification des antécédents judiciaires vierge (fournie lors de l'offre)",
+      "req3": "Transport fiable ou accès au transport en commun",
+      "req4": "Souci du détail et axé sur le client"
+    },
+    "apply": {
+      "title": "Comment postuler",
+      "content": "Prêt(e) à rejoindre le nid ? Veuillez envoyer votre curriculum vitae et une brève description de votre disponibilité à hello@freshnestco.ca ou appelez-nous au (613) 935-3555.",
+      "btnText": "Envoyer votre CV par courriel",
+      "emailSubject": "Candidature : Spécialiste du nettoyage résidentiel"
+    }
   }
 }
