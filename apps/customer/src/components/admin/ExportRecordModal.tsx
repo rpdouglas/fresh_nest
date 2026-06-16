@@ -153,7 +153,7 @@ export const ExportRecordModal: React.FC<ExportRecordModalProps> = ({
           return dateB - dateA
         })
 
-        const CURRENT_TERMS_VERSION = import.meta.env.VITE_CURRENT_TERMS_VERSION || '2.1'
+        const CURRENT_TERMS_VERSION = (import.meta.env.VITE_CURRENT_TERMS_VERSION as string | undefined) || '2.1'
 
         // Build Compliance JSON
         const compliancePayload = {

@@ -12,7 +12,7 @@ export const TermsConsentOverlay: React.FC = () => {
   const [ipAddress, setIpAddress] = useState('')
   const [isAccepting, setIsAccepting] = useState(false)
 
-  const CURRENT_TERMS_VERSION = import.meta.env.VITE_CURRENT_TERMS_VERSION || '2.1'
+  const CURRENT_TERMS_VERSION = (import.meta.env.VITE_CURRENT_TERMS_VERSION as string | undefined) || '2.1'
 
   // Show if staff member is logged in but hasn't accepted the current terms version
   const showOverlay = staffProfile && staffProfile.compliance?.acceptedTermsVersion !== CURRENT_TERMS_VERSION

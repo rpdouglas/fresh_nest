@@ -4,11 +4,12 @@ import { TermsConsentOverlay } from './TermsConsentOverlay'
 import { useStaffAuth } from '../../hooks/useStaffAuth'
 import { updateDoc } from 'firebase/firestore'
 import type { Staff } from '../../types'
+import type { User } from 'firebase/auth'
 
 vi.mock('firebase/firestore', () => ({
   doc: vi.fn(() => ({ id: 'staff123' })),
   updateDoc: vi.fn().mockResolvedValue({}),
-  arrayUnion: vi.fn((val) => val),
+  arrayUnion: vi.fn((val: unknown) => val),
   initializeFirestore: vi.fn(),
   persistentLocalCache: vi.fn(),
 }))
@@ -17,7 +18,7 @@ vi.mock('../../hooks/useStaffAuth')
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string, options?: any) => {
+    t: (key: string, options?: { version?: string; ip?: string }) => {
       if (options && options.version) return `${key} ${options.version}`
       if (options && options.ip) return `${key} ${options.ip}`
       return key
@@ -84,7 +85,7 @@ describe('TermsConsentOverlay Component', () => {
     }
 
     vi.mocked(useStaffAuth).mockReturnValue({
-      user: { uid: 'staff123' } as any,
+      user: { uid: 'staff123' } as unknown as User,
       staffProfile: upToDateProfile as unknown as Staff,
       loading: false,
       error: null,
@@ -99,9 +100,9 @@ describe('TermsConsentOverlay Component', () => {
     expect(container.firstChild).toBeNull()
   })
 
-  it('renders consent overlay when terms version is outdated', async () => {
+  it('renders consent overlay when terms version is outdated', () => {
     vi.mocked(useStaffAuth).mockReturnValue({
-      user: { uid: 'staff123' } as any,
+      user: { uid: 'staff123' } as unknown as User,
       staffProfile: mockStaffProfile as unknown as Staff,
       loading: false,
       error: null,
@@ -112,7 +113,7 @@ describe('TermsConsentOverlay Component', () => {
       logout: vi.fn(),
     })
 
-    await act(async () => {
+    act(() => {
       render(<TermsConsentOverlay />)
     })
 
@@ -123,9 +124,9 @@ describe('TermsConsentOverlay Component', () => {
     expect(acceptBtn).toBeDisabled()
   })
 
-  it('enables accept button when checkbox is checked, and calls updateDoc on click', async () => {
+  it('enables accept button when checkbox is checked, and calls updateDoc on click', () => {
     vi.mocked(useStaffAuth).mockReturnValue({
-      user: { uid: 'staff123' } as any,
+      user: { uid: 'staff123' } as unknown as User,
       staffProfile: mockStaffProfile as unknown as Staff,
       loading: false,
       error: null,
@@ -136,14 +137,14 @@ describe('TermsConsentOverlay Component', () => {
       logout: vi.fn(),
     })
 
-    await act(async () => {
+    act(() => {
       render(<TermsConsentOverlay />)
     })
 
     const checkbox = screen.getByRole('checkbox')
     expect(checkbox).not.toBeChecked()
 
-    await act(async () => {
+    act(() => {
       fireEvent.click(checkbox)
     })
     expect(checkbox).toBeChecked()
@@ -151,7 +152,7 @@ describe('TermsConsentOverlay Component', () => {
     const acceptBtn = screen.getByRole('button', { name: 'fsm.compliance.terms.acceptBtn' })
     expect(acceptBtn).not.toBeDisabled()
 
-    await act(async () => {
+    act(() => {
       fireEvent.click(acceptBtn)
     })
 
