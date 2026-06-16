@@ -17,6 +17,8 @@ import ThankYouPage from '@/pages/ThankYouPage'
 import AdminPage from '@/pages/AdminPage'
 import Blog from '@/pages/Blog'
 import BlogPost from '@/pages/BlogPost'
+import LeaveReviewPage from '@/pages/LeaveReviewPage'
+import ReviewsPage from '@/pages/ReviewsPage'
 import LoginPage from '@/pages/customer/LoginPage'
 import LoginConfirmPage from '@/pages/customer/LoginConfirmPage'
 import CustomerPortalLayout from '@/components/layout/CustomerPortalLayout'
@@ -104,12 +106,11 @@ const router = createBrowserRouter([
       },
       {
         path: 'reviews',
-        element: (
-          <PlaceholderPage
-            titleKey="footer.reviews"
-            epicNote="Client reviews page — built in E12."
-          />
-        ),
+        element: <ReviewsPage />,
+      },
+      {
+        path: 'leave-review',
+        element: <LeaveReviewPage />,
       },
       {
         path: 'privacy',

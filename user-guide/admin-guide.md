@@ -8,12 +8,13 @@
 
 Navigate to [lilypad-freshnest.web.app/admin](https://lilypad-freshnest.web.app/admin) and sign in with your authorized Google account. 
 
-The dashboard is split into five tabs:
+The dashboard is split into six tabs:
 1. **Bookings Management:** Track and manage operational client bookings.
 2. **Analytics & Metrics:** Monitor business, marketing, and operational metrics.
 3. **Staff Registry:** Manage staff profiles, roles, and registration.
 4. **Pay Rate Management:** Configure and monitor hourly pay rates per role.
 5. **Audit Logs:** View administrative security override tracking (e.g., travel buffers, earnings caps, and blocked windows overrides).
+6. **Reviews Moderation:** Approve or reject submitted client reviews before they appear publicly on the website.
 
 ---
 
@@ -70,6 +71,15 @@ The **Analytics & Metrics** tab contains two sub-tabs to segment marketing/sales
 *   **Active Pay Rates:** Displays the current active hourly rate in CAD for Cleaners, Lead Cleaners, and Supervisors.
 *   **Configure New Rate:** Set a new hourly rate for any role. You can choose to have it take **Immediate Effect** or uncheck it to select a custom future date and time for scheduled rate adjustments.
 *   **Chronological Rate History:** A table listing all configured rates sorted by effective date, displaying their status (Active, Scheduled, or Historical) and who created them.
+
+
+---
+
+## Reviews Moderation Tab
+
+*   **View Pending Reviews:** Lists all customer reviews that have been submitted but not yet moderated. Shows reviewer name, location (automatically formatted based on address), selected language, rating (1-5 stars), review text, and submission date.
+*   **Approve Review:** Click **Approve** to immediately make the review public on the `/reviews` page.
+*   **Reject Review:** Click **Reject** to hide the review. For compliance and auditability (P12 Sarah), rejected reviews are flagged in Firestore as `rejected: true` but are not deleted from the database.
 
 
 ---

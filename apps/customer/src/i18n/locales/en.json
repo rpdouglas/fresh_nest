@@ -807,7 +807,8 @@
         "staff": "Staff Registry",
         "templates": "Checklist Templates",
         "payRates": "Pay Rates",
-        "auditLogs": "Audit Logs"
+        "auditLogs": "Audit Logs",
+        "reviews": "Reviews Moderation"
       },
       "staff": {
         "title": "Staff Registry",
@@ -1143,6 +1144,51 @@
       "address": "Address",
       "savingState": "Saving...",
       "saveError": "Failed to update profile"
+    }
+  },
+  "leaveReview": {
+    "pageTitle": "Leave a Review | Fresh Nest Co.",
+    "metaDesc": "Leave a review for your recent cleaning service with Fresh Nest Co.",
+    "heading": "Leave a Review",
+    "subhead": "We hope you enjoyed your cleaning! Please take a moment to rate us and share your feedback.",
+    "labelName": "Your Name",
+    "labelLocation": "Your Location",
+    "labelRating": "Rating",
+    "labelComments": "Your Review",
+    "placeholderComments": "Tell us about your experience...",
+    "submit": "Submit Review",
+    "submitting": "Submitting...",
+    "errorJobNotFound": "We couldn't find a completed job for this review link. Please verify the URL or contact us.",
+    "errorAlreadySubmitted": "You have already submitted a review for this cleaning. Thank you for your feedback!",
+    "errorGeneric": "Something went wrong while submitting your review. Please try again.",
+    "successMessage": "Thank you! Your review has been submitted and is pending moderation.",
+    "googlePromptTitle": "Would you mind sharing on Google?",
+    "googlePromptBody": "Thank you so much for the 5-star rating! Reviews on Google help us grow our local business in Cornwall and surrounding communities. Would you mind copying your review and posting it on our Google Business Profile?",
+    "googlePromptCta": "Yes, share on Google!",
+    "googlePromptCancel": "Close",
+    "ratingRequired": "Please select a rating.",
+    "commentsRequired": "Please write a brief comment."
+  },
+  "reviewsPage": {
+    "pageTitle": "Customer Reviews | Fresh Nest Co.",
+    "metaDesc": "Read customer reviews and testimonials about Fresh Nest Co. in Cornwall ON and surrounding areas.",
+    "heading": "What Our Clients Say",
+    "subhead": "Real reviews from real clients across Cornwall, Akwesasne, Snye QC, and surrounding areas.",
+    "empty": "No reviews have been published yet. Be the first to leave one!"
+  },
+  "reviewsModeration": {
+    "title": "Reviews Moderation",
+    "subtitle": "Approve or reject customer reviews before they appear publicly on the website.",
+    "table": {
+      "name": "Client Name",
+      "location": "Location",
+      "rating": "Rating",
+      "text": "Review Content",
+      "date": "Submitted Date",
+      "actions": "Actions",
+      "approve": "Approve",
+      "reject": "Reject",
+      "noPending": "There are no pending reviews waiting for moderation."
     }
   }
 }

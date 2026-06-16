@@ -25,6 +25,7 @@ This file tracks the active cycle status of the developmental epics for the **Fr
 | Epic ID | Epic Name | Priority | Primary Persona / Target | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | **P2-E1** | Customer Account Portal | P0 | Diane (P1), Margaret (P3) | ✅ Completed |
+| **P2-E2** | Post-Job Review Automation | P1 | Travis (P2), Margaret (P3), Sarah (P12) | ✅ Completed |
 
 ---
 

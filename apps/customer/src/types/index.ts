@@ -43,6 +43,8 @@ export interface Review {
   rating: 1 | 2 | 3 | 4 | 5
   text: string
   approved: boolean
+  rejected: boolean
+  jobId: string
   createdAt: Date
 }
 
@@ -172,6 +174,9 @@ export interface Job {
   checklistTemplate: string    // checklistTemplates doc ID
   checklistCompletions: ChecklistCompletion[]
   photos: JobPhoto[]
+  reviewRequestScheduledFor?: Date | null
+  reviewEmailSent?: boolean
+  reviewSubmitted?: boolean
   createdAt: Date
 }
 

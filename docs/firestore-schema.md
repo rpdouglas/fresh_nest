@@ -54,6 +54,8 @@ Stores client feedback and ratings, moderated by admin before display.
 | `rating` | `number` | ✅ | Integers `1` to `5` |
 | `text` | `string` | ✅ | Review body copy |
 | `approved` | `boolean` | ✅ | `true` if approved for public rendering on site |
+| `rejected` | `boolean` | ✅ | `true` if rejected by admin to preserve audit trail |
+| `jobId` | `string` | ✅ | Associated job document ID backlink |
 | `createdAt` | `Timestamp` | ✅ | Timestamp of review creation |
 
 ---
@@ -125,6 +127,9 @@ Stores assigned and unassigned cleaning jobs generated from confirmed bookings.
 | `checklistCompletions` | `array` | ✅ | Completed tasks details: `Array<{ taskId: string, completedAt: Timestamp, photos: JobPhoto[] }>` |
 | `photos` | `array` | ✅ | Job completion proof photos metadata: `Array<JobPhoto>` |
 | `cancelledAt` | `Timestamp \| null` | ❌ | Timestamp of job cancellation |
+| `reviewRequestScheduledFor` | `Timestamp \| null` | ❌ | Target date/time for sending the review request email |
+| `reviewEmailSent` | `boolean` | ❌ | Set to `true` once the email has been successfully sent |
+| `reviewSubmitted` | `boolean` | ❌ | Set to `true` once the customer completes the review form |
 | `createdAt` | `Timestamp` | ✅ | Job document creation timestamp |
 
 ---

@@ -85,10 +85,22 @@ service cloud.firestore {
 
     // 3. Reviews Collection
     match /reviews/{reviewId} {
-      // Anyone can read approved reviews
-      allow read: if resource.data.approved == true;
-      // All writes restricted to authenticated administrators
-      allow write: if isAdmin();
+      // Anyone can read approved reviews, and admins can read all
+      allow read: if resource.data.approved == true || isAdmin();
+      
+      // Allow public creation with validation
+      allow create: if
+        request.resource.data.keys().hasAll(['name', 'location', 'language', 'rating', 'text', 'approved', 'rejected', 'jobId', 'createdAt'])
+        && request.resource.data.rating is int && request.resource.data.rating >= 1 && request.resource.data.rating <= 5
+        && request.resource.data.approved == false
+        && request.resource.data.rejected == false
+        && request.resource.data.createdAt == request.time;
+        
+      // Moderation changes allowed only for admins
+      allow update: if isAdmin();
+      
+      // Prevent direct deletions
+      allow delete: if false;
     }
 
     // 4. Referrals Collection

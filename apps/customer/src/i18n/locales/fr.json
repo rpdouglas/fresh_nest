@@ -807,7 +807,8 @@
         "staff": "Registre du personnel",
         "templates": "Modèles de liste de contrôle",
         "payRates": "Taux de Rémunération",
-        "auditLogs": "Journaux d'audit"
+        "auditLogs": "Journaux d'audit",
+        "reviews": "Modération des avis"
       },
       "staff": {
         "title": "Registre du personnel",
@@ -1143,6 +1144,51 @@
       "address": "Adresse",
       "savingState": "Enregistrement...",
       "saveError": "Échec de la mise à jour du profil"
+    }
+  },
+  "leaveReview": {
+    "pageTitle": "Laisser un avis | Fresh Nest Co.",
+    "metaDesc": "Laissez un avis sur votre récent service de nettoyage avec Fresh Nest Co.",
+    "heading": "Laisser un avis",
+    "subhead": "Nous espérons que vous avez apprécié votre nettoyage ! Veuillez prendre un moment pour nous évaluer et partager votre expérience.",
+    "labelName": "Votre nom",
+    "labelLocation": "Votre emplacement",
+    "labelRating": "Évaluation",
+    "labelComments": "Votre avis",
+    "placeholderComments": "Parlez-nous de votre expérience...",
+    "submit": "Soumettre l'avis",
+    "submitting": "Soumission...",
+    "errorJobNotFound": "Nous n'avons pas trouvé de travail complété pour ce lien d'avis. Veuillez vérifier l'URL ou nous contacter.",
+    "errorAlreadySubmitted": "Vous avez déjà soumis un avis pour ce nettoyage. Merci pour votre avis !",
+    "errorGeneric": "Une erreur est survenue lors de la soumission de votre avis. Veuillez réessayer.",
+    "successMessage": "Merci ! Votre avis a été soumis et est en attente de modération.",
+    "googlePromptTitle": "Souhaitez-vous partager votre avis sur Google ?",
+    "googlePromptBody": "Merci beaucoup pour votre note de 5 étoiles ! Les avis sur Google nous aident à développer notre entreprise locale à Cornwall et dans les environs. Auriez-vous l'amabilité de copier votre avis et de le publier sur notre profil Google Business ?",
+    "googlePromptCta": "Oui, partager sur Google !",
+    "googlePromptCancel": "Fermer",
+    "ratingRequired": "Veuillez sélectionner une note.",
+    "commentsRequired": "Veuillez écrire un court commentaire."
+  },
+  "reviewsPage": {
+    "pageTitle": "Avis des clients | Fresh Nest Co.",
+    "metaDesc": "Lisez les avis et témoignages des clients de Fresh Nest Co. à Cornwall ON et dans les environs.",
+    "heading": "Ce que disent nos clients",
+    "subhead": "Des avis réels de clients partout à Cornwall, Akwesasne, Snye QC et dans les environs.",
+    "empty": "Aucun avis n'a encore été publié. Soyez le premier à en laisser un !"
+  },
+  "reviewsModeration": {
+    "title": "Modération des avis",
+    "subtitle": "Approuvez ou rejetez les avis des clients avant qu'ils n'apparaissent publiquement sur le site.",
+    "table": {
+      "name": "Nom du client",
+      "location": "Emplacement",
+      "rating": "Évaluation",
+      "text": "Contenu de l'avis",
+      "date": "Date de soumission",
+      "actions": "Actions",
+      "approve": "Approuver",
+      "reject": "Rejeter",
+      "noPending": "Il n'y a aucun avis en attente de modération."
     }
   }
 }

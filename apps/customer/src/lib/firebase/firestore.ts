@@ -9,10 +9,12 @@ import {
   doc,
   updateDoc,
   runTransaction,
+  where,
+  getDoc,
 } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
 import type { BookingFormData } from '@/lib/schemas/bookingSchema'
-import type { Language, Booking, BookingStatus, Job, ChecklistTemplate, PayRate } from '@/types'
+import type { Language, Booking, BookingStatus, Job, ChecklistTemplate, PayRate, Review } from '@/types'
 
 
 export type LeadSource = 'organic' | 'google' | 'referral' | 'facebook' | 'direct'
@@ -264,6 +266,96 @@ export async function createPayRate(
   }
   const ref = await addDoc(collection(db, 'payRates'), docData)
   return ref.id
+}
+
+// ── P2-E2: Reviews ───────────────────────────────────────────────────────────
+
+export async function submitReview(review: Omit<Review, 'id' | 'createdAt'>): Promise<string> {
+  const docData = {
+    ...review,
+    createdAt: serverTimestamp(),
+  }
+  
+  // Submit the review
+  const ref = await addDoc(collection(db, 'reviews'), docData)
+  
+  // Also update the job document to mark reviewSubmitted: true
+  const jobRef = doc(db, 'jobs', review.jobId)
+  await updateDoc(jobRef, { reviewSubmitted: true })
+
+  return ref.id
+}
+
+export function subscribeToApprovedReviews(callback: (reviews: Review[]) => void): () => void {
+  const q = query(
+    collection(db, 'reviews'),
+    where('approved', '==', true),
+    orderBy('createdAt', 'desc')
+  )
+  return onSnapshot(q, (snapshot) => {
+    const reviews: Review[] = []
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data()
+      reviews.push({
+        id: docSnap.id,
+        ...data,
+        createdAt: data['createdAt'] instanceof Timestamp ? data['createdAt'].toDate() : new Date(),
+      } as Review)
+    })
+    callback(reviews)
+  })
+}
+
+export function subscribeToPendingReviews(
+  isAuthorized: boolean,
+  callback: (reviews: Review[]) => void
+): () => void {
+  if (!isAuthorized) return () => {}
+  const q = query(
+    collection(db, 'reviews'),
+    where('approved', '==', false),
+    where('rejected', '==', false),
+    orderBy('createdAt', 'desc')
+  )
+  return onSnapshot(q, (snapshot) => {
+    const reviews: Review[] = []
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data()
+      reviews.push({
+        id: docSnap.id,
+        ...data,
+        createdAt: data['createdAt'] instanceof Timestamp ? data['createdAt'].toDate() : new Date(),
+      } as Review)
+    })
+    callback(reviews)
+  })
+}
+
+export async function updateReviewStatus(
+  reviewId: string,
+  status: 'approved' | 'rejected'
+): Promise<void> {
+  const docRef = doc(db, 'reviews', reviewId)
+  if (status === 'approved') {
+    await updateDoc(docRef, { approved: true, rejected: false })
+  } else {
+    await updateDoc(docRef, { approved: false, rejected: true })
+  }
+}
+
+// Fetch a single job to pre-populate review details
+export async function getJobForReview(jobId: string): Promise<Job | null> {
+  const jobRef = doc(db, 'jobs', jobId)
+  const jobSnap = await getDoc(jobRef)
+  if (!jobSnap.exists()) return null
+  return { id: jobSnap.id, ...jobSnap.data() } as Job
+}
+
+export async function getBookingForReview(bookingId: string): Promise<Booking | null> {
+  const bookingRef = doc(db, 'bookings', bookingId)
+  const bookingSnap = await getDoc(bookingRef)
+  if (!bookingSnap.exists()) return null
+  return { id: bookingSnap.id, ...bookingSnap.data() } as Booking
 }
 
 

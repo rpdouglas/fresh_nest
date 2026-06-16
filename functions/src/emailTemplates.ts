@@ -218,3 +218,102 @@ export function clientHtml(b: BookingData, lang: 'en' | 'fr'): string {
 </body>
 </html>`
 }
+
+export function reviewRequestSubject(lang: 'en' | 'fr'): string {
+  return lang === 'fr'
+    ? "Comment s'est passé votre nettoyage ? — Fresh Nest Co."
+    : 'How did we do? Tell us about your cleaning — Fresh Nest Co.'
+}
+
+export function reviewRequestHtml(clientName: string, reviewUrl: string, lang: 'en' | 'fr'): string {
+  const isFr = lang === 'fr'
+  const heading = isFr ? 'Votre avis nous tient à cœur !' : 'We value your feedback!'
+  const greeting = isFr
+    ? `Bonjour ${esc(clientName)},`
+    : `Hi ${esc(clientName)},`
+  const bodyText = isFr
+    ? "Merci d'avoir choisi Fresh Nest Co. Nous espérons que vous avez apprécié votre récent nettoyage. Veuillez prendre un moment pour nous faire part de vos commentaires. Vos avis nous aident à maintenir nos standards élevés."
+    : "Thank you for choosing Fresh Nest Co. We hope you enjoyed your recent cleaning. Please take a moment to let us know how we did. Your feedback helps us maintain our high standards."
+  const btnText = isFr ? 'Laisser un avis' : 'Leave a Review'
+  const callUs = isFr ? 'Des questions ? Appelez-nous au' : 'Questions? Call us at'
+  const signOff = isFr ? '— L\'équipe Fresh Nest Co.' : '— The Fresh Nest Co. Team'
+  const tagline = isFr ? 'Services de nettoyage &amp; d\'organisation' : 'Cleaning &amp; Organizing Services'
+
+  return `<!DOCTYPE html>
+<html lang="${lang}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>${esc(heading)}</title>
+</head>
+<body style="margin:0;padding:0;background:#fdfaf6;font-family:Arial,Helvetica,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0"
+         style="background:#fdfaf6;padding:32px 16px;">
+    <tr><td align="center">
+      <table width="100%" cellpadding="0" cellspacing="0"
+             style="max-width:600px;background:#ffffff;
+                    border:1px solid #e8ddd0;border-radius:4px;">
+
+        <!-- Header -->
+        <tr>
+          <td style="background:#5b7e8f;padding:24px 32px;border-radius:4px 4px 0 0;">
+            <p style="margin:0;color:#ffffff;font-size:20px;font-weight:600;
+                      letter-spacing:0.5px;">Fresh Nest Co.</p>
+            <p style="margin:4px 0 0;color:#d6e5ec;font-size:13px;">${tagline}</p>
+          </td>
+        </tr>
+
+        <!-- Body -->
+        <tr>
+          <td style="padding:32px;">
+            <h1 style="margin:0 0 16px;color:#2c3a40;font-size:24px;font-weight:400;">
+              ${heading}
+            </h1>
+            <p style="margin:0 0 16px;color:#2c3a40;font-size:16px;font-weight:600;">
+              ${greeting}
+            </p>
+            <p style="margin:0 0 24px;color:#7a8f96;font-size:16px;line-height:1.5;">
+              ${bodyText}
+            </p>
+            
+            <!-- Button CTA -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
+              <tr>
+                <td align="center">
+                  <a href="${reviewUrl}" 
+                     style="display:inline-block;background-color:#5b7e8f;color:#ffffff;
+                            font-size:16px;font-weight:600;text-decoration:none;
+                            padding:14px 32px;border-radius:4px;min-height:20px;">
+                    ${btnText}
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+            <p style="margin:0 0 24px;color:#7a8f96;font-size:16px;">
+              ${callUs}
+              <a href="tel:+16139353555"
+                 style="color:#5b7e8f;text-decoration:none;font-weight:600;">
+                (613) 935-3555
+              </a>
+            </p>
+            <p style="margin:0;color:#7a8f96;font-size:14px;">${signOff}</p>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style="padding:16px 32px;background:#f7f3ee;
+                     border-top:1px solid #e8ddd0;border-radius:0 0 4px 4px;">
+            <p style="margin:0;color:#7a8f96;font-size:12px;text-align:center;">
+              Fresh Nest Co. &middot; Cornwall ON &middot; (613) 935-3555
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`
+}

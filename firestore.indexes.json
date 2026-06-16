@@ -16,6 +16,14 @@
         { "fieldPath": "serviceType", "order": "ASCENDING" },
         { "fieldPath": "active", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "jobs",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "reviewEmailSent", "order": "ASCENDING" },
+        { "fieldPath": "reviewRequestScheduledFor", "order": "ASCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []
