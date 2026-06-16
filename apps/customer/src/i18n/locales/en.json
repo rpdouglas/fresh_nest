@@ -426,7 +426,8 @@
     "booking": "Book Now",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
-    "skipToContent": "Skip to main content"
+    "skipToContent": "Skip to main content",
+    "login": "Portal Login"
   },
   "footer": {
     "tagline": "Professional cleaning and organizing services for Cornwall, Akwesasne, and surrounding communities.",
@@ -1075,5 +1076,73 @@
     "copyLink": "Copy Referral Link",
     "linkCopied": "Link copied to clipboard!",
     "referredBy": "Referred by {{name}}"
+  },
+  "customerPortal": {
+    "login": {
+      "title": "Customer Portal Access",
+      "subtitle": "Sign in without a password using a secure magic link, or continue with your Google account.",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "you@example.com",
+      "sendLinkBtn": "Send Secure Login Link",
+      "sendingLink": "Sending login link...",
+      "linkSent": "Check your inbox! We've sent a secure login link to {{email}}. Click the link in that email to log in.",
+      "googleBtn": "Continue with Google",
+      "invalidEmail": "Please enter a valid email address.",
+      "errorTitle": "Unable to sign in",
+      "backToHome": "Back to Homepage",
+      "loggedInAs": "Logged in as:",
+      "or": "or"
+    },
+    "confirm": {
+      "title": "Verifying Login Link",
+      "status": "Confirming your identity and securely logging you in...",
+      "success": "Authentication successful! Redirecting you now...",
+      "error": "The login link was invalid, expired, or has already been used. Please try requesting a new link.",
+      "tryAgain": "Try Again"
+    },
+    "nav": {
+      "bookings": "My Bookings",
+      "upcoming": "Upcoming Cleans",
+      "profile": "My Profile",
+      "logout": "Sign Out"
+    },
+    "bookings": {
+      "title": "My Booking History",
+      "noBookings": "You do not have any past or active bookings.",
+      "details": "Details",
+      "rebookBtn": "Rebook this Clean",
+      "rateClean": "Rate this Clean",
+      "leaveFeedback": "Share your experience",
+      "dateLabel": "Date:",
+      "roomsLabel": "Rooms:",
+      "roomsFormat": "{{bedrooms}} Bed / {{bathrooms}} Bath",
+      "addressLabel": "Address:",
+      "cleanerAssignedLabel": "Cleaner assigned: {{cleaner}}"
+    },
+    "upcoming": {
+      "title": "Upcoming Cleanings",
+      "noUpcoming": "You have no upcoming cleanings scheduled.",
+      "cancelBtn": "Cancel Cleaning",
+      "confirmCancelTitle": "Cancel this cleaning?",
+      "confirmCancelDesc": "Are you sure you want to cancel your cleaning on {{date}}? This cannot be undone.",
+      "cancelSuccess": "Your cleaning has been cancelled. Your payment hold has been released.",
+      "changeFreqBtn": "Change Recurrence",
+      "frequencyLabel": "Change recurrence frequency to:",
+      "scheduledDateLabel": "Scheduled Date:",
+      "notesLabel": "Notes:",
+      "goBackBtn": "Go Back",
+      "confirmCancelBtn": "Confirm Cancellation"
+    },
+    "profile": {
+      "title": "My Contact & Address Details",
+      "saveBtn": "Save Profile Details",
+      "saveSuccess": "Profile updated successfully!",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "phone": "Phone Number",
+      "address": "Address",
+      "savingState": "Saving...",
+      "saveError": "Failed to update profile"
+    }
   }
 }

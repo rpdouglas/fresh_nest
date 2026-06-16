@@ -56,10 +56,20 @@ service cloud.firestore {
         && (!('squareFootage' in request.resource.data) || request.resource.data.squareFootage is int)
         && (!('preferredCleaner' in request.resource.data) 
             || (request.resource.data.preferredCleaner is string || request.resource.data.preferredCleaner == null))
+        && (!('referredBy' in request.resource.data) 
+            || (request.resource.data.referredBy is string || request.resource.data.referredBy == null))
         && (!('notes' in request.resource.data) || request.resource.data.notes is string);
 
-      // Admin read & update
-      allow read, update: if isAdmin();
+      // Admin and owner read
+      allow read: if isAdmin() || (request.auth != null && request.auth.token.email == resource.data.email);
+
+      // Admin update, or customer cancellation (only status field can change to 'cancelled')
+      allow update: if isAdmin() || (
+        request.auth != null 
+        && request.auth.token.email == resource.data.email
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && request.resource.data.status == 'cancelled'
+      );
       
       // Permanently deleting bookings is forbidden
       allow delete: if false;
@@ -135,6 +145,11 @@ service cloud.firestore {
       allow read:   if request.auth != null && request.auth.uid == staffId;
       allow create: if false;
       allow update, delete: if false;
+    }
+
+    // 6. Customers Collection
+    match /customers/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
 
     // Default Deny-All for other collections

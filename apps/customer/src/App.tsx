@@ -17,6 +17,14 @@ import ThankYouPage from '@/pages/ThankYouPage'
 import AdminPage from '@/pages/AdminPage'
 import Blog from '@/pages/Blog'
 import BlogPost from '@/pages/BlogPost'
+import LoginPage from '@/pages/customer/LoginPage'
+import LoginConfirmPage from '@/pages/customer/LoginConfirmPage'
+import CustomerPortalLayout from '@/components/layout/CustomerPortalLayout'
+import CustomerBookingsPage from '@/pages/customer/CustomerBookingsPage'
+import CustomerUpcomingPage from '@/pages/customer/CustomerUpcomingPage'
+import CustomerProfilePage from '@/pages/customer/CustomerProfilePage'
+import { CustomerProtectedRoute } from '@/components/layout/CustomerProtectedRoute'
+import { CustomerAuthProvider } from '@/components/layout/CustomerAuthContext'
 
 /**
  * React Router v6 browser router.
@@ -131,10 +139,32 @@ const router = createBrowserRouter([
         path: 'admin',
         element: <AdminPage />,
       },
+
+      // ── Phase 2: Customer Portal ──
+      { path: 'login', element: <LoginPage /> },
+      { path: 'login-confirm', element: <LoginConfirmPage /> },
+      {
+        path: 'account',
+        element: (
+          <CustomerProtectedRoute>
+            <CustomerPortalLayout />
+          </CustomerProtectedRoute>
+        ),
+        children: [
+          { index: true, element: <CustomerBookingsPage /> },
+          { path: 'bookings', element: <CustomerBookingsPage /> },
+          { path: 'upcoming', element: <CustomerUpcomingPage /> },
+          { path: 'profile', element: <CustomerProfilePage /> },
+        ],
+      },
     ],
   },
 ])
 
 export default function App() {
-  return <RouterProvider router={router} />
+  return (
+    <CustomerAuthProvider>
+      <RouterProvider router={router} />
+    </CustomerAuthProvider>
+  )
 }

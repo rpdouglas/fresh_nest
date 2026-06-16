@@ -3,6 +3,8 @@ import { getFirestore } from 'firebase-admin/firestore'
 import { onDocumentCreated, onDocumentUpdated } from 'firebase-functions/v2/firestore'
 import { onSchedule } from 'firebase-functions/v2/scheduler'
 import { onCall, HttpsError } from 'firebase-functions/v2/https'
+import { getAuth } from 'firebase-admin/auth'
+import * as functionsV1 from 'firebase-functions/v1'
 import { defineSecret } from 'firebase-functions/params'
 import { sendOwnerNotification, sendClientConfirmation } from './sendEmail'
 import { sendSmsConfirmation, sendSmsReminder } from './sendSms'
@@ -529,5 +531,107 @@ export const onStaffUpdatedTrigger = onDocumentUpdated(
     }
   }
 )
+
+// P2-E1/E8: Async Auth Trigger to set 'customer' role custom claim for new signups
+export const onUserCreated = functionsV1.auth.user().onCreate(async (user) => {
+  const uid = user.uid
+  console.log(`[onUserCreated] Assigning 'customer' role claim for new user: ${uid}`)
+  try {
+    const auth = getAuth()
+    await auth.setCustomUserClaims(uid, { role: 'customer' })
+    
+    // Also create/merge a customer profile in Firestore
+    const db = getFirestore()
+    await db.collection('customers').doc(uid).set({
+      email: user.email || '',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }, { merge: true })
+    
+    console.log(`[onUserCreated] Successfully set custom claim and customer profile for ${uid}`)
+  } catch (err) {
+    console.error(`[onUserCreated] Failed to set claims/profile for ${uid}:`, err)
+  }
+})
+
+// P2-E1: Booking Cancellation Trigger (releasing hold, cancelling job, notifying owner)
+export const onBookingCancelled = onDocumentUpdated(
+  {
+    document: 'bookings/{docId}',
+    database: '(default)',
+    secrets:  [TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER],
+  },
+  async (event) => {
+    const before = event.data?.before.data()
+    const after = event.data?.after.data()
+    if (!before || !after) return
+
+    const bookingId = event.params['docId']
+    const db = getFirestore()
+
+    if (before.status !== 'cancelled' && after.status === 'cancelled') {
+      console.log(`[onBookingCancelled] Booking '${bookingId}' status set to 'cancelled'. Initiating actions.`)
+
+      // 1. Stripe payment hold release (from stripePaymentIntentId)
+      const stripePaymentIntentId = after.stripePaymentIntentId
+      if (stripePaymentIntentId) {
+        console.log(`[onBookingCancelled] Releasing Stripe hold for PaymentIntent: ${stripePaymentIntentId}`)
+        try {
+          const stripeKey = process.env.STRIPE_SECRET_KEY
+          if (stripeKey) {
+            const Stripe = require('stripe')
+            const stripe = new Stripe(stripeKey)
+            await stripe.paymentIntents.cancel(stripePaymentIntentId)
+            console.log(`[onBookingCancelled] Stripe PaymentIntent ${stripePaymentIntentId} cancelled.`)
+          } else {
+            console.warn('[onBookingCancelled] STRIPE_SECRET_KEY is not defined. Skipping Stripe call.')
+          }
+        } catch (stripeErr) {
+          console.error(`[onBookingCancelled] Failed to cancel Stripe PaymentIntent ${stripePaymentIntentId}:`, stripeErr)
+        }
+      }
+
+      // 2. Cancel associated job
+      try {
+        const jobsSnap = await db.collection('jobs').where('bookingId', '==', bookingId).limit(1).get()
+        if (!jobsSnap.empty) {
+          const jobId = jobsSnap.docs[0].id
+          console.log(`[onBookingCancelled] Found associated job '${jobId}'. Updating status to 'cancelled'.`)
+          await db.collection('jobs').doc(jobId).update({
+            status: 'cancelled',
+            cancelledAt: new Date()
+          })
+        }
+      } catch (jobErr) {
+        console.error(`[onBookingCancelled] Failed to update associated job status:`, jobErr)
+      }
+
+      // 3. Send SMS notification to owner/admin
+      const smsConfig = {
+        accountSid: TWILIO_ACCOUNT_SID.value(),
+        authToken:  TWILIO_AUTH_TOKEN.value(),
+        fromNumber: TWILIO_PHONE_NUMBER.value(),
+      }
+      const adminPhone = process.env.OWNER_PHONE || '+16139353555'
+      const clientName = `${after.firstName} ${after.lastName}`
+      const preferredDate = after.preferredDate
+      const smsBody = `Fresh Nest Co. Alert: Booking ${bookingId} for ${clientName} on ${preferredDate} has been cancelled by the customer.`
+
+      try {
+        const twilio = require('twilio')
+        const client = twilio(smsConfig.accountSid, smsConfig.authToken)
+        await client.messages.create({
+          body: smsBody,
+          from: smsConfig.fromNumber,
+          to: adminPhone,
+        })
+        console.log(`[onBookingCancelled] SMS alert sent to admin: ${adminPhone}`)
+      } catch (smsErr) {
+        console.error(`[onBookingCancelled] Failed to send SMS alert to admin:`, smsErr)
+      }
+    }
+  }
+)
+
 
 

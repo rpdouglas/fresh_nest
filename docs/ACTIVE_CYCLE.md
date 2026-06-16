@@ -11,14 +11,20 @@ This file tracks the active cycle status of the developmental epics for the **Fr
 
 | Epic ID | Epic Name | Priority | Primary Persona / Target | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| **P1-E1** | Secrets & Security Remediation | P0 | Security Baseline / Dev Team | ⬜ Not Started |
-| **P1-E2** | Privacy Policy & PIPEDA Compliance | P0 | Diane (P1), Sophie (P5), All users | ⬜ Not Started |
+| **P1-E1** | Secrets & Security Remediation | P0 | Security Baseline / Dev Team | ✅ Completed |
+| **P1-E2** | Privacy Policy & PIPEDA Compliance | P0 | Diane (P1), Sophie (P5), All users | ✅ Completed |
 | **P1-E3** | Payment Integration (Stripe Hold) | P0 | Travis (P2), Gallagher (P6) | ⬜ Not Started |
 | **P1-E4** | Critical Bug & Index Fixes | P1 | Jasmine (P8), Ahmed (P10) | ⬜ Not Started |
 | **P1-E5** | Route Code Splitting | P1 | Performance / All users | ⬜ Not Started |
 | **P1-E6** | Admin Booking Creation | P1 | Margaret (P3), Gallagher (P6) | ⬜ Not Started |
 | **P1-E7** | Observability & Error Tracking | P1 | Operational Health / Dev Team | ⬜ Not Started |
 | **P1-E8** | CI/CD Pipeline Hardening | P1 | Security Scanning / Dev Team | ⬜ Not Started |
+
+### Phase 2 Epics Tracking
+
+| Epic ID | Epic Name | Priority | Primary Persona / Target | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **P2-E1** | Customer Account Portal | P0 | Diane (P1), Margaret (P3) | ✅ Completed |
 
 ---
 

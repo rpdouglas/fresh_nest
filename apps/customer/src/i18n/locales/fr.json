@@ -426,7 +426,8 @@
     "booking": "Réservez maintenant",
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
-    "skipToContent": "Passer au contenu principal"
+    "skipToContent": "Passer au contenu principal",
+    "login": "Connexion"
   },
   "footer": {
     "tagline": "Services professionnels de nettoyage et d'organisation pour Cornwall, Akwesasne et les communautés environnantes.",
@@ -1075,5 +1076,73 @@
     "copyLink": "Copier le lien de parrainage",
     "linkCopied": "Lien copié dans le presse-papiers !",
     "referredBy": "Parrainé par {{name}}"
+  },
+  "customerPortal": {
+    "login": {
+      "title": "Accès au Portail Client",
+      "subtitle": "Connectez-vous sans mot de passe avec un lien magique sécurisé ou continuez avec votre compte Google.",
+      "emailLabel": "Adresse courriel",
+      "emailPlaceholder": "vous@exemple.com",
+      "sendLinkBtn": "Envoyer le lien de connexion sécurisé",
+      "sendingLink": "Envoi du lien de connexion...",
+      "linkSent": "Vérifiez votre boîte de réception ! Nous avons envoyé un lien de connexion sécurisé à {{email}}. Cliquez sur le lien dans ce courriel pour vous connecter.",
+      "googleBtn": "Continuer avec Google",
+      "invalidEmail": "Veuillez entrer une adresse courriel valide.",
+      "errorTitle": "Impossible de se connecter",
+      "backToHome": "Retour à l'accueil",
+      "loggedInAs": "Connecté en tant que :",
+      "or": "ou"
+    },
+    "confirm": {
+      "title": "Vérification du lien de connexion",
+      "status": "Confirmation de votre identité et connexion sécurisée...",
+      "success": "Authentification réussie ! Redirection en cours...",
+      "error": "Le lien de connexion est invalide, expiré ou a déjà été utilisé. Veuillez demander un nouveau lien.",
+      "tryAgain": "Réessayer"
+    },
+    "nav": {
+      "bookings": "Mes Réservations",
+      "upcoming": "Prochains Nettoyages",
+      "profile": "Mon Profil",
+      "logout": "Se déconnecter"
+    },
+    "bookings": {
+      "title": "Mon Historique de Réservations",
+      "noBookings": "Vous n'avez pas de réservations passées ou actives.",
+      "details": "Détails",
+      "rebookBtn": "Réserver à nouveau ce nettoyage",
+      "rateClean": "Évaluer ce nettoyage",
+      "leaveFeedback": "Partagez votre expérience",
+      "dateLabel": "Date :",
+      "roomsLabel": "Chambres :",
+      "roomsFormat": "{{bedrooms}} lit / {{bathrooms}} bain",
+      "addressLabel": "Adresse :",
+      "cleanerAssignedLabel": "Préposé(e) assigné(e) : {{cleaner}}"
+    },
+    "upcoming": {
+      "title": "Prochains Nettoyages",
+      "noUpcoming": "Vous n'avez aucun nettoyage prévu.",
+      "cancelBtn": "Annuler le nettoyage",
+      "confirmCancelTitle": "Annuler ce nettoyage ?",
+      "confirmCancelDesc": "Êtes-vous sûr de vouloir annuler votre nettoyage du {{date}} ? Cette action est irréversible.",
+      "cancelSuccess": "Votre nettoyage a été annulé. Votre retenue de paiement a été libérée.",
+      "changeFreqBtn": "Modifier la récurrence",
+      "frequencyLabel": "Modifier la récurrence à :",
+      "scheduledDateLabel": "Date prévue :",
+      "notesLabel": "Notes :",
+      "goBackBtn": "Retour",
+      "confirmCancelBtn": "Confirmer l'annulation"
+    },
+    "profile": {
+      "title": "Mes Coordonnées et Adresse",
+      "saveBtn": "Enregistrer les détails du profil",
+      "saveSuccess": "Profil mis à jour avec succès !",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "phone": "Numéro de téléphone",
+      "address": "Adresse",
+      "savingState": "Enregistrement...",
+      "saveError": "Échec de la mise à jour du profil"
+    }
   }
 }

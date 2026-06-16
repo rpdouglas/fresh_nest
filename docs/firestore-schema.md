@@ -37,6 +37,9 @@ Stores residential, commercial, and Airbnb cleaning reservations.
 | `consentMethod` | `string` | ❌ | CASL: `'booking-form-v2'`. Present only when `marketingConsent === true`. |
 | `referralCode` | `string \| null` | ❌ | The deterministic referral code generated for this client (e.g., `FIRSTNAME-1234`). |
 | `referredBy` | `string \| null` | ❌ | The referral code applied during booking creation to receive the discount. |
+| `stripePaymentIntentId` | `string \| null` | ❌ | Stripe PaymentIntent identifier for holding/releasing funds |
+| `stripeChargeId` | `string \| null` | ❌ | Stripe Charge identifier (populated on capture) |
+| `stripeChargeStatus` | `string \| null` | ❌ | Stripe payment status hold/captured/released |
 
 ---
 
@@ -121,6 +124,7 @@ Stores assigned and unassigned cleaning jobs generated from confirmed bookings.
 | `checklistTemplate` | `string` | ✅ | ChecklistTemplate document ID snapshotted at creation |
 | `checklistCompletions` | `array` | ✅ | Completed tasks details: `Array<{ taskId: string, completedAt: Timestamp, photos: JobPhoto[] }>` |
 | `photos` | `array` | ✅ | Job completion proof photos metadata: `Array<JobPhoto>` |
+| `cancelledAt` | `Timestamp \| null` | ❌ | Timestamp of job cancellation |
 | `createdAt` | `Timestamp` | ✅ | Job document creation timestamp |
 
 ---
@@ -185,7 +189,24 @@ Stores in-app messages and shift notifications dispatched to staff members.
 
 ---
 
-## 11. Database Targeting Asymmetry (Cloud Functions)
+## 11. Collection: `customers`
+Stores client profile information (firstName, lastName, email, phone, address).
+
+**Path:** `/customers/{uid}`
+
+| Field Name | Type | Required | Description / Allowed Values |
+| :--- | :--- | :--- | :--- |
+| `firstName` | `string` | ✅ | Customer first name |
+| `lastName` | `string` | ✅ | Customer last name |
+| `email` | `string` | ✅ | Customer email address |
+| `phone` | `string` | ✅ | Customer phone number |
+| `address` | `string` | ✅ | Customer primary street address |
+| `createdAt` | `Timestamp` | ✅ | Account creation timestamp |
+| `updatedAt` | `Timestamp` | ✅ | Profile last update timestamp |
+
+---
+
+## 12. Database Targeting Asymmetry (Cloud Functions)
 
 ### Scheduler Functions (`onDailyReminderCheck`)
 The daily scheduler function always targets the production `(default)` database explicitly:

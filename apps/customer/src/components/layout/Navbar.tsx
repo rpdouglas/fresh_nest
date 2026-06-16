@@ -7,6 +7,7 @@ import { logLanguageToggled, logPhoneClicked } from '@/lib/firebase/analytics'
 import { useScrolled } from '@/hooks/useScrolled'
 import logoNavbar from '@/assets/logo-navbar-80px.png'
 import logoNavbar2x from '@/assets/logo-navbar-160px@2x.png'
+import { useCustomerAuthContext } from './CustomerAuthContext'
 
 const PHONE_NUMBER = '(613) 935-3555'
 const PHONE_HREF = 'tel:+16139353555'
@@ -26,6 +27,8 @@ export default function Navbar() {
 
   const closeMenu = useCallback(() => setMenuOpen(false), [])
 
+  const { user } = useCustomerAuthContext()
+
   const navLinks = [
     { to: '/', label: t('nav.home'), end: true },
     { to: '/services', label: t('nav.services'), end: false },
@@ -33,6 +36,9 @@ export default function Navbar() {
     { to: '/pricing', label: t('nav.pricing'), end: true },
     { to: '/faq', label: t('nav.faq'), end: true },
     { to: '/blog', label: t('nav.blog'), end: false },
+    user
+      ? { to: '/account/bookings', label: t('customerPortal.nav.bookings'), end: false }
+      : { to: '/login', label: t('nav.login'), end: true },
   ]
 
   return (
@@ -61,7 +67,7 @@ export default function Navbar() {
           <Link
             to="/"
             aria-label={t('a11y.homeLink')}
-            className="flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-slate-brand rounded"
+            className="flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-slate-brand rounded min-h-[48px] inline-flex items-center"
           >
             <img
               src={logoNavbar}
