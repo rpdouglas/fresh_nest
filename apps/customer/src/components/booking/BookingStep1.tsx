@@ -18,7 +18,7 @@ const PROPERTY_TYPES: { value: PropertyTypeValue; labelKey: string }[] = [
   { value: 'commercial', labelKey: 'booking.fields.propertyType.options.commercial'},
 ]
 
-export default function BookingStep1() {
+export default function BookingStep1({ stepHeaderRef }: { stepHeaderRef?: React.Ref<HTMLHeadingElement> }) {
   const { t } = useTranslation()
   const { control, formState: { errors }, watch } = useFormContext<BookingFormData>()
   const serviceType = watch('serviceType')
@@ -26,7 +26,7 @@ export default function BookingStep1() {
   return (
     <div>
       <div className="bg-white border border-sand rounded shadow-sm p-6 space-y-8">
-        <h2 className="font-display text-3xl text-charcoal">{t('booking.step1Title')}</h2>
+        <h2 ref={stepHeaderRef} tabIndex={-1} className="font-display text-3xl text-charcoal focus:outline-none">{t('booking.step1Title')}</h2>
 
         {/* Service type */}
         <fieldset>

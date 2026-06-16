@@ -28,7 +28,7 @@ const ADD_ON_OPTIONS: { value: AddOnValue; labelKey: string }[] = [
   { value: 'basement', labelKey: 'booking.fields.addOns.options.basement' },
 ]
 
-export default function BookingStep2() {
+export default function BookingStep2({ stepHeaderRef }: { stepHeaderRef?: React.Ref<HTMLHeadingElement> }) {
   const tomorrow = new Date()
   tomorrow.setDate(tomorrow.getDate() + 1)
   const MIN_DATE = tomorrow.toISOString().slice(0, 10)
@@ -52,7 +52,7 @@ export default function BookingStep2() {
   return (
     <div>
       <div className="bg-white border border-sand rounded shadow-sm p-6 space-y-8">
-        <h2 className="font-display text-3xl text-charcoal">{t('booking.step2Title')}</h2>
+        <h2 ref={stepHeaderRef} tabIndex={-1} className="font-display text-3xl text-charcoal focus:outline-none">{t('booking.step2Title')}</h2>
 
         {/* Frequency */}
         <fieldset>

@@ -14,9 +14,13 @@ import CookieBanner from './CookieBanner'
  * ScrollRestoration ensures the page scrolls to the top on route transitions.
  */
 export default function Layout() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const businessSchema = getLocalBusinessSchema(t)
   const location = useLocation()
+
+  useEffect(() => {
+    document.documentElement.lang = i18n.language
+  }, [i18n.language])
 
   useEffect(() => {
     // Only logs if consent is granted and analytics is initialized

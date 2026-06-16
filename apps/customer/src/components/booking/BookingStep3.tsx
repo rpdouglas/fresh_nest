@@ -3,14 +3,14 @@ import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils/utils'
 import type { BookingFormData } from '@/lib/schemas/bookingSchema'
 
-export default function BookingStep3() {
+export default function BookingStep3({ stepHeaderRef }: { stepHeaderRef?: React.Ref<HTMLHeadingElement> }) {
   const { t } = useTranslation()
   const { register, formState: { errors } } = useFormContext<BookingFormData>()
 
   return (
     <div>
       <div className="bg-white border border-sand rounded shadow-sm p-6 space-y-6">
-        <h2 className="font-display text-3xl text-charcoal">{t('booking.step3Title')}</h2>
+        <h2 ref={stepHeaderRef} tabIndex={-1} className="font-display text-3xl text-charcoal focus:outline-none">{t('booking.step3Title')}</h2>
 
         {/* Name row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -176,7 +176,7 @@ export default function BookingStep3() {
             rows={4}
             {...register('notes')}
             placeholder={t('booking.fields.notes.placeholder')}
-            className="w-full border border-sand rounded px-4 py-3 font-body text-base text-charcoal focus:outline-none focus:ring-2 focus:ring-slate-brand resize-y"
+            className="w-full border border-sand rounded px-4 py-3 min-h-[48px] font-body text-base text-charcoal focus:outline-none focus:ring-2 focus:ring-slate-brand resize-y"
           />
         </div>
       </div>

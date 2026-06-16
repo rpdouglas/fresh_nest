@@ -9,11 +9,12 @@ import type { BookingFormData } from '@/lib/schemas/bookingSchema'
 
 interface Props {
   submitError?: string | null
+  stepHeaderRef?: React.Ref<HTMLHeadingElement>
 }
 
-export default function BookingStep4({ submitError }: Props) {
+export default function BookingStep4({ submitError, stepHeaderRef }: Props) {
   const { t } = useTranslation()
-  const { register, getValues, setValue, formState: { isSubmitting } } = useFormContext<BookingFormData>()
+  const { register, getValues, setValue } = useFormContext<BookingFormData>()
   const values = getValues()
 
   const [searchParams] = useSearchParams()
@@ -68,7 +69,7 @@ export default function BookingStep4({ submitError }: Props) {
   return (
     <div>
       <div className="bg-white border border-sand rounded shadow-sm p-6 space-y-6">
-        <h2 className="font-display text-3xl text-charcoal">{t('booking.step4Title')}</h2>
+        <h2 ref={stepHeaderRef} tabIndex={-1} className="font-display text-3xl text-charcoal focus:outline-none">{t('booking.step4Title')}</h2>
 
         {/* Review table */}
         <div className="divide-y divide-sand">
@@ -171,12 +172,12 @@ export default function BookingStep4({ submitError }: Props) {
 
         {/* CASL marketing consent — unchecked by default (COMPLIANCE.md) */}
         <div className="pt-2 border-t border-sand">
-          <label className="flex items-start gap-3 cursor-pointer">
+          <label className="min-h-[48px] flex items-center gap-3 cursor-pointer">
             <input
               type="checkbox"
               id="marketingConsent"
               {...register('marketingConsent')}
-              className="mt-0.5 w-5 h-5 accent-slate-brand shrink-0"
+              className="w-5 h-5 accent-slate-brand shrink-0"
             />
             <span className="font-body text-base text-charcoal">
               {t('booking.fields.marketingConsent.label')}
@@ -186,26 +187,16 @@ export default function BookingStep4({ submitError }: Props) {
       </div>
 
       {submitError && (
-        <div role="alert" className="mt-4 bg-red-50 border border-red-300 rounded p-4 font-body text-base text-red-700">
-          {submitError}{' '}
-          <a href="tel:+16139353555" className="font-medium underline text-red-700">
+        <div role="alert" className="mt-4 bg-red-50 border border-red-300 rounded p-4 font-body text-base text-red-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <span>{submitError}</span>
+          <a
+            href="tel:+16139353555"
+            className="inline-flex items-center justify-center font-medium border border-red-300 rounded px-4 py-2 min-h-[48px] text-red-700 hover:bg-red-100/50 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 shrink-0"
+          >
             {t('phone')}
           </a>
         </div>
       )}
-
-      <div className="mt-6 flex justify-end">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="inline-flex items-center justify-center font-body font-medium text-base
-                     bg-slate-brand text-white hover:bg-slate-dark rounded px-8 min-h-[48px]
-                     transition-colors focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2
-                     disabled:opacity-60 disabled:cursor-not-allowed"
-        >
-          {isSubmitting ? t('booking.submitting') : t('booking.submit')}
-        </button>
-      </div>
     </div>
   )
 }

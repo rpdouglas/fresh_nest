@@ -1,6 +1,9 @@
 {
   "fsm": {
     "portal": "بوابة الموظفين",
+    "skipToContent": "الانتقال إلى المحتوى الرئيسي",
+    "toggleLanguage": "تغيير اللغة",
+    "toggleMobileMenu": "تبديل القائمة المتنقلة",
     "dashboard": "لوحة التحكم",
     "logout": "تسجيل الخروج",
     "epicInProgress": "شركة فريش نيست — العمل جارٍ",

@@ -14,7 +14,7 @@ All tokens are defined in `tailwind.config.js` under `theme.extend.colors`. Use 
 
 | Token | Hex | Tailwind Class (bg) | Usage |
 |---|---|---|---|
-| `slate-brand` | `#5b7e8f` | `bg-slate-brand` | Primary CTAs, active states, icons |
+| `slate-brand` | `#547788` | `bg-slate-brand` | Primary CTAs, active states, icons |
 | `slate-dark` | `#3f5f6e` | `bg-slate-dark` | Hover states, nav active, dark backgrounds |
 | `slate-light` | `#7fa0b0` | `bg-slate-light` | Muted accents, secondary icons |
 | `slate-pale` | `#d6e5ec` | `bg-slate-pale` | Card backgrounds, circles, highlights |
@@ -23,7 +23,7 @@ All tokens are defined in `tailwind.config.js` under `theme.extend.colors`. Use 
 | `sand` | `#e8ddd0` | `bg-sand` | Borders, dividers, card borders |
 | `sand-dark` | `#c4b09a` | `bg-sand-dark` | Decorative accent lines |
 | `charcoal` | `#2c3a40` | `bg-charcoal` | Headings, footer background |
-| `text-muted` | `#7a8f96` | `text-text-muted` | Body copy, labels |
+| `text-muted` | `#5f727c` | `text-text-muted` | Body copy, labels |
 
 ### Color Usage Examples
 
@@ -51,10 +51,11 @@ All tokens are defined in `tailwind.config.js` under `theme.extend.colors`. Use 
 |---|---|---|---|
 | `charcoal` `#2c3a40` | `warm-white` `#fdfaf6` | ~11.5:1 | ✅ Pass |
 | `charcoal` `#2c3a40` | `cream` `#f7f3ee` | ~11.1:1 | ✅ Pass |
-| `white` | `slate-brand` `#5b7e8f` | ~4.6:1 | ✅ Pass |
+| `white` | `slate-brand` `#547788` | ~4.8:1 | ✅ Pass |
 | `white` | `slate-dark` `#3f5f6e` | ~6.2:1 | ✅ Pass |
-| `text-muted` `#7a8f96` | `warm-white` `#fdfaf6` | ~4.5:1 | ✅ Pass |
-| `slate-brand` `#5b7e8f` | `warm-white` `#fdfaf6` | ~4.6:1 | ✅ Pass |
+| `text-muted` `#5f727c` | `warm-white` `#fdfaf6` | ~4.9:1 | ✅ Pass |
+| `text-muted` `#5f727c` | `cream` `#f7f3ee` | ~4.6:1 | ✅ Pass |
+| `slate-brand` `#547788` | `warm-white` `#fdfaf6` | ~4.7:1 | ✅ Pass |
 
 > [!WARNING]
 > Never place `slate-light` text on `warm-white` backgrounds — contrast is insufficient for WCAG AA.

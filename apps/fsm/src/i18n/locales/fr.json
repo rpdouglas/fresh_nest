@@ -1,6 +1,9 @@
 {
   "fsm": {
     "portal": "Portail du personnel",
+    "skipToContent": "Passer au contenu principal",
+    "toggleLanguage": "Changer de langue",
+    "toggleMobileMenu": "Basculer le menu mobile",
     "dashboard": "Tableau de bord",
     "shifts": {
       "title": "Quarts disponibles",

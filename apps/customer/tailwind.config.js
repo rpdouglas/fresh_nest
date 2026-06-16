@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        'slate-brand':  '#5b7e8f',
+        'slate-brand':  '#547788',
         'slate-dark':   '#3f5f6e',
         'slate-light':  '#7fa0b0',
         'slate-pale':   '#d6e5ec',
@@ -13,7 +13,7 @@ export default {
         sand:           '#e8ddd0',
         'sand-dark':    '#c4b09a',
         charcoal:       '#2c3a40',
-        'text-muted':   '#7a8f96',
+        'text-muted':   '#5f727c',
       },
       fontFamily: {
         display: ['"Cormorant Garamond"', 'serif'],

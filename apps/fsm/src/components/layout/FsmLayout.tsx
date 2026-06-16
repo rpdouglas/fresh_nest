@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useStaffAuth } from '../../hooks/useStaffAuth'
@@ -9,6 +9,10 @@ import { useNotifications } from '../../hooks/useNotifications'
 
 export const FsmLayout: React.FC = () => {
   const { t, i18n } = useTranslation()
+
+  useEffect(() => {
+    document.documentElement.lang = i18n.language
+  }, [i18n.language])
   const { staffProfile, logout } = useStaffAuth()
   const navigate = useNavigate()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -41,12 +45,19 @@ export const FsmLayout: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-warm-white flex flex-col font-body">
+      {/* Skip-to-content link for keyboard / screen-reader users (WCAG 2.1 AA) */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-slate-brand focus:text-white focus:px-4 focus:py-3 focus:min-h-[48px] focus:inline-flex focus:items-center focus:rounded font-body text-base"
+      >
+        {t('fsm.skipToContent', { defaultValue: 'Skip to main content' })}
+      </a>
       
       {/* Navbar Header */}
       <header className="bg-white border-b border-sand shadow-sm sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" className="min-h-[48px] flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-slate-brand rounded">
             <span className="font-display text-2xl font-bold text-charcoal">
               Fresh Nest
             </span>
@@ -84,7 +95,7 @@ export const FsmLayout: React.FC = () => {
               className={cn(
                 'min-h-[48px] px-3 font-medium text-base text-charcoal hover:text-slate-brand transition-colors focus:outline-none focus:ring-2 focus:ring-slate-brand rounded'
               )}
-              aria-label="Toggle language"
+              aria-label={t('fsm.toggleLanguage')}
             >
               {i18n.language === 'ar' ? 'العربية' : i18n.language.toUpperCase()}
             </button>
@@ -120,7 +131,7 @@ export const FsmLayout: React.FC = () => {
                           onClick={() => {
                             void markAllAsRead()
                           }}
-                          className="text-xs text-slate-brand hover:text-slate-dark font-medium min-h-[32px] px-2 flex items-center justify-center focus:outline-none"
+                          className="text-sm text-slate-dark hover:text-slate-brand font-medium min-h-[48px] px-3 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-slate-brand rounded"
                         >
                           {t('fsm.notifications.markAllRead', { defaultValue: 'Mark all as read' })}
                         </button>
@@ -145,19 +156,19 @@ export const FsmLayout: React.FC = () => {
                               }
                             }}
                             className={cn(
-                              "px-4 py-3 hover:bg-cream transition-colors cursor-pointer text-sm",
+                              "px-4 py-3 hover:bg-cream transition-colors cursor-pointer text-sm min-h-[48px] flex flex-col justify-center",
                               !n.read && "bg-slate-pale/30 border-l-4 border-slate-brand font-medium"
                             )}
                           >
                             <div className="flex justify-between items-start gap-2 mb-1">
-                              <span className="font-semibold text-charcoal text-xs">
+                              <span className="font-semibold text-charcoal text-sm">
                                 {t(`fsm.notifications.types.${n.type}`, { defaultValue: n.title })}
                               </span>
-                              <span className="text-text-muted text-[10px] whitespace-nowrap">
+                              <span className="text-text-muted text-xs whitespace-nowrap">
                                 {new Date(n.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                               </span>
                             </div>
-                            <p className="text-charcoal leading-tight text-xs">{n.body}</p>
+                            <p className="text-charcoal leading-tight text-base mt-1">{n.body}</p>
                           </div>
                         ))
                       )}
@@ -203,7 +214,8 @@ export const FsmLayout: React.FC = () => {
                 'focus:outline-none focus:ring-2 focus:ring-slate-brand'
               )}
               aria-expanded={mobileMenuOpen}
-              aria-label="Toggle mobile menu"
+              aria-controls="mobile-menu"
+              aria-label={t('fsm.toggleMobileMenu')}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileMenuOpen ? (
@@ -219,7 +231,10 @@ export const FsmLayout: React.FC = () => {
 
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-sand bg-white py-2 px-4 flex flex-col gap-2 shadow-inner">
+          <div
+            id="mobile-menu"
+            className="md:hidden border-t border-sand bg-white py-2 px-4 flex flex-col gap-2 shadow-inner"
+          >
             {navLinks.map((link) => (
               <NavLink
                 key={link.to}
@@ -276,9 +291,9 @@ export const FsmLayout: React.FC = () => {
       </header>
 
       {/* Page Content Outlet */}
-      <div className="flex-grow">
+      <main id="main-content" tabIndex={-1} className="flex-grow">
         <Outlet />
-      </div>
+      </main>
 
       {/* Footer */}
       <footer className="bg-charcoal text-white py-6 mt-auto border-t border-sand-dark">
@@ -286,7 +301,7 @@ export const FsmLayout: React.FC = () => {
           <p>© {new Date().getFullYear()} Fresh Nest Co. {t('fsm.portal')}</p>
           <a 
             href="tel:+16135551234" 
-            className="min-h-[48px] px-4 flex items-center text-base text-slate-light hover:text-white transition-colors"
+            className="min-h-[48px] px-4 flex items-center text-base text-slate-pale hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-slate-brand rounded"
           >
             (613) 555-1234
           </a>

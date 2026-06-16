@@ -7,11 +7,11 @@
 ## How to Book a Cleaning
 
 1. **Visit our booking page** at [lilypad-freshnest.web.app/booking](https://lilypad-freshnest.web.app/booking).
-2. **Service Details:** Select your service type (Standard, Deep, Move-Out, Airbnb, etc.) and enter your property details (bedrooms, bathrooms, pets). If you select Airbnb Turnover, a note confirms the 11am–3pm service window.
-3. **Schedule & Add-Ons:** Choose your preferred frequency (one-time, weekly, biweekly, monthly), your preferred date, and any optional add-ons (oven, fridge, windows, etc.).
-4. **Contact Info:** Enter your name, email, phone number, and service address. Include your Cornwall Island address or bridge crossing notes if applicable.
-5. **Review & Promos (Step 4):** Verify all details. If you were referred by a friend, enter their referral code (or check if it was pre-populated from a referral link) in the **Promo / Referral Code** box and click **Verify**. Once verified, a $20 discount confirmation will display. You can also choose to opt-in to marketing communications.
-6. **Submit:** Click the submit button to finalize your appointment.
+2. **Step 1 — Service Details:** Select your service type (Standard, Deep, Move-Out, Airbnb, etc.) and enter your property details (bedrooms, bathrooms, pets). If you select Airbnb Turnover, a note confirms the 11am–3pm service window. Click **Next** to proceed.
+3. **Step 2 — Schedule & Add-Ons:** Choose your preferred frequency (one-time, weekly, biweekly, monthly), your preferred date, and any optional add-ons (oven, fridge, windows, etc.). Click **Next** to proceed.
+4. **Step 3 — Contact Info:** Enter your name, email, phone number, and service address. Include your Cornwall Island address or bridge crossing notes if applicable. Click **Next** to proceed.
+5. **Step 4 — Review & Promos:** Verify all details. If you were referred by a friend, enter their referral code (or check if it was pre-populated from a referral link) in the **Promo / Referral Code** box and click **Verify**. Once verified, a $20 discount confirmation will display. You can also choose to opt-in to marketing communications.
+6. **Submit:** Click the **Confirm Booking** button to finalize your appointment.
 
 **Tip:** If you used the Instant Quote Calculator, your property size and service type are carried forward automatically when you click "Book Now".
 

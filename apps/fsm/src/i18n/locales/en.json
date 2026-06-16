@@ -1,6 +1,9 @@
 {
   "fsm": {
     "portal": "Staff Portal",
+    "skipToContent": "Skip to main content",
+    "toggleLanguage": "Toggle language",
+    "toggleMobileMenu": "Toggle mobile menu",
     "dashboard": "Dashboard",
     "shifts": {
       "title": "Available Shifts",
