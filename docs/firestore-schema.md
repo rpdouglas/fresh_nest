@@ -41,6 +41,7 @@ Stores residential, commercial, and Airbnb cleaning reservations.
 | `stripePaymentIntentId` | `string \| null` | ❌ | Stripe PaymentIntent identifier for holding/releasing funds |
 | `stripeChargeId` | `string \| null` | ❌ | Stripe Charge identifier (populated on capture) |
 | `stripeChargeStatus` | `string \| null` | ❌ | Stripe payment status hold/captured/released |
+| `jobId` | `string \| null` | ❌ | Associated job document ID backlink once booking is confirmed |
 
 ---
 

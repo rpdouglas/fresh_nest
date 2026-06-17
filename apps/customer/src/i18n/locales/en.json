@@ -804,10 +804,13 @@
         "rooms": "Rooms",
         "roomsValue": "{{bedrooms}} Bed / {{bathrooms}} Bath",
         "size": "Size",
-        "sqft": "{{size}} sq. ft."
+        "sqft": "{{size}} sq. ft.",
+        "updateStatus": "Update Status",
+        "assignCleaner": "Assign Cleaner"
       },
       "tabs": {
         "bookings": "Bookings Management",
+        "dispatch": "Dispatch Board",
         "analytics": "Analytics & Metrics",
         "staff": "Staff Registry",
         "templates": "Checklist Templates",
@@ -1023,6 +1026,7 @@
       "earningsWarning": "{{name}} exceeds monthly earnings limit by ${{overage}}",
       "travelWarning": "{{name}} needs {{buffer}}m travel buffer with shift {{start}}-{{end}}",
       "blockedWindowWarning": "{{name}} has a blocked window that overlaps with this shift",
+      "overlapWarning": "{{name}} has an overlapping shift ({{start}} - {{end}})",
       "reasonLabel": "Override Reason",
       "reasonPlaceholder": "e.g. Urgent replacement requested by client",
       "reasonRequired": "Override reason is required.",
@@ -1054,6 +1058,17 @@
       },
       "noLogs": "No audit log entries found.",
       "loading": "Loading audit logs..."
+    },
+    "dispatch": {
+      "title": "Visual Dispatch Board",
+      "unassigned": "Unassigned Jobs",
+      "empty": "No unassigned jobs today.",
+      "earned": "Earned",
+      "close": "Close",
+      "open": "Open",
+      "prevDay": "Previous Day",
+      "nextDay": "Next Day",
+      "noCleaners": "No active cleaners found."
     }
   },
   "blog": {

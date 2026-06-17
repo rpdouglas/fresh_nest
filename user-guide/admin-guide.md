@@ -8,13 +8,14 @@
 
 Navigate to [lilypad-freshnest.web.app/admin](https://lilypad-freshnest.web.app/admin) and sign in with your authorized Google account. 
 
-The dashboard is split into six tabs:
+The dashboard is split into seven tabs:
 1. **Bookings Management:** Track and manage operational client bookings.
-2. **Analytics & Metrics:** Monitor business, marketing, and operational metrics.
-3. **Staff Registry:** Manage staff profiles, roles, and registration.
-4. **Pay Rate Management:** Configure and monitor hourly pay rates per role.
-5. **Audit Logs:** View administrative security override tracking (e.g., travel buffers, earnings caps, and blocked windows overrides).
-6. **Reviews Moderation:** Approve or reject submitted client reviews before they appear publicly on the website.
+2. **Visual Dispatch Board:** Visual drag-and-drop daily calendar schedule and dispatch grid for managing cleaner assignments.
+3. **Analytics & Metrics:** Monitor business, marketing, and operational metrics.
+4. **Staff Registry:** Manage staff profiles, roles, and registration.
+5. **Pay Rate Management:** Configure and monitor hourly pay rates per role.
+6. **Audit Logs:** View administrative security override tracking (e.g., travel buffers, earnings caps, and blocked windows overrides).
+7. **Reviews Moderation:** Approve or reject submitted client reviews before they appear publicly on the website.
 
 ---
 
@@ -36,6 +37,21 @@ The dashboard is split into six tabs:
     *   **Constraint Intercepts:** The system automatically checks cleaner constraints (monthly earnings cap, travel buffers, and **Blocked Windows**). If a violation occurs, a modal prompts you for a mandatory override reason. Overrides are recorded in the audit logs.
     *   **Privacy Safeguard:** Blocked window labels (e.g. "Recovery meeting") remain strictly confidential and are never exposed in the override warning.
 5. **Referral Metadata:** If a referral code was applied, it is highlighted under the booking metadata in this panel (shows referral code used).
+
+---
+
+## Visual Dispatch Board
+
+The **Visual Dispatch Board** tab provides a daily grid view where you can manage shifts and assignments using drag-and-drop:
+*   **Daily Schedule Grid:** Each column represents an active staff member (cleaner or lead) with their role. The rows show the hours from 8:00 AM to 6:00 PM.
+*   **Unassigned Sidebar:** A docked, collapsible panel on the left displays unassigned jobs for the selected day.
+*   **Drag-and-Drop Assignment:** Drag any job card from the unassigned sidebar and drop it onto a staff column. The card will automatically span the scheduled time slot in that cleaner's column.
+*   **Availability & Buffer Audits:** Dropping a job automatically triggers real-time scheduling intelligence audits:
+    *   **Earnings Cap Warning:** Flags if the cleaner's projected monthly earnings will exceed their ODSP/financial limit.
+    *   **Transit Buffer Check:** Flags if the gap between shifts violates the travel buffer (e.g., 30m for drivers, 60m for transit users), unless both addresses share the same postal prefix (FSA).
+    *   **Blocked Windows Conflict:** Flags if a cleaner has blocked out that day/time block.
+*   **Override and Audit Logging:** Any detected conflict prompts the **Administrator Override Required** modal. Confirming the assignment requires an override reason, which is automatically saved to the `auditLog` collection. Cancelling the modal returns the card to its original position.
+*   **Safe to Earn Meter:** Each column header features a color-coded bar (green/amber/red) indicating the cleaner's monthly progress towards their monthly earnings cap.
 
 ---
 

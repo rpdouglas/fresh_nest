@@ -804,10 +804,13 @@
         "rooms": "Pièces",
         "roomsValue": "{{bedrooms}} ch. / {{bathrooms}} SdB",
         "size": "Superficie",
-        "sqft": "{{size}} pi²"
+        "sqft": "{{size}} pi²",
+        "updateStatus": "Modifier le statut",
+        "assignCleaner": "Assigner un nettoyeur"
       },
       "tabs": {
         "bookings": "Gestion des réservations",
+        "dispatch": "Tableau de répartition",
         "analytics": "Analyses et Métriques",
         "staff": "Registre du personnel",
         "templates": "Modèles de liste de contrôle",
@@ -1023,6 +1026,7 @@
       "earningsWarning": "{{name}} dépasse la limite mensuelle de {{overage}} $",
       "travelWarning": "{{name}} a besoin de {{buffer}} min de trajet avec le quart {{start}}-{{end}}",
       "blockedWindowWarning": "{{name}} a un créneau bloqué qui chevauche ce quart",
+      "overlapWarning": "{{name}} a un quart qui chevauche ({{start}} - {{end}})",
       "reasonLabel": "Raison de la dérogation",
       "reasonPlaceholder": "ex. Remplacement urgent à la demande du client",
       "reasonRequired": "La raison de la dérogation est requise.",
@@ -1054,6 +1058,17 @@
       },
       "noLogs": "Aucune entrée de journal d'audit trouvée.",
       "loading": "Chargement des journaux d'audit..."
+    },
+    "dispatch": {
+      "title": "Tableau de répartition visuel",
+      "unassigned": "Travaux non assignés",
+      "empty": "Aucune tâche non assignée aujourd'hui.",
+      "earned": "Gagné",
+      "close": "Fermer",
+      "open": "Ouvrir",
+      "prevDay": "Jour précédent",
+      "nextDay": "Jour suivant",
+      "noCleaners": "Aucun nettoyeur actif trouvé."
     }
   },
   "blog": {

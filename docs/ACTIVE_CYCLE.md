@@ -32,6 +32,8 @@ This file tracks the active cycle status of the developmental epics for the **Fr
 | **P2-E6** | Admin Pagination & Server-Side Analytics | P2 | Lauren (Admin), Sarah (P12) | ✅ Completed |
 | **P2-E7** | PWA Configuration | P2 | Travis (P2), FSM Cleaners | ✅ Completed |
 | **P2-E8** | Firebase Custom Claims RBAC | P2 | Admin / Staff Operations, Sarah (P12) | ✅ Completed |
+| **P2-E9** | FSM Dispatch Board & Scheduling Intelligence | P2 | Admin Operations (Lauren), Sarah (P12), Carla (P7) | ✅ Completed |
+| **P2-E10** | Staff Scheduling Calendar & Shift Swaps | P2 | Mike (P9), Ahmed (P10) | ⬜ Not Started |
 
 ---
 
