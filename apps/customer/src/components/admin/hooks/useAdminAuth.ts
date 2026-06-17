@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, type User } from 'firebase/auth'
-import { doc, getDoc } from 'firebase/firestore'
-import { auth, db } from '@/lib/firebase/firebase'
+import { auth } from '@/lib/firebase/firebase'
 
 export function useAdminAuth() {
   const { t } = useTranslation()
@@ -16,27 +15,21 @@ export function useAdminAuth() {
       const handleAuthChange = async () => {
         setUser(currentUser)
         if (currentUser) {
-          const userEmail = currentUser.email?.trim().toLowerCase()
-          if (userEmail) {
-            try {
-              const adminDocRef = doc(db, 'admins', userEmail)
-              const adminSnap = await getDoc(adminDocRef)
-              const authorized = adminSnap.exists()
-              setIsAuthorized(authorized)
+          try {
+            // Force refresh token to retrieve latest custom claims
+            const idTokenResult = await currentUser.getIdTokenResult(true)
+            const authorized = idTokenResult.claims.role === 'admin'
+            setIsAuthorized(authorized)
 
-              if (!authorized) {
-                setAuthError(t('admin.login.errorMessage', { email: currentUser.email }))
-              } else {
-                setAuthError(null)
-              }
-            } catch (err) {
-              console.error('Error verifying admin authorization:', err)
-              setIsAuthorized(false)
+            if (!authorized) {
               setAuthError(t('admin.login.errorMessage', { email: currentUser.email }))
+            } else {
+              setAuthError(null)
             }
-          } else {
+          } catch (err) {
+            console.error('Error verifying admin custom claims:', err)
             setIsAuthorized(false)
-            setAuthError(t('admin.login.authFailed'))
+            setAuthError(t('admin.login.errorMessage', { email: currentUser.email }))
           }
         } else {
           setIsAuthorized(false)

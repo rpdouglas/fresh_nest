@@ -3,7 +3,7 @@ import { Navigate, Outlet } from 'react-router-dom'
 import { useStaffAuth } from '../../hooks/useStaffAuth'
 
 export const ProtectedRoute: React.FC = () => {
-  const { staffProfile, loading } = useStaffAuth()
+  const { staffProfile, role, loading } = useStaffAuth()
 
   if (loading) {
     return (
@@ -13,7 +13,7 @@ export const ProtectedRoute: React.FC = () => {
     )
   }
 
-  if (!staffProfile) {
+  if (!staffProfile || (role !== 'staff' && role !== 'supervisor' && role !== 'admin')) {
     return <Navigate to="/login" replace />
   }
 

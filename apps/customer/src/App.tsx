@@ -29,6 +29,7 @@ import CustomerUpcomingPage from '@/pages/customer/CustomerUpcomingPage'
 import CustomerProfilePage from '@/pages/customer/CustomerProfilePage'
 import { CustomerProtectedRoute } from '@/components/layout/CustomerProtectedRoute'
 import { CustomerAuthProvider } from '@/components/layout/CustomerAuthContext'
+import OfflinePage from '@/pages/OfflinePage'
 
 /**
  * React Router v6 browser router.
@@ -116,6 +117,10 @@ const router = createBrowserRouter([
       {
         path: 'careers',
         element: <CareersPage />,
+      },
+      {
+        path: 'offline',
+        element: <OfflinePage />,
       },
 
       // ── Phase 4: Blog ──

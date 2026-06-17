@@ -26,6 +26,8 @@ interface AnalyticsDashboardProps {
   channelsPerformance: Array<{ source: string; name: string; volume: number; revenue: number; avgValue: number; share: number }>
   formatCurrency: (val: number) => string
   referredBookingsCount: number
+  isLoading?: boolean
+  error?: string | null
 }
 
 export function AnalyticsDashboard({
@@ -39,8 +41,47 @@ export function AnalyticsDashboard({
   channelsPerformance,
   formatCurrency,
   referredBookingsCount,
+  isLoading,
+  error,
 }: AnalyticsDashboardProps) {
   const { t } = useTranslation()
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-8">
+        {/* Time Range Selector Skeleton */}
+        <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 animate-pulse">
+          <div className="h-8 w-48 bg-slate-pale rounded" />
+          <div className="h-12 w-64 bg-slate-pale rounded" />
+        </div>
+
+        {/* KPI Cards Skeleton */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[0, 1, 2, 3].map((_, i) => (
+            <div key={i} className="bg-white border border-sand rounded p-6 shadow-sm h-24 animate-pulse flex flex-col gap-2 justify-center">
+              <div className="h-4 w-28 bg-slate-pale rounded" />
+              <div className="h-8 w-16 bg-slate-pale rounded" />
+            </div>
+          ))}
+        </div>
+
+        {/* Charts Grid Skeleton */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-white border border-sand rounded p-6 shadow-sm h-[400px] animate-pulse" />
+          <div className="bg-white border border-sand rounded p-6 shadow-sm h-[400px] animate-pulse" />
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 text-red-800 rounded p-6 font-body text-base">
+        <h3 className="font-sub font-bold text-lg mb-2">{t('admin.login.errorTitle', 'Error')}</h3>
+        <p>{error}</p>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-8">

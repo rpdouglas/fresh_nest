@@ -21,6 +21,15 @@ interface BookingsTableProps {
   setSortOrder: (val: 'asc' | 'desc') => void
   searchQuery: string
   setSearchQuery: (val: string) => void
+  startDate: string
+  setStartDate: (val: string) => void
+  endDate: string
+  setEndDate: (val: string) => void
+  fetchNextPage: () => void
+  hasNextPage: boolean
+  isFetchingNextPage: boolean
+  isLoading: boolean
+  error: string | null
   expandedRowId: string | null
   setExpandedRowId: (val: string | null) => void
   customCleanerNames: Record<string, string>
@@ -47,6 +56,15 @@ export function BookingsTable({
   setSortOrder,
   searchQuery,
   setSearchQuery,
+  startDate,
+  setStartDate,
+  endDate,
+  setEndDate,
+  fetchNextPage,
+  hasNextPage,
+  isFetchingNextPage,
+  isLoading,
+  error,
   expandedRowId,
   setExpandedRowId,
   customCleanerNames,
@@ -89,7 +107,35 @@ export function BookingsTable({
 
       {/* Filtering Controls Bar */}
       <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
+          {/* Start Date filter */}
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="start-date-filter" className="font-body text-base text-charcoal font-medium">
+              {t('admin.dashboard.filters.startDate')}
+            </label>
+            <input
+              id="start-date-filter"
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+            />
+          </div>
+
+          {/* End Date filter */}
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="end-date-filter" className="font-body text-base text-charcoal font-medium">
+              {t('admin.dashboard.filters.endDate')}
+            </label>
+            <input
+              id="end-date-filter"
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+            />
+          </div>
+
           {/* Status filter */}
           <div className="flex flex-col gap-1.5">
             <label htmlFor="status-filter" className="font-body text-base text-charcoal font-medium">
@@ -222,8 +268,23 @@ export function BookingsTable({
             </tr>
           </thead>
           <tbody>
-            {filteredBookings.length === 0 ? (
-                <tr>
+            {isLoading && filteredBookings.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="p-8 text-center">
+                  <div className="flex flex-col items-center justify-center gap-3">
+                    <div className="w-8 h-8 border-4 border-slate-brand border-t-transparent rounded-full animate-spin" />
+                    <span className="font-body text-base text-text-muted">{t('admin.dashboard.filters.loading')}</span>
+                  </div>
+                </td>
+              </tr>
+            ) : error ? (
+              <tr>
+                <td colSpan={6} className="p-8 text-center font-body text-base text-red-600">
+                  {error}
+                </td>
+              </tr>
+            ) : filteredBookings.length === 0 ? (
+              <tr>
                 <td colSpan={6} className="p-8 text-center font-body text-base text-text-muted">
                   {t('admin.dashboard.table.noResults')}
                 </td>
@@ -235,7 +296,7 @@ export function BookingsTable({
                 const serviceKey = b.serviceType
 
                 return (
-                  <div key={b.id} className="contents">
+                  <tr key={b.id} className="contents">
                     {/* Main table row */}
                     <tr
                       onClick={() => setExpandedRowId(isExpanded ? null : (b.id ?? null))}
@@ -300,13 +361,38 @@ export function BookingsTable({
                         />
                       )}
                     </AnimatePresence>
-                  </div>
+                  </tr>
                 )
               })
             )}
           </tbody>
         </table>
       </div>
+
+      {/* Pagination Controls */}
+      {hasNextPage && (
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={() => { void fetchNextPage() }}
+            disabled={isFetchingNextPage}
+            className="min-h-[48px] px-6 py-2 bg-slate-brand text-white font-body font-medium rounded hover:bg-slate-dark transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2 disabled:opacity-50 flex items-center gap-2"
+          >
+            {isFetchingNextPage ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                {t('admin.dashboard.filters.loading')}
+              </>
+            ) : (
+              t('admin.dashboard.filters.loadMore')
+            )}
+          </button>
+        </div>
+      )}
+      {!hasNextPage && filteredBookings.length > 0 && !isLoading && (
+        <div className="text-center text-text-muted mt-6 font-body text-base">
+          {t('admin.dashboard.filters.noMore')}
+        </div>
+      )}
     </div>
   )
 }

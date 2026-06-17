@@ -759,7 +759,12 @@
         "language": "Language",
         "sortBy": "Sort By",
         "sortOrder": "Sort Order",
-        "search": "Search by name, email, phone, or address..."
+        "search": "Search by name, email, phone, or address...",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "loadMore": "Load More",
+        "loading": "Loading...",
+        "noMore": "No more bookings"
       },
       "table": {
         "client": "Client Details",
@@ -1246,5 +1251,24 @@
       "btnText": "Email Your Resume",
       "emailSubject": "Job Application: Residential Cleaning Specialist"
     }
+  },
+  "offline": {
+    "meta": {
+      "title": "You are Offline — Fresh Nest Co.",
+      "description": "It looks like you have lost network connectivity."
+    },
+    "heading": "You're Offline",
+    "subhead": "It looks like your internet connection is down right now.",
+    "message": "Don't worry! You can still access some parts of the site, or call us directly to book or manage your cleaning services.",
+    "callCta": "Call Us Directly",
+    "phoneNumber": "(613) 935-3555",
+    "homeLink": "Go to Homepage",
+    "bookingsLink": "View My Bookings"
+  },
+  "installPrompt": {
+    "title": "Install Fresh Nest App",
+    "body": "Install our app on your device for fast access to booking and scheduling, even offline.",
+    "installBtn": "Install",
+    "dismissBtn": "Not Now"
   }
 }

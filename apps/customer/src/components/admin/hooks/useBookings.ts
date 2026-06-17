@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
-import { useCollectionQuery } from '@tanstack-query-firebase/react/firestore'
-import { collection, query, orderBy, Timestamp } from 'firebase/firestore'
+import { useQueryClient, useInfiniteQuery } from '@tanstack/react-query'
+import { collection, query, orderBy, limit, startAfter, getDocs, where, Timestamp } from 'firebase/firestore'
+import type { QueryDocumentSnapshot, DocumentData } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
 import { updateBookingStatus, updateBookingAssignment } from '@/lib/firebase/firestore'
 import type { Booking, BookingStatus } from '@/types'
@@ -9,27 +9,70 @@ import type { Booking, BookingStatus } from '@/types'
 export function useBookings(enabled: boolean) {
   const queryClient = useQueryClient()
 
-  // Firestore query for bookings
-  const bookingsQuery = useMemo(() => {
-    return query(collection(db, 'bookings'), orderBy('createdAt', 'desc'))
-  }, [])
+  // Filtering states (default view is last 90 days to 180 days in future)
+  const [startDate, setStartDate] = useState<string>(() => {
+    const d = new Date()
+    d.setDate(d.getDate() - 90)
+    return d.toISOString().split('T')[0]
+  })
+  
+  const [endDate, setEndDate] = useState<string>(() => {
+    const d = new Date()
+    d.setDate(d.getDate() + 180)
+    return d.toISOString().split('T')[0]
+  })
 
-  const { data, isLoading, error } = useCollectionQuery(bookingsQuery, {
-    queryKey: ['bookings'],
+  const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [serviceFilter, setServiceFilter] = useState<string>('all')
+  const [languageFilter, setLanguageFilter] = useState<string>('all')
+  const [sortBy, setSortBy] = useState<'preferredDate' | 'createdAt'>('preferredDate')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+  const [searchQuery, setSearchQuery] = useState<string>('')
+
+  // Paginated bookings fetcher
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    error,
+  } = useInfiniteQuery({
+    queryKey: ['bookings', startDate, endDate],
+    queryFn: async ({ pageParam }) => {
+      let q = query(
+        collection(db, 'bookings'),
+        where('preferredDate', '>=', startDate),
+        where('preferredDate', '<=', endDate),
+        orderBy('preferredDate', 'desc'),
+        limit(50)
+      )
+      if (pageParam) {
+        q = query(q, startAfter(pageParam))
+      }
+      return await getDocs(q)
+    },
+    initialPageParam: null as QueryDocumentSnapshot<DocumentData, DocumentData> | null,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.docs.length < 50) return undefined
+      return lastPage.docs[lastPage.docs.length - 1]
+    },
     enabled,
   })
 
-  // Map the raw documents from QuerySnapshot to Booking[]
+  // Map the raw documents from QuerySnapshot pages to Booking[]
   const bookings = useMemo<Booking[]>(() => {
     if (!data) return []
-    return data.docs.map((docSnap) => {
-      const docData = docSnap.data()
-      return {
-        id: docSnap.id,
-        ...docData,
-        createdAt: docData.createdAt instanceof Timestamp ? docData.createdAt.toDate() : new Date(),
-      } as Booking
-    })
+    return data.pages.flatMap((page) =>
+      page.docs.map((docSnap) => {
+        const docData = docSnap.data()
+        return {
+          id: docSnap.id,
+          ...docData,
+          createdAt: docData.createdAt instanceof Timestamp ? docData.createdAt.toDate() : new Date(),
+        } as Booking
+      })
+    )
   }, [data])
 
   // Collapsible rows state
@@ -38,14 +81,6 @@ export function useBookings(enabled: boolean) {
   // Cleaner custom names input state
   const [customCleanerNames, setCustomCleanerNames] = useState<Record<string, string>>({})
   const [showCustomInput, setShowCustomInput] = useState<Record<string, boolean>>({})
-
-  // Filtering states
-  const [statusFilter, setStatusFilter] = useState<string>('all')
-  const [serviceFilter, setServiceFilter] = useState<string>('all')
-  const [languageFilter, setLanguageFilter] = useState<string>('all')
-  const [sortBy, setSortBy] = useState<'preferredDate' | 'createdAt'>('preferredDate')
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
-  const [searchQuery, setSearchQuery] = useState<string>('')
 
   // Statistics counters
   const totalCount = bookings.length
@@ -125,7 +160,7 @@ export function useBookings(enabled: boolean) {
     pendingCount,
     confirmedCount,
     isLoading,
-    error,
+    error: error ? String(error) : null,
     statusFilter,
     setStatusFilter,
     serviceFilter,
@@ -138,6 +173,13 @@ export function useBookings(enabled: boolean) {
     setSortOrder,
     searchQuery,
     setSearchQuery,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
     expandedRowId,
     setExpandedRowId,
     customCleanerNames,

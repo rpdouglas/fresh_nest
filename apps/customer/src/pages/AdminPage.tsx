@@ -22,7 +22,7 @@ export default function AdminPage() {
   const { t } = useTranslation()
   const { user, loading, isAuthorized, authError, handleSignIn, handleSignOut } = useAdminAuth()
   const bookingsState = useBookings(isAuthorized)
-  const analyticsState = useAdminAnalytics(bookingsState.bookings)
+  const analyticsState = useAdminAnalytics()
 
   const [activeTab, setActiveTab] = useState<'bookings' | 'analytics' | 'staff' | 'templates' | 'payRates' | 'auditLogs' | 'reviews'>('bookings')
   const [analyticsSubTab, setAnalyticsSubTab] = useState<'marketing' | 'operations'>('marketing')

@@ -29,6 +29,9 @@ This file tracks the active cycle status of the developmental epics for the **Fr
 | **P2-E3** | "On My Way" Customer Notification | P1 | Travis (P2), Gallagher (P6) | ✅ Completed |
 | **P2-E4** | Content Pages — About, Reviews & Careers | P1 | Diane (P1), Margaret (P3), Baptiste (P4), Sophie (P5) | ✅ Completed |
 | **P2-E5** | Accessibility Pass (WCAG 2.1 AA) | P1 | Margaret (P3), Diane (P1), Sophie (P5), Ahmed (P10) | ✅ Completed |
+| **P2-E6** | Admin Pagination & Server-Side Analytics | P2 | Lauren (Admin), Sarah (P12) | ✅ Completed |
+| **P2-E7** | PWA Configuration | P2 | Travis (P2), FSM Cleaners | ✅ Completed |
+| **P2-E8** | Firebase Custom Claims RBAC | P2 | Admin / Staff Operations, Sarah (P12) | ✅ Completed |
 
 ---
 

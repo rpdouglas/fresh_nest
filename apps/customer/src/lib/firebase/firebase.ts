@@ -1,5 +1,6 @@
 import { getSharedFirebaseApp, getSharedAuth } from '@freshnest/shared'
 import { getFirestore } from 'firebase/firestore'
+import { getFunctions } from 'firebase/functions'
 
 const app = getSharedFirebaseApp({
   apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,
@@ -14,4 +15,5 @@ const app = getSharedFirebaseApp({
 const dbId = import.meta.env.VITE_FIRESTORE_DB_ID ?? '(default)'
 export const db = getFirestore(app, dbId)
 export const auth = getSharedAuth(app)
+export const functions = getFunctions(app)
 export default app

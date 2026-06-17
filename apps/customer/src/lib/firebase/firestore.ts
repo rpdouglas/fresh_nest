@@ -15,6 +15,8 @@ import {
 import { db } from '@/lib/firebase/firebase'
 import type { BookingFormData } from '@/lib/schemas/bookingSchema'
 import type { Language, Booking, BookingStatus, Job, ChecklistTemplate, PayRate, Review } from '@/types'
+import { calculateQuote } from '@/lib/utils/quotePricing'
+import type { QuotePropertySize, QuoteServiceType, QuoteFrequency } from '@/lib/utils/quotePricing'
 
 
 export type LeadSource = 'organic' | 'google' | 'referral' | 'facebook' | 'direct'
@@ -30,6 +32,28 @@ export function detectLeadSource(params: URLSearchParams): LeadSource {
   return map[ref] ?? 'organic'
 }
 
+function computeBookingEstimatedPrice(propertyType: string, serviceType: string, frequency: string): number {
+  if (propertyType === 'commercial') {
+    return 300 // Baseline average for commercial clean estimates
+  }
+  const sizeMap: Record<string, QuotePropertySize> = {
+    apartment: 'apartment',
+    '1-2bed': '1-2bed',
+    '3-4bed': '3-4bed',
+    '5+bed': '5plus',
+  }
+  const size = sizeMap[propertyType] || 'apartment'
+  const validServices = ['standard', 'deep', 'moveout', 'postconstruction', 'airbnb']
+  const service = (validServices.includes(serviceType) ? serviceType : 'standard') as QuoteServiceType
+  const freq = frequency as QuoteFrequency
+
+  const quote = calculateQuote(size, service, freq)
+  if (quote.type === 'range') {
+    return (quote.min + quote.max) / 2
+  }
+  return 150
+}
+
 export async function submitBooking(
   data: BookingFormData,
   language: Language,
@@ -40,6 +64,8 @@ export async function submitBooking(
   }
   const { marketingConsent, ...formFields } = data
 
+  const estimatedPrice = computeBookingEstimatedPrice(data.propertyType, data.serviceType, data.frequency)
+
   const docData: Record<string, unknown> = {
     ...formFields,
     language,
@@ -49,6 +75,7 @@ export async function submitBooking(
     isAirbnb:          data.serviceType === 'airbnb',
     photoConfirmation: data.serviceType === 'airbnb',
     fsmAppointmentId:  null,
+    estimatedPrice,
     createdAt:         serverTimestamp(),
   }
 
@@ -62,21 +89,6 @@ export async function submitBooking(
   return ref.id
 }
 
-export function subscribeToBookings(callback: (bookings: Booking[]) => void): () => void {
-  const q = query(collection(db, 'bookings'), orderBy('createdAt', 'desc'))
-  return onSnapshot(q, (snapshot) => {
-    const bookings: Booking[] = []
-    snapshot.forEach((docSnap) => {
-      const data = docSnap.data()
-      bookings.push({
-        id: docSnap.id,
-        ...data,
-        createdAt: data['createdAt'] instanceof Timestamp ? data['createdAt'].toDate() : new Date(),
-      } as Booking)
-    })
-    callback(bookings)
-  })
-}
 
 export async function updateBookingStatus(bookingId: string, status: BookingStatus): Promise<void> {
   const docRef = doc(db, 'bookings', bookingId)

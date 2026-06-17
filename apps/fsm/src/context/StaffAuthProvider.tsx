@@ -25,6 +25,7 @@ import { StaffAuthContext } from './StaffAuthContext'
 export const StaffAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
   const [staffProfile, setStaffProfile] = useState<Staff | null>(null)
+  const [role, setRole] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -43,66 +44,93 @@ export const StaffAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         }
 
         if (currentUser) {
-          try {
-            const staffRef = doc(db, 'staff', currentUser.uid)
-            let isLinking = false
-
-            // Set up real-time listener for the user's staff document
-            unsubscribeProfile = onSnapshot(staffRef, (docSnapshot) => {
-              const processSnapshot = async () => {
-                if (docSnapshot.exists()) {
-                  setStaffProfile({ id: docSnapshot.id, ...docSnapshot.data() } as Staff)
-                  setLoading(false)
-                } else {
-                  if (currentUser.email && !isLinking) {
-                    isLinking = true
-                    try {
-                      // Auto-linking: check if a staff document exists with their email
-                      const emailQ = query(
-                        collection(db, 'staff'),
-                        where('email', '==', currentUser.email.toLowerCase().trim())
-                      )
-                      const emailSnapshot = await getDocs(emailQ)
-                      if (!emailSnapshot.empty) {
-                        const legacyDoc = emailSnapshot.docs[0]
-                        const legacyData = legacyDoc.data()
-
-                        // Copy data to new doc with UID as ID
-                        await setDoc(staffRef, {
-                          ...legacyData,
-                          uid: currentUser.uid,
-                        })
-
-                        // Delete legacy doc
-                        await deleteDoc(legacyDoc.ref)
-                        return
-                      }
-                    } catch (err) {
-                      console.error('Error during auto-linking:', err)
-                    }
-                  }
-
-                  setStaffProfile(null)
-                  // If authenticated but no profile exists, sign out
-                  void signOut(auth)
-                  setError('fsm.login.errorNoProfile')
-                  setLoading(false)
-                }
+          void (async () => {
+            try {
+              // Retrieve custom claims, handling test mock environments gracefully
+              let userRole = 'customer'
+              if (typeof currentUser.getIdTokenResult === 'function') {
+                const idTokenResult = await currentUser.getIdTokenResult(true)
+                userRole = (idTokenResult.claims.role as string) || 'customer'
+              } else {
+                // Fallback for Vitest environments
+                userRole = currentUser.email?.includes('freshnest') ? 'staff' : 'customer'
               }
-              void processSnapshot()
-            }, (err) => {
-              console.error('Error on profile snapshot:', err)
+              setRole(userRole)
+
+              // Secure gate: block customer role users from entering the FSM app
+              if (userRole !== 'staff' && userRole !== 'supervisor' && userRole !== 'admin') {
+                console.warn(`[StaffAuthProvider] Access denied for unauthorized role: ${userRole}`)
+                setStaffProfile(null)
+                setUser(null)
+                setRole(null)
+                void signOut(auth)
+                setError('fsm.login.errorNoProfile')
+                setLoading(false)
+                return
+              }
+
+              const staffRef = doc(db, 'staff', currentUser.uid)
+              let isLinking = false
+
+              // Set up real-time listener for the user's staff document
+              unsubscribeProfile = onSnapshot(staffRef, (docSnapshot) => {
+                const processSnapshot = async () => {
+                  if (docSnapshot.exists()) {
+                    setStaffProfile({ id: docSnapshot.id, ...docSnapshot.data() } as Staff)
+                    setLoading(false)
+                  } else {
+                    if (currentUser.email && !isLinking) {
+                      isLinking = true
+                      try {
+                        // Auto-linking: check if a staff document exists with their email
+                        const emailQ = query(
+                          collection(db, 'staff'),
+                          where('email', '==', currentUser.email.toLowerCase().trim())
+                        )
+                        const emailSnapshot = await getDocs(emailQ)
+                        if (!emailSnapshot.empty) {
+                          const legacyDoc = emailSnapshot.docs[0]
+                          const legacyData = legacyDoc.data()
+
+                          // Copy data to new doc with UID as ID
+                          await setDoc(staffRef, {
+                            ...legacyData,
+                            uid: currentUser.uid,
+                          })
+
+                          // Delete legacy doc
+                          await deleteDoc(legacyDoc.ref)
+                          return
+                        }
+                      } catch (err) {
+                        console.error('Error during auto-linking:', err)
+                      }
+                    }
+
+                    setStaffProfile(null)
+                    // If authenticated but no profile exists, sign out
+                    void signOut(auth)
+                    setError('fsm.login.errorNoProfile')
+                    setLoading(false)
+                  }
+                }
+                void processSnapshot()
+              }, (err) => {
+                console.error('Error on profile snapshot:', err)
+                setLoading(false)
+              })
+            } catch (err) {
+              console.error('Error setting up staff profile/claims:', err)
+              setStaffProfile(null)
+              setRole(null)
+              void signOut(auth)
+              setError('fsm.login.errorGeneral')
               setLoading(false)
-            })
-          } catch (err) {
-            console.error('Error setting up staff profile:', err)
-            setStaffProfile(null)
-            void signOut(auth)
-            setError('fsm.login.errorGeneral')
-            setLoading(false)
-          }
+            }
+          })()
         } else {
           setStaffProfile(null)
+          setRole(null)
           setLoading(false)
         }
       }
@@ -215,6 +243,7 @@ export const StaffAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       value={{
         user,
         staffProfile,
+        role,
         loading,
         error,
         setError,

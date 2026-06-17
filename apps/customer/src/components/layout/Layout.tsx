@@ -8,6 +8,7 @@ import { useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import { logCustomEvent } from '@/lib/firebase/analytics'
 import CookieBanner from './CookieBanner'
+import InstallPrompt from './InstallPrompt'
 /**
  * Root layout wrapper.
  * All routes render their content via <Outlet /> between Navbar and Footer.
@@ -41,6 +42,7 @@ export default function Layout() {
       </main>
       <Footer />
       <CookieBanner />
+      <InstallPrompt />
       <ScrollRestoration />
     </div>
   )

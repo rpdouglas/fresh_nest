@@ -5,6 +5,7 @@ import { Staff } from '../types'
 export interface StaffAuthContextType {
   user: User | null
   staffProfile: Staff | null
+  role?: string | null
   loading: boolean
   error: string | null
   setError: (error: string | null) => void

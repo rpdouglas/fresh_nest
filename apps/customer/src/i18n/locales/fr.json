@@ -759,7 +759,12 @@
         "language": "Langue",
         "sortBy": "Trier par",
         "sortOrder": "Ordre de tri",
-        "search": "Rechercher par nom, courriel, téléphone ou adresse..."
+        "search": "Rechercher par nom, courriel, téléphone ou adresse...",
+        "startDate": "Date de début",
+        "endDate": "Date de fin",
+        "loadMore": "Charger plus",
+        "loading": "Chargement...",
+        "noMore": "Plus de réservations"
       },
       "table": {
         "client": "Détails du client",
@@ -1246,5 +1251,24 @@
       "btnText": "Envoyer votre CV par courriel",
       "emailSubject": "Candidature : Spécialiste du nettoyage résidentiel"
     }
+  },
+  "offline": {
+    "meta": {
+      "title": "Vous êtes hors ligne — Fresh Nest Co.",
+      "description": "Il semble que vous ayez perdu la connexion réseau."
+    },
+    "heading": "Vous êtes hors ligne",
+    "subhead": "Il semble que votre connexion Internet soit actuellement interrompue.",
+    "message": "Ne vous inquiétez pas ! Vous pouvez toujours accéder à certaines parties du site, ou nous appeler directement pour réserver ou gérer vos services.",
+    "callCta": "Nous appeler directement",
+    "phoneNumber": "(613) 935-3555",
+    "homeLink": "Aller à l'accueil",
+    "bookingsLink": "Voir mes réservations"
+  },
+  "installPrompt": {
+    "title": "Installer l'application Fresh Nest",
+    "body": "Installez notre application sur votre appareil pour un accès rapide aux réservations, même hors ligne.",
+    "installBtn": "Installer",
+    "dismissBtn": "Pas maintenant"
   }
 }

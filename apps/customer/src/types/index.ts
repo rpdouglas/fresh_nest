@@ -15,6 +15,7 @@ export interface Booking {
   bedrooms: number
   bathrooms: number
   squareFootage?: number
+  estimatedPrice?: number
   frequency: Frequency
   pets: boolean
   address: string

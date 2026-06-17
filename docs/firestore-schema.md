@@ -17,6 +17,7 @@ Stores residential, commercial, and Airbnb cleaning reservations.
 | `bedrooms` | `number` | ✅ | Count of bedrooms |
 | `bathrooms` | `number` | ✅ | Count of bathrooms |
 | `squareFootage` | `number` | ❌ | Approximate square footage (optional) |
+| `estimatedPrice` | `number` | ❌ | Estimated booking price calculated using quotePricing rules (optional) |
 | `frequency` | `string` | ✅ | `'one-time' \| 'weekly' \| 'biweekly' \| 'monthly'` |
 | `pets` | `boolean` | ✅ | `true` if pets are present (triggers pet-safe products notification) |
 | `address` | `string` | ✅ | Full street address |
@@ -211,7 +212,20 @@ Stores client profile information (firstName, lastName, email, phone, address).
 
 ---
 
-## 12. Database Targeting Asymmetry (Cloud Functions)
+## 12. Collection: `reports`
+Stores cached analytics and performance reports generated server-side.
+
+**Path:** `/reports/{rangeKey}` (e.g. `reports/all`, `reports/30days`, `reports/90days`, `reports/ytd`, `reports/month`)
+
+| Field Name | Type | Required | Description / Allowed Values |
+| :--- | :--- | :--- | :--- |
+| `computedAt` | `Timestamp` | ✅ | Server timestamp when reports were calculated |
+| `expiresAt` | `Timestamp` | ✅ | Server timestamp when cache expires (TTL 1 hour) |
+| `data` | `map` | ✅ | The serialized analytics KPIs payload |
+
+---
+
+## 13. Database Targeting Asymmetry (Cloud Functions)
 
 ### Scheduler Functions (`onDailyReminderCheck`)
 The daily scheduler function always targets the production `(default)` database explicitly:

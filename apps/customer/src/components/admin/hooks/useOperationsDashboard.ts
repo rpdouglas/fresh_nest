@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useCollectionQuery } from '@tanstack-query-firebase/react/firestore'
-import { collection, query, orderBy, Timestamp } from 'firebase/firestore'
+import { collection, query, orderBy, Timestamp, where } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
 import type { Job, Staff } from '@/types'
 
@@ -11,16 +11,65 @@ export function useOperationsDashboard(enabled: boolean) {
   const [customStartDate, setCustomStartDate] = useState<string>('')
   const [customEndDate, setCustomEndDate] = useState<string>('')
 
-  const jobsQuery = useMemo(() => {
-    return query(collection(db, 'jobs'), orderBy('createdAt', 'desc'))
-  }, [])
+  // Calculate start and end date bounds for jobs query based on selected timeRange
+  const dateRangeBounds = useMemo(() => {
+    const now = new Date()
+    now.setHours(0, 0, 0, 0)
+    const todayStr = now.toISOString().split('T')[0]
 
+    // Calculate start/end of current week (Monday - Sunday)
+    const currentDay = now.getDay()
+    const diffToMonday = currentDay === 0 ? -6 : 1 - currentDay
+    const startOfWeek = new Date(now)
+    startOfWeek.setDate(now.getDate() + diffToMonday)
+    const endOfWeek = new Date(startOfWeek)
+    endOfWeek.setDate(startOfWeek.getDate() + 6)
+    
+    const startOfWeekStr = startOfWeek.toISOString().split('T')[0]
+    const endOfWeekStr = endOfWeek.toISOString().split('T')[0]
+
+    // Calculate start/end of current month
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+    const startOfMonthStr = startOfMonth.toISOString().split('T')[0]
+    const endOfMonthStr = endOfMonth.toISOString().split('T')[0]
+
+    if (timeRange === 'today') {
+      return { start: todayStr, end: todayStr }
+    }
+    if (timeRange === 'this_week') {
+      return { start: startOfWeekStr, end: endOfWeekStr }
+    }
+    if (timeRange === 'this_month') {
+      return { start: startOfMonthStr, end: endOfMonthStr }
+    }
+    if (timeRange === 'custom') {
+      // Fallback range if not specified
+      const start = customStartDate || new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      const end = customEndDate || new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      return { start, end }
+    }
+
+    return { start: startOfMonthStr, end: endOfMonthStr }
+  }, [timeRange, customStartDate, customEndDate])
+
+  // Restricted jobs query based on date range bounds to save database reads
+  const jobsQuery = useMemo(() => {
+    return query(
+      collection(db, 'jobs'),
+      where('scheduledDate', '>=', dateRangeBounds.start),
+      where('scheduledDate', '<=', dateRangeBounds.end),
+      orderBy('scheduledDate', 'desc')
+    )
+  }, [dateRangeBounds.start, dateRangeBounds.end])
+
+  // Staff query remains unbounded since staff count is small and metadata is needed for listing
   const staffQuery = useMemo(() => {
     return query(collection(db, 'staff'), orderBy('createdAt', 'desc'))
   }, [])
 
   const { data: jobsSnapshot, isLoading: isJobsLoading, error: jobsError } = useCollectionQuery(jobsQuery, {
-    queryKey: ['jobs'],
+    queryKey: ['jobs', dateRangeBounds.start, dateRangeBounds.end],
     enabled,
   })
 
@@ -61,7 +110,7 @@ export function useOperationsDashboard(enabled: boolean) {
     return new Date(year, month - 1, day)
   }
 
-  // Filter jobs by time range
+  // Filter jobs by time range (double check filters client-side for dynamic edge cases)
   const filteredJobs = useMemo(() => {
     const now = new Date()
     now.setHours(0, 0, 0, 0)
@@ -189,6 +238,6 @@ export function useOperationsDashboard(enabled: boolean) {
     averageJobDuration,
     cleanerUtilization,
     isLoading: isJobsLoading || isStaffLoading,
-    error: jobsError || staffError,
+    error: jobsError || staffError ? String(jobsError || staffError) : null,
   }
 }
