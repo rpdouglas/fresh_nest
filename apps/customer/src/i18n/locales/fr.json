@@ -818,57 +818,6 @@
         "auditLogs": "Journaux d'audit",
         "reviews": "Modération des avis"
       },
-      "staff": {
-        "title": "Registre du personnel",
-        "subtitle": "Gérez les profils des employés, leurs rôles, leurs affectations et leurs contraintes d'horaire.",
-        "registerBtn": "Enregistrer un employé",
-        "searchPlaceholder": "Rechercher par nom, courriel, téléphone...",
-        "filterRole": "Filtrer par rôle",
-        "filterStatus": "Filtrer par statut",
-        "allRoles": "Tous les rôles",
-        "allStatuses": "Tous les statuts",
-        "table": {
-          "name": "Membre du personnel",
-          "contact": "Coordonnées",
-          "role": "Rôle",
-          "status": "Statut",
-          "actions": "Actions",
-          "noResults": "Aucun membre du personnel trouvé avec ces critères."
-        },
-        "modal": {
-          "title": "Enregistrer un membre du personnel",
-          "submit": "Enregistrer",
-          "cancel": "Annuler",
-          "success": "Employé enregistré avec succès.",
-          "error": "Échec de l'enregistrement de l'employé.",
-          "firstName": "Prénom",
-          "lastName": "Nom",
-          "email": "Adresse courriel",
-          "phone": "Numéro de téléphone",
-          "role": "Attribuer un rôle",
-          "status": "Statut initial",
-          "language": "Langue préférée",
-          "transport": "Mode de transport par défaut",
-          "buffer": "Marge de déplacement (minutes)",
-          "earningsLimit": "Limite de gains mensuelle (Optionnelle)",
-          "roleOption": {
-            "cleaner": "Nettoyeur/Nettoyeuse",
-            "lead": "Chef d'équipe",
-            "supervisor": "Superviseur/Superviseuse"
-          },
-          "statusOption": {
-            "onboarding": "En intégration",
-            "active": "Actif/Active",
-            "inactive": "Inactif/Inactive"
-          },
-          "transportOption": {
-            "personal_vehicle": "Véhicule personnel",
-            "transit": "Transport en commun",
-            "rideshare": "Covoiturage",
-            "walk": "Marche"
-          }
-        }
-      },
       "analytics": {
         "title": "Tableau de bord des analyses",
         "subtabs": {
@@ -909,6 +858,57 @@
         "referral": "Programme de parrainage",
         "facebook": "Publicité Facebook",
         "direct": "Trafic direct"
+      }
+    },
+    "staff": {
+      "title": "Registre du personnel",
+      "subtitle": "Gérez les profils des employés, leurs rôles, leurs affectations et leurs contraintes d'horaire.",
+      "registerBtn": "Enregistrer un employé",
+      "searchPlaceholder": "Rechercher par nom, courriel, téléphone...",
+      "filterRole": "Filtrer par rôle",
+      "filterStatus": "Filtrer par statut",
+      "allRoles": "Tous les rôles",
+      "allStatuses": "Tous les statuts",
+      "table": {
+        "name": "Membre du personnel",
+        "contact": "Coordonnées",
+        "role": "Rôle",
+        "status": "Statut",
+        "actions": "Actions",
+        "noResults": "Aucun membre du personnel trouvé avec ces critères."
+      },
+      "modal": {
+        "title": "Enregistrer un membre du personnel",
+        "submit": "Enregistrer",
+        "cancel": "Annuler",
+        "success": "Employé enregistré avec succès.",
+        "error": "Échec de l'enregistrement de l'employé.",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "email": "Adresse courriel",
+        "phone": "Numéro de téléphone",
+        "role": "Attribuer un rôle",
+        "status": "Statut initial",
+        "language": "Langue préférée",
+        "transport": "Mode de transport par défaut",
+        "buffer": "Marge de déplacement (minutes)",
+        "earningsLimit": "Limite de gains mensuelle (Optionnelle)",
+        "roleOption": {
+          "cleaner": "Nettoyeur/Nettoyeuse",
+          "lead": "Chef d'équipe",
+          "supervisor": "Superviseur/Superviseuse"
+        },
+        "statusOption": {
+          "onboarding": "En intégration",
+          "active": "Actif/Active",
+          "inactive": "Inactif/Inactive"
+        },
+        "transportOption": {
+          "personal_vehicle": "Véhicule personnel",
+          "transit": "Transport en commun",
+          "rideshare": "Covoiturage",
+          "walk": "Marche"
+        }
       }
     },
     "templates": {
@@ -1072,7 +1072,6 @@
     }
   },
   "blog": {
-
     "meta": {
       "title": "Blogue de Fresh Nest Co. — Conseils de Nettoyage",
       "description": "Lisez nos guides de prix, listes de déménagement et astuces de nettoyage à Cornwall et Akwesasne."
