@@ -8,6 +8,8 @@ import { onCall, HttpsError } from 'firebase-functions/v2/https'
 import { getAuth } from 'firebase-admin/auth'
 import * as functionsV1 from 'firebase-functions/v1'
 import { defineSecret } from 'firebase-functions/params'
+import { logger } from 'firebase-functions'
+import * as Sentry from '@sentry/node'
 import { sendOwnerNotification, sendClientConfirmation, sendReviewRequestEmail } from './sendEmail'
 import { sendSmsConfirmation, sendSmsReminder, sendOnMyWaySms } from './sendSms'
 import type { BookingData } from './emailTemplates'
@@ -15,6 +17,19 @@ import { createJobFromBooking, executeClaimJob, rollOverAllStaffEarnings } from 
 import { notifyStaffMember, notifyAllActiveStaff } from './notifications'
 
 initializeApp()
+
+if (process.env['SENTRY_DSN']) {
+  Sentry.init({
+    dsn: process.env['SENTRY_DSN'],
+    environment: process.env['FUNCTIONS_EMULATOR'] ? 'development' : 'production',
+    tracesSampleRate: 0,
+  })
+}
+
+function logError(label: string, err: unknown): void {
+  logger.error(label, err)
+  Sentry.captureException(err, { tags: { function: label } })
+}
 
 const RESEND_API_KEY       = defineSecret('RESEND_API_KEY')
 const OWNER_EMAIL          = defineSecret('OWNER_EMAIL')
@@ -49,7 +64,7 @@ export const onBookingCreated = onDocumentCreated(
         await db.collection('bookings').doc(docId).update({ referralCode: refCode })
         booking.referralCode = refCode
       } catch (err) {
-        console.error('[onBookingCreated] Failed to generate referral code:', err)
+        logError('[onBookingCreated] Failed to generate referral code:', err)
       }
     }
 
@@ -74,7 +89,7 @@ export const onBookingCreated = onDocumentCreated(
     const labels = ['owner email', 'client email', 'client SMS']
     results.forEach((result, i) => {
       if (result.status === 'rejected') {
-        console.error(`[onBookingCreated] ${labels[i]} failed:`, result.reason)
+        logError(`[onBookingCreated] ${labels[i]} failed:`, result.reason)
       }
     })
   },
@@ -126,7 +141,7 @@ export const onDailyReminderCheck = onSchedule(
 
     results.forEach((result, i) => {
       if (result.status === 'rejected') {
-        console.error(`[onDailyReminderCheck] doc ${snapshot.docs[i]?.id} failed:`, result.reason)
+        logError(`[onDailyReminderCheck] doc ${snapshot.docs[i]?.id} failed:`, result.reason)
       }
     })
 
@@ -241,7 +256,7 @@ export const onBookingStatusConfirmed = onDocumentUpdated(
     try {
       await createJobFromBooking(bookingId, after as Parameters<typeof createJobFromBooking>[1])
     } catch (err) {
-      console.error(`[onBookingStatusConfirmed] Failed to create job for booking '${bookingId}':`, err)
+      logError(`[onBookingStatusConfirmed] Failed to create job for booking '${bookingId}':`, err)
     }
   },
 )
@@ -262,7 +277,7 @@ export const claimJob = onCall(async (request) => {
     const result = await executeClaimJob(auth.uid, jobId)
     return result
   } catch (err: any) {
-    console.error('[claimJob] Failed to claim job:', err)
+    logError('[claimJob] Failed to claim job:', err)
     const msg = err.message || ''
     if (msg === 'JOB_NOT_FOUND') {
       throw new HttpsError('not-found', 'The requested job was not found.')
@@ -299,7 +314,7 @@ export const onMonthlyEarningsRollover = onSchedule(
     try {
       await rollOverAllStaffEarnings()
     } catch (err) {
-      console.error('[onMonthlyEarningsRollover] Rollover failed:', err)
+      logError('[onMonthlyEarningsRollover] Rollover failed:', err)
     }
   },
 )
@@ -459,7 +474,7 @@ export const onJobUpdatedTrigger = onDocumentUpdated(
             }
           }
         } catch (err) {
-          console.error(`[onJobUpdatedTrigger] Failed to retrieve booking '${after.bookingId}':`, err)
+          logError(`[onJobUpdatedTrigger] Failed to retrieve booking '${after.bookingId}':`, err)
         }
       }
 
@@ -475,7 +490,7 @@ export const onJobUpdatedTrigger = onDocumentUpdated(
             }
           }
         } catch (err) {
-          console.error(`[onJobUpdatedTrigger] Failed to retrieve staff profile for '${after.assignedTo}':`, err)
+          logError(`[onJobUpdatedTrigger] Failed to retrieve staff profile for '${after.assignedTo}':`, err)
         }
       }
 
@@ -488,7 +503,7 @@ export const onJobUpdatedTrigger = onDocumentUpdated(
           await sendOnMyWaySms(phone, bookingLanguage, displayCleanerName, smsConfig)
           console.log(`[onJobUpdatedTrigger] SMS check-in alert successfully sent to customer phone: ${phone}`)
         } catch (smsErr) {
-          console.error(`[onJobUpdatedTrigger] Failed to send SMS check-in alert to customer:`, smsErr)
+          logError(`[onJobUpdatedTrigger] Failed to send SMS check-in alert to customer:`, smsErr)
         }
       } else {
         console.warn(`[onJobUpdatedTrigger] No customer phone number found on job '${jobId}'. Skipping SMS.`)
@@ -649,7 +664,7 @@ export const onUserCreated = functionsV1.auth.user().onCreate(async (user) => {
     
     console.log(`[onUserCreated] Successfully set custom claim '${assignedRole}' and customer profile for ${uid}`)
   } catch (err) {
-    console.error(`[onUserCreated] Failed to set claims/profile for ${uid}:`, err)
+    logError(`[onUserCreated] Failed to set claims/profile for ${uid}:`, err)
   }
 })
 
@@ -722,7 +737,7 @@ export const setUserRole = onCall(async (request) => {
     return { success: true, uid: resolvedUid, role: targetRole }
   } catch (err) {
     if (err instanceof HttpsError) throw err
-    console.error(`[setUserRole] Failed to set claims for user ${resolvedUid}:`, err)
+    logError(`[setUserRole] Failed to set claims for user ${resolvedUid}:`, err)
     throw new HttpsError('internal', 'Failed to update user custom claims.')
   }
 })
@@ -759,7 +774,7 @@ export const onBookingCancelled = onDocumentUpdated(
             console.warn('[onBookingCancelled] STRIPE_SECRET_KEY is not defined. Skipping Stripe call.')
           }
         } catch (stripeErr) {
-          console.error(`[onBookingCancelled] Failed to cancel Stripe PaymentIntent ${stripePaymentIntentId}:`, stripeErr)
+          logError(`[onBookingCancelled] Failed to cancel Stripe PaymentIntent ${stripePaymentIntentId}:`, stripeErr)
         }
       }
 
@@ -775,7 +790,7 @@ export const onBookingCancelled = onDocumentUpdated(
           })
         }
       } catch (jobErr) {
-        console.error(`[onBookingCancelled] Failed to update associated job status:`, jobErr)
+        logError(`[onBookingCancelled] Failed to update associated job status:`, jobErr)
       }
 
       // 3. Send SMS notification to owner/admin
@@ -798,7 +813,7 @@ export const onBookingCancelled = onDocumentUpdated(
         })
         console.log(`[onBookingCancelled] SMS alert sent to admin: ${adminPhone}`)
       } catch (smsErr) {
-        console.error(`[onBookingCancelled] Failed to send SMS alert to admin:`, smsErr)
+        logError(`[onBookingCancelled] Failed to send SMS alert to admin:`, smsErr)
       }
     }
   }
@@ -827,7 +842,7 @@ export const onJobStatusCompleted = onDocumentUpdated(
         })
         console.log(`[onJobStatusCompleted] Scheduled review request for Job '${jobId}'.`)
       } catch (err) {
-        console.error(`[onJobStatusCompleted] Failed to schedule review for Job '${jobId}':`, err)
+        logError(`[onJobStatusCompleted] Failed to schedule review for Job '${jobId}':`, err)
       }
     }
   }
@@ -896,11 +911,11 @@ export const onReviewEmailScheduler = onSchedule(
           await db.collection('jobs').doc(jobId).update({ reviewEmailSent: true })
           console.log(`[onReviewEmailScheduler] Successfully sent review email and updated status for Job '${jobId}'.`)
         } catch (emailErr) {
-          console.error(`[onReviewEmailScheduler] Failed to send review email for Job '${jobId}':`, emailErr)
+          logError(`[onReviewEmailScheduler] Failed to send review email for Job '${jobId}':`, emailErr)
         }
       }
     } catch (err) {
-      console.error('[onReviewEmailScheduler] Scheduler execution failed:', err)
+      logError('[onReviewEmailScheduler] Scheduler execution failed:', err)
     }
   }
 )
@@ -1015,7 +1030,7 @@ export const getAnalyticsKPIs = onCall(async (request) => {
       totalRevenueAgg = aggData.sumRevenue || 0
       console.log(`[getAnalyticsKPIs] Aggregation query: count=${totalBookings}, sumRevenue=${totalRevenueAgg}`)
     } catch (aggErr) {
-      console.error('[getAnalyticsKPIs] Aggregation query failed:', aggErr)
+      logError('[getAnalyticsKPIs] Aggregation query failed:', aggErr)
     }
 
     const snapshot = await bookingsQuery.select(
@@ -1134,7 +1149,7 @@ export const getAnalyticsKPIs = onCall(async (request) => {
         data: payload
       })
     } catch (cacheWriteErr) {
-      console.error('[getAnalyticsKPIs] Failed to write cache:', cacheWriteErr)
+      logError('[getAnalyticsKPIs] Failed to write cache:', cacheWriteErr)
     }
 
     return payload

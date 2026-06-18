@@ -23,7 +23,23 @@ jobs:
           VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
           VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
           VITE_FIRESTORE_DB_ID: "(default)"
+          VITE_RECAPTCHA_SITE_KEY: ${{ secrets.VITE_RECAPTCHA_SITE_KEY }}
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
         run: npm run build
+      - name: Upload source maps to Sentry
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        run: |
+          if [ -n "$SENTRY_AUTH_TOKEN" ]; then
+            npx @sentry/cli releases new "$GITHUB_SHA"
+            npx @sentry/cli releases files "$GITHUB_SHA" upload-sourcemaps apps/customer/dist --url-prefix '~/'
+            npx @sentry/cli releases files "$GITHUB_SHA" upload-sourcemaps apps/fsm/dist --url-prefix '~/'
+            npx @sentry/cli releases finalize "$GITHUB_SHA"
+          else
+            echo "SENTRY_AUTH_TOKEN not set — skipping source map upload"
+          fi
       - name: Deploy Customer Portal
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:

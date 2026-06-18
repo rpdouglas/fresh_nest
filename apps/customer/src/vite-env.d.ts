@@ -10,16 +10,10 @@ interface ImportMetaEnv {
   readonly VITE_FIREBASE_MEASUREMENT_ID: string
   readonly VITE_FIRESTORE_DB_ID?: string
   readonly VITE_RECAPTCHA_SITE_KEY?: string
+  readonly VITE_SENTRY_DSN?: string
 }
 
 interface ImportMeta {
   readonly env: ImportMetaEnv
 }
 
-interface Window {
-  __MOCK_SUBMIT__?: (
-    data: unknown,
-    language: unknown,
-    source: unknown,
-  ) => Promise<string>
-}

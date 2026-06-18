@@ -2,6 +2,7 @@ import { getSharedFirebaseApp, getSharedAuth } from '@freshnest/shared'
 import { getFirestore } from 'firebase/firestore'
 import { getFunctions } from 'firebase/functions'
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
+import { getPerformance } from 'firebase/performance'
 
 const app = getSharedFirebaseApp({
   apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,
@@ -18,6 +19,10 @@ if (import.meta.env.VITE_RECAPTCHA_SITE_KEY) {
     provider: new ReCaptchaV3Provider(import.meta.env.VITE_RECAPTCHA_SITE_KEY),
     isTokenAutoRefreshEnabled: true,
   })
+}
+
+if (import.meta.env.PROD) {
+  getPerformance(app)
 }
 
 const dbId = import.meta.env.VITE_FIRESTORE_DB_ID ?? '(default)'

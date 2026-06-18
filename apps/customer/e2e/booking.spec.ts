@@ -1,16 +1,25 @@
 import { test, expect } from '@playwright/test'
 
 test.beforeEach(async ({ page }) => {
-  // Capture console logs from the browser
   page.on('console', (msg) => {
     console.log(`[Browser Console] ${msg.type()}: ${msg.text()}`)
   })
 
-  // Define mock submit function in browser window context
-  await page.addInitScript(() => {
-    window.__MOCK_SUBMIT__ = (data: unknown, language: unknown, source: unknown) => {
-      console.log('Intercepted submitBooking in E2E test:', { data, language, source })
-      return Promise.resolve('mocked-booking-id')
+  // Intercept the Firestore booking write at the network layer.
+  // Uses page.route() — the correct E2E pattern (mirrors fsm.spec.ts).
+  // Replaces window.__MOCK_SUBMIT__ which was removed from firestore.ts in P3-E9.
+  await page.route('**/firestore.googleapis.com/**', async (route, request) => {
+    if (request.method() === 'POST') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          writeResults: [{ updateTime: new Date().toISOString() }],
+          status: [],
+        }),
+      })
+    } else {
+      await route.continue()
     }
   })
 })
@@ -29,7 +38,7 @@ test('Travis can complete a full booking in under 3 minutes', async ({ page }) =
   // Step 2: Schedule
   // Select biweekly frequency
   await page.getByRole('radio', { name: /biweekly/i }).first().click()
-  
+
   // Set preferred date to 3 days in the future in local timezone (safe from UTC shifts)
   const futureDate = new Date()
   futureDate.setDate(futureDate.getDate() + 3)
@@ -37,7 +46,7 @@ test('Travis can complete a full booking in under 3 minutes', async ({ page }) =
   const mm = String(futureDate.getMonth() + 1).padStart(2, '0')
   const dd = String(futureDate.getDate()).padStart(2, '0')
   const dateStr = `${yyyy}-${mm}-${dd}`
-  
+
   await page.locator('#preferredDate').fill(dateStr)
 
   // Step 3: Contact details
@@ -69,7 +78,7 @@ test('Travis can complete a full booking in under 3 minutes', async ({ page }) =
 
 test('Required field validation shows errors on empty submit', async ({ page }) => {
   await page.goto('/booking')
-  
+
   // Click Confirm Booking directly without filling preferredDate or contact info
   await page.getByRole('button', { name: /confirm booking/i }).click()
 

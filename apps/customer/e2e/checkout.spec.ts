@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test'
 
-// Stripe checkout spec — all Stripe SDK calls are mocked at the window level so
-// this spec runs without real Stripe keys or a deployed Cloud Function.
+// Stripe checkout spec — Stripe SDK calls are mocked at the window level;
+// Firestore writes are intercepted at the network layer via page.route().
 //
-// When P1-E3 (Stripe integration) ships:
+// When P3-E1 (Stripe integration) ships:
 //   - window.Stripe is picked up by the Stripe.js init in BookingStep4
-//   - window.__MOCK_CREATE_PAYMENT_INTENT__ is invoked before form submit
-//   - window.__MOCK_SUBMIT__ handles the Firestore write after payment succeeds
+//   - window.__MOCK_CREATE_PAYMENT_INTENT__ is replaced with page.route() on
+//     the Cloud Functions callable endpoint
 //
 // The declined-card test validates that a Stripe error surfaces as role="alert"
 // and the user is NOT redirected to /thank-you (no silent payment failures).
@@ -22,6 +22,22 @@ function futureDateStr(daysAhead = 5): string {
 }
 
 test.beforeEach(async ({ page }) => {
+  // Intercept the Firestore booking write at the network layer (P3-E9).
+  await page.route('**/firestore.googleapis.com/**', async (route, request) => {
+    if (request.method() === 'POST') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          writeResults: [{ updateTime: new Date().toISOString() }],
+          status: [],
+        }),
+      })
+    } else {
+      await route.continue()
+    }
+  })
+
   await page.addInitScript(() => {
     // Stripe.js mock — mirrors the real window.Stripe factory signature.
     // PaymentElement.mount() is a no-op; confirmPayment resolves immediately.
@@ -43,13 +59,10 @@ test.beforeEach(async ({ page }) => {
         }),
     })
 
-    // Cloud Function callable mock — returns a client secret without a real deploy
+    // Cloud Function callable mock — returns a client secret without a real deploy.
+    // Deferred to page.route() when P3-E1 ships.
     ;(window as unknown as Record<string, unknown>).__MOCK_CREATE_PAYMENT_INTENT__ = () =>
       Promise.resolve({ data: { clientSecret: 'pi_test_mock_secret_xyz' } })
-
-    // Booking submission mock — bypasses Firestore write
-    ;(window as unknown as Record<string, unknown>).__MOCK_SUBMIT__ = () =>
-      Promise.resolve('mocked-booking-id')
   })
 })
 

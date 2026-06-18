@@ -11,6 +11,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@freshnest/shared": "*"
+    "@freshnest/shared": "*",
+    "@sentry/react": "^10.58.0"
   }
 }
