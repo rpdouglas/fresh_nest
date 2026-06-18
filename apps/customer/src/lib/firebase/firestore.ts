@@ -85,7 +85,10 @@ export async function submitBooking(
     docData.consentMethod    = 'booking-form-v2'
   }
 
-  const ref = await addDoc(collection(db, 'bookings'), docData)
+  const cleanDocData = Object.fromEntries(
+    Object.entries(docData).filter(([, v]) => v !== undefined),
+  )
+  const ref = await addDoc(collection(db, 'bookings'), cleanDocData)
   return ref.id
 }
 
