@@ -132,7 +132,8 @@ export default function BookingPage() {
           bookingId,
         },
       })
-    } catch {
+    } catch (e) {
+      console.error('[BookingPage] submitBooking failed:', e)
       setSubmitError(t('booking.errors.submit'))
     }
   }
