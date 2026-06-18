@@ -14,6 +14,7 @@
     "build:fsm": "npm --workspace=apps/fsm run build",
     "build": "npm run build:customer && npm run build:fsm",
     "test:customer": "npm --workspace=apps/customer run test",
+    "test:customer:rules": "npm --workspace=apps/customer run test:rules",
     "test:customer:e2e": "npm --workspace=apps/customer run test:e2e",
     "test:fsm": "npm --workspace=apps/fsm run test",
     "lint": "npm --workspaces run lint --if-present"

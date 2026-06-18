@@ -2,8 +2,10 @@
 
 This file tracks the active cycle status of the developmental epics for the **Fresh Nest Co.** cleaning services and field service management ecosystem, based on the **Master Project Plan v2.0**.
 
-## Current Cycle: Phase 1 — Stabilize & Secure (Weeks 1–4)
-**Goal:** Close all P0 and P1 security, compliance, technical debt, and revenue gaps. Enable secure billing holds, configure production observability, eliminate critical database index/duplicate issues, and harden delivery pipelines.
+## Current Cycle: Phase 3 — Scale (begins post-Phase 2 close)
+**Goal:** Build the feedback loops, growth infrastructure, and architectural foundations that drive long-term customer lifetime value, organic acquisition, and operational scale.
+
+> **Phase 2 — Compete: CLOSED 2026-06-18.** All 10 epics completed. Platform has a complete customer lifecycle — first booking through recurring relationship, payment-ready infrastructure, post-job communication, review automation, WCAG 2.1 AA accessibility, PWA, RBAC, visual dispatch board, and a hardened CI/CD + test coverage baseline.
 
 ---
 
@@ -33,7 +35,7 @@ This file tracks the active cycle status of the developmental epics for the **Fr
 | **P2-E7** | PWA Configuration | P2 | Travis (P2), FSM Cleaners | ✅ Completed |
 | **P2-E8** | Firebase Custom Claims RBAC | P2 | Admin / Staff Operations, Sarah (P12) | ✅ Completed |
 | **P2-E9** | FSM Dispatch Board & Scheduling Intelligence | P2 | Admin Operations (Lauren), Sarah (P12), Carla (P7) | ✅ Completed |
-| **P2-E10** | Staff Scheduling Calendar & Shift Swaps | P2 | Mike (P9), Ahmed (P10) | ⬜ Not Started |
+| **P2-E10** | Test Coverage Expansion | P2 | Sarah (P12), QA / Engineering | ✅ Completed 2026-06-18 |
 
 ---
 

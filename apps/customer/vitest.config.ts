@@ -9,14 +9,14 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     globals: true,
-    exclude: [...configDefaults.exclude, 'e2e/**'],
+    exclude: [...configDefaults.exclude, 'e2e/**', 'test/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],
       thresholds: {
-        lines: 40,
+        lines: 60,
         functions: 40,
-        branches: 35,
+        branches: 55,
         statements: 40,
       },
       exclude: [
