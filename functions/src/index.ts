@@ -624,8 +624,19 @@ export const onUserCreated = functionsV1.auth.user().onCreate(async (user) => {
     }
 
     const auth = getAuth()
+
+    // Never-downgrade guard: if the user somehow already has a higher-privilege claim
+    // (e.g. account re-created after deletion, provider-linking edge case), keep it.
+    const ROLE_PRIORITY: Record<string, number> = { admin: 4, supervisor: 3, staff: 2, customer: 1 }
+    const existingRecord = await auth.getUser(uid)
+    const existingRole = existingRecord.customClaims?.role as string | undefined
+    if (existingRole && (ROLE_PRIORITY[existingRole] ?? 0) > (ROLE_PRIORITY[assignedRole] ?? 0)) {
+      console.log(`[onUserCreated] Existing role '${existingRole}' outranks '${assignedRole}'. Preserving existing claim.`)
+      assignedRole = existingRole
+    }
+
     await auth.setCustomUserClaims(uid, { role: assignedRole })
-    
+
     // Also create/merge a customer profile in Firestore
     await db.collection('customers').doc(uid).set({
       email: user.email || '',
@@ -683,11 +694,31 @@ export const setUserRole = onCall(async (request) => {
     throw new HttpsError('invalid-argument', 'Either uid or email must be provided to identify the target user.')
   }
 
+  // Never-downgrade guard: block accidental privilege demotion unless caller
+  // explicitly passes forceDowngrade: true.
+  const ROLE_PRIORITY: Record<string, number> = { admin: 4, supervisor: 3, staff: 2, customer: 1 }
+  const forceDowngrade = request.data?.forceDowngrade === true
+
   try {
+    const existingRecord = await auth.getUser(resolvedUid)
+    const existingRole = existingRecord.customClaims?.role as string | undefined
+    if (
+      !forceDowngrade &&
+      existingRole &&
+      (ROLE_PRIORITY[existingRole] ?? 0) > (ROLE_PRIORITY[targetRole] ?? 0)
+    ) {
+      console.warn(`[setUserRole] Blocked downgrade attempt: '${existingRole}' → '${targetRole}' for UID ${resolvedUid}. Pass forceDowngrade=true to override.`)
+      throw new HttpsError(
+        'failed-precondition',
+        `Cannot downgrade role from '${existingRole}' to '${targetRole}' without explicit forceDowngrade flag.`
+      )
+    }
+
     await auth.setCustomUserClaims(resolvedUid, { role: targetRole })
     console.log(`[setUserRole] Successfully set custom role claim '${targetRole}' for user UID: ${resolvedUid}`)
     return { success: true, uid: resolvedUid, role: targetRole }
   } catch (err) {
+    if (err instanceof HttpsError) throw err
     console.error(`[setUserRole] Failed to set claims for user ${resolvedUid}:`, err)
     throw new HttpsError('internal', 'Failed to update user custom claims.')
   }

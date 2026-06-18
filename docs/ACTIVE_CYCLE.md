@@ -37,6 +37,12 @@ This file tracks the active cycle status of the developmental epics for the **Fr
 | **P2-E9** | FSM Dispatch Board & Scheduling Intelligence | P2 | Admin Operations (Lauren), Sarah (P12), Carla (P7) | ✅ Completed |
 | **P2-E10** | Test Coverage Expansion | P2 | Sarah (P12), QA / Engineering | ✅ Completed 2026-06-18 |
 
+### Hotfixes & Security Patches
+
+| ID | Title | Priority | Target | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **HOTFIX-01** | RBAC Privilege Downgrade Guard | P0 | Sarah (P12), Operator / All authenticated users | ✅ Completed 2026-06-18 |
+
 ---
 
 ## Active Epic Specifications & Guidelines
