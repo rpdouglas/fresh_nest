@@ -11,6 +11,8 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '20', cache: 'npm' }
       - run: npm ci
+      - name: Security audit
+        run: npm audit --audit-level=high
       - name: Unit tests (Vitest)
         run: npm run test:customer
       - name: Install Playwright browsers
@@ -39,6 +41,7 @@ jobs:
           VITE_FIRESTORE_DB_ID: freshnest-dev
         run: npm run build
       - name: Deploy Customer Preview
+        id: deploy-customer-preview
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
@@ -54,3 +57,11 @@ jobs:
           projectId: freshnest-aa51e
           target: freshnest-fsm
           expires: 7d
+      - name: Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v11
+        with:
+          urls: |
+            ${{ steps.deploy-customer-preview.outputs.details_url }}
+            ${{ steps.deploy-customer-preview.outputs.details_url }}/booking
+          uploadArtifacts: true
+          temporaryPublicStorage: true

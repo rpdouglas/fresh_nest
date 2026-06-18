@@ -47,7 +47,7 @@ export const OfflineUploadProvider: React.FC<{ children: React.ReactNode }> = ({
 
     for (const queuedPhoto of photos) {
       try {
-        const { id, jobId, taskId, blob, capturedAt, geoLat, geoLng, geoTagged, staffId } = queuedPhoto
+        const { id, jobId, taskId, blob, capturedAt, geoLat, geoLng, staffId } = queuedPhoto
         
         // 1. Upload to Firebase Storage
         const storagePath = `jobs/${jobId}/photos/${id}`
@@ -70,9 +70,8 @@ export const OfflineUploadProvider: React.FC<{ children: React.ReactNode }> = ({
             taskId,
             url: downloadUrl,
             capturedAt: new Date(capturedAt),
-            geoLat,
-            geoLng,
-            geoTagged,
+            lat: geoLat ?? undefined,
+            lng: geoLng ?? undefined,
             staffId,
           }
 
@@ -187,9 +186,8 @@ export const OfflineUploadProvider: React.FC<{ children: React.ReactNode }> = ({
           taskId,
           url: tempUrlPattern,
           capturedAt: new Date(capturedAtIso),
-          geoLat: queuedPhoto.geoLat,
-          geoLng: queuedPhoto.geoLng,
-          geoTagged: queuedPhoto.geoTagged,
+          lat: queuedPhoto.geoLat ?? undefined,
+          lng: queuedPhoto.geoLng ?? undefined,
           staffId,
         }
 

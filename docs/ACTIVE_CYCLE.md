@@ -32,7 +32,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v3.md`](reports
 | **P3-E2** | Route Code Splitting *(was P1-E5)* | M | P1 | ⬜ Not Started |
 | **P3-E3** | Admin Booking Creation *(was P1-E6)* | L | P1 | ⬜ Not Started |
 | **P3-E4** | Observability & Error Tracking *(was P1-E7)* | M | P1 | ⬜ Not Started |
-| **P3-E5** | CI/CD Pipeline Hardening *(was P1-E8)* | S | P1 | ⬜ Not Started |
+| **P3-E5** | CI/CD Pipeline Hardening *(was P1-E8)* | S | P1 | ✅ Completed 2026-06-18 |
 | **P3-E6** | Accessibility Pass WCAG 2.1 AA *(was P2-E5)* | M | P2 | ⬜ Not Started |
 
 ---
@@ -42,7 +42,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v3.md`](reports
 
 | Epic ID | Epic Name | Complexity | Priority | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| **P3-E7** | Cloud Functions Critical Bug Fixes | S | P0 | ⬜ Not Started |
+| **P3-E7** | Cloud Functions Critical Bug Fixes | S | P0 | ✅ Completed 2026-06-18 |
 | **P3-E8** | `useBookings` Server-Side Filtering Fix | M | P1 | ⬜ Not Started |
 | **P3-E9** | Remove `window.__MOCK_*` from Production | S | P1 | ⬜ Not Started |
 
@@ -69,9 +69,9 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v3.md`](reports
 
 | Epic ID | Epic Name | Complexity | Priority | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| **P3-E18** | Shared Types Package (`packages/shared`) | M | P1 | ⬜ Not Started |
+| **P3-E18** | Shared Types Package (`packages/shared`) | M | P1 | ✅ Completed 2026-06-18 |
 | **P3-E19** | Cloud Functions Domain Split | M | P2 | ⬜ Not Started |
-| **P3-E20** | Firebase App Check | S | P1 | ⬜ Not Started |
+| **P3-E20** | Firebase App Check | S | P1 | ✅ Completed 2026-06-18 |
 | **P3-E21** | Firestore `withConverter()` Adoption | M | P2 | ⬜ Not Started |
 | **P3-E22** | Pricing Web Worker | M | P2 | ⬜ Not Started |
 | **P3-E23** | React 19 `useSuspenseQuery` & Suspense Boundaries | M | P3 | ⬜ Not Started |

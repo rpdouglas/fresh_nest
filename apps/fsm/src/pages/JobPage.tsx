@@ -129,13 +129,15 @@ export const JobPage: React.FC = () => {
 
   // Handle Geolocation Check-in
   const handleCheckIn = () => {
+    if (!job.id) return
+    const jobId = job.id
     setActionLoading(true)
     setErrorMessage(null)
 
     const performCheckIn = (lat: number | null, lng: number | null) => {
       const runUpdate = async () => {
         try {
-          const jobRef = doc(db, 'jobs', job.id)
+          const jobRef = doc(db, 'jobs', jobId)
           await updateDoc(jobRef, {
             status: 'in_progress',
             checkedInAt: serverTimestamp(),
@@ -180,7 +182,9 @@ export const JobPage: React.FC = () => {
   // Handle Photo File Capture
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (!file || !capturingTaskId || !staffProfile) return
+    if (!file || !capturingTaskId || !staffProfile || !job.id || !staffProfile.uid) return
+    const jobId = job.id
+    const staffId = staffProfile.uid
 
     setActionLoading(true)
     setErrorMessage(null)
@@ -189,10 +193,10 @@ export const JobPage: React.FC = () => {
       const runQueue = async () => {
         try {
           const tempUrl = await queuePhotoUpload(
-            job.id,
+            jobId,
             capturingTaskId,
             file,
-            staffProfile.uid,
+            staffId,
             lat !== null && lng !== null ? { lat, lng } : null
           )
           const objectUrl = URL.createObjectURL(file)
@@ -226,7 +230,7 @@ export const JobPage: React.FC = () => {
 
   // Handle Task Completion Toggle
   const handleConfirmTask = async (taskId: string) => {
-    if (!staffProfile) return
+    if (!staffProfile || !job.id) return
     setActionLoading(true)
     setErrorMessage(null)
 
@@ -265,6 +269,7 @@ export const JobPage: React.FC = () => {
 
   // Handle Job Check-out
   const handleCheckOut = async () => {
+    if (!job.id) return
     setActionLoading(true)
     setErrorMessage(null)
 
@@ -502,7 +507,7 @@ export const JobPage: React.FC = () => {
                             completed ? 'text-emerald-800 line-through' : 'text-charcoal',
                             i18n.language === 'ar' && 'text-right'
                           )}>
-                            {t(`fsm.tasks.${task.labelKey}`, { defaultValue: task.labelKey })}
+                            {i18n.language === 'fr' ? task.labelFr : task.labelEn}
                           </span>
                         </div>
 
@@ -530,7 +535,7 @@ export const JobPage: React.FC = () => {
                           
                           {/* Instructions */}
                           <p className="font-body text-base text-text-muted">
-                            {t(`fsm.tasks.desc.${task.labelKey}`, { defaultValue: `Complete all elements related to ${task.labelKey}.` })}
+                            {t('fsm.myJobs.jobCard.completeTask', { defaultValue: `Complete all elements related to this task.` })}
                           </p>
 
                           {/* Photos upload area if required */}

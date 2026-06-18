@@ -87,8 +87,8 @@ describe('JobPage Component', () => {
     id: 'template1',
     name: 'Deep Clean Template',
     tasks: [
-      { id: 'task1', labelKey: 'fridgeDeep', icon: 'fridge', requiresPhoto: true },
-      { id: 'task2', labelKey: 'vacuumFloors', icon: 'vacuum', requiresPhoto: false },
+      { id: 'task1', labelEn: 'Deep clean fridge', labelFr: 'Nettoyage en profondeur du réfrigérateur', icon: 'fridge', requiresPhoto: true },
+      { id: 'task2', labelEn: 'Vacuum floors', labelFr: 'Aspirer les planchers', icon: 'vacuum', requiresPhoto: false },
     ],
   }
 
@@ -221,9 +221,8 @@ describe('JobPage Component', () => {
             taskId: 'task1',
             url: 'https://storage/photo1.jpg',
             capturedAt: new Date(),
-            geoLat: 45,
-            geoLng: -74,
-            geoTagged: true,
+            lat: 45,
+            lng: -74,
             staffId: 'staff123',
           },
         ],

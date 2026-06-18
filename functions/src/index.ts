@@ -1,5 +1,7 @@
 import { initializeApp } from 'firebase-admin/app'
-import { getFirestore, Timestamp, AggregateField, QueryDocumentSnapshot } from 'firebase-admin/firestore'
+import { getFirestore, Timestamp, AggregateField, QueryDocumentSnapshot, Query, CollectionReference } from 'firebase-admin/firestore'
+import Stripe from 'stripe'
+import twilio from 'twilio'
 import { onDocumentCreated, onDocumentUpdated } from 'firebase-functions/v2/firestore'
 import { onSchedule } from 'firebase-functions/v2/scheduler'
 import { onCall, HttpsError } from 'firebase-functions/v2/https'
@@ -514,7 +516,8 @@ export const onStaffUpdatedTrigger = onDocumentUpdated(
     const beforeFinancials = before.financials || {}
     const afterFinancials = after.financials || {}
 
-    const auditLogs: any[] = []
+    type AuditLogEntry = { collection: string; documentId: string; field: string; oldValue: unknown; newValue: unknown; changedBy: string; changedAt: Date; reason: string | null; overrideType: string | null }
+    const auditLogs: AuditLogEntry[] = []
 
     // 1. Terms Version acceptance
     if (beforeCompliance.acceptedTermsVersion !== afterCompliance.acceptedTermsVersion) {
@@ -747,9 +750,8 @@ export const onBookingCancelled = onDocumentUpdated(
       if (stripePaymentIntentId) {
         console.log(`[onBookingCancelled] Releasing Stripe hold for PaymentIntent: ${stripePaymentIntentId}`)
         try {
-          const stripeKey = process.env.STRIPE_SECRET_KEY
+          const stripeKey = process.env['STRIPE_SECRET_KEY']
           if (stripeKey) {
-            const Stripe = require('stripe')
             const stripe = new Stripe(stripeKey)
             await stripe.paymentIntents.cancel(stripePaymentIntentId)
             console.log(`[onBookingCancelled] Stripe PaymentIntent ${stripePaymentIntentId} cancelled.`)
@@ -788,7 +790,6 @@ export const onBookingCancelled = onDocumentUpdated(
       const smsBody = `Fresh Nest Co. Alert: Booking ${bookingId} for ${clientName} on ${preferredDate} has been cancelled by the customer.`
 
       try {
-        const twilio = require('twilio')
         const client = twilio(smsConfig.accountSid, smsConfig.authToken)
         await client.messages.create({
           body: smsBody,
@@ -996,9 +997,9 @@ export const getAnalyticsKPIs = onCall(async (request) => {
       startDate = new Date(now.getFullYear(), now.getMonth(), 1)
     }
 
-    let bookingsQuery = db.collection('bookings')
+    let bookingsQuery: Query | CollectionReference = db.collection('bookings')
     if (startDate) {
-      bookingsQuery = bookingsQuery.where('createdAt', '>=', Timestamp.fromDate(startDate)) as any
+      bookingsQuery = bookingsQuery.where('createdAt', '>=', Timestamp.fromDate(startDate))
     }
 
     let totalBookings = 0
@@ -1027,7 +1028,6 @@ export const getAnalyticsKPIs = onCall(async (request) => {
       'frequency'
     ).get()
 
-    let totalRevenue = 0
     let referredBookingsCount = 0
 
     const leadSourceCounts: Record<string, { count: number; revenue: number }> = {
@@ -1056,8 +1056,6 @@ export const getAnalyticsKPIs = onCall(async (request) => {
         )
       }
 
-      totalRevenue += price
-      
       if (data['referredBy']) {
         referredBookingsCount++
       }
@@ -1100,7 +1098,7 @@ export const getAnalyticsKPIs = onCall(async (request) => {
 
     const monthlyTrendData = Object.values(monthlyDataMap).sort((a, b) => a.sortKey - b.sortKey)
 
-    const analyticsTotalBookings = snapshot.size
+    const analyticsTotalBookings = totalBookings
     const channelsPerformance = Object.entries(leadSourceCounts).map(([source, val]) => {
       const avgValue = val.count > 0 ? val.revenue / val.count : 0
       const share = analyticsTotalBookings > 0 ? (val.count / analyticsTotalBookings) * 100 : 0
@@ -1114,11 +1112,11 @@ export const getAnalyticsKPIs = onCall(async (request) => {
       }
     }).sort((a, b) => b.revenue - a.revenue)
 
-    const analyticsAvgBookingValue = analyticsTotalBookings > 0 ? totalRevenue / analyticsTotalBookings : 0
+    const analyticsAvgBookingValue = analyticsTotalBookings > 0 ? totalRevenueAgg / analyticsTotalBookings : 0
 
     const payload = {
       analyticsTotalBookings,
-      analyticsTotalRevenue: totalRevenue,
+      analyticsTotalRevenue: totalRevenueAgg,
       analyticsAvgBookingValue,
       leadSourceData,
       monthlyTrendData,

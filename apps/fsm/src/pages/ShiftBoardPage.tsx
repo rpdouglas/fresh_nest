@@ -387,7 +387,7 @@ export const ShiftBoardPage: React.FC = () => {
                     <button
                       type="button"
                       disabled={isOverLimit || isConflict || claimingId !== null}
-                      onClick={() => { void handleClaimShift(job.id) }}
+                      onClick={() => { if (job.id) void handleClaimShift(job.id) }}
                       className={cn(
                         'min-h-[48px] w-full font-body font-medium rounded text-base flex items-center justify-center transition-colors duration-200',
                         (isOverLimit || isConflict)
