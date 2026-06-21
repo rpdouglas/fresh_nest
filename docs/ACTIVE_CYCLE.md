@@ -43,7 +43,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v3.md`](reports
 | Epic ID | Epic Name | Complexity | Priority | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | **P3-E7** | Cloud Functions Critical Bug Fixes | S | P0 | ✅ Completed 2026-06-18 |
-| **P3-E8** | `useBookings` Server-Side Filtering Fix | M | P1 | ⬜ Not Started |
+| **P3-E8** | `useBookings` Server-Side Filtering Fix | M | P1 | ✅ Completed 2026-06-21 |
 | **P3-E9** | Remove `window.__MOCK_*` from Production | S | P1 | ✅ Completed 2026-06-18 |
 
 ---

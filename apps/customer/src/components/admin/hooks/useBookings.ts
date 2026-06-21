@@ -10,27 +10,30 @@ import type { AdminBookingFormData } from '@/lib/schemas/bookingSchema'
 export function useBookings(enabled: boolean) {
   const queryClient = useQueryClient()
 
-  // Filtering states (default view is last 90 days to 180 days in future)
+  // Date window (default: last 90 days to 180 days in future)
   const [startDate, setStartDate] = useState<string>(() => {
     const d = new Date()
     d.setDate(d.getDate() - 90)
     return d.toISOString().split('T')[0]
   })
-  
   const [endDate, setEndDate] = useState<string>(() => {
     const d = new Date()
     d.setDate(d.getDate() + 180)
     return d.toISOString().split('T')[0]
   })
 
+  // Server-side filter state — all three live in the queryKey so a change triggers a fresh Firestore fetch
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [serviceFilter, setServiceFilter] = useState<string>('all')
   const [languageFilter, setLanguageFilter] = useState<string>('all')
+
+  // Client-side sort state — kept client-side because cursor-based pagination depends on the Firestore orderBy field (preferredDate)
   const [sortBy, setSortBy] = useState<'preferredDate' | 'createdAt'>('preferredDate')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+
+  // Free-text search — client-side only; Firestore does not support full-text search
   const [searchQuery, setSearchQuery] = useState<string>('')
 
-  // Paginated bookings fetcher
   const {
     data,
     fetchNextPage,
@@ -39,7 +42,7 @@ export function useBookings(enabled: boolean) {
     isLoading,
     error,
   } = useInfiniteQuery({
-    queryKey: ['bookings', startDate, endDate],
+    queryKey: ['bookings', startDate, endDate, statusFilter, serviceFilter, languageFilter],
     queryFn: async ({ pageParam }) => {
       let q = query(
         collection(db, 'bookings'),
@@ -48,9 +51,10 @@ export function useBookings(enabled: boolean) {
         orderBy('preferredDate', 'desc'),
         limit(50)
       )
-      if (pageParam) {
-        q = query(q, startAfter(pageParam))
-      }
+      if (statusFilter !== 'all')   q = query(q, where('status', '==', statusFilter))
+      if (serviceFilter !== 'all')  q = query(q, where('serviceType', '==', serviceFilter))
+      if (languageFilter !== 'all') q = query(q, where('language', '==', languageFilter))
+      if (pageParam)                q = query(q, startAfter(pageParam))
       return await getDocs(q)
     },
     initialPageParam: null as QueryDocumentSnapshot<DocumentData, DocumentData> | null,
@@ -61,7 +65,6 @@ export function useBookings(enabled: boolean) {
     enabled,
   })
 
-  // Map the raw documents from QuerySnapshot pages to Booking[]
   const bookings = useMemo<Booking[]>(() => {
     if (!data) return []
     return data.pages.flatMap((page) =>
@@ -88,35 +91,23 @@ export function useBookings(enabled: boolean) {
     }
   }
 
-  // Collapsible rows state
-  const [expandedRowId, setExpandedRowId] = useState<string | null>(null)
-
-  // Cleaner custom names input state
-  const [customCleanerNames, setCustomCleanerNames] = useState<Record<string, string>>({})
-  const [showCustomInput, setShowCustomInput] = useState<Record<string, boolean>>({})
-
-  // Statistics counters
+  // Statistics counters (over the server-filtered + client-searched result set)
   const totalCount = bookings.length
   const pendingCount = bookings.filter((b) => b.status === 'pending').length
   const confirmedCount = bookings.filter((b) => b.status === 'confirmed').length
 
-  // Filtered & Sorted Bookings
   const filteredBookings = useMemo(() => {
     return bookings
       .filter((b) => {
-        const matchesStatus = statusFilter === 'all' || b.status === statusFilter
-        const matchesService = serviceFilter === 'all' || b.serviceType === serviceFilter
-        const matchesLanguage = languageFilter === 'all' || b.language === languageFilter
-
+        if (!searchQuery) return true
         const fullName = `${b.firstName} ${b.lastName}`.toLowerCase()
         const qVal = searchQuery.toLowerCase()
-        const matchesSearch =
+        return (
           fullName.includes(qVal) ||
           b.email.toLowerCase().includes(qVal) ||
           b.phone.includes(qVal) ||
           b.address.toLowerCase().includes(qVal)
-
-        return matchesStatus && matchesService && matchesLanguage && matchesSearch
+        )
       })
       .sort((a, b) => {
         const dateA = sortBy === 'preferredDate'
@@ -127,7 +118,7 @@ export function useBookings(enabled: boolean) {
           : b.createdAt.getTime()
         return sortOrder === 'asc' ? dateA - dateB : dateB - dateA
       })
-  }, [bookings, statusFilter, serviceFilter, languageFilter, sortBy, sortOrder, searchQuery])
+  }, [bookings, sortBy, sortOrder, searchQuery])
 
   const handleStatusChange = async (bookingId: string, status: BookingStatus) => {
     try {
@@ -138,31 +129,13 @@ export function useBookings(enabled: boolean) {
     }
   }
 
-  const handleAssignmentChange = async (bookingId: string, value: string) => {
-    if (value === 'custom') {
-      setShowCustomInput((prev) => ({ ...prev, [bookingId]: true }))
-    } else {
-      setShowCustomInput((prev) => ({ ...prev, [bookingId]: false }))
-      try {
-        const cleanerName = value === 'unassigned' ? null : value
-        await updateBookingAssignment(bookingId, cleanerName)
-        await queryClient.invalidateQueries({ queryKey: ['bookings'] })
-      } catch (err) {
-        console.error('Error updating cleaner assignment:', err)
-      }
-    }
-  }
-
-  const handleCustomCleanerSave = async (bookingId: string) => {
-    const customName = customCleanerNames[bookingId]?.trim()
-    if (!customName) return
-
+  // Pure data mutation — UI toggle for showCustomInput is handled in BookingsTable
+  const handleAssignmentChange = async (bookingId: string, cleanerName: string | null) => {
     try {
-      await updateBookingAssignment(bookingId, customName)
-      setShowCustomInput((prev) => ({ ...prev, [bookingId]: false }))
+      await updateBookingAssignment(bookingId, cleanerName)
       await queryClient.invalidateQueries({ queryKey: ['bookings'] })
     } catch (err) {
-      console.error('Error saving custom cleaner name:', err)
+      console.error('Error updating cleaner assignment:', err)
     }
   }
 
@@ -193,15 +166,8 @@ export function useBookings(enabled: boolean) {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    expandedRowId,
-    setExpandedRowId,
-    customCleanerNames,
-    setCustomCleanerNames,
-    showCustomInput,
-    setShowCustomInput,
     handleStatusChange,
     handleAssignmentChange,
-    handleCustomCleanerSave,
     handleAdminCreate,
     isCreating,
   }

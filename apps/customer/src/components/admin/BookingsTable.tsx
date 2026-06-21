@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils/utils'
@@ -33,13 +33,8 @@ interface BookingsTableProps {
   isFetchingNextPage: boolean
   isLoading: boolean
   error: string | null
-  expandedRowId: string | null
-  setExpandedRowId: (val: string | null) => void
-  customCleanerNames: Record<string, string>
-  setCustomCleanerNames: React.Dispatch<React.SetStateAction<Record<string, string>>>
-  showCustomInput: Record<string, boolean>
   handleStatusChange: (bookingId: string, status: BookingStatus) => Promise<void> | void
-  handleAssignmentChange: (bookingId: string, value: string) => Promise<void> | void
+  handleAssignmentChange: (bookingId: string, cleanerName: string | null) => Promise<void> | void
   handleAdminCreate: (data: AdminBookingFormData, adminEmail: string) => Promise<void>
   isCreating: boolean
   adminEmail: string
@@ -71,11 +66,6 @@ export function BookingsTable({
   isFetchingNextPage,
   isLoading,
   error,
-  expandedRowId,
-  setExpandedRowId,
-  customCleanerNames,
-  setCustomCleanerNames,
-  showCustomInput,
   handleStatusChange,
   handleAssignmentChange,
   handleAdminCreate,
@@ -84,6 +74,22 @@ export function BookingsTable({
 }: BookingsTableProps) {
   const { t } = useTranslation()
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false)
+
+  // UI toggle state — local to this component; no data-fetching concerns
+  const [expandedRowId, setExpandedRowId] = useState<string | null>(null)
+  const [customCleanerNames, setCustomCleanerNames] = useState<Record<string, string>>({})
+  const [showCustomInput, setShowCustomInput] = useState<Record<string, boolean>>({})
+
+  // Wraps the data-mutation handler with the local UI toggle for the custom cleaner input
+  const handleAssignmentChangeWithToggle = async (bookingId: string, value: string) => {
+    if (value === 'custom') {
+      setShowCustomInput((prev) => ({ ...prev, [bookingId]: true }))
+    } else {
+      setShowCustomInput((prev) => ({ ...prev, [bookingId]: false }))
+      const cleanerName = value === 'unassigned' ? null : value
+      await handleAssignmentChange(bookingId, cleanerName)
+    }
+  }
 
   return (
     <div className="flex flex-col gap-8">
@@ -383,7 +389,7 @@ export function BookingsTable({
                           showCustomInput={showCustomInput}
                           setCustomCleanerNames={setCustomCleanerNames}
                           handleStatusChange={handleStatusChange}
-                          handleAssignmentChange={handleAssignmentChange}
+                          handleAssignmentChange={handleAssignmentChangeWithToggle}
                         />
                       )}
                     </AnimatePresence>
