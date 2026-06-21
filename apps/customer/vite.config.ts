@@ -2,11 +2,13 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { VitePWA } from 'vite-plugin-pwa'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
+    visualizer({ filename: 'stats.html', gzipSize: true, open: false }),
     VitePWA({
       registerType: 'prompt', // Prompts user to reload when a new service worker is available
       injectRegister: 'auto',

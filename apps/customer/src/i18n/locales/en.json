@@ -497,6 +497,8 @@
     "callUs": "Call Us",
     "loading": "Loading...",
     "error": "Something went wrong. Please try again.",
+    "chunkError": "Something went wrong. Please refresh the page.",
+    "refresh": "Refresh",
     "required": "Required",
     "optional": "Optional",
     "verify": "Verify",

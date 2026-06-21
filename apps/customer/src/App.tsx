@@ -1,75 +1,78 @@
+import { lazy, Suspense } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Layout from '@/components/layout/Layout'
-import Home from '@/pages/Home'
-import Gallery from '@/pages/Gallery'
 import { CORNWALL_ON, AKWESASNE, SNYE_QC, LONG_SAULT, MORRISBURG } from '@/lib/data/locationData'
-import LocationPage from '@/pages/LocationPage'
-import LocationsOverview from '@/pages/LocationsOverview'
-import FaqPage from '@/pages/FaqPage'
-import BookingPage from '@/pages/BookingPage'
-import PricingPage from '@/pages/PricingPage'
-import AirbnbTurnoverPage from '@/pages/AirbnbTurnoverPage'
-import ServicePage from '@/pages/ServicePage'
-import ServicesOverview from '@/pages/ServicesOverview'
 import { SERVICE_CONFIG_MAP } from '@/lib/data/serviceData'
-import ThankYouPage from '@/pages/ThankYouPage'
-import AdminPage from '@/pages/AdminPage'
-import Blog from '@/pages/Blog'
-import BlogPost from '@/pages/BlogPost'
-import LeaveReviewPage from '@/pages/LeaveReviewPage'
-import ReviewsPage from '@/pages/ReviewsPage'
-import AboutPage from '@/pages/AboutPage'
-import CareersPage from '@/pages/CareersPage'
-import PrivacyPage from '@/pages/PrivacyPage'
-import LoginPage from '@/pages/customer/LoginPage'
-import LoginConfirmPage from '@/pages/customer/LoginConfirmPage'
 import CustomerPortalLayout from '@/components/layout/CustomerPortalLayout'
-import CustomerBookingsPage from '@/pages/customer/CustomerBookingsPage'
-import CustomerUpcomingPage from '@/pages/customer/CustomerUpcomingPage'
-import CustomerProfilePage from '@/pages/customer/CustomerProfilePage'
 import { CustomerProtectedRoute } from '@/components/layout/CustomerProtectedRoute'
 import { CustomerAuthProvider } from '@/components/layout/CustomerAuthContext'
-import OfflinePage from '@/pages/OfflinePage'
+import PageLoader from '@/components/common/PageLoader'
+import ErrorBoundary from '@/components/common/ErrorBoundary'
+
+const Home                 = lazy(() => import('@/pages/Home'))
+const Gallery              = lazy(() => import('@/pages/Gallery'))
+const LocationPage         = lazy(() => import('@/pages/LocationPage'))
+const LocationsOverview    = lazy(() => import('@/pages/LocationsOverview'))
+const FaqPage              = lazy(() => import('@/pages/FaqPage'))
+const BookingPage          = lazy(() => import('@/pages/BookingPage'))
+const PricingPage          = lazy(() => import('@/pages/PricingPage'))
+const AirbnbTurnoverPage   = lazy(() => import('@/pages/AirbnbTurnoverPage'))
+const ServicePage          = lazy(() => import('@/pages/ServicePage'))
+const ServicesOverview     = lazy(() => import('@/pages/ServicesOverview'))
+const ThankYouPage         = lazy(() => import('@/pages/ThankYouPage'))
+const AdminPage            = lazy(() => import('@/pages/AdminPage'))
+const Blog                 = lazy(() => import('@/pages/Blog'))
+const BlogPost             = lazy(() => import('@/pages/BlogPost'))
+const LeaveReviewPage      = lazy(() => import('@/pages/LeaveReviewPage'))
+const ReviewsPage          = lazy(() => import('@/pages/ReviewsPage'))
+const AboutPage            = lazy(() => import('@/pages/AboutPage'))
+const CareersPage          = lazy(() => import('@/pages/CareersPage'))
+const PrivacyPage          = lazy(() => import('@/pages/PrivacyPage'))
+const OfflinePage          = lazy(() => import('@/pages/OfflinePage'))
+const LoginPage            = lazy(() => import('@/pages/customer/LoginPage'))
+const LoginConfirmPage     = lazy(() => import('@/pages/customer/LoginConfirmPage'))
+const CustomerBookingsPage = lazy(() => import('@/pages/customer/CustomerBookingsPage'))
+const CustomerUpcomingPage = lazy(() => import('@/pages/customer/CustomerUpcomingPage'))
+const CustomerProfilePage  = lazy(() => import('@/pages/customer/CustomerProfilePage'))
 
 /**
  * React Router v6 browser router.
  * All routes are nested under the root Layout (Navbar + Footer).
- * Placeholder routes will be replaced epic-by-epic through Phase 2–6.
  *
  * Route inventory:
- *  /                        — E04 Hero + homepage sections
- *  /services                — E07 Services Grid
- *  /services/:service       — E21 Individual service pages
- *  /services/airbnb-turnover— E20 Airbnb Turnover (Gallagher P6)
- *  /locations               — E13 Service Areas
- *  /locations/:location     — E13 Individual location pages
- *  /locations/akwesasne     — E13 (Kahnawà:ke P4)
- *  /locations/snye-qc       — E13 (Sophie P5)
- *  /pricing                 — E19 Pricing page
- *  /faq                     — E14 FAQ
- *  /gallery                 — E09 Before/After Gallery
- *  /booking                 — E15 Multi-Step Booking Form
- *  /thank-you               — E22 Thank You page
- *  /about                   — E10 How It Works + About
- *  /reviews                 — E12 Reviews
+ *  /                        — Hero + homepage sections
+ *  /services                — Services Grid
+ *  /services/:service       — Individual service pages
+ *  /services/airbnb-turnover— Airbnb Turnover (Gallagher P6)
+ *  /locations               — Service Areas
+ *  /locations/:location     — Individual location pages
+ *  /locations/akwesasne     — (Kahnawà:ke P4)
+ *  /locations/snye-qc       — (Sophie P5)
+ *  /pricing                 — Pricing page
+ *  /faq                     — FAQ
+ *  /gallery                 — Before/After Gallery
+ *  /booking                 — Multi-Step Booking Form
+ *  /thank-you               — Thank You page
+ *  /about                   — How It Works + About
+ *  /reviews                 — Reviews
  *  /privacy                 — Static privacy policy
- *  /admin                   — E28 Admin Dashboard (Phase 5)
+ *  /admin                   — Admin Dashboard
  */
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
     children: [
-      // ── Phase 1–2: Core pages ──
+      // ── Core pages ──
       { index: true, element: <Home /> },
 
       // ── Services ──
-      { path: 'services',                    element: <ServicesOverview /> },
-      { path: 'services/airbnb-turnover',    element: <AirbnbTurnoverPage /> },
-      { path: 'services/standard-cleaning',  element: <ServicePage config={SERVICE_CONFIG_MAP.standard} /> },
-      { path: 'services/deep-cleaning',      element: <ServicePage config={SERVICE_CONFIG_MAP.deep} /> },
-      { path: 'services/move-out-cleaning',  element: <ServicePage config={SERVICE_CONFIG_MAP.moveout} /> },
-      { path: 'services/post-construction',  element: <ServicePage config={SERVICE_CONFIG_MAP.postconstruction} /> },
+      { path: 'services',                     element: <ServicesOverview /> },
+      { path: 'services/airbnb-turnover',     element: <AirbnbTurnoverPage /> },
+      { path: 'services/standard-cleaning',   element: <ServicePage config={SERVICE_CONFIG_MAP.standard} /> },
+      { path: 'services/deep-cleaning',       element: <ServicePage config={SERVICE_CONFIG_MAP.deep} /> },
+      { path: 'services/move-out-cleaning',   element: <ServicePage config={SERVICE_CONFIG_MAP.moveout} /> },
+      { path: 'services/post-construction',   element: <ServicePage config={SERVICE_CONFIG_MAP.postconstruction} /> },
       { path: 'services/commercial-cleaning', element: <ServicePage config={SERVICE_CONFIG_MAP.commercial} /> },
 
       // ── Locations ──
@@ -80,61 +83,28 @@ const router = createBrowserRouter([
       { path: 'locations/long-sault',  element: <LocationPage config={LONG_SAULT} /> },
       { path: 'locations/morrisburg',  element: <LocationPage config={MORRISBURG} /> },
 
-      // ── Phase 2–3 pages ──
-      { path: 'pricing', element: <PricingPage /> },
-      {
-        path: 'faq',
-        element: <FaqPage />,
-      },
-      {
-        path: 'gallery',
-        element: <Gallery />,
-      },
-      {
-        path: 'booking',
-        element: <BookingPage />,
-      },
-      {
-        path: 'thank-you',
-        element: <ThankYouPage />,
-      },
-      {
-        path: 'about',
-        element: <AboutPage />,
-      },
-      {
-        path: 'reviews',
-        element: <ReviewsPage />,
-      },
-      {
-        path: 'leave-review',
-        element: <LeaveReviewPage />,
-      },
-      {
-        path: 'privacy',
-        element: <PrivacyPage />,
-      },
-      {
-        path: 'careers',
-        element: <CareersPage />,
-      },
-      {
-        path: 'offline',
-        element: <OfflinePage />,
-      },
+      // ── Marketing & info pages ──
+      { path: 'pricing',      element: <PricingPage /> },
+      { path: 'faq',          element: <FaqPage /> },
+      { path: 'gallery',      element: <Gallery /> },
+      { path: 'booking',      element: <BookingPage /> },
+      { path: 'thank-you',    element: <ThankYouPage /> },
+      { path: 'about',        element: <AboutPage /> },
+      { path: 'reviews',      element: <ReviewsPage /> },
+      { path: 'leave-review', element: <LeaveReviewPage /> },
+      { path: 'privacy',      element: <PrivacyPage /> },
+      { path: 'careers',      element: <CareersPage /> },
+      { path: 'offline',      element: <OfflinePage /> },
 
-      // ── Phase 4: Blog ──
-      { path: 'blog', element: <Blog /> },
+      // ── Blog ──
+      { path: 'blog',       element: <Blog /> },
       { path: 'blog/:slug', element: <BlogPost /> },
 
-      // ── Phase 5: Admin ──
-      {
-        path: 'admin',
-        element: <AdminPage />,
-      },
+      // ── Admin ──
+      { path: 'admin', element: <AdminPage /> },
 
-      // ── Phase 2: Customer Portal ──
-      { path: 'login', element: <LoginPage /> },
+      // ── Customer Portal ──
+      { path: 'login',         element: <LoginPage /> },
       { path: 'login-confirm', element: <LoginConfirmPage /> },
       {
         path: 'account',
@@ -144,10 +114,10 @@ const router = createBrowserRouter([
           </CustomerProtectedRoute>
         ),
         children: [
-          { index: true, element: <CustomerBookingsPage /> },
-          { path: 'bookings', element: <CustomerBookingsPage /> },
-          { path: 'upcoming', element: <CustomerUpcomingPage /> },
-          { path: 'profile', element: <CustomerProfilePage /> },
+          { index: true,         element: <CustomerBookingsPage /> },
+          { path: 'bookings',    element: <CustomerBookingsPage /> },
+          { path: 'upcoming',    element: <CustomerUpcomingPage /> },
+          { path: 'profile',     element: <CustomerProfilePage /> },
         ],
       },
     ],
@@ -157,7 +127,11 @@ const router = createBrowserRouter([
 export default function App() {
   return (
     <CustomerAuthProvider>
-      <RouterProvider router={router} />
+      <ErrorBoundary>
+        <Suspense fallback={<PageLoader />}>
+          <RouterProvider router={router} />
+        </Suspense>
+      </ErrorBoundary>
     </CustomerAuthProvider>
   )
 }

@@ -497,6 +497,8 @@
     "callUs": "Appelez-nous",
     "loading": "Chargement…",
     "error": "Une erreur s'est produite. Veuillez réessayer.",
+    "chunkError": "Une erreur s'est produite. Veuillez actualiser la page.",
+    "refresh": "Actualiser",
     "required": "Obligatoire",
     "optional": "Facultatif",
     "verify": "Vérifier",

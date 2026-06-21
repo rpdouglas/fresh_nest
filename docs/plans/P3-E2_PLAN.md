@@ -58,8 +58,20 @@
 
 ---
 
-## Recommended Strategy: **Strategy 1**
+## Approved Strategy: **Strategy 1** ✅
 
-Full lazy-loading of all routes is the plan-specified approach, achieves the 40% reduction target by ejecting the admin bundle from public load, and establishes the Suspense infrastructure P3-E23 depends on. Strategy 3 is a valid fallback if the 40% target proves harder to hit after measurement.
+Full lazy-loading of all routes is the plan-specified approach, achieves the 40% reduction target by ejecting the admin bundle from public load, and establishes the Suspense infrastructure P3-E23 depends on.
 
-**Awaiting human approval to proceed to Phase B.**
+**Approved:** 2026-06-21
+
+### Decisions locked in approval
+
+| # | Question | Decision |
+|---|---|---|
+| 1 | Strategy | Strategy 1 — `React.lazy()` on all 25+ routes |
+| 2 | ErrorBoundary | Custom class component (~30 lines, no new dependency) wrapping `<Suspense>` |
+
+### Additional file: `ErrorBoundary.tsx`
+- `apps/customer/src/components/common/ErrorBoundary.tsx` — custom class component; catches chunk load errors; renders branded "Something went wrong — refresh the page" message using design-system tokens; wraps `<Suspense>` in `App.tsx`
+
+**Proceeding to Phase B.**
