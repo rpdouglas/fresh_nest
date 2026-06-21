@@ -1,12 +1,11 @@
 import { test, expect } from '@playwright/test'
 
-// Stripe checkout spec — Stripe SDK calls are mocked at the window level;
-// Firestore writes are intercepted at the network layer via page.route().
+// Stripe checkout spec — Stripe SDK calls are mocked at the window level via
+// window.Stripe; the createPaymentIntent Cloud Function is intercepted via
+// page.route() at the network layer.
 //
-// When P3-E1 (Stripe integration) ships:
-//   - window.Stripe is picked up by the Stripe.js init in BookingStep4
-//   - window.__MOCK_CREATE_PAYMENT_INTENT__ is replaced with page.route() on
-//     the Cloud Functions callable endpoint
+// The window.Stripe mock is picked up by loadStripe() in BookingPage because
+// Stripe.js checks for an existing window.Stripe before loading its own script.
 //
 // The declined-card test validates that a Stripe error surfaces as role="alert"
 // and the user is NOT redirected to /thank-you (no silent payment failures).
@@ -22,7 +21,16 @@ function futureDateStr(daysAhead = 5): string {
 }
 
 test.beforeEach(async ({ page }) => {
-  // Intercept the Firestore booking write at the network layer (P3-E9).
+  // Intercept the createPaymentIntent Cloud Functions callable at the network layer.
+  await page.route(/createPaymentIntent/, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ result: { clientSecret: 'pi_test_mock_secret_xyz_seti_mock' } }),
+    })
+  })
+
+  // Intercept Firestore booking write.
   await page.route('**/firestore.googleapis.com/**', async (route, request) => {
     if (request.method() === 'POST') {
       await route.fulfill({
@@ -55,14 +63,9 @@ test.beforeEach(async ({ page }) => {
       confirmPayment: () =>
         Promise.resolve({
           error: null,
-          paymentIntent: { status: 'succeeded', id: 'pi_test_mock_e2e' },
+          paymentIntent: { status: 'requires_capture', id: 'pi_test_mock_e2e' },
         }),
     })
-
-    // Cloud Function callable mock — returns a client secret without a real deploy.
-    // Deferred to page.route() when P3-E1 ships.
-    ;(window as unknown as Record<string, unknown>).__MOCK_CREATE_PAYMENT_INTENT__ = () =>
-      Promise.resolve({ data: { clientSecret: 'pi_test_mock_secret_xyz' } })
   })
 })
 
@@ -72,10 +75,12 @@ test('Gallagher completes Airbnb booking with mocked Stripe payment', async ({ p
   // Step 1 — Service & property
   await page.getByRole('radio', { name: /standard cleaning/i }).first().click()
   await page.getByRole('radio', { name: /apartment/i }).first().click()
+  await page.getByRole('button', { name: /next/i }).click()
 
   // Step 2 — Schedule
   await page.getByRole('radio', { name: /one.time/i }).first().click()
   await page.locator('#preferredDate').fill(futureDateStr())
+  await page.getByRole('button', { name: /next/i }).click()
 
   // Step 3 — Contact
   await page.locator('#firstName').fill('Gallagher')
@@ -83,6 +88,7 @@ test('Gallagher completes Airbnb booking with mocked Stripe payment', async ({ p
   await page.locator('#email').fill('gallagher@airbnb.ca')
   await page.locator('#phone').fill('6135550099')
   await page.locator('#address').fill('99 River Rd, Cornwall ON')
+  await page.getByRole('button', { name: /next/i }).click()
 
   // Step 4 — Review: price summary must be visible before customer confirms
   await expect(page.getByText('Standard Cleaning').first()).toBeVisible()
@@ -94,9 +100,7 @@ test('Gallagher completes Airbnb booking with mocked Stripe payment', async ({ p
 })
 
 test('Stripe card decline keeps user on booking page without silent failure', async ({ page }) => {
-  // Override only the Stripe confirmPayment mock to simulate a card decline.
-  // The beforeEach Stripe mock is already injected; this addInitScript runs
-  // last and its window.Stripe assignment wins because scripts run in order.
+  // Override confirmPayment to simulate a card decline (runs after beforeEach mock).
   await page.addInitScript(() => {
     ;(window as unknown as Record<string, unknown>).Stripe = (_publishableKey: string) => ({
       elements: () => ({
@@ -114,41 +118,54 @@ test('Stripe card decline keeps user on booking page without silent failure', as
           error: { type: 'card_error', code: 'card_declined', message: 'Your card was declined.' },
         }),
     })
-    ;(window as unknown as Record<string, unknown>).__MOCK_CREATE_PAYMENT_INTENT__ = () =>
-      Promise.resolve({ data: { clientSecret: 'pi_test_declined_secret' } })
   })
 
   await page.goto('/booking')
+
+  // Navigate through all steps
   await page.getByRole('radio', { name: /standard cleaning/i }).first().click()
   await page.getByRole('radio', { name: /apartment/i }).first().click()
+  await page.getByRole('button', { name: /next/i }).click()
+
   await page.getByRole('radio', { name: /one.time/i }).first().click()
   await page.locator('#preferredDate').fill(futureDateStr(7))
+  await page.getByRole('button', { name: /next/i }).click()
+
   await page.locator('#firstName').fill('Declined')
   await page.locator('#lastName').fill('User')
   await page.locator('#email').fill('decline@test.ca')
   await page.locator('#phone').fill('6135559999')
   await page.locator('#address').fill('1 Decline Ave, Cornwall ON')
+  await page.getByRole('button', { name: /next/i }).click()
 
   await page.getByRole('button', { name: /confirm booking/i }).click()
 
   // User must stay on the booking page — no silent redirect on payment failure
   await expect(page).not.toHaveURL(/\/thank-you/)
-  // Once P1-E3 ships, a role="alert" payment error must also be visible here:
-  // await expect(page.getByRole('alert')).toContainText(/declined/i)
+  // Payment error must be visible
+  await expect(page.getByRole('alert')).toContainText(/declined/i)
 })
 
 test('Review summary shows correct service and frequency before payment', async ({ page }) => {
   await page.goto('/booking')
 
+  // Step 1
   await page.getByRole('radio', { name: /deep clean/i }).first().click()
   await page.getByRole('radio', { name: /3.4 bedroom/i }).first().click()
+  await page.getByRole('button', { name: /next/i }).click()
+
+  // Step 2
   await page.getByRole('radio', { name: /biweekly/i }).first().click()
   await page.locator('#preferredDate').fill(futureDateStr(3))
+  await page.getByRole('button', { name: /next/i }).click()
+
+  // Step 3
   await page.locator('#firstName').fill('Travis')
   await page.locator('#lastName').fill('McLeod')
   await page.locator('#email').fill('travis@test.com')
   await page.locator('#phone').fill('6135550001')
   await page.locator('#address').fill('123 Main St, Long Sault ON')
+  await page.getByRole('button', { name: /next/i }).click()
 
   // Step 4 review must surface the chosen service and frequency before payment
   await expect(page.getByText(/deep clean/i).first()).toBeVisible()

@@ -202,7 +202,7 @@ export const PayRatesManager: React.FC<PayRatesManagerProps> = ({ isAuthorized }
                 <option value="supervisor">{getRoleLabel('supervisor')}</option>
               </select>
               {errors.role && (
-                <p className="text-red-600 font-body text-sm mt-1">{t('admin.payRates.form.errors.role')}</p>
+                <p className="text-red-600 font-body text-base mt-1">{t('admin.payRates.form.errors.role')}</p>
               )}
             </div>
 
@@ -224,7 +224,7 @@ export const PayRatesManager: React.FC<PayRatesManagerProps> = ({ isAuthorized }
                 />
               </div>
               {errors.amount && (
-                <p className="text-red-600 font-body text-sm mt-1">{t('admin.payRates.form.errors.amount')}</p>
+                <p className="text-red-600 font-body text-base mt-1">{t('admin.payRates.form.errors.amount')}</p>
               )}
             </div>
 
@@ -302,16 +302,16 @@ export const PayRatesManager: React.FC<PayRatesManagerProps> = ({ isAuthorized }
                 </span>
                 <div className="mt-2 flex items-center justify-between">
                   {activeRate ? (
-                    <span className="text-xs bg-green-100 text-green-800 font-body px-2.5 py-0.5 rounded border border-green-200">
+                    <span className="text-sm bg-green-100 text-green-800 font-body px-2.5 py-0.5 rounded border border-green-200">
                       {t('admin.payRates.active')}
                     </span>
                   ) : (
-                    <span className="text-xs bg-slate-100 text-text-muted font-body px-2.5 py-0.5 rounded border border-sand">
+                    <span className="text-sm bg-slate-100 text-text-muted font-body px-2.5 py-0.5 rounded border border-sand">
                       {t('admin.payRates.form.errors.rolePlaceholder', { defaultValue: 'Not configured' })}
                     </span>
                   )}
                   {activeRate && (
-                    <span className="font-body text-xs text-text-muted">
+                    <span className="font-body text-sm text-text-muted">
                       {t('admin.payRates.createdAt', { date: activeRate.effectiveFrom.toLocaleDateString() })}
                     </span>
                   )}
@@ -360,7 +360,7 @@ export const PayRatesManager: React.FC<PayRatesManagerProps> = ({ isAuthorized }
                         {rate.effectiveFrom.toLocaleString()}
                       </td>
                       <td className="p-4">
-                        <span className={cn('text-xs font-body px-2.5 py-0.5 rounded border', status.colorClass)}>
+                        <span className={cn('text-sm font-body px-2.5 py-0.5 rounded border', status.colorClass)}>
                           {status.label}
                         </span>
                       </td>

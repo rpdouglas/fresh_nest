@@ -63,7 +63,11 @@ service cloud.firestore {
             || (request.resource.data.preferredCleaner is string || request.resource.data.preferredCleaner == null))
         && (!('referredBy' in request.resource.data) 
             || (request.resource.data.referredBy is string || request.resource.data.referredBy == null))
-        && (!('notes' in request.resource.data) || request.resource.data.notes is string);
+        && (!('notes' in request.resource.data) || request.resource.data.notes is string)
+        && (!('stripePaymentIntentId' in request.resource.data)
+            || request.resource.data.stripePaymentIntentId is string)
+        && (!('stripeChargeStatus' in request.resource.data)
+            || request.resource.data.stripeChargeStatus == 'hold');
 
       // Admin Booking Creation (phone-in / walk-in — P3-E3)
       allow create: if

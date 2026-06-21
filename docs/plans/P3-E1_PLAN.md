@@ -73,8 +73,26 @@
 
 ---
 
-## Recommended Strategy: **Strategy 1**
+## Approved Strategy: **Strategy 1** ✅
 
 The pre-auth hold model is what the v3 plan specifies, aligns with P3-E10 (referral Stripe coupon), and gives admin the hold/capture/release control that makes cancellations clean. Strategy 2 creates refund debt. Strategy 3 breaks persona flows.
 
-**Awaiting human approval to proceed to Phase B.**
+**Approved:** 2026-06-21
+
+### Decisions locked in approval
+
+| # | Question | Decision |
+|---|---|---|
+| 1 | Strategy | Strategy 1 — pre-auth hold (authorize at submission, capture on confirm, release on cancel) |
+| 2 | `createPaymentIntent` timing | Option A — called when user arrives at Step 4; `clientSecret` owned by `BookingPage`, passed to `BookingStep4`; Step 4 shows loading spinner while callable fires |
+
+### Implementation notes from approval
+
+- `<Elements>` provider initialized in `BookingPage` when `currentStep === 3`; `clientSecret` stored in `BookingPage` state
+- `BookingStep4` receives `clientSecret` as prop; renders `<PaymentElement>` only when secret is available
+- `createPaymentIntent` callable fires once on Step 4 entry; re-fires only if `clientSecret` is null (prevents duplicate intents on back-navigation)
+- Existing `onBookingCancelled` `process.env['STRIPE_SECRET_KEY']` pattern stays as-is (P3-E7 artifact); new `createPaymentIntent` callable uses the same pattern for consistency within this sprint
+- HST: 13% ON displayed at launch; QC (14.975%) flagged as TBD in a code comment
+- Submit button disabled immediately on click; re-enabled on Stripe error
+
+**Proceeding to Phase B.**

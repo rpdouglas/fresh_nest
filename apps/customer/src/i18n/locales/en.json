@@ -346,7 +346,18 @@
       "phone": "Please enter a valid phone number (minimum 10 digits).",
       "minLength": "This field is too short.",
       "date": "Please select a date.",
-      "submit": "Something went wrong saving your booking. Please try again or call us:"
+      "submit": "Something went wrong saving your booking. Please try again or call us:",
+      "payment": "Unable to initialize payment. Please try again or call us.",
+      "cardDeclined": "Your card was declined. Please check your card details and try again.",
+      "paymentUnavailable": "Payment form is loading. Please wait a moment."
+    },
+    "payment": {
+      "heading": "Payment",
+      "subtotal": "Subtotal",
+      "hst": "HST (13% ON)",
+      "total": "Total",
+      "secure": "Your payment is secured by Stripe",
+      "loading": "Preparing secure payment form…"
     },
     "review": {
       "heading": "Review your booking",
@@ -766,7 +777,8 @@
         "endDate": "End Date",
         "loadMore": "Load More",
         "loading": "Loading...",
-        "noMore": "No more bookings"
+        "noMore": "No more bookings",
+        "showing": "Showing {{count}} bookings"
       },
       "table": {
         "client": "Client Details",

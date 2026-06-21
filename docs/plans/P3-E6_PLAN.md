@@ -1,46 +1,79 @@
 # P3-E6: Accessibility Pass (WCAG 2.1 AA) — Phase A Strategy Plan
 
 **Epic:** P3-E6 · **Priority:** P2 · **Complexity:** M
-**Prepared:** 2026-06-18
+**Prepared:** 2026-06-18 · **Updated / Approved:** 2026-06-21
 **Persona gate:** P3 Margaret — keyboard-only booking flow works; Lighthouse a11y ≥ 90 on `/booking` and `/`.
 
 ---
 
-## Strategy 1 — axe-core Audit + Targeted Spec-Driven Fixes (Recommended)
+## Pre-flight Audit: Already Done (No Action Needed)
 
-**What:** Run axe-core programmatically on the three specified routes (`/`, `/booking`, `/admin`). Fix all Critical and Serious violations. Implement the specific fixes called out in the v3 plan spec. Add a Playwright keyboard-navigation test for the full booking flow.
+A code audit before execution found these spec items already implemented:
+
+| Task | Status | Evidence |
+|---|---|---|
+| Skip-to-content link | ✅ Done | `Navbar.tsx` lines 47–52 + `t('nav.skipToContent')` |
+| `aria-expanded` + `aria-controls` on hamburger | ✅ Done | `Navbar.tsx` lines 177–179 |
+| `<main id="main-content" tabIndex={-1}>` | ✅ Done | `Layout.tsx` lines 35–41 |
+| Dynamic `html[lang]` | ✅ Done | `Layout.tsx` `document.documentElement.lang = i18n.language` |
+| Focus management on step change | ✅ Done | `BookingPage.tsx` `focusHeading` callback + `tabIndex={-1}` on step `<h2>` |
+| `aria-label` on nav, logo, phone links | ✅ Done | `Navbar.tsx` throughout |
+| `role="alert"` on booking form errors | ✅ Done | `BookingStep2.tsx`, `BookingStep4.tsx` |
+
+**Remaining scope for Phase B:** `aria-live` regions, admin `text-sm` uplift, `@axe-core/playwright` E2E tests.
+
+---
+
+## Strategy 1 — axe/playwright E2E + Full Admin text-sm Audit (Approved)
+
+**What:** Install `@axe-core/playwright`; create `e2e/a11y.spec.ts` with axe audits on `/`, `/booking`, and `/admin`; add keyboard-only booking flow test; add `aria-live` to `StepIndicator` and admin filter counts; uplift meaningful `text-sm` → `text-base` across all 12 admin components.
 
 **Files changed:**
-- `apps/customer/src/components/layout/Layout.tsx` — add skip-nav: `<a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-slate-brand focus:text-white focus:rounded">Skip to content</a>`; add `id="main-content"` to `<main>`
-- `apps/customer/src/components/layout/Navbar.tsx` — add `aria-expanded` + `aria-controls` on hamburger button; ensure `aria-label` on icon-only controls
-- `apps/customer/src/pages/BookingPage.tsx` — add focus management on step change: `useEffect(() => { firstInteractiveRef.current?.focus() }, [currentStep])`
-- `apps/customer/src/components/admin/BookingsTable.tsx` + `StaffTable.tsx` — audit `text-sm` (14px) instances; uplift status badge text to `text-xs font-medium` with sufficient contrast or `text-base` where semantic
-- `apps/customer/src/components/admin/BookingsTable.tsx` — add `aria-live="polite"` region for filter result count
-- `apps/customer/src/pages/BookingPage.tsx` — add `aria-live="polite"` for step progress announcements
-- `apps/customer/e2e/accessibility.spec.ts` — new spec: keyboard-only booking flow (Tab/Enter/Space navigation through all 4 steps); inject axe-core assertions on `/` and `/booking`
-- `apps/customer/package.json` — add `axe-core` and `@axe-core/playwright` as devDependencies
+- `apps/customer/package.json` — add `@axe-core/playwright` devDependency
+- `apps/customer/e2e/a11y.spec.ts` — new: axe Critical/Serious audit on `/`, `/booking`, `/admin`; keyboard-nav test through all 4 booking steps
+- `apps/customer/src/components/booking/StepIndicator.tsx` — add `aria-live="polite" aria-atomic="true"` so screen readers announce step changes
+- `apps/customer/src/components/admin/BookingsTable.tsx` — add `aria-live="polite"` to filter result count; uplift `text-sm` data cells
+- `apps/customer/src/components/admin/BookingDetailPanel.tsx` — uplift `text-sm`
+- `apps/customer/src/components/admin/StaffTable.tsx` — uplift `text-sm`
+- `apps/customer/src/components/admin/AnalyticsDashboard.tsx` — uplift `text-sm`
+- `apps/customer/src/components/admin/DispatchBoard.tsx` — uplift `text-sm`
+- `apps/customer/src/components/admin/PayRatesManager.tsx` — uplift `text-sm`
+- `apps/customer/src/components/admin/AuditLogsTable.tsx` — uplift `text-sm`
+- `apps/customer/src/components/admin/OverrideModal.tsx` — uplift `text-sm`
+- `apps/customer/src/components/admin/ChecklistTemplateManager.tsx` — uplift `text-sm`
+- `apps/customer/src/components/admin/RegisterStaffModal.tsx` — uplift `text-sm`
+- `apps/customer/src/components/admin/ReviewsModerationTab.tsx` — uplift `text-sm`
+- `apps/customer/src/components/admin/OperationsDashboard.tsx` — uplift `text-sm`
+- `apps/customer/src/i18n/locales/en.json` / `fr.json` — add `a11y.stepProgress` key if needed
 
-**Persona impact:** P3 Margaret can complete the full booking flow using keyboard only — critical for users who rely on keyboard or screen reader navigation. Skip-nav removes the tab-key journey through the full navbar on every page. Focus management on booking step change prevents screen reader users from being disoriented after step transitions.
+**text-sm classification rule:**
+- **Uplift to `text-base`:** table cell data (email, phone, date, amount), form labels, error messages, status badge text, modal body prose, any text a user must read to understand state
+- **Retain `text-sm` only if:** element has `aria-hidden="true"` AND meaning is conveyed by an adjacent accessible element, OR element is purely decorative with no text content (icon wrapper with sr-only label)
+
+**axe audit config — exclude third-party iframes:**
+```typescript
+await checkA11y(page, undefined, {
+  axeOptions: { exclude: [['iframe']] },
+  includedImpacts: ['critical', 'serious'],
+})
+```
+
+**Persona impact:** P3 Margaret completes full booking flow keyboard-only; step progress announced; all page text ≥ 16px; admin portal meets AODA requirements for staff.
 
 **Risks:**
-- axe-core may surface violations beyond the spec-listed ones — triage by severity (Critical and Serious only; Moderate and Minor are stretch goals)
-- Admin table `text-sm` instances may be intentionally decorative (status badges) — confirm with Brand_Auditor before uplifting sizes that could affect the design system
-- `aria-live` regions must not be overly verbose — test with VoiceOver/NVDA to confirm announcements are helpful, not noisy
-- `html[lang]` dynamic switching confirmed done — verify with a quick DOM inspection rather than assuming
+- Admin table row density may loosen after text-base uplift — visual only, no functional regression
+- Axe on `/admin` requires bypassing Firebase Auth gate — intercept via `page.route()` + mock admin `customClaims`
+- `<PaymentElement>` Stripe iframe on Step 4 may trigger third-party axe violations — exclude iframes from axe scope
 
-**Schema audit:** No Firestore changes. No `docs/firestore-schema.md` update required.
+**Schema audit:** No Firestore changes.
 
 ---
 
 ## Strategy 2 — Full Manual WCAG Audit Across All Routes
 
-**What:** Conduct a comprehensive manual WCAG 2.1 AA audit across every route in the app (not just the three specified), using a screen reader + keyboard combination. Fix all issues found.
+**What:** Conduct a comprehensive manual WCAG 2.1 AA audit across every route in the app. Fix all issues found, not just the three specified routes.
 
-**Files changed:** Superset of Strategy 1 — additional routes including all location pages, service pages, blog, customer portal, FSM app.
-
-**Persona impact:** More thorough coverage. Better for P3 Margaret across the full site, not just the core booking flow.
-
-**Risks:** Scope creep — auditing all routes is significantly more work than the spec requires and could delay Sprint 4. A full audit is best after the focused pass confirms the core flows are compliant. The acceptance criteria only require `/`, `/booking`, and `/admin` — stick to those for Phase 3. Full-site audit is Phase 4 scope.
+**Trade-off:** Scope creep — acceptance criteria only require `/`, `/booking`, and `/admin`. Full-site audit is Phase 4 scope.
 
 **Schema audit:** None.
 
@@ -48,20 +81,23 @@
 
 ## Strategy 3 — Lighthouse a11y Score Targeting Only
 
-**What:** Run Lighthouse on `/` and `/booking`; fix whatever violations Lighthouse surfaces until both routes score ≥ 90. No axe-core, no manual keyboard testing.
+**What:** Run Lighthouse on `/` and `/booking`; fix violations until both score ≥ 90. No axe-core, no keyboard testing.
 
-**Files changed:** Subset of Strategy 1 — only fixes needed to hit the Lighthouse threshold.
-
-**Persona impact:** Lighthouse a11y score is a sampling heuristic — it does not test keyboard navigation or focus management, which are P3 Margaret's primary needs. A score of 90 can be achieved without fixing the booking step focus management or the skip-nav link, both of which are critical for keyboard users.
-
-**Risks:** Lighthouse a11y is insufficient for WCAG 2.1 AA certification. The Playwright keyboard-nav acceptance criterion is not met by Lighthouse alone. This strategy satisfies the metric but fails the persona test.
+**Trade-off:** Lighthouse a11y is a sampling heuristic — does not test keyboard navigation or focus management, which are Margaret's primary needs. Persona test fails.
 
 **Schema audit:** None.
 
 ---
 
-## Recommended Strategy: **Strategy 1**
+## Approved Strategy: **Strategy 1** ✅
 
-axe-core + targeted spec-driven fixes hits all acceptance criteria (Lighthouse ≥ 90, keyboard booking flow Playwright test, no Critical/Serious violations) without scope creep. Strategy 2 is the right long-term approach but is out of scope for Sprint 4. Strategy 3 fails the persona test.
+**Approved:** 2026-06-21
 
-**Awaiting human approval to proceed to Phase B.**
+### Decisions Locked in Approval
+
+| # | Question | Decision |
+|---|---|---|
+| 1 | Axe-core tooling | Option A — `@axe-core/playwright` in existing `e2e/` suite |
+| 2 | Admin `text-sm` scope | Option A — Audit all 81 instances; uplift meaningful text to `text-base` |
+
+**Proceeding to Phase B.**

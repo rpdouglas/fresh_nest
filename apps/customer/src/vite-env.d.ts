@@ -11,6 +11,7 @@ interface ImportMetaEnv {
   readonly VITE_FIRESTORE_DB_ID?: string
   readonly VITE_RECAPTCHA_SITE_KEY?: string
   readonly VITE_SENTRY_DSN?: string
+  readonly VITE_STRIPE_PUBLISHABLE_KEY?: string
 }
 
 interface ImportMeta {

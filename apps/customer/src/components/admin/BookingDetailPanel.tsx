@@ -293,7 +293,7 @@ export function BookingDetailPanel({
               <div className="flex flex-col gap-1.5">
                 <label
                   htmlFor={`status-select-${b.id}`}
-                  className="font-body text-sm text-text-muted"
+                  className="font-body text-base text-text-muted"
                 >
                   {t('admin.dashboard.details.updateStatus')}
                 </label>
@@ -316,7 +316,7 @@ export function BookingDetailPanel({
               <div className="flex flex-col gap-1.5 mt-1">
                 <label
                   htmlFor={`cleaner-select-${b.id}`}
-                  className="font-body text-sm text-text-muted"
+                  className="font-body text-base text-text-muted"
                 >
                   {t('admin.dashboard.details.assignCleaner')}
                 </label>
@@ -348,7 +348,7 @@ export function BookingDetailPanel({
                   <div className="flex flex-col gap-1.5 mt-2">
                     <label
                       htmlFor={`custom-cleaner-input-${b.id}`}
-                      className="font-body text-sm text-text-muted"
+                      className="font-body text-base text-text-muted"
                     >
                       {t('admin.dashboard.details.customCleaner')}
                     </label>
@@ -401,7 +401,7 @@ export function BookingDetailPanel({
                   {b.addOns.map((add) => (
                     <span
                       key={add}
-                      className="bg-slate-pale text-slate-dark border border-sand px-2.5 py-1 rounded font-body text-sm font-medium"
+                      className="bg-slate-pale text-slate-dark border border-sand px-2.5 py-1 rounded font-body text-base font-medium"
                     >
                       {t(`booking.fields.addOns.options.${add}`)}
                     </span>

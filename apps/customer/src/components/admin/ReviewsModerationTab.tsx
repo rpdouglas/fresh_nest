@@ -82,25 +82,25 @@ export function ReviewsModerationTab({ isAuthorized }: ReviewsModerationTabProps
               <table className="w-full border-collapse text-left">
                 <thead>
                   <tr className="bg-cream border-b border-sand">
-                    <th className="p-4 font-body font-semibold text-charcoal text-sm">
+                    <th className="p-4 font-body font-semibold text-charcoal text-base">
                       {t('reviewsModeration.table.name')}
                     </th>
-                    <th className="p-4 font-body font-semibold text-charcoal text-sm">
+                    <th className="p-4 font-body font-semibold text-charcoal text-base">
                       {t('reviewsModeration.table.location')}
                     </th>
-                    <th className="p-4 font-body font-semibold text-charcoal text-sm w-20">
+                    <th className="p-4 font-body font-semibold text-charcoal text-base w-20">
                       {t('admin.dashboard.filters.language')}
                     </th>
-                    <th className="p-4 font-body font-semibold text-charcoal text-sm w-36">
+                    <th className="p-4 font-body font-semibold text-charcoal text-base w-36">
                       {t('reviewsModeration.table.rating')}
                     </th>
-                    <th className="p-4 font-body font-semibold text-charcoal text-sm">
+                    <th className="p-4 font-body font-semibold text-charcoal text-base">
                       {t('reviewsModeration.table.text')}
                     </th>
-                    <th className="p-4 font-body font-semibold text-charcoal text-sm w-44">
+                    <th className="p-4 font-body font-semibold text-charcoal text-base w-44">
                       {t('reviewsModeration.table.date')}
                     </th>
-                    <th className="p-4 font-body font-semibold text-charcoal text-sm w-56 text-right">
+                    <th className="p-4 font-body font-semibold text-charcoal text-base w-56 text-right">
                       {t('reviewsModeration.table.actions')}
                     </th>
                   </tr>
@@ -116,7 +116,7 @@ export function ReviewsModerationTab({ isAuthorized }: ReviewsModerationTabProps
                       </td>
                       <td className="p-4">
                         <span className={cn(
-                          'inline-flex items-center justify-center font-body text-xs font-semibold px-2.5 py-0.5 rounded uppercase',
+                          'inline-flex items-center justify-center font-body text-sm font-semibold px-2.5 py-0.5 rounded uppercase',
                           review.language === 'fr' ? 'bg-slate-pale text-slate-dark' : 'bg-cream text-charcoal'
                         )}>
                           {review.language}
@@ -154,7 +154,7 @@ export function ReviewsModerationTab({ isAuthorized }: ReviewsModerationTabProps
                             onClick={() => { void handleAction(review.id!, 'approved') }}
                             disabled={processingId !== null}
                             className={cn(
-                              'bg-slate-brand text-white font-body font-medium text-sm rounded px-4 py-2 min-h-[40px]',
+                              'bg-slate-brand text-white font-body font-medium text-base rounded px-4 py-2 min-h-[40px]',
                               'hover:bg-slate-dark transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-slate-brand',
                               processingId !== null ? 'opacity-50 cursor-not-allowed' : ''
                             )}
@@ -169,7 +169,7 @@ export function ReviewsModerationTab({ isAuthorized }: ReviewsModerationTabProps
                             onClick={() => { void handleAction(review.id!, 'rejected') }}
                             disabled={processingId !== null}
                             className={cn(
-                              'border border-sand text-charcoal font-body font-medium text-sm rounded px-4 py-2 min-h-[40px]',
+                              'border border-sand text-charcoal font-body font-medium text-base rounded px-4 py-2 min-h-[40px]',
                               'hover:bg-cream transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-slate-brand',
                               processingId !== null ? 'opacity-50 cursor-not-allowed' : ''
                             )}

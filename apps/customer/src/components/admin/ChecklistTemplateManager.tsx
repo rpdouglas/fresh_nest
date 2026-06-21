@@ -103,7 +103,7 @@ function SortableTaskRow({ task, onUpdate, onDelete }: SortableTaskRowProps) {
           type="button"
           onClick={() => onDelete(task.id)}
           className={cn(
-            'ml-auto min-h-[40px] px-3 py-1 border border-red-300 text-red-600 font-body text-sm rounded',
+            'ml-auto min-h-[40px] px-3 py-1 border border-red-300 text-red-600 font-body text-base rounded',
             'hover:bg-red-50 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-red-400',
           )}
         >
@@ -113,7 +113,7 @@ function SortableTaskRow({ task, onUpdate, onDelete }: SortableTaskRowProps) {
 
       {/* EN label */}
       <div className="flex flex-col gap-1">
-        <label className="font-body text-sm text-charcoal font-medium">
+        <label className="font-body text-base text-charcoal font-medium">
           {t('admin.templates.task.labelEn')}
         </label>
         <input
@@ -127,7 +127,7 @@ function SortableTaskRow({ task, onUpdate, onDelete }: SortableTaskRowProps) {
 
       {/* FR label */}
       <div className="flex flex-col gap-1">
-        <label className="font-body text-sm text-charcoal font-medium">
+        <label className="font-body text-base text-charcoal font-medium">
           {t('admin.templates.task.labelFr')}
         </label>
         <input
@@ -158,7 +158,7 @@ function SortableTaskRow({ task, onUpdate, onDelete }: SortableTaskRowProps) {
 
         {task.requiresPhoto && (
           <div className="flex flex-col gap-1">
-            <label className="font-body text-sm text-charcoal font-medium">
+            <label className="font-body text-base text-charcoal font-medium">
               {t('admin.templates.task.photoPhase')}
             </label>
             <select
@@ -252,7 +252,7 @@ function TemplateForm({ initial, onSave, onCancel }: TemplateFormProps) {
   return (
     <form onSubmit={(e) => { void handleSubmit(e) }} className="flex flex-col gap-6">
       {formError && (
-        <div className="bg-red-50 border border-red-200 rounded p-4 font-body text-sm text-red-700">
+        <div className="bg-red-50 border border-red-200 rounded p-4 font-body text-base text-red-700">
           {formError}
         </div>
       )}
@@ -310,7 +310,7 @@ function TemplateForm({ initial, onSave, onCancel }: TemplateFormProps) {
           <h3 className="font-sub text-xl text-charcoal">
             {t('admin.templates.form.tasksHeading')}
           </h3>
-          <span className="font-body text-sm text-text-muted">
+          <span className="font-body text-base text-text-muted">
             {t('admin.templates.form.taskCount', { count: tasks.length })}
           </span>
         </div>
@@ -520,17 +520,17 @@ export function ChecklistTemplateManager({ isAuthorized }: ChecklistTemplateMana
                   <div className="flex items-center gap-3 flex-wrap">
                     <h3 className="font-sub text-xl text-charcoal">{template.name}</h3>
                     <span className={cn(
-                      'inline-flex items-center px-2.5 py-0.5 rounded text-sm font-medium',
+                      'inline-flex items-center px-2.5 py-0.5 rounded text-base font-medium',
                       template.active ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600',
                     )}>
                       {template.active ? t('admin.templates.statusActive') : t('admin.templates.statusInactive')}
                     </span>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded text-sm font-medium bg-slate-pale text-charcoal">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded text-base font-medium bg-slate-pale text-charcoal">
                       {t(`admin.templates.serviceType.${template.serviceType}`)}
                     </span>
                   </div>
 
-                  <p className="font-body text-sm text-text-muted">
+                  <p className="font-body text-base text-text-muted">
                     {t('admin.templates.taskCount', { count: template.tasks.length })}
                     {template.tasks.filter((tk) => tk.requiresPhoto).length > 0 && (
                       <> · {t('admin.templates.photoCount', {
@@ -545,7 +545,7 @@ export function ChecklistTemplateManager({ isAuthorized }: ChecklistTemplateMana
                         <span key={tk.id} className="text-xl" title={tk.labelEn}>{tk.icon}</span>
                       ))}
                       {template.tasks.length > 6 && (
-                        <span className="font-body text-sm text-text-muted self-center">
+                        <span className="font-body text-base text-text-muted self-center">
                           +{template.tasks.length - 6}
                         </span>
                       )}
@@ -558,7 +558,7 @@ export function ChecklistTemplateManager({ isAuthorized }: ChecklistTemplateMana
                     type="button"
                     onClick={() => { setEditingTemplate(template); setView('edit') }}
                     className={cn(
-                      'min-h-[44px] px-4 py-2 border border-slate-brand text-slate-brand font-body text-sm font-medium rounded',
+                      'min-h-[44px] px-4 py-2 border border-slate-brand text-slate-brand font-body text-base font-medium rounded',
                       'hover:bg-slate-pale transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand',
                     )}
                   >
@@ -569,7 +569,7 @@ export function ChecklistTemplateManager({ isAuthorized }: ChecklistTemplateMana
                       type="button"
                       onClick={() => { if (template.id) void handleDeactivate(template.id) }}
                       className={cn(
-                        'min-h-[44px] px-4 py-2 border border-sand text-text-muted font-body text-sm font-medium rounded',
+                        'min-h-[44px] px-4 py-2 border border-sand text-text-muted font-body text-base font-medium rounded',
                         'hover:bg-warm-white hover:text-charcoal transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sand',
                       )}
                     >

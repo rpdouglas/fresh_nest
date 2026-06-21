@@ -1,17 +1,23 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
+import { loadStripe } from '@stripe/stripe-js'
+import { Elements } from '@stripe/react-stripe-js'
+import { getFunctions, httpsCallable } from 'firebase/functions'
 import { bookingFormSchema, BookingFormData, STEP_FIELDS } from '@/lib/schemas/bookingSchema'
-import { submitBooking, detectLeadSource } from '@/lib/firebase/firestore'
+import { submitBooking, detectLeadSource, computeBookingEstimatedPrice } from '@/lib/firebase/firestore'
 import { logBookingStarted, logBookingCompleted } from '@/lib/firebase/analytics'
 import BookingStep1 from '@/components/booking/BookingStep1'
 import BookingStep2 from '@/components/booking/BookingStep2'
 import BookingStep3 from '@/components/booking/BookingStep3'
-import BookingStep4 from '@/components/booking/BookingStep4'
+import BookingStep4, { type BookingStep4Handle } from '@/components/booking/BookingStep4'
 import StepIndicator from '@/components/booking/StepIndicator'
 import SEO from '@/components/seo/SEO'
+
+// Initialized once at module level — avoids creating a new Promise on every render.
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ?? '')
 
 function buildDefaults(params: URLSearchParams): Partial<BookingFormData> {
   const defaults: Partial<BookingFormData> = {}
@@ -63,34 +69,10 @@ export default function BookingPage() {
   const { t, i18n } = useTranslation()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const [submitError, setSubmitError] = useState<string | null>(null)
   const source = detectLeadSource(searchParams)
-  const [currentStep, setCurrentStep] = useState(0)
 
-  useEffect(() => {
-    logBookingStarted()
-  }, [])
-
-  const focusHeading = useCallback((node: HTMLHeadingElement | null) => {
-    if (node) {
-      node.focus()
-    }
-  }, [])
-
-  const handleBack = () => {
-    setCurrentStep((prev) => Math.max(0, prev - 1))
-  }
-
-  const handleNext = async () => {
-    const fieldsToValidate = STEP_FIELDS[currentStep]
-    if (fieldsToValidate) {
-      const isValid = await methods.trigger(fieldsToValidate)
-      if (isValid) {
-        setCurrentStep((prev) => Math.min(3, prev + 1))
-      }
-    }
-  }
-
+  // Declare methods first so the useEffect below can reference it without
+  // triggering "accessed before declaration" lint errors.
   const methods = useForm<BookingFormData>({
     resolver: zodResolver(bookingFormSchema),
     defaultValues: {
@@ -116,11 +98,81 @@ export default function BookingPage() {
     mode: 'onTouched',
   })
 
+  const [currentStep, setCurrentStep] = useState(0)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+
+  // Stripe payment state
+  const [clientSecret, setClientSecret] = useState<string | null>(null)
+  const [paymentInitError, setPaymentInitError] = useState<string | null>(null)
+  const step4Ref = useRef<BookingStep4Handle>(null)
+
+  // isLoadingPayment is derived: we're loading when on step 4, no clientSecret yet, no error yet.
+  const isLoadingPayment = currentStep === 3 && !clientSecret && !paymentInitError
+
+  useEffect(() => {
+    logBookingStarted()
+  }, [])
+
+  // Fetch PaymentIntent client_secret when the user reaches Step 4.
+  // Re-fires only if clientSecret is null (prevents duplicate intents on back-nav).
+  useEffect(() => {
+    if (currentStep !== 3 || clientSecret !== null) return
+
+    void (async () => {
+      const values = methods.getValues()
+      const estimatedPrice = computeBookingEstimatedPrice(
+        values.propertyType,
+        values.serviceType,
+        values.frequency,
+      )
+
+      const createPaymentIntentFn = httpsCallable<
+        { estimatedPrice: number },
+        { clientSecret: string }
+      >(getFunctions(), 'createPaymentIntent')
+
+      try {
+        const result = await createPaymentIntentFn({ estimatedPrice })
+        setClientSecret(result.data.clientSecret)
+      } catch (err) {
+        console.error('[BookingPage] createPaymentIntent failed:', err)
+        setPaymentInitError(t('booking.errors.payment'))
+      }
+    })()
+  }, [currentStep, clientSecret, methods, t])
+
+  const focusHeading = useCallback((node: HTMLHeadingElement | null) => {
+    if (node) node.focus()
+  }, [])
+
+  const handleBack = () => {
+    setCurrentStep((prev) => Math.max(0, prev - 1))
+  }
+
+  const handleNext = async () => {
+    const fieldsToValidate = STEP_FIELDS[currentStep]
+    if (fieldsToValidate) {
+      const isValid = await methods.trigger(fieldsToValidate)
+      if (isValid) {
+        setCurrentStep((prev) => Math.min(3, prev + 1))
+      }
+    }
+  }
+
   const onSubmit = async (data: BookingFormData) => {
     setSubmitError(null)
     try {
       const lang = i18n.language === 'fr' ? 'fr' : 'en'
-      const bookingId = await submitBooking(data, lang, source)
+
+      // On Step 4, confirm Stripe payment before writing to Firestore.
+      let paymentIntentId: string | null = null
+      if (currentStep === 3) {
+        if (!step4Ref.current) return
+        paymentIntentId = await step4Ref.current.submitPayment()
+        if (!paymentIntentId) return // Error displayed inside BookingStep4
+      }
+
+      const bookingId = await submitBooking(data, lang, source, paymentIntentId)
       logBookingCompleted(data.serviceType)
       void navigate('/thank-you', {
         state: {
@@ -137,6 +189,11 @@ export default function BookingPage() {
       setSubmitError(t('booking.errors.submit'))
     }
   }
+
+  const isSubmitDisabled =
+    methods.formState.isSubmitting || (currentStep === 3 && isLoadingPayment)
+
+  const stripeLocale = i18n.language === 'fr' ? 'fr' : 'en'
 
   return (
     <>
@@ -158,13 +215,38 @@ export default function BookingPage() {
         <div className="max-w-2xl mx-auto">
           <StepIndicator currentStep={currentStep} totalSteps={4} />
           <FormProvider {...methods}>
-            <form onSubmit={(e) => { void methods.handleSubmit(onSubmit)(e); }} noValidate className="space-y-8">
+            <form onSubmit={(e) => { void methods.handleSubmit(onSubmit)(e) }} noValidate className="space-y-8">
               {currentStep === 0 && <BookingStep1 stepHeaderRef={focusHeading} />}
               {currentStep === 1 && <BookingStep2 stepHeaderRef={focusHeading} />}
               {currentStep === 2 && <BookingStep3 stepHeaderRef={focusHeading} />}
-              {currentStep === 3 && <BookingStep4 submitError={submitError} stepHeaderRef={focusHeading} />}
 
-              {/* Navigation buttons */}
+              {currentStep === 3 && isLoadingPayment && (
+                <div className="bg-white border border-sand rounded shadow-sm p-8 flex flex-col items-center gap-4">
+                  <div className="w-8 h-8 rounded-full border-4 border-slate-brand border-t-transparent animate-spin" />
+                  <p className="font-body text-base text-text-muted">{t('booking.payment.loading')}</p>
+                </div>
+              )}
+
+              {currentStep === 3 && paymentInitError && (
+                <div role="alert" className="bg-red-50 border border-red-300 rounded p-4 font-body text-base text-red-700">
+                  {paymentInitError}
+                </div>
+              )}
+
+              {currentStep === 3 && !isLoadingPayment && clientSecret && (
+                <Elements
+                  stripe={stripePromise}
+                  options={{ clientSecret, locale: stripeLocale }}
+                >
+                  <BookingStep4
+                    ref={step4Ref}
+                    submitError={submitError}
+                    stepHeaderRef={focusHeading}
+                  />
+                </Elements>
+              )}
+
+              {/* Navigation */}
               <div className="flex justify-between items-center pt-6 mt-6 border-t border-sand">
                 {currentStep > 0 ? (
                   <button
@@ -189,7 +271,7 @@ export default function BookingPage() {
                 ) : (
                   <button
                     type="submit"
-                    disabled={methods.formState.isSubmitting}
+                    disabled={isSubmitDisabled}
                     className="bg-slate-brand text-white font-body font-medium text-base rounded px-8 py-3 min-h-[48px] hover:bg-slate-dark transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     {methods.formState.isSubmitting ? t('booking.submitting') : t('booking.submit')}

@@ -154,19 +154,19 @@ const DraggableJobCard: React.FC<{ job: Job; hasConflict: boolean; conflictText?
     >
       <div className="flex flex-col gap-1">
         <div className="flex justify-between items-start gap-1">
-          <span className="font-body text-sm font-semibold text-charcoal truncate">
+          <span className="font-body text-base font-semibold text-charcoal truncate">
             {job.clientName}
           </span>
           {hasConflict && (
             <span
-              className="text-red-600 text-sm shrink-0 cursor-help"
+              className="text-red-600 text-base shrink-0 cursor-help"
               title={conflictText}
             >
               ⚠️
             </span>
           )}
         </div>
-        <p className="font-body text-xs text-text-muted truncate">
+        <p className="font-body text-sm text-text-muted truncate">
           {job.clientAddress}
         </p>
         <div className="flex flex-wrap gap-1 mt-1">
@@ -176,7 +176,7 @@ const DraggableJobCard: React.FC<{ job: Job; hasConflict: boolean; conflictText?
         </div>
       </div>
 
-      <div className="flex justify-between items-center mt-2 border-t border-sand/50 pt-2 font-body text-xs text-text-muted">
+      <div className="flex justify-between items-center mt-2 border-t border-sand/50 pt-2 font-body text-sm text-text-muted">
         <span>
           {job.scheduledStartTime} - {job.scheduledEndTime}
         </span>
@@ -223,11 +223,11 @@ const DroppableStaffColumn: React.FC<{
             <h4 className="font-sub text-base font-bold text-charcoal leading-tight truncate max-w-[140px]">
               {title}
             </h4>
-            <p className="font-body text-xs text-text-muted capitalize">
+            <p className="font-body text-sm text-text-muted capitalize">
               {subtitle}
             </p>
           </div>
-          <span className="font-body text-xs font-semibold text-slate-brand bg-slate-pale/50 px-2 py-0.5 rounded shrink-0">
+          <span className="font-body text-sm font-semibold text-slate-brand bg-slate-pale/50 px-2 py-0.5 rounded shrink-0">
             {t('admin.operations.hours', { val: weeklyHours.toFixed(1) })}
           </span>
         </div>
@@ -740,7 +740,7 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
                   <h3 className="font-sub text-xl font-bold text-charcoal">
                     {t('admin.dispatch.unassigned', { defaultValue: 'Unassigned Jobs' })}
                   </h3>
-                  <span className="bg-red-100 text-red-800 text-xs font-semibold px-2 py-0.5 rounded font-body shrink-0">
+                  <span className="bg-red-100 text-red-800 text-sm font-semibold px-2 py-0.5 rounded font-body shrink-0">
                     {unassignedJobs.length}
                   </span>
                 </div>

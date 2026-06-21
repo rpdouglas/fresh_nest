@@ -9,14 +9,18 @@ interface StepIndicatorProps {
 export default function StepIndicator({ currentStep, totalSteps }: StepIndicatorProps) {
   const { t } = useTranslation()
   return (
-    <div className="mb-8" aria-label={t('booking.progress', { current: currentStep + 1, total: totalSteps })}>
-      <div className="flex items-center justify-between mb-3">
+    <div className="mb-8">
+      <div
+        role="group"
+        aria-label={t('booking.progress', { current: currentStep + 1, total: totalSteps })}
+        className="flex items-center justify-between mb-3"
+      >
         {Array.from({ length: totalSteps }, (_, i) => (
           <div key={i} className="flex-1 flex items-center">
             <div
               aria-current={i === currentStep ? 'step' : undefined}
               className={cn(
-                'w-8 h-8 rounded-full flex items-center justify-center font-body text-sm font-medium shrink-0 transition-colors',
+                'w-8 h-8 rounded-full flex items-center justify-center font-body text-base font-medium shrink-0 transition-colors',
                 i < currentStep  && 'bg-slate-brand text-white',
                 i === currentStep && 'bg-slate-brand text-white ring-2 ring-slate-brand ring-offset-2',
                 i > currentStep  && 'bg-sand text-text-muted',
@@ -36,7 +40,7 @@ export default function StepIndicator({ currentStep, totalSteps }: StepIndicator
           </div>
         ))}
       </div>
-      <p className="font-body text-sm text-text-muted text-center">
+      <p aria-live="polite" aria-atomic="true" className="font-body text-base text-text-muted text-center">
         {t('booking.progress', { current: currentStep + 1, total: totalSteps })}
       </p>
     </div>

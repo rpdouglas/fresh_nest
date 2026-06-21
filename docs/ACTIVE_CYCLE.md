@@ -28,12 +28,12 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v3.md`](reports
 
 | Epic ID | Epic Name | Complexity | Priority | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| **P3-E1** | Stripe Payment Integration *(was P1-E3)* | XL | P0 | ⬜ Not Started |
+| **P3-E1** | Stripe Payment Integration *(was P1-E3)* | XL | P0 | ✅ Completed 2026-06-21 |
 | **P3-E2** | Route Code Splitting *(was P1-E5)* | M | P1 | ✅ Completed 2026-06-21 |
 | **P3-E3** | Admin Booking Creation *(was P1-E6)* | L | P1 | ✅ Completed 2026-06-21 |
 | **P3-E4** | Observability & Error Tracking *(was P1-E7)* | M | P1 | ✅ Completed 2026-06-18 |
 | **P3-E5** | CI/CD Pipeline Hardening *(was P1-E8)* | S | P1 | ✅ Completed 2026-06-18 |
-| **P3-E6** | Accessibility Pass WCAG 2.1 AA *(was P2-E5)* | M | P2 | ⬜ Not Started |
+| **P3-E6** | Accessibility Pass WCAG 2.1 AA *(was P2-E5)* | M | P2 | ✅ Completed 2026-06-21 |
 
 ---
 

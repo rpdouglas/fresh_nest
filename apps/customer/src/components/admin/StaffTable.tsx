@@ -204,14 +204,14 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
                     <td className="p-4 font-body text-base text-charcoal">
                       <div className="flex flex-col">
                         <span>{s.email}</span>
-                        <span className="text-text-muted text-sm">{s.phone}</span>
+                        <span className="text-text-muted text-base">{s.phone}</span>
                       </div>
                     </td>
 
                     {/* Role */}
                     <td className="p-4 font-body text-base text-charcoal">
                       <span className={cn(
-                        'inline-flex items-center px-2.5 py-0.5 rounded text-sm font-medium',
+                        'inline-flex items-center px-2.5 py-0.5 rounded text-base font-medium',
                         s.role === 'supervisor' ? 'bg-indigo-100 text-indigo-800' :
                         s.role === 'lead' ? 'bg-green-100 text-green-800' :
                         'bg-slate-100 text-slate-800'
@@ -223,7 +223,7 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
                     {/* Status */}
                     <td className="p-4 font-body text-base text-charcoal">
                       <span className={cn(
-                        'inline-flex items-center px-2.5 py-0.5 rounded text-sm font-medium',
+                        'inline-flex items-center px-2.5 py-0.5 rounded text-base font-medium',
                         s.status === 'active' ? 'bg-emerald-100 text-emerald-800' :
                         s.status === 'onboarding' ? 'bg-amber-100 text-amber-800' :
                         'bg-red-100 text-red-800'
@@ -234,7 +234,7 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
 
                     {/* Transportation & Constraints */}
                     <td className="p-4 font-body text-base text-charcoal">
-                      <div className="flex flex-col text-sm text-text-muted">
+                      <div className="flex flex-col text-base text-text-muted">
                         <span className="capitalize font-medium text-charcoal">
                           {s.constraints?.transportMode ? t(`admin.staff.modal.transportOption.${s.constraints.transportMode}`, { defaultValue: s.constraints.transportMode.replace('_', ' ') }) : '—'}
                         </span>

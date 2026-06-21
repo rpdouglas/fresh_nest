@@ -99,7 +99,7 @@ export function AuditLogsTable({ isAuthorized }: AuditLogsTableProps) {
       <div className="bg-cream border border-sand rounded p-4 flex flex-col md:flex-row gap-4">
         {/* Search */}
         <div className="flex-grow flex flex-col gap-1">
-          <label htmlFor="search" className="font-body text-sm font-semibold text-charcoal">
+          <label htmlFor="search" className="font-body text-base font-semibold text-charcoal">
             {t('admin.audit.filters.searchLabel', 'Search')}
           </label>
           <input
@@ -114,7 +114,7 @@ export function AuditLogsTable({ isAuthorized }: AuditLogsTableProps) {
 
         {/* Collection Filter */}
         <div className="w-full md:w-48 flex flex-col gap-1">
-          <label htmlFor="collection-filter" className="font-body text-sm font-semibold text-charcoal">
+          <label htmlFor="collection-filter" className="font-body text-base font-semibold text-charcoal">
             {t('admin.audit.filters.collection', 'Collection')}
           </label>
           <select
@@ -134,7 +134,7 @@ export function AuditLogsTable({ isAuthorized }: AuditLogsTableProps) {
 
         {/* Override Type Filter */}
         <div className="w-full md:w-56 flex flex-col gap-1">
-          <label htmlFor="override-filter" className="font-body text-sm font-semibold text-charcoal">
+          <label htmlFor="override-filter" className="font-body text-base font-semibold text-charcoal">
             {t('admin.audit.filters.overrideType', 'Override Type')}
           </label>
           <select
@@ -186,7 +186,7 @@ export function AuditLogsTable({ isAuthorized }: AuditLogsTableProps) {
                 {filteredLogs.map((log) => (
                   <tr key={log.id} className="hover:bg-warm-white transition-colors">
                     {/* Timestamp */}
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <td className="px-6 py-4 whitespace-nowrap text-base">
                       <span className="block font-semibold">
                         {log.changedAt.toLocaleDateString(undefined, {
                           year: 'numeric',
@@ -194,13 +194,13 @@ export function AuditLogsTable({ isAuthorized }: AuditLogsTableProps) {
                           day: 'numeric',
                         })}
                       </span>
-                      <span className="text-text-muted text-xs">
+                      <span className="text-text-muted text-sm">
                         {log.changedAt.toLocaleTimeString()}
                       </span>
                     </td>
 
                     {/* Changed By */}
-                    <td className="px-6 py-4 whitespace-nowrap font-medium text-sm">
+                    <td className="px-6 py-4 whitespace-nowrap font-medium text-base">
                       {log.changedBy}
                     </td>
 
@@ -209,7 +209,7 @@ export function AuditLogsTable({ isAuthorized }: AuditLogsTableProps) {
                       {log.overrideType ? (
                         <span
                           className={cn(
-                            'inline-flex items-center px-2 py-1 rounded text-xs font-semibold leading-none border',
+                            'inline-flex items-center px-2 py-1 rounded text-sm font-semibold leading-none border',
                             log.overrideType === 'earnings_cap_exceeded' &&
                               'bg-red-50 text-red-700 border-red-200',
                             log.overrideType === 'travel_conflict_exceeded' &&
@@ -221,33 +221,33 @@ export function AuditLogsTable({ isAuthorized }: AuditLogsTableProps) {
                           {getOverrideLabel(log.overrideType)}
                         </span>
                       ) : (
-                        <span className="text-text-muted text-sm">—</span>
+                        <span className="text-text-muted text-base">—</span>
                       )}
                     </td>
 
                     {/* Details */}
-                    <td className="px-6 py-4 max-w-xs text-sm">
+                    <td className="px-6 py-4 max-w-xs text-base">
                       <div className="flex flex-col gap-1">
-                        <span className="text-xs text-text-muted uppercase tracking-wider font-semibold">
+                        <span className="text-sm text-text-muted uppercase tracking-wider font-semibold">
                           {log.collection} · {log.field}
                         </span>
                         <div className="text-charcoal break-words">
-                          <span className="font-mono bg-cream px-1 py-0.5 rounded text-xs text-red-600 line-through">
+                          <span className="font-mono bg-cream px-1 py-0.5 rounded text-sm text-red-600 line-through">
                             {formatValue(log.oldValue)}
                           </span>
                           <span className="mx-1 text-text-muted">→</span>
-                          <span className="font-mono bg-slate-pale px-1 py-0.5 rounded text-xs text-slate-dark">
+                          <span className="font-mono bg-slate-pale px-1 py-0.5 rounded text-sm text-slate-dark">
                             {formatValue(log.newValue)}
                           </span>
                         </div>
-                        <span className="text-xs font-mono text-text-muted">
+                        <span className="text-sm font-mono text-text-muted">
                           ID: {log.documentId.substring(0, 8)}...
                         </span>
                       </div>
                     </td>
 
                     {/* Reason */}
-                    <td className="px-6 py-4 max-w-md text-sm">
+                    <td className="px-6 py-4 max-w-md text-base">
                       {log.reason ? (
                         <div className="bg-cream border-l-4 border-slate-brand p-2 rounded-r italic text-charcoal">
                           "{log.reason}"

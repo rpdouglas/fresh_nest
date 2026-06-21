@@ -1,19 +1,30 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, forwardRef, useImperativeHandle } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
 import { cn } from '@/lib/utils/utils'
+import { computeBookingEstimatedPrice } from '@/lib/firebase/firestore'
 import type { BookingFormData } from '@/lib/schemas/bookingSchema'
+
+export interface BookingStep4Handle {
+  submitPayment: () => Promise<string | null>
+}
 
 interface Props {
   submitError?: string | null
   stepHeaderRef?: React.Ref<HTMLHeadingElement>
 }
 
-export default function BookingStep4({ submitError, stepHeaderRef }: Props) {
+const BookingStep4 = forwardRef<BookingStep4Handle, Props>(function BookingStep4(
+  { submitError, stepHeaderRef },
+  ref,
+) {
   const { t } = useTranslation()
+  const stripe = useStripe()
+  const elements = useElements()
   const { register, getValues, setValue } = useFormContext<BookingFormData>()
   const values = getValues()
 
@@ -21,6 +32,39 @@ export default function BookingStep4({ submitError, stepHeaderRef }: Props) {
   const [promoCode, setPromoCode] = useState(() => searchParams.get('ref') || '')
   const [promoStatus, setPromoStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle')
   const [promoMessage, setPromoMessage] = useState('')
+  const [paymentError, setPaymentError] = useState<string | null>(null)
+
+  useImperativeHandle(ref, () => ({
+    submitPayment: async () => {
+      setPaymentError(null)
+
+      if (!stripe || !elements) {
+        setPaymentError(t('booking.errors.paymentUnavailable'))
+        return null
+      }
+
+      const { error: submitErr } = await elements.submit()
+      if (submitErr) {
+        setPaymentError(submitErr.message ?? t('booking.errors.payment'))
+        return null
+      }
+
+      const { error, paymentIntent } = await stripe.confirmPayment({
+        elements,
+        redirect: 'if_required',
+        confirmParams: {
+          return_url: `${window.location.origin}/thank-you`,
+        },
+      })
+
+      if (error) {
+        setPaymentError(error.message ?? t('booking.errors.cardDeclined'))
+        return null
+      }
+
+      return paymentIntent?.id ?? null
+    },
+  }))
 
   const verifyPromo = useCallback(async (code: string) => {
     if (!code.trim()) return
@@ -66,6 +110,15 @@ export default function BookingStep4({ submitError, stepHeaderRef }: Props) {
     ? values.addOns.map((a) => t(`booking.fields.addOns.options.${a}`)).join(', ')
     : '—'
 
+  const subtotal = computeBookingEstimatedPrice(values.propertyType, values.serviceType, values.frequency)
+  // HST: 13% ON at launch. QC rate (14.975%) TBD — requires billing address province detection.
+  const hstRate = 0.13
+  const hstAmount = subtotal * hstRate
+  const total = subtotal + hstAmount
+
+  const fmt = (n: number) =>
+    n.toLocaleString('en-CA', { style: 'currency', currency: 'CAD' })
+
   return (
     <div>
       <div className="bg-white border border-sand rounded shadow-sm p-6 space-y-6">
@@ -73,7 +126,6 @@ export default function BookingStep4({ submitError, stepHeaderRef }: Props) {
 
         {/* Review table */}
         <div className="divide-y divide-sand">
-          {/* Service */}
           <div className="flex items-start justify-between py-3">
             <div>
               <p className="font-body text-lg text-charcoal font-bold">{t('booking.review.service')}</p>
@@ -81,7 +133,6 @@ export default function BookingStep4({ submitError, stepHeaderRef }: Props) {
             </div>
           </div>
 
-          {/* Property */}
           <div className="flex items-start justify-between py-3">
             <div>
               <p className="font-body text-lg text-charcoal font-bold">{t('booking.review.property')}</p>
@@ -92,7 +143,6 @@ export default function BookingStep4({ submitError, stepHeaderRef }: Props) {
             </div>
           </div>
 
-          {/* Schedule */}
           <div className="flex items-start justify-between py-3">
             <div>
               <p className="font-body text-lg text-charcoal font-bold">{t('booking.review.schedule')}</p>
@@ -102,7 +152,6 @@ export default function BookingStep4({ submitError, stepHeaderRef }: Props) {
             </div>
           </div>
 
-          {/* Add-ons */}
           <div className="flex items-start justify-between py-3">
             <div>
               <p className="font-body text-lg text-charcoal font-bold">{t('booking.review.addOns')}</p>
@@ -110,7 +159,6 @@ export default function BookingStep4({ submitError, stepHeaderRef }: Props) {
             </div>
           </div>
 
-          {/* Contact */}
           <div className="flex items-start justify-between py-3">
             <div>
               <p className="font-body text-lg text-charcoal font-bold">{t('booking.review.contact')}</p>
@@ -121,7 +169,6 @@ export default function BookingStep4({ submitError, stepHeaderRef }: Props) {
             </div>
           </div>
 
-          {/* Notes */}
           {values.notes && (
             <div className="flex items-start justify-between py-3">
               <div>
@@ -130,6 +177,22 @@ export default function BookingStep4({ submitError, stepHeaderRef }: Props) {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Price summary */}
+        <div className="pt-4 border-t border-sand space-y-1">
+          <div className="flex justify-between font-body text-base text-charcoal">
+            <span>{t('booking.payment.subtotal')}</span>
+            <span>{fmt(subtotal)}</span>
+          </div>
+          <div className="flex justify-between font-body text-base text-text-muted">
+            <span>{t('booking.payment.hst')}</span>
+            <span>{fmt(hstAmount)}</span>
+          </div>
+          <div className="flex justify-between font-body text-lg text-charcoal font-bold pt-2 border-t border-sand">
+            <span>{t('booking.payment.total')}</span>
+            <span>{fmt(total)}</span>
+          </div>
         </div>
 
         {/* Referral / Promo Code */}
@@ -170,7 +233,7 @@ export default function BookingStep4({ submitError, stepHeaderRef }: Props) {
           )}
         </div>
 
-        {/* CASL marketing consent — unchecked by default (COMPLIANCE.md) */}
+        {/* CASL marketing consent */}
         <div className="pt-2 border-t border-sand">
           <label className="min-h-[48px] flex items-center gap-3 cursor-pointer">
             <input
@@ -184,11 +247,18 @@ export default function BookingStep4({ submitError, stepHeaderRef }: Props) {
             </span>
           </label>
         </div>
+
+        {/* Stripe Payment Element */}
+        <div className="pt-4 border-t border-sand space-y-3">
+          <h3 className="font-body text-base font-bold text-charcoal">{t('booking.payment.heading')}</h3>
+          <PaymentElement />
+          <p className="font-body text-sm text-text-muted">{t('booking.payment.secure')}</p>
+        </div>
       </div>
 
-      {submitError && (
+      {(submitError || paymentError) && (
         <div role="alert" className="mt-4 bg-red-50 border border-red-300 rounded p-4 font-body text-base text-red-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <span>{submitError}</span>
+          <span>{paymentError ?? submitError}</span>
           <a
             href="tel:+16139353555"
             className="inline-flex items-center justify-center font-medium border border-red-300 rounded px-4 py-2 min-h-[48px] text-red-700 hover:bg-red-100/50 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 shrink-0"
@@ -199,4 +269,6 @@ export default function BookingStep4({ submitError, stepHeaderRef }: Props) {
       )}
     </div>
   )
-}
+})
+
+export default BookingStep4

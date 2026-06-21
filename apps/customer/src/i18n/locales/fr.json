@@ -346,7 +346,18 @@
       "phone": "Veuillez entrer un numéro de téléphone valide (minimum 10 chiffres).",
       "minLength": "Ce champ est trop court.",
       "date": "Veuillez sélectionner une date.",
-      "submit": "Une erreur s'est produite lors de l'enregistrement. Veuillez réessayer ou nous appeler :"
+      "submit": "Une erreur s'est produite lors de l'enregistrement. Veuillez réessayer ou nous appeler :",
+      "payment": "Impossible d'initialiser le paiement. Veuillez réessayer ou nous appeler.",
+      "cardDeclined": "Votre carte a été refusée. Veuillez vérifier vos informations de carte et réessayer.",
+      "paymentUnavailable": "Le formulaire de paiement se charge. Veuillez patienter."
+    },
+    "payment": {
+      "heading": "Paiement",
+      "subtotal": "Sous-total",
+      "hst": "TVH (13 % ON)",
+      "total": "Total",
+      "secure": "Votre paiement est sécurisé par Stripe",
+      "loading": "Préparation du formulaire de paiement sécurisé…"
     },
     "review": {
       "heading": "Vérifiez votre réservation",
@@ -766,7 +777,8 @@
         "endDate": "Date de fin",
         "loadMore": "Charger plus",
         "loading": "Chargement...",
-        "noMore": "Plus de réservations"
+        "noMore": "Plus de réservations",
+        "showing": "Affichage de {{count}} réservations"
       },
       "table": {
         "client": "Détails du client",

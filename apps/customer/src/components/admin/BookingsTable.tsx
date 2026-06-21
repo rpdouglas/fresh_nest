@@ -112,7 +112,7 @@ export function BookingsTable({
       {/* Stats Counters Panel */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-1">
-          <span className="font-body text-sm text-text-muted">
+          <span className="font-body text-base text-text-muted">
             {t('admin.dashboard.stats.total')}
           </span>
           <span className="font-display text-4xl text-charcoal font-bold">
@@ -120,7 +120,7 @@ export function BookingsTable({
           </span>
         </div>
         <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-slate-brand flex flex-col gap-1">
-          <span className="font-body text-sm text-text-muted">
+          <span className="font-body text-base text-text-muted">
             {t('admin.dashboard.stats.pending')}
           </span>
           <span className="font-display text-4xl text-slate-brand font-bold">
@@ -128,7 +128,7 @@ export function BookingsTable({
           </span>
         </div>
         <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-green-500 flex flex-col gap-1">
-          <span className="font-body text-sm text-text-muted">
+          <span className="font-body text-base text-text-muted">
             {t('admin.dashboard.stats.confirmed')}
           </span>
           <span className="font-display text-4xl text-green-600 font-bold">
@@ -274,6 +274,11 @@ export function BookingsTable({
         </div>
       </div>
 
+      {/* Screen-reader announcement of filtered result count */}
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        {!isLoading && t('admin.dashboard.filters.showing', { count: filteredBookings.length })}
+      </p>
+
       {/* Bookings Table */}
       <div className="bg-white border border-sand rounded shadow-sm overflow-x-auto">
         <table className="w-full border-collapse text-left min-w-[700px]">
@@ -340,7 +345,7 @@ export function BookingsTable({
                       <td className="p-4 font-body text-base text-charcoal font-medium">
                         <div className="flex flex-col">
                           <span>{clientName}</span>
-                          <span className="text-sm text-text-muted font-normal">{b.email}</span>
+                          <span className="text-base text-text-muted font-normal">{b.email}</span>
                         </div>
                       </td>
                       <td className="p-4 font-body text-base text-charcoal">
@@ -352,7 +357,7 @@ export function BookingsTable({
                       <td className="p-4">
                         <span
                           className={cn(
-                            'inline-flex items-center px-2.5 py-0.5 rounded font-body text-sm font-medium border',
+                            'inline-flex items-center px-2.5 py-0.5 rounded font-body text-base font-medium border',
                             b.status === 'pending' && 'bg-yellow-50 text-yellow-800 border-yellow-200',
                             b.status === 'confirmed' && 'bg-green-50 text-green-800 border-green-200',
                             b.status === 'completed' && 'bg-blue-50 text-blue-800 border-blue-200',
@@ -371,11 +376,11 @@ export function BookingsTable({
                       </td>
                       <td className="p-4">
                         {b.jobId ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded font-body text-sm font-medium border bg-green-50 text-green-800 border-green-200">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded font-body text-base font-medium border bg-green-50 text-green-800 border-green-200">
                             ✓ {t('admin.dashboard.table.jobCreated')}
                           </span>
                         ) : (
-                          <span className="font-body text-sm text-text-muted">—</span>
+                          <span className="font-body text-base text-text-muted">—</span>
                         )}
                       </td>
                     </tr>

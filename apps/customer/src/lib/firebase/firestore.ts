@@ -32,7 +32,7 @@ export function detectLeadSource(params: URLSearchParams): LeadSource {
   return map[ref] ?? 'organic'
 }
 
-function computeBookingEstimatedPrice(propertyType: string, serviceType: string, frequency: string): number {
+export function computeBookingEstimatedPrice(propertyType: string, serviceType: string, frequency: string): number {
   if (propertyType === 'commercial') {
     return 300 // Baseline average for commercial clean estimates
   }
@@ -58,6 +58,7 @@ export async function submitBooking(
   data: BookingFormData,
   language: Language,
   source: LeadSource,
+  stripePaymentIntentId?: string | null,
 ): Promise<string> {
   const { marketingConsent, ...formFields } = data
 
@@ -74,6 +75,11 @@ export async function submitBooking(
     fsmAppointmentId:  null,
     estimatedPrice,
     createdAt:         serverTimestamp(),
+  }
+
+  if (stripePaymentIntentId) {
+    docData.stripePaymentIntentId = stripePaymentIntentId
+    docData.stripeChargeStatus = 'hold'
   }
 
   if (marketingConsent) {

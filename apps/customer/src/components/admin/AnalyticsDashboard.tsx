@@ -114,7 +114,7 @@ export function AnalyticsDashboard({
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-1">
-          <span className="font-body text-sm text-text-muted">
+          <span className="font-body text-base text-text-muted">
             {t('admin.dashboard.analytics.stats.bookingsCount')}
           </span>
           <span className="font-display text-4xl text-charcoal font-bold">
@@ -122,7 +122,7 @@ export function AnalyticsDashboard({
           </span>
         </div>
         <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-slate-brand flex flex-col gap-1">
-          <span className="font-body text-sm text-text-muted">
+          <span className="font-body text-base text-text-muted">
             {t('admin.dashboard.analytics.stats.estimatedRevenue')}
           </span>
           <span className="font-display text-4xl text-slate-brand font-bold">
@@ -130,7 +130,7 @@ export function AnalyticsDashboard({
           </span>
         </div>
         <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-green-500 flex flex-col gap-1">
-          <span className="font-body text-sm text-text-muted">
+          <span className="font-body text-base text-text-muted">
             {t('admin.dashboard.analytics.stats.avgBookingValue')}
           </span>
           <span className="font-display text-4xl text-green-600 font-bold">
@@ -138,7 +138,7 @@ export function AnalyticsDashboard({
           </span>
         </div>
         <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-amber-500 flex flex-col gap-1">
-          <span className="font-body text-sm text-text-muted">
+          <span className="font-body text-base text-text-muted">
             {t('admin.dashboard.analytics.stats.referredBookings')}
           </span>
           <span className="font-display text-4xl text-amber-600 font-bold">

@@ -59,7 +59,7 @@ export const OverrideModal: React.FC<OverrideModalProps> = ({
           {warnings.length > 0 && (
             <div className="flex flex-col gap-2 p-4 bg-red-50/50 border border-red-200 text-red-800 rounded">
               {warnings.map((warn, index) => (
-                <div key={index} className="font-body text-sm font-semibold flex items-start gap-1.5">
+                <div key={index} className="font-body text-base font-semibold flex items-start gap-1.5">
                   <span className="shrink-0">⚠️</span>
                   <span>{warn}</span>
                 </div>
@@ -68,7 +68,7 @@ export const OverrideModal: React.FC<OverrideModalProps> = ({
           )}
 
           <div className="flex flex-col gap-1.5 mt-2">
-            <label htmlFor="override-reason" className="font-body text-sm text-text-muted font-medium">
+            <label htmlFor="override-reason" className="font-body text-base text-text-muted font-medium">
               {t('admin.override.reasonLabel', { defaultValue: 'Override Reason' })}
             </label>
             <textarea
@@ -84,7 +84,7 @@ export const OverrideModal: React.FC<OverrideModalProps> = ({
                 error ? 'border-red-500' : 'border-sand'
               )}
             />
-            {error && <span className="text-red-700 text-xs font-semibold mt-1">{error}</span>}
+            {error && <span className="text-red-700 text-sm font-semibold mt-1">{error}</span>}
           </div>
 
           {/* Action buttons */}

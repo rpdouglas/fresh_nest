@@ -131,7 +131,7 @@ export const RegisterStaffModal: React.FC<RegisterStaffModalProps> = ({
                 )}
               />
               {errors.firstName && (
-                <span className="font-body text-sm text-red-600 mt-1 block">
+                <span className="font-body text-base text-red-600 mt-1 block">
                   {errors.firstName.message}
                 </span>
               )}
@@ -153,7 +153,7 @@ export const RegisterStaffModal: React.FC<RegisterStaffModalProps> = ({
                 )}
               />
               {errors.lastName && (
-                <span className="font-body text-sm text-red-600 mt-1 block">
+                <span className="font-body text-base text-red-600 mt-1 block">
                   {errors.lastName.message}
                 </span>
               )}
@@ -177,7 +177,7 @@ export const RegisterStaffModal: React.FC<RegisterStaffModalProps> = ({
                 )}
               />
               {errors.email && (
-                <span className="font-body text-sm text-red-600 mt-1 block">
+                <span className="font-body text-base text-red-600 mt-1 block">
                   {errors.email.message}
                 </span>
               )}
@@ -199,7 +199,7 @@ export const RegisterStaffModal: React.FC<RegisterStaffModalProps> = ({
                 )}
               />
               {errors.phone && (
-                <span className="font-body text-sm text-red-600 mt-1 block">
+                <span className="font-body text-base text-red-600 mt-1 block">
                   {errors.phone.message}
                 </span>
               )}
@@ -289,7 +289,7 @@ export const RegisterStaffModal: React.FC<RegisterStaffModalProps> = ({
                 )}
               />
               {errors.transitBufferMinutes && (
-                <span className="font-body text-sm text-red-600 mt-1 block">
+                <span className="font-body text-base text-red-600 mt-1 block">
                   {errors.transitBufferMinutes.message}
                 </span>
               )}
@@ -313,7 +313,7 @@ export const RegisterStaffModal: React.FC<RegisterStaffModalProps> = ({
               )}
             />
             {errors.monthlyEarningsLimit && (
-              <span className="font-body text-sm text-red-600 mt-1 block">
+              <span className="font-body text-base text-red-600 mt-1 block">
                 {errors.monthlyEarningsLimit.message}
               </span>
             )}

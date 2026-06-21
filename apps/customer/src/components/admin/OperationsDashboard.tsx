@@ -192,7 +192,7 @@ export const OperationsDashboard: React.FC<OperationsDashboardProps> = ({ isAuth
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Completion Rate Card */}
         <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-slate-brand flex flex-col gap-1">
-          <span className="font-body text-sm text-text-muted">
+          <span className="font-body text-base text-text-muted">
             {t('admin.operations.completionRate')}
           </span>
           <span className="font-display text-4xl text-charcoal font-bold">
@@ -202,7 +202,7 @@ export const OperationsDashboard: React.FC<OperationsDashboardProps> = ({ isAuth
 
         {/* Completed Jobs Count Card */}
         <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-green-500 flex flex-col gap-1">
-          <span className="font-body text-sm text-text-muted">
+          <span className="font-body text-base text-text-muted">
             {t('admin.operations.charts.jobsCompleted')}
           </span>
           <span className="font-display text-4xl text-green-600 font-bold">
@@ -212,7 +212,7 @@ export const OperationsDashboard: React.FC<OperationsDashboardProps> = ({ isAuth
 
         {/* Total Payroll Cost Card */}
         <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-amber-500 flex flex-col gap-1">
-          <span className="font-body text-sm text-text-muted">
+          <span className="font-body text-base text-text-muted">
             {t('admin.operations.payroll')}
           </span>
           <span className="font-display text-4xl text-amber-600 font-bold">
@@ -222,7 +222,7 @@ export const OperationsDashboard: React.FC<OperationsDashboardProps> = ({ isAuth
 
         {/* Avg Duration Card */}
         <div className="bg-white border border-sand rounded p-6 shadow-sm border-l-4 border-l-slate-light flex flex-col gap-1">
-          <span className="font-body text-sm text-text-muted">
+          <span className="font-body text-base text-text-muted">
             {t('admin.operations.avgDuration')}
           </span>
           <span className="font-display text-4xl text-slate-dark font-bold">
