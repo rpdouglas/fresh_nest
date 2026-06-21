@@ -1,7 +1,7 @@
 # Active Cycle Roadmap — Phase 3
 
 This file tracks the active cycle status of Phase 3 epics for the **Fresh Nest Co.** platform.
-Authoritative spec: [`docs/reports/freshnest-master-project-plan-v3.md`](reports/freshnest-master-project-plan-v3.md)
+Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports/freshnest-master-project-plan-v4.md)
 
 ---
 
@@ -19,7 +19,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v3.md`](reports
 ## Current Phase: Phase 3 — Stabilize Carryovers, Scale & Harden
 
 **Goal:** Close all unimplemented Phase 1/2 items, eliminate live production bugs, build growth infrastructure, and establish the architectural foundations that make Phase 4 safe to build.
-**Duration:** 20–28 weeks · **Epic count:** 26 · **Sprint count:** 8
+**Duration:** 28–34 weeks · **Epic count:** 28 · **Sprint count:** 10
 
 ---
 
@@ -62,6 +62,8 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v3.md`](reports
 | **P3-E16** | Dynamic Pricing Engine & Conversion Optimisation | L | P3 | ⬜ Not Started |
 | **P3-E17** | Multi-Tenancy Schema Flag & ADR | S | P3 | ⬜ Not Started |
 | **P3-E26** | Quote-First Booking System | XL | P2 | ⬜ Not Started |
+| **P3-E27** | Employee Onboarding System *(A1 + A2 = P0 — ship immediately)* | XL | P1 | ⬜ Not Started (A1/A2 P0 active) |
+| **P3-E28** | Cleaner Suggestion & Auto-Assignment Engine v2 | L+M+S+M | P2 | ⬜ Not Started |
 
 ---
 
@@ -85,14 +87,16 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v3.md`](reports
 
 | Sprint | Weeks | Epics |
 | :--- | :--- | :--- |
-| Sprint 1 | 1–2 | P3-E7 (P0 bug fix), P3-E18 (shared types), P3-E20 (App Check), P3-E5 (CI/CD) |
-| Sprint 2 | 2–5 | P3-E1 (Stripe — XL), P3-E9 (remove mocks), P3-E4 (observability) |
-| Sprint 3 | 5–7 | P3-E3 (admin booking), P3-E8 (server-side filters), P3-E2 (code splitting) |
-| Sprint 4 | 7–9 | P3-E6 (accessibility), P3-E15 (PIPEDA erasure), P3-E17 (multi-tenancy flag) |
-| Sprint 5 | 9–12 | P3-E19 (functions split), P3-E21 (converters), P3-E22 (pricing worker) |
-| Sprint 6 | 12–16 | P3-E10 (referral loop), P3-E12 (bilingual SEO — XL), P3-E13 (GBP) |
-| Sprint 7 | 16–22 | P3-E11 (CMS blog), P3-E14 (calendar view), P3-E16 (dynamic pricing), P3-E26 (quote-first — XL) |
-| Sprint 8 | 22–28 | P3-E23 (Suspense), P3-E24 (VitePress), P3-E25 (Storybook) |
+| Sprint 1 | 1–2 | ✅ P3-E7 (P0 bug fix), P3-E18 (shared types), P3-E20 (App Check), P3-E5 (CI/CD) |
+| Sprint 2 | 2–5 | ✅ P3-E1 (Stripe — XL), P3-E9 (remove mocks), P3-E4 (observability) |
+| Sprint 3 | 5–7 | ✅ P3-E3 (admin booking), P3-E8 (server-side filters), P3-E2 (code splitting) |
+| Sprint 4 | 7–9 | ✅ P3-E6 (accessibility), P3-E15 (PIPEDA erasure), P3-E17 (multi-tenancy flag) |
+| Sprint 5 | 9–11 | **P3-E27-A1** (P0 PIPEDA), **P3-E27-A2** (P0 race condition), P3-E19 (functions split), P3-E21 (converters) |
+| Sprint 6 | 11–14 | P3-E27-B1 (welcome email), P3-E27-B2 (background check consent), P3-E22 (pricing worker), P3-E17 (schema flag) |
+| Sprint 7 | 14–18 | P3-E27-C1 (consent sequence), P3-E27-C2 (employee profile), P3-E27-D1 (staff panel) |
+| Sprint 8 | 18–22 | P3-E27-C3 (training/WHMIS), P3-E27-D2 (probation), P3-E27-D3 (offboarding), P3-E10 (referral loop), P3-E15 (PIPEDA erasure) |
+| Sprint 9 | 22–27 | P3-E26 (quote-first — XL), P3-E28 Stage 1 (suggestion engine) |
+| Sprint 10 | 27–34 | P3-E11 (CMS blog), P3-E12 (bilingual SEO — XL), P3-E13 (GBP), P3-E14 (calendar), P3-E16 (dynamic pricing), P3-E28 Stages 2–4, P3-E23 (Suspense), P3-E24 (VitePress), P3-E25 (Storybook) |
 
 ---
 
@@ -105,6 +109,8 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v3.md`](reports
 | D8 | Web Worker for pricing engine | P3-E16 | **Yes** |
 | D9 | VitePress scope: admin-only vs. public help centre | P3-E24 | **Admin-only first** |
 | D10 | Storybook: single monorepo instance vs. per-app | P3-E25 | **Single monorepo instance** |
+| D11 | Quote-first ADR: web-first PDF, deposit model, token design | P3-E26 | Write ADR before any code |
+| D12 | Auto-scheduling: autonomy table format and storage | P3-E28 | `schedulingConfig` Firestore document |
 
 ---
 
