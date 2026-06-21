@@ -19,7 +19,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v3.md`](reports
 ## Current Phase: Phase 3 — Stabilize Carryovers, Scale & Harden
 
 **Goal:** Close all unimplemented Phase 1/2 items, eliminate live production bugs, build growth infrastructure, and establish the architectural foundations that make Phase 4 safe to build.
-**Duration:** 20–28 weeks · **Epic count:** 25 · **Sprint count:** 8
+**Duration:** 20–28 weeks · **Epic count:** 26 · **Sprint count:** 8
 
 ---
 
@@ -30,7 +30,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v3.md`](reports
 | :--- | :--- | :--- | :--- | :--- |
 | **P3-E1** | Stripe Payment Integration *(was P1-E3)* | XL | P0 | ⬜ Not Started |
 | **P3-E2** | Route Code Splitting *(was P1-E5)* | M | P1 | ⬜ Not Started |
-| **P3-E3** | Admin Booking Creation *(was P1-E6)* | L | P1 | ⬜ Not Started |
+| **P3-E3** | Admin Booking Creation *(was P1-E6)* | L | P1 | ✅ Completed 2026-06-21 |
 | **P3-E4** | Observability & Error Tracking *(was P1-E7)* | M | P1 | ✅ Completed 2026-06-18 |
 | **P3-E5** | CI/CD Pipeline Hardening *(was P1-E8)* | S | P1 | ✅ Completed 2026-06-18 |
 | **P3-E6** | Accessibility Pass WCAG 2.1 AA *(was P2-E5)* | M | P2 | ⬜ Not Started |
@@ -61,6 +61,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v3.md`](reports
 | **P3-E15** | Data Retention & PIPEDA Right-to-Erasure | M | P2 | ⬜ Not Started |
 | **P3-E16** | Dynamic Pricing Engine & Conversion Optimisation | L | P3 | ⬜ Not Started |
 | **P3-E17** | Multi-Tenancy Schema Flag & ADR | S | P3 | ⬜ Not Started |
+| **P3-E26** | Quote-First Booking System | XL | P2 | ⬜ Not Started |
 
 ---
 
@@ -90,8 +91,8 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v3.md`](reports
 | Sprint 4 | 7–9 | P3-E6 (accessibility), P3-E15 (PIPEDA erasure), P3-E17 (multi-tenancy flag) |
 | Sprint 5 | 9–12 | P3-E19 (functions split), P3-E21 (converters), P3-E22 (pricing worker) |
 | Sprint 6 | 12–16 | P3-E10 (referral loop), P3-E12 (bilingual SEO — XL), P3-E13 (GBP) |
-| Sprint 7 | 16–20 | P3-E11 (CMS blog), P3-E14 (calendar view), P3-E16 (dynamic pricing) |
-| Sprint 8 | 20–24 | P3-E23 (Suspense), P3-E24 (VitePress), P3-E25 (Storybook) |
+| Sprint 7 | 16–22 | P3-E11 (CMS blog), P3-E14 (calendar view), P3-E16 (dynamic pricing), P3-E26 (quote-first — XL) |
+| Sprint 8 | 22–28 | P3-E23 (Suspense), P3-E24 (VitePress), P3-E25 (Storybook) |
 
 ---
 

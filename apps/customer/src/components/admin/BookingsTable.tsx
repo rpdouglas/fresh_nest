@@ -1,8 +1,11 @@
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils/utils'
 import type { Booking, BookingStatus } from '@/types'
+import type { AdminBookingFormData } from '@/lib/schemas/bookingSchema'
 import { BookingDetailPanel } from './BookingDetailPanel'
+import { AdminBookingModal } from './AdminBookingModal'
 
 interface BookingsTableProps {
   filteredBookings: Booking[]
@@ -37,6 +40,9 @@ interface BookingsTableProps {
   showCustomInput: Record<string, boolean>
   handleStatusChange: (bookingId: string, status: BookingStatus) => Promise<void> | void
   handleAssignmentChange: (bookingId: string, value: string) => Promise<void> | void
+  handleAdminCreate: (data: AdminBookingFormData, adminEmail: string) => Promise<void>
+  isCreating: boolean
+  adminEmail: string
 }
 
 export function BookingsTable({
@@ -72,11 +78,31 @@ export function BookingsTable({
   showCustomInput,
   handleStatusChange,
   handleAssignmentChange,
+  handleAdminCreate,
+  isCreating,
+  adminEmail,
 }: BookingsTableProps) {
   const { t } = useTranslation()
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false)
 
   return (
     <div className="flex flex-col gap-8">
+
+      {/* New Booking button */}
+      <div className="flex justify-end">
+        <button
+          onClick={() => setIsBookingModalOpen(true)}
+          disabled={isCreating}
+          className={cn(
+            'min-h-[48px] px-6 py-2 bg-slate-brand text-white font-body font-medium rounded',
+            'hover:bg-slate-dark transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2',
+            'disabled:opacity-50 disabled:pointer-events-none',
+          )}
+        >
+          {t('admin.bookings.newBookingBtn')}
+        </button>
+      </div>
+
       {/* Stats Counters Panel */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-1">
@@ -393,6 +419,13 @@ export function BookingsTable({
           {t('admin.dashboard.filters.noMore')}
         </div>
       )}
+
+      <AdminBookingModal
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+        onSubmit={handleAdminCreate}
+        adminEmail={adminEmail}
+      />
     </div>
   )
 }

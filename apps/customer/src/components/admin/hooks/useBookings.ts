@@ -3,8 +3,9 @@ import { useQueryClient, useInfiniteQuery } from '@tanstack/react-query'
 import { collection, query, orderBy, limit, startAfter, getDocs, where, Timestamp } from 'firebase/firestore'
 import type { QueryDocumentSnapshot, DocumentData } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
-import { updateBookingStatus, updateBookingAssignment } from '@/lib/firebase/firestore'
+import { updateBookingStatus, updateBookingAssignment, createAdminBooking } from '@/lib/firebase/firestore'
 import type { Booking, BookingStatus } from '@/types'
+import type { AdminBookingFormData } from '@/lib/schemas/bookingSchema'
 
 export function useBookings(enabled: boolean) {
   const queryClient = useQueryClient()
@@ -74,6 +75,18 @@ export function useBookings(enabled: boolean) {
       })
     )
   }, [data])
+
+  const [isCreating, setIsCreating] = useState(false)
+
+  const handleAdminCreate = async (data: AdminBookingFormData, adminEmail: string): Promise<void> => {
+    setIsCreating(true)
+    try {
+      await createAdminBooking(data, adminEmail)
+      await queryClient.invalidateQueries({ queryKey: ['bookings'] })
+    } finally {
+      setIsCreating(false)
+    }
+  }
 
   // Collapsible rows state
   const [expandedRowId, setExpandedRowId] = useState<string | null>(null)
@@ -189,5 +202,7 @@ export function useBookings(enabled: boolean) {
     handleStatusChange,
     handleAssignmentChange,
     handleCustomCleanerSave,
+    handleAdminCreate,
+    isCreating,
   }
 }

@@ -13,7 +13,7 @@ import {
   getDoc,
 } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
-import type { BookingFormData } from '@/lib/schemas/bookingSchema'
+import type { BookingFormData, AdminBookingFormData } from '@/lib/schemas/bookingSchema'
 import type { Language, Booking, BookingStatus, Job, ChecklistTemplate, PayRate, Review } from '@/types'
 import { calculateQuote } from '@/lib/utils/quotePricing'
 import type { QuotePropertySize, QuoteServiceType, QuoteFrequency } from '@/lib/utils/quotePricing'
@@ -89,6 +89,42 @@ export async function submitBooking(
   return ref.id
 }
 
+
+export async function createAdminBooking(
+  data: AdminBookingFormData,
+  adminEmail: string,
+): Promise<string> {
+  const { marketingConsent, ...formFields } = data
+
+  const estimatedPrice = computeBookingEstimatedPrice(
+    data.propertyType,
+    data.serviceType,
+    data.frequency,
+  )
+
+  const docData: Record<string, unknown> = {
+    ...formFields,
+    assignedTo:        data.assignedTo ?? null,
+    isAirbnb:          data.serviceType === 'airbnb',
+    photoConfirmation: data.serviceType === 'airbnb',
+    fsmAppointmentId:  null,
+    estimatedPrice,
+    createdBy:         adminEmail,
+    createdAt:         serverTimestamp(),
+  }
+
+  if (marketingConsent) {
+    docData.marketingConsent = true
+    docData.consentTimestamp = Timestamp.now()
+    docData.consentMethod    = 'booking-form-v2'
+  }
+
+  const cleanDocData = Object.fromEntries(
+    Object.entries(docData).filter(([, v]) => v !== undefined),
+  )
+  const ref = await addDoc(collection(db, 'bookings'), cleanDocData)
+  return ref.id
+}
 
 export async function updateBookingStatus(bookingId: string, status: BookingStatus): Promise<void> {
   const docRef = doc(db, 'bookings', bookingId)

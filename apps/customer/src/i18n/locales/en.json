@@ -1069,6 +1069,62 @@
       "prevDay": "Previous Day",
       "nextDay": "Next Day",
       "noCleaners": "No active cleaners found."
+    },
+    "bookings": {
+      "newBookingBtn": "New Booking",
+      "modal": {
+        "title": "Create New Booking",
+        "subtitle": "Enter booking details for a phone or walk-in client.",
+        "section": {
+          "service": "Service & Property",
+          "schedule": "Schedule & Contact",
+          "controls": "Admin Controls"
+        },
+        "serviceType": "Service Type",
+        "propertyType": "Property Type",
+        "bedrooms": "Bedrooms",
+        "bathrooms": "Bathrooms",
+        "pets": "Pets at home",
+        "addOns": "Add-Ons (Optional)",
+        "squareFootage": "Square Footage (Optional)",
+        "squareFootagePlaceholder": "e.g. 1200",
+        "frequency": "Cleaning Frequency",
+        "preferredDate": "Preferred Date",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email Address",
+        "phone": "Phone Number",
+        "address": "Service Address",
+        "notes": "Special Instructions (Optional)",
+        "language": "Communication Language",
+        "leadSource": "Lead Source",
+        "assignedTo": "Assign Cleaner (Optional)",
+        "unassigned": "— Unassigned —",
+        "status": "Initial Status",
+        "marketingConsent": "Client opted in to marketing emails",
+        "confirmedWarning": "Setting status to Confirmed will trigger job creation and send a confirmation email to the client.",
+        "noStaffWarning": "No cleaner assigned — a job will be created as unassigned.",
+        "submit": "Create Booking",
+        "cancel": "Cancel",
+        "error": "Failed to create booking. Please try again.",
+        "leadSourceOptions": {
+          "phone": "Phone Call",
+          "walk-in": "Walk-In",
+          "organic": "Organic Search",
+          "google": "Google Ads",
+          "referral": "Referral Program",
+          "facebook": "Facebook Ads",
+          "direct": "Direct Traffic"
+        },
+        "statusOptions": {
+          "pending": "Pending Confirmation",
+          "confirmed": "Confirmed"
+        },
+        "languageOptions": {
+          "en": "English",
+          "fr": "French"
+        }
+      }
     }
   },
   "blog": {

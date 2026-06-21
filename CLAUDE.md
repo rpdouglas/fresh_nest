@@ -55,7 +55,9 @@ THIS IS TAILWIND v3. NOT v4.
 
 ## PERSONA-BASED DEVELOPMENT CONTRACT
 
-### Six Personas — Read docs/PERSONAS.md Before Every Epic
+### Fifteen Personas — Read docs/PERSONAS.md Before Every Epic
+
+#### Customer-Facing (P1–P6)
 
 | ID | Name | Primary Need | Key Feature |
 |---|---|---|---|
@@ -65,6 +67,20 @@ THIS IS TAILWIND v3. NOT v4.
 | P4 | Kahnawà:ke Baptiste | Akwesasne recognition + island service | /locations/akwesasne + notes field |
 | P5 | Sophie Tremblay-Gagnon | French UX + eco + Snye QC service | /locations/snye-qc + FR + gallery |
 | P6 | Gallagher (Airbnb) | Turnover reliability + photo proof | /services/airbnb-turnover + priority |
+
+#### Staff-Side / FSM (P7–P15)
+
+| ID | Name | Primary Need | Hard Constraint |
+|---|---|---|---|
+| P7 | Carla | ODSP earnings protection | Pre-claim earnings check + Safe to Earn meter |
+| P8 | Jasmine Beausoleil | Mobile onboarding + transit scheduling | Travel time buffer enforcement between shifts |
+| P9 | Mike | Recovery commitments | Blocked-window visibility filter (shifts hidden, not greyed) |
+| P10 | Ahmed | ESL accessibility | Icon-first UI + Arabic language toggle |
+| P11 | Brenda Côté | French-primary lead cleaner + photo proof | Full FR UI + mandatory timestamped geo-tagged photos |
+| P12 | Lauren Arsenault | Admin operations + compliance | Dispatch, onboarding, audit trail, immutable rate snapshots |
+| P13 | Marcus Oakes | Part-time student / OSAP cap | Earnings bar + self-managed blocked windows |
+| P14 | Sylvie Pilon | Caregiver schedule predictability | Day-before SMS + 2:30pm hard limit + plain-language errors |
+| P15 | Daniel Swamp | Akwesasne community member | Bridge commute buffer + earnings export + no AI Kanien'kéha |
 
 ### Rule 1 — No persona, no feature
 Before implementing any feature, identify which persona(s) it serves.

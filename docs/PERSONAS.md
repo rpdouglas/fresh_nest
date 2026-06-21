@@ -1,19 +1,54 @@
 # Fresh Nest Co. — Persona Reference
 
-**Version:** 3.0 | **Updated:** June 2026  
-**Status:** Human-defined — AI agents READ ONLY. Do NOT modify this file.  
-**Supersedes:** v2.0 (June 2025)
+**Version:** 4.0 | **Updated:** 2026-06-18
+**Status:** Human-defined — AI agents READ ONLY. Do NOT modify this file.
+**Supersedes:** v3.0 (June 2026)
 
 > [!CAUTION]
-> This document is human-defined and immutable to AI agents. It defines the twelve user archetypes whose needs drive every product decision across both the customer-facing website and the FSM (Field Service Management) platform. Before implementing any feature, identify which persona(s) it serves. If you cannot name one, halt and ask.
+> This document is human-defined and immutable to AI agents. It defines the fifteen user archetypes whose needs drive every product decision across both the customer-facing website and the FSM (Field Service Management) platform. Before implementing any feature, identify which persona(s) it serves. If you cannot name one, halt and ask.
 
 ---
 
-## What Changed in v3
+## What Changed in v4
 
-Version 3 expands the persona suite from six customer-facing archetypes (P1–P6) to twelve, adding six staff-side personas (P7–P12) introduced alongside the FSM module initiative. The v2 customer personas are unchanged. The new staff personas are **system constraints**, not just user stories — each encodes a hard technical requirement that the FSM platform must enforce, not merely accommodate.
+Version 4 upgrades three staff-side personas with richer human-centered profiles drawn from `docs/reports/freshnest-staff-personas.md`, renames the owner persona from "Sarah" to **Lauren Arsenault**, and adds three net-new staff personas (P13–P15) grounded in Cornwall/Akwesasne regional demographics and cleaning industry workforce research. Customer personas P1–P6 and FSM constraint personas P7, P9, and P10 are unchanged from v3.
 
-**Key architectural implication:** The FSM module serves two distinct user populations simultaneously. A feature that serves Carla (P7) may conflict with what serves Sarah (P12). When conflicts arise between staff personas, Sarah's compliance constraints take precedence — they represent legal and regulatory floors, not preferences.
+| Change | Detail |
+|---|---|
+| P8 Jasmine | Upgraded with full human profile (SP2); hard constraints retained |
+| P11 Brenda | Upgraded with full human profile (SP3); photo constraints + French requirement added |
+| P12 | Renamed Sarah → **Lauren Arsenault**; upgraded with admin/operations profile (SP1); compliance requirements retained |
+| P13 Marcus Oakes | New — part-time student, OSAP earnings cap, blocked window self-management |
+| P14 Sylvie Pilon | New — primary caregiver returning to work, schedule predictability |
+| P15 Daniel Swamp | New — Akwesasne community member as employee, bridge commute context |
+
+**Key architectural implication:** The FSM module serves two distinct user populations simultaneously. A feature that serves Jasmine (P8) may conflict with what serves Lauren (P12). When conflicts arise between staff personas, Lauren's compliance constraints take precedence — they represent legal and regulatory floors, not preferences.
+
+---
+
+## Regional and Industry Context
+
+*Shapes all staff personas. Read before building any FSM feature.*
+
+**Cornwall, ON:**
+- Population ~47,000; one of Eastern Ontario's largest cities
+- Bilingual city: ~43% speak both EN and FR; French mother-tongue at 25.4% — far above Ontario average
+- Shares its southern border with Akwesasne; tight economic and social integration between the two communities
+- Active newcomer infrastructure: NEWS (Newcomer Employment & Welcome Services), CÉSOC (French settlement services), and 5EO Local Immigration Partnership all operate locally
+- Lower cost of living and wages than Ottawa or Toronto; part-time and supplementary income work is common
+
+**Akwesasne:**
+- Spans three districts: Kawehno:ke (Cornwall Island, Ontario), Kana:takon (St. Regis, QC), and Tsi Snaihne (Snye, QC)
+- English-dominant in daily use; Kanien'kéha (Mohawk language) is culturally significant — **AI-generated Kanien'kéha is prohibited**
+- Strong community employment infrastructure through MCA and AERC
+- Cross-border geography creates complex employment eligibility situations for some community members
+
+**Cleaning industry workforce (Canada/North America):**
+- Workers are 88.6% female, on average 47 years old, with 27% part-time and ~25% as independent contractors
+- Turnover runs 200–400% per year — costing $1,000–$2,500 per replacement
+- Beyond pay, workers seek stability, clear communication, flexibility, and advancement opportunities
+- Care-related issues are the single most common reason employees leave the workforce
+- Mature employees tend to demonstrate stronger loyalty, better punctuality, and lower absenteeism
 
 ---
 
@@ -32,14 +67,17 @@ Version 3 expands the persona suite from six customer-facing archetypes (P1–P6
 
 ### Staff-Side Personas (FSM Platform)
 
-| ID | Name | Constraint Type | Hard System Requirement |
+| ID | Name | Role / Constraint Type | Hard System Requirement |
 |---|---|---|---|
 | P7 | Carla | ODSP Earnings Cap | Pre-claim earnings check + visual "Safe to Earn" meter |
-| P8 | Jasmine | Transit-Only Commuter | Travel time buffer enforcement between shifts |
+| P8 | Jasmine Beausoleil | Transit-Only New Cleaner | Travel time buffer enforcement between shifts |
 | P9 | Mike | Recovery Commitments | Recurring blocked-window filter on shift visibility |
 | P10 | Ahmed | ESL / Low English Literacy | Icon-first UI + Arabic language toggle |
-| P11 | Brenda | Visual Verification | Mandatory timestamped, geo-tagged photo uploads |
-| P12 | Sarah | Owner / Compliance | Audit trail, rate snapshots, terms version tracking |
+| P11 | Brenda Côté | Lead Cleaner (FR) / Visual Verifier | Full French UI + mandatory timestamped, geo-tagged photo uploads |
+| P12 | Lauren Arsenault | Owner / Compliance | Dispatch + onboarding admin + audit trail, rate snapshots, terms version tracking |
+| P13 | Marcus Oakes | Part-Time Student / OSAP | Earnings cap display + blocked window self-management |
+| P14 | Sylvie Pilon | Primary Caregiver Returning to Work | Schedule predictability + plain-language error states + day-before reminders |
+| P15 | Daniel Swamp | Akwesasne Community Member | Bridge commute buffer + earnings export + career progression |
 
 ---
 
@@ -379,11 +417,11 @@ High-value, high-expectation, intensely loyal when their specific needs are met.
 
 ---
 
-## PART 2 — Staff-Side Personas (P7–P12)
+## PART 2 — Staff-Side Personas (P7–P15)
 
 *These personas drive the FSM (Field Service Management) platform. They represent the cleaning staff and the business owner. Each persona encodes a hard system constraint — a requirement that the system must enforce, not merely make available as a setting.*
 
-**Design principle for P7–P12:** Every constraint is a protection. Carla's earnings cap protects her housing. Mike's blocked windows protect his recovery. Ahmed's icon-first UI protects job quality. Brenda's photo requirement protects her from disputes. Jasmine's travel buffer protects her from impossible scheduling. Sarah's audit trail protects the business from liability. The FSM platform is a trust infrastructure, not just a workflow tool.
+**Design principle for P7–P15:** Every constraint is a protection. Carla's earnings cap protects her housing. Mike's blocked windows protect his recovery. Ahmed's icon-first UI protects job quality. Brenda's photo requirement protects her from disputes. Jasmine's travel buffer protects her from impossible scheduling. Lauren's audit trail protects the business from liability. Sylvie's day-before reminder protects her ability to plan around caregiving. Daniel's bridge buffer protects his schedule accuracy. Marcus's earnings bar protects his student aid. The FSM platform is a trust infrastructure, not just a workflow tool.
 
 ---
 
@@ -422,7 +460,7 @@ Carla cannot earn more than her ODSP-allowable limit in a given month (e.g., $1,
 | Pre-claim earnings check | Before a shift can be claimed: `(currentMonthEarnings + shiftGrossPay) <= monthlyEarningsLimit` must be true. If false, the claim button is disabled and a clear explanation is shown. This is a hard block, not a soft warning. |
 | "Safe to Earn" progress bar | Visual indicator showing current month earnings vs. limit. Colour-coded: green (safe), amber (within $100 of limit), red (at or over limit). Present on dashboard and on every shift detail screen. |
 | Shift listing filter | Shifts that would push Carla over her limit must be visually marked as unclaimed (greyed, with explanation) — they should still be visible so she understands why, but the claim action is disabled. |
-| Admin override | Sarah (P12) can manually adjust `monthlyEarningsLimit` and `currentMonthEarnings` with an audit log entry. |
+| Admin override | Lauren (P12) can manually adjust `monthlyEarningsLimit` and `currentMonthEarnings` with an audit log entry. |
 
 #### Persona Quote
 > *"I can't afford to guess. If the app lets me claim it, I need to know it's safe."*
@@ -439,16 +477,22 @@ Carla cannot earn more than her ODSP-allowable limit in a given month (e.g., $1,
 
 ---
 
-### P8 — Jasmine · Transit-Only Commuter
+### P8 — Jasmine Beausoleil · Transit-Only New Cleaner
 
 #### Profile
 
 | Field | Detail |
 |---|---|
-| Situation | No personal vehicle. Relies entirely on Cornwall Transit for getting to job sites. |
-| Core constraint | Transit travel time between two job sites may make back-to-back shifts physically impossible |
-| Tech comfort | Moderate-high — smartphone, comfortable with apps |
-| Primary concern | Not being assigned or claiming shifts that are geographically impossible given her transport method |
+| Age | 24 |
+| Location | Cornwall, ON |
+| Role | Cleaner (new hire) |
+| Languages | English only |
+| Device | Android smartphone (mid-range), no laptop |
+| Transit | Public bus; transfers required to reach some client addresses |
+| Tech comfort | Comfortable with smartphone apps; no experience with scheduling or job management apps |
+
+#### Who She Is
+Jasmine grew up in Cornwall and is starting her first service-industry job after working retail. She heard about Fresh Nest from a friend and applied because of the flexible hours and the community reputation. She has no experience with cleaning professionally or with field service apps. She is comfortable with her phone but has never used a scheduling or job management app.
 
 #### The Hard Constraint
 If Jasmine's first shift ends at 12:00 PM in one part of Cornwall and her next shift starts at 12:30 PM across town, she physically cannot make it using Cornwall Transit. If the system allows this pairing, she either misses the second job (damaging client trust and triggering a performance flag) or sprints and arrives flustered, delivering lower quality work.
@@ -456,32 +500,44 @@ If Jasmine's first shift ends at 12:00 PM in one part of Cornwall and her next s
 **The system must prevent impossible schedule pairings, not just flag them.**
 
 #### Goals
+- A first-login experience that tells her exactly what to do, in plain language, one step at a time
 - Only see and claim shifts that are realistically reachable given transit travel time
 - Never be presented with a schedule that looks valid but is actually impossible
-- Get to every job on time, calm, and ready to work
+- Clear confirmation that she is doing the right thing at the right time
 
 #### Fears
 - Back-to-back shifts with insufficient travel time between them
 - Being penalised for lateness caused by a transit route she cannot control
-- Being assigned to geographically clustered work (which is ideal) vs. scattered work (which wastes her day)
+- If the first login fails for any reason, she will assume she did something wrong and may not try again — she is unlikely to call Lauren to troubleshoot
 
 #### Feature Requirements
 
 | Field / Requirement | Specification |
 |---|---|
+| Magic link welcome email | Welcome email with a magic link that logs her in on the first click — no URL to remember, no password to set |
+| First-login onboarding | One screen at a time, clear progress indicators; mobile-optimised (375px Android) |
+| My Jobs page | Displays assigned job with client address, service type, and check-in button immediately after onboarding |
+| Check-in flow | Check-in button prominently displayed when she arrives; satisfying visual state change on each checklist item |
+| Earnings display | Earnings shown in plain dollar amounts, not percentages or abstract figures |
 | `staff.constraints.transportMode` | Enum: `'personal_vehicle' \| 'transit' \| 'rideshare' \| 'walk'`. Set on staff profile. |
 | `staff.constraints.transitBufferMinutes` | Integer. Default `60` for transit users. Configurable by admin. |
 | Travel time conflict engine (v1) | On shift claim or assignment: if `previousShiftEndTime + transitBufferMinutes > nextShiftStartTime`, the claim is blocked with an explanation. Uses address-based heuristic (same postal prefix = waive buffer). |
 | Travel time conflict engine (v2, future) | Replace heuristic with Google Maps Transit API query: `travelTime(origin, destination, mode='transit', arrivalTime)`. Block if API response `duration > availableWindow`. |
-| Shift listing — transit filter | When Jasmine views available shifts, shifts that conflict with her existing confirmed schedule (based on buffer) are shown as unavailable with a "Travel conflict" label. They are not hidden — she can see them and understand why they are blocked. |
+| Shift listing — transit filter | Shifts that conflict with her existing confirmed schedule (based on buffer) are shown as unavailable with a "Travel conflict" label. They are not hidden — she can see them and understand why they are blocked. |
 | Cluster view | Optional dashboard view showing shifts grouped by geographic area (postal code prefix). Allows Jasmine to plan a transit-efficient day. |
 
-#### Persona Quote
+#### Persona Quotes
 > *"I can't teleport. Show me shifts I can actually get to."*
 
-#### Acceptance Test — P8
+#### Acceptance Tests — P8
 **Pass/Fail Gate for Phase C:**
 
+**Onboarding gate:**
+1. Jasmine clicks the magic link in her welcome email
+2. She completes all first-login consent screens in under 10 minutes on her Android phone (375px)
+3. She sees her assigned job with the client address, service type, and check-in button on the My Jobs page — all without calling Lauren or asking for help
+
+**Transit conflict gate:**
 1. Jasmine's profile has `transportMode: 'transit'` and `transitBufferMinutes: 60`
 2. She has a confirmed shift ending at 12:00 PM at Address A
 3. She views an available shift starting at 12:30 PM at Address B (different postal prefix) — it is shown with a "Travel conflict" label; the claim button is disabled
@@ -521,9 +577,9 @@ Mike's support group meetings are not preferences — they are a condition of hi
 
 | Field / Requirement | Specification |
 |---|---|
-| `staff.constraints.blockedWindows` | Array of `{ dayOfWeek: 0-6, startTime: 'HH:MM', endTime: 'HH:MM', recurring: boolean, label: string }`. The `label` is only visible to the staff member and to Sarah (admin). Never displayed to clients or other staff. |
+| `staff.constraints.blockedWindows` | Array of `{ dayOfWeek: 0-6, startTime: 'HH:MM', endTime: 'HH:MM', recurring: boolean, label: string }`. The `label` is only visible to the staff member and to Lauren (admin). Never displayed to clients or other staff. |
 | Shift visibility filter | Any shift whose time window overlaps with any of Mike's `blockedWindows` is **completely hidden** from his available shifts view. It does not appear as greyed-out or unavailable — it is absent. |
-| Admin scheduling guard | When Sarah (P12) attempts to manually assign a shift to Mike during a blocked window, the system shows a warning: "This shift overlaps with a blocked window for this staff member." Sarah can override with a reason (audit-logged). |
+| Admin scheduling guard | When Lauren (P12) attempts to manually assign a shift to Mike during a blocked window, the system shows a warning: "This shift overlaps with a blocked window for this staff member." Lauren can override with a reason (audit-logged). |
 | Privacy | `blockedWindows` labels are visible only to the staff member in their own profile, and to admin. No label, reason, or detail is visible to other staff or to booking clients. |
 | One-time vs. recurring | Blocked windows support both recurring (e.g., every Tuesday 7–9 PM) and one-time (e.g., specific date for medical appointment). One-time windows expire automatically after the date passes. |
 
@@ -537,7 +593,7 @@ Mike's support group meetings are not preferences — they are a condition of hi
 2. There is an available shift on a Tuesday from 18:30–20:00 — it does not appear in Mike's available shifts list
 3. There is an available shift on a Tuesday from 20:30–22:00 — it appears normally in his list
 4. There is an available shift on a Wednesday from 19:00–20:30 — it appears normally (different day)
-5. When Sarah attempts to manually assign the Tuesday 18:30 shift to Mike, she receives a warning but can override with a logged reason
+5. When Lauren attempts to manually assign the Tuesday 18:30 shift to Mike, she receives a warning but can override with a logged reason
 6. The blocked window label ("Recovery meeting" or whatever Mike entered) is not visible to other staff or to clients
 
 ---
@@ -595,28 +651,39 @@ Ahmed can recognize icons faster than he can decode English sentences. A text-on
 
 ---
 
-### P11 — Brenda · Visual Verifier
+### P11 — Brenda Côté · Lead Cleaner (FR) / Visual Verifier
 
 #### Profile
 
 | Field | Detail |
 |---|---|
-| Situation | Detail-oriented, experienced cleaner. Has had past disputes about damage she did not cause and jobs she completed that clients claimed were skipped. |
-| Core constraint | She needs proof of her work — timestamped, geo-tagged photographic evidence — as protection against "he said/she said" disputes |
-| Tech comfort | High — comfortable with smartphone cameras and photo uploads |
-| Primary concern | Being falsely blamed for damage she did not cause, or having completed work disputed |
+| Age | 41 |
+| Location | Snye, QC |
+| Role | Lead cleaner, supervisor-in-training |
+| Languages | French (primary) · working English |
+| Device | iPhone (personal), comfortable with apps |
+| Transit | Personal vehicle; commutes 20–30 min each way from Snye QC into Cornwall ON |
+| Experience | 8 years cleaning homes professionally |
+
+#### Who She Is
+Brenda has been cleaning homes professionally for eight years, most recently for a residential cleaning company in Valleyfield. She moved to Snye two years ago following her partner's relocation. She was referred to Fresh Nest by a neighbour. She is experienced, reliable, and is interested in moving into a supervisory role as the business grows. She prefers to work in French and finds it mentally tiring to process work communications in English at the end of a physical day.
+
+She has had past disputes about damage she did not cause and jobs she completed that clients claimed were skipped. She needs proof of her work — timestamped, geo-tagged photographic evidence — as protection against "he said/she said" disputes.
 
 #### The Hard Constraint
 Trust without evidence is insufficient. For high-value items and dispute-prone situations, the system must require photo documentation — not offer it as optional. If photo upload is optional, it will be skipped when workers are tired or rushed. Brenda's protection requires mandatory photo capture, not a suggestion.
 
-**Photo requirements for designated task types are enforced — the task cannot be marked complete without a valid photo.**
+**Photo requirements for designated task types are enforced — the task cannot be marked complete without a valid photo. All FSM UI for Brenda must be fully in French — zero English visible when language is set to FR.**
 
 #### Goals
+- Every interaction with Fresh Nest — welcome email, app screens, training modules, job notifications — entirely in French
 - Have timestamped, geo-tagged evidence that she was present and completed her work
 - Know which specific items require photos before she arrives at a job
 - Never lose a dispute because she didn't think to take a photo in the moment
+- See a career path: the platform should support role progression toward lead/supervisor
 
 #### Fears
+- Machine-translated strings or half-bilingual screens that signal her language is not genuinely respected
 - Arriving at a job not knowing which items need documentation
 - Taking a photo that gets rejected because it was taken at the wrong time or location
 - Clients claiming damage that was pre-existing — with no photo evidence to refute it
@@ -625,53 +692,73 @@ Trust without evidence is insufficient. For high-value items and dispute-prone s
 
 | Field / Requirement | Specification |
 |---|---|
+| Full French UI | Every notification, email, training module, and UI string in French — zero English visible when `language: 'fr'` |
+| French training content | WHMIS training and all onboarding materials available in French |
+| Career progression display | Role status and path to lead/supervisor visible in staff profile |
+| Travel time accuracy | Scheduling accounts for Snye QC commute time (20–30 min each way) |
 | `task.requiresPhoto` | Boolean. Set per task type in the service template. Task types that default to `requiresPhoto: true`: Stove (before), Stove (after), Fridge (before), Fridge (after), primary bathroom (after), property entry (before = arrival photo) |
 | Photo capture enforcement | A task with `requiresPhoto: true` cannot be marked complete until a photo has been uploaded. The complete/checkmark button is disabled until the photo upload succeeds. |
 | Photo metadata — timestamp | `photo.capturedAt`: ISO timestamp from device clock at capture time. Displayed on all stored photos. |
 | Photo metadata — geolocation | `photo.geoLat` and `photo.geoLng`: GPS coordinates captured at upload time. If geolocation is denied by the device, the upload is permitted but flagged as `geoTagged: false` with a visible indicator. |
 | Photo metadata — staffId | `photo.staffId`: The ID of the authenticated staff member who uploaded. Stored immutably. |
 | Photo storage | Photos stored in Firebase Storage under `jobs/{jobId}/photos/{photoId}`. Accessible to admin (P12). Accessible to the uploading staff member. Not accessible to other staff members or to clients in Phase 1. |
-| Dispute review | Sarah (P12) can view all photos for any job from the admin dashboard, including metadata. Photo viewer shows timestamp, geo status, and staff name on each image. |
+| Dispute review | Lauren (P12) can view all photos for any job from the admin dashboard, including metadata. Photo viewer shows timestamp, geo status, and staff name on each image. |
 
-#### Persona Quote
+#### Persona Quotes
 > *"I do the job right every time. I just need proof that I did."*
 
-#### Acceptance Test — P11
+#### Acceptance Tests — P11
 **Pass/Fail Gate for Phase C:**
 
+**French-language gate:**
+1. Brenda's device and app language are set to French
+2. She receives her welcome email in French, completes all onboarding screens in French (including WHMIS training in French), and views her assigned jobs and profile page — with zero English strings visible at any point
+3. Linguistic_Auditor confirms zero English strings in the FR flow
+
+**Photo enforcement gate:**
 1. A deep clean job template has the Stove task configured with `requiresPhoto: true`
 2. Brenda arrives at the job and opens the checklist — the Stove task shows a camera icon indicating a photo is required
 3. She taps the Stove task — the camera launches directly
 4. She attempts to mark the Stove task complete without taking a photo — the complete button is disabled
 5. She takes a photo — it uploads successfully with `capturedAt` timestamp and `geoLat/geoLng` metadata
 6. The complete button becomes active; she marks the task done
-7. Sarah views the job record in the admin dashboard and sees the photo with timestamp and geo status displayed
+7. Lauren views the job record in the admin dashboard and sees the photo with timestamp and geo status displayed
 
 ---
 
-### P12 — Sarah · Business Owner / Compliance
+### P12 — Lauren Arsenault · Owner / Compliance
 
 #### Profile
 
 | Field | Detail |
 |---|---|
-| Situation | Business owner responsible for payroll accuracy, employment standards compliance, HST remittance, and liability protection |
-| Core constraint | Every employment and financial transaction must produce an immutable audit trail that can withstand a labour board audit |
+| Age | 38 |
+| Location | Cornwall, ON |
+| Role | Business owner, admin, scheduler, primary contact |
+| Languages | English (primary) · conversational French |
+| Device | Desktop (admin panel) · iPhone (mobile admin tasks) |
 | Tech comfort | High — comfortable with complex dashboards and operational software |
-| Primary concern | A labour board inspection or legal dispute should never be able to catch Fresh Nest Co. without documentation |
+
+#### Who She Is
+Lauren founded Fresh Nest Co. She handles everything: quoting, scheduling, client communication, staff management, payroll, and marketing. She is the only admin user of the platform. She is not a developer and will not make Firestore edits to manage her business. Every admin UI decision must work for someone running a business alone. She cares deeply about the Akwesasne and Cornwall communities and wants her employment practices to reflect that.
+
+She is responsible for payroll accuracy, employment standards compliance, HST remittance, and liability protection. A labour board inspection or legal dispute should never be able to catch Fresh Nest Co. without documentation.
 
 #### The Hard Constraint
 Compliance is not a feature. It is the floor beneath every other feature. If a pay rate changes, every historical shift record must retain the rate that was in effect at the time of the shift — not the current rate. If staff accept terms of service, the version they accepted must be stored permanently. If a dispute arises, every action in the system must be traceable to a timestamp and a user.
 
-**Sarah's requirements override convenience. No UX optimization is permitted to compromise the audit trail.**
+**Lauren's compliance requirements override convenience. No UX optimization is permitted to compromise the audit trail. Admin tasks happen in 10-minute windows between jobs and calls — admin UI must be fast and unambiguous.**
 
 #### Goals
+- Register a new staff member in under 3 minutes with a single form
+- See at a glance where each employee is in their onboarding journey
+- Be alerted when a probation check-in is due, a background check is pending, or an employee's earnings are approaching their monthly cap
 - Know that every shift record is a complete, frozen snapshot of what was agreed to at the time
-- Maintain proof that all staff have accepted current terms and that version history is tracked
 - Be able to produce a complete employment record for any staff member on demand
 - Never have a "we can't find that record" conversation with an auditor
 
 #### Fears
+- Not comfortable with ambiguous system states — if something is unclear she will call the employee directly, creating more work
 - Pay rate changes retroactively altering historical shift records
 - A staff member claiming they never accepted a policy change
 - Photo, GPS, or time records that can be altered after the fact
@@ -681,28 +768,218 @@ Compliance is not a feature. It is the floor beneath every other feature. If a p
 
 | Field / Requirement | Specification |
 |---|---|
-| `staff.compliance.acceptedTermsVersion` | String (semantic version, e.g., `"2.1"`). Updated only when the staff member explicitly accepts the new terms document. All versions are stored in `staff.compliance.termsHistory[]`. |
+| Staff registration | Register a new staff member in under 3 minutes; welcome email with magic link sent to employee within 60 seconds |
+| Onboarding checklist UI | At-a-glance view of each employee's onboarding journey (background check, WHMIS, employment agreement) |
+| Probation tracking | Alert when probation check-in is due |
+| Dispatch board | Shows conflicts and capacity before assigning anyone |
+| Earnings cap meter | Alert when any employee's earnings are approaching their monthly cap |
+| IntakeModeSettings toggle | Toggle intake mode (instant booking vs. quote-required) per service type without deploying code |
+| `staff.compliance.acceptedTermsVersion` | String (semantic version, e.g., `"2.1"`). Updated only when the staff member explicitly accepts the new terms document. All versions stored in `staff.compliance.termsHistory[]`. |
 | `shift.payRateSnapshot` | Object: `{ rateId: string, amount: number, currency: 'CAD', effectiveAt: ISO timestamp, snapshotAt: ISO timestamp }`. Captured at the moment the shift is confirmed/claimed. Immutable after capture — no update pathway exists. |
 | Immutable shift records | Once a shift status reaches `completed`, no field on the shift record can be updated except by an admin override that creates a new record with a `reason` field (the original record is preserved). |
 | Audit log | Every write operation on `staff`, `shifts`, and `bookings` collections that changes a financial, status, or compliance field generates an entry in `auditLog/{docId}`: `{ collection, documentId, field, oldValue, newValue, changedBy, changedAt }`. |
-| Admin override trail | Any time Sarah (or another admin) overrides a system rule (P7 earnings cap, P8 travel conflict, P9 blocked window, P11 photo requirement), the override is recorded in the audit log with a mandatory `reason` field. No silently-overridden rules. |
-| Rate history | `payRates` collection stores all historical rates with `effectiveFrom` and `effectiveTo` dates. Sarah can view the full rate history timeline from the admin dashboard. |
+| Admin override trail | Any time Lauren (or another admin) overrides a system rule (P7 earnings cap, P8 travel conflict, P9 blocked window, P11 photo requirement), the override is recorded in the audit log with a mandatory `reason` field. No silently-overridden rules. |
+| Rate history | `payRates` collection stores all historical rates with `effectiveFrom` and `effectiveTo` dates. Lauren can view the full rate history timeline from the admin dashboard. |
 | Staff record export | Admin can export a complete employment record for any staff member as a structured JSON or PDF: all shifts, pay snapshots, terms acceptance history, and audit log entries for that staff member. |
-| Terms distribution | When Sarah publishes a new terms version, all active staff receive an in-app notification requiring acceptance before their next shift can be claimed. |
+| Terms distribution | When Lauren publishes a new terms version, all active staff receive an in-app notification requiring acceptance before their next shift can be claimed. |
 
 #### Persona Quote
 > *"If there's ever an audit, I need to be able to show everything. Not most of it — everything."*
 
-#### Acceptance Test — P12
+#### Acceptance Tests — P12
 **Pass/Fail Gate for Phase C:**
 
-1. A pay rate is changed in the system from $18/hr to $20/hr effective today
-2. A shift that was confirmed last week at $18/hr still shows `payRateSnapshot.amount: 18` — the rate change did not retroactively update it
+**Admin operations gate:**
+1. Lauren registers a new cleaner — a welcome email with a magic link reaches the employee within 60 seconds
+2. She can see the onboarding checklist status in the Staff panel without any Firestore editing
+3. She activates the employee by clicking a single button after all required items are checked
+
+**Compliance gate:**
+1. A pay rate is changed from $18/hr to $20/hr effective today
+2. A shift confirmed last week at $18/hr still shows `payRateSnapshot.amount: 18` — the rate change did not retroactively update it
 3. A new shift confirmed today shows `payRateSnapshot.amount: 20`
-4. Sarah publishes Terms v2.1 — all active staff see an in-app prompt requiring acceptance before their next shift claim
+4. Lauren publishes Terms v2.1 — all active staff see an in-app prompt requiring acceptance before their next shift claim
 5. Staff member Ahmed accepts v2.1 — `acceptedTermsVersion: "2.1"` is stored, and the previous version `"2.0"` is retained in `termsHistory[]`
-6. Sarah uses the admin override to bypass Carla's earnings cap for one shift — the audit log records the override with the reason Sarah entered
-7. Sarah exports Brenda's employment record — the export includes all shifts, pay snapshots, terms history, and audit entries
+6. Lauren uses the admin override to bypass Carla's earnings cap for one shift — the audit log records the override with the reason Lauren entered
+7. Lauren exports Brenda's employment record — the export includes all shifts, pay snapshots, terms history, and audit entries
+
+---
+
+### P13 — Marcus Oakes · Part-Time Student
+
+#### Profile
+
+| Field | Detail |
+|---|---|
+| Age | 21 |
+| Location | Cornwall, ON (east end) |
+| Role | Cleaner, part-time, limited availability |
+| Languages | English only |
+| Device | iPhone, very app-comfortable (TikTok, Snapchat, delivery apps) |
+| Transit | Personal vehicle (borrowed from family) |
+| Income concern | OSAP eligibility threshold — exceeding it affects student aid |
+
+#### Who He Is
+Marcus is a second-year student at St. Lawrence College's Cornwall campus, studying Business Administration. He works 15–20 hours per week maximum and cannot miss class. He found Fresh Nest on Instagram and applied because the schedule looked flexible. He has cleaned before — a summer job at a hotel — but residential cleaning is new. He is earnings-cap aware because he is managing his income against OSAP eligibility thresholds.
+
+#### Goals
+- Clear control over when he works and transparent visibility into what he is earning
+- A warning before he hits any income threshold that affects his student assistance
+- Claim available shifts from the shift board when he wants more hours, ignore them when he is busy
+- Fast check-in experience: open the app, tap check-in, close the app
+
+#### Fears
+- Exceeding his OSAP earnings threshold — he will quit the job rather than lose student aid
+- Slow or confusing UX — he will tap around and if something is not obvious within 10 seconds he will stop
+- Missing class because he couldn't block out lecture times
+
+#### Key Constraints
+- Fixed unavailability: Tuesday/Thursday 8am–1pm (lectures), Wednesday 6–9pm (lab), every exam period (2–3 weeks per semester) — these must be blockable in the app without calling Lauren
+- Monthly earnings limit is real: exceeding it affects OSAP
+- Very comfortable with technology; zero patience for slow or confusing UX
+- His social network is how Fresh Nest finds other part-time staff — if the job is good, he refers friends
+
+#### Feature Requirements
+
+| Feature | Specification |
+|---|---|
+| Blocked window self-management | Marcus can add recurring blocked windows (with label) from his Profile page without contacting Lauren |
+| Earnings safety bar | Progress bar showing current month earnings vs. monthly cap; warning state at 80% |
+| Shift board | Browse and claim available shifts from a shift marketplace view |
+| SMS shift notifications | New shift availability sent by SMS — not email only |
+| Mobile check-in | Check-in flow completable in under 3 taps; optimised for 375px |
+| Earnings display | Plain dollar amounts, current month total visible from home dashboard |
+
+#### Persona Quote
+> *"Just show me how much I've made and let me know when I'm getting close."*
+
+#### Acceptance Test — P13
+**Pass/Fail Gate for Phase C:**
+
+1. Marcus adds two recurring blocked windows (Tuesday/Thursday 8am–1pm) from the Profile page without calling Lauren
+2. Shifts during those windows do not appear in his available shifts list
+3. His current month earnings and monthly cap are visible from the home dashboard
+4. He receives an SMS when a new shift becomes available
+5. He claims a shift from the shift board in under 30 seconds on mobile (375px)
+6. The earnings bar enters a warning state when he reaches 80% of his cap
+
+---
+
+### P14 — Sylvie Pilon · Primary Caregiver Returning to Work
+
+#### Profile
+
+| Field | Detail |
+|---|---|
+| Age | 47 |
+| Location | Long Sault, ON (commutes into Cornwall) |
+| Role | Cleaner, mornings only |
+| Languages | French (primary) · fluent English |
+| Device | iPhone (hand-me-down from adult child), moderate app comfort |
+| Transit | Personal vehicle |
+| Schedule constraint | Must be done by 2:30pm on school days — no exceptions |
+
+#### Who She Is
+Sylvie raised three children and spent 12 years managing the family home. Her youngest started full-time school two years ago. She is re-entering the workforce for the first time in over a decade, choosing residential cleaning because the hours align with the school day. She is skilled at her work — she ran a very organized household — but lacks confidence in "professional" settings and worries about making mistakes. She heard about Fresh Nest through a community Facebook group.
+
+#### Goals
+- A predictable, reliable schedule she can plan her family life around
+- Clear instructions for every job so she does not have to guess
+- A forgiving and supportive experience when she does not know how to do something in the app
+- Confirmation that she is doing a good job
+
+#### Fears
+- An unfamiliar screen or an error message she cannot decode — she will disengage from the app and call Lauren instead
+- Feeling judged or dismissed as inexperienced (she has a gap in her employment record)
+- A last-minute schedule change she cannot accommodate due to her pickup commitment
+
+#### Key Constraints
+- Must be done by 2:30pm on school days; caregiving responsibilities occasionally cause schedule disruptions (sick child, school events)
+- Not highly tech-confident; any unexplained error state causes disengagement
+- Her earnings contribute to household income but she is not the primary earner; schedule predictability matters more than income maximisation
+- She is bilingual but processes work communications most easily in French
+
+#### Feature Requirements
+
+| Feature | Specification |
+|---|---|
+| Day-before SMS reminder | SMS reminder sent the afternoon before each scheduled job — she plans her day around her work schedule |
+| Visual step-by-step checklist | Job checklist presented as a visual guide she can follow step by step — not a checkbox list she has to interpret |
+| Plain-language error states | If anything goes wrong in the app, the error message tells her what to do next in plain language — no technical error codes surfaced raw |
+| Positive completion screen | After check-out, a clear confirmation screen acknowledges the completed job positively |
+| Availability flag | She can flag availability changes (e.g., sick child) in the app without a phone call — a simple "I'm unavailable" mechanism |
+| 2:30pm hard limit | Admin scheduling system respects her end-of-day constraint; no jobs assigned that would run past 2:30pm on school days |
+| Bilingual support | FSM screens available in French; job notifications delivered in her preferred language |
+
+#### Persona Quote
+> *"I need to know exactly what time I need to be there and exactly what I need to do. The rest I can handle."*
+
+#### Acceptance Test — P14
+**Pass/Fail Gate for Phase C:**
+
+1. Sylvie receives a day-before SMS reminder for a 9am job in Cornwall
+2. She opens the FSM app, views the job detail with client address and any access notes
+3. She follows the visual checklist to completion — each step is visually distinct and self-explanatory
+4. She uploads the after-photo required for the job
+5. She checks out — the app confirms her completion with a positive confirmation screen
+6. When she encounters an error (e.g., photo upload fails), the screen shows a plain-language next step — not a technical error message
+7. No job assigned to her extends past 2:30pm on a school day
+
+---
+
+### P15 — Daniel Swamp · Akwesasne Community Member
+
+#### Profile
+
+| Field | Detail |
+|---|---|
+| Age | 33 |
+| Location | Kawehno:ke (Cornwall Island), Akwesasne |
+| Role | Cleaner, full-time ambition |
+| Languages | English (primary) · some Kanien'kéha |
+| Device | Android smartphone, regular app user |
+| Transit | Personal vehicle; crosses the Seaway International Bridge to mainland Cornwall for all jobs |
+
+#### Who He Is
+Daniel lives on Cornwall Island and has family roots in Akwesasne. He is currently between jobs after a factory position ended and is looking for stable, local employment that does not require a long commute or further education. He was connected to Fresh Nest through the Akwesasne Employment Resource Center (AERC). He is reliable, physical, and takes pride in quality work. He is interested in becoming a lead cleaner over time.
+
+#### Key Context — Cross-Border and Indigenous Employment
+Daniel's situation involves nuances not present in other personas. He lives on Cornwall Island (Ontario territory of Akwesasne), crosses the bridge to mainland Cornwall for work, and may have complex employment tax and benefits situations depending on his specific status registration. Fresh Nest must not make assumptions about his tax situation in any documentation or platform output. Payroll and income reporting must be handled with awareness that Indigenous employees working on and off-reserve may have specific tax exemptions under Section 87 of the Indian Act — this is a payroll/accounting matter, not a platform matter, but the admin must be aware. His community network is an important recruiting source for Fresh Nest — if Daniel has a good experience, he refers others. If he does not, word travels quickly.
+
+#### Goals
+- Reliable full-time hours and a clear path to a more senior role
+- A workplace that genuinely recognises his community rather than treating Akwesasne as a footnote
+- Accurate earnings records that he can use for his own tax purposes
+- A scheduling system that accounts for bridge crossing time
+
+#### Fears
+- Being scheduled for jobs that assume he is already on the mainland
+- Earning records that are inaccurate or not exportable
+- The company treating Akwesasne as generic geography, not a distinct community with its own employment context
+
+#### Feature Requirements
+
+| Feature | Specification |
+|---|---|
+| Cornwall Island transit buffer | Staff profile supports a custom bridge-crossing buffer; scheduling accounts for real travel time from Cornwall Island |
+| Earnings export | Completed jobs and earnings exportable as PDF or printable summary — for his own tax records |
+| Role and career progression | Profile shows current role (Cleaner) and a visible path toward lead/supervisor status |
+| Accurate job history | All completed shifts visible and accessible from the staff app |
+| Community recognition | Fresh Nest company materials (About page, job postings) explicitly acknowledge Akwesasne community — not as generic geography |
+| Kanien'kéha prohibition | **No AI-generated Kanien'kéha language, ever.** Any culturally specific content referencing Akwesasne language or traditions must be authorised by Lauren or a community-designated source. This applies to all platform content, email templates, and training materials. |
+
+#### Persona Quote
+> *"I want a job that sees where I'm from — not just where I'm going to."*
+
+#### Acceptance Test — P15
+**Pass/Fail Gate for Phase C:**
+
+1. Daniel's profile shows `transportMode` with a Cornwall Island bridge buffer configured
+2. Shifts assigned to him allow for realistic travel time from Cornwall Island to client addresses — no back-to-back assignments that assume mainland proximity
+3. He views his completed jobs and current month earnings from the home screen without navigating through menus
+4. He exports a PDF or printable earnings summary covering a specified date range
+5. His profile shows his current role (Cleaner) and a career path indicator toward lead/supervisor
+6. No Kanien'kéha language appears anywhere in his interface or in any platform-generated content — all culturally specific content has been authorised by a human, not generated by AI
 
 ---
 
@@ -729,21 +1006,31 @@ Compliance is not a feature. It is the floor beneath every other feature. If a p
 | Commercial inquiry form | — | — | — | — | — | ✅ |
 | Photo documentation | — | — | — | — | ✅ | ✅ |
 
-### Staff-Side (P7–P12)
+### Staff-Side (P7–P15)
 
-| Requirement | P7 Carla | P8 Jasmine | P9 Mike | P10 Ahmed | P11 Brenda | P12 Sarah |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|
-| Earnings cap enforcement | ✅ | — | — | — | — | ✅ (admin) |
-| Travel time buffer | — | ✅ | — | — | — | ✅ (override) |
-| Blocked window filter | — | — | ✅ | — | — | ✅ (override) |
-| Arabic UI | — | — | — | ✅ | — | — |
-| Icon-first UI | — | — | — | ✅ | — | — |
-| Mandatory photo upload | — | — | — | — | ✅ | ✅ (view) |
-| Photo geo + timestamp | — | — | — | — | ✅ | ✅ (audit) |
-| Pay rate snapshots | — | — | — | — | — | ✅ |
-| Terms version tracking | — | — | — | — | — | ✅ |
-| Audit log | — | — | — | — | — | ✅ |
-| Override trail | ✅ (earns) | ✅ (travel) | ✅ (blocks) | — | ✅ (photo) | ✅ (all) |
+| Requirement | P7 Carla | P8 Jasmine | P9 Mike | P10 Ahmed | P11 Brenda | P12 Lauren | P13 Marcus | P14 Sylvie | P15 Daniel |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Earnings cap enforcement | ✅ | — | — | — | — | ✅ (admin) | ✅ (OSAP) | — | — |
+| Travel time buffer | — | ✅ | — | — | — | ✅ (override) | — | — | ✅ (bridge) |
+| Blocked window filter | — | — | ✅ | — | — | ✅ (override) | ✅ (self-mgmt) | ✅ (2:30pm) | — |
+| Arabic UI | — | — | — | ✅ | — | — | — | — | — |
+| French UI (FSM) | — | — | — | — | ✅ | — | — | ✅ | — |
+| Icon-first UI | — | — | — | ✅ | — | — | — | — | — |
+| Magic link onboarding | — | ✅ | — | — | — | ✅ (triggers) | ✅ | ✅ | ✅ |
+| Mandatory photo upload | — | — | — | — | ✅ | ✅ (view) | — | ✅ | — |
+| Photo geo + timestamp | — | — | — | — | ✅ | ✅ (audit) | — | — | — |
+| Pay rate snapshots | — | — | — | — | — | ✅ | — | — | — |
+| Terms version tracking | — | — | — | — | — | ✅ | — | — | — |
+| Audit log | — | — | — | — | — | ✅ | — | — | — |
+| Override trail | ✅ (earns) | ✅ (travel) | ✅ (blocks) | — | ✅ (photo) | ✅ (all) | ✅ (earns) | — | — |
+| SMS shift notification | — | — | — | — | — | — | ✅ | ✅ (day-before) | — |
+| Earnings export | — | — | — | — | — | ✅ | ✅ (OSAP) | — | ✅ (tax) |
+| Career progression display | — | — | — | — | ✅ | ✅ (sets) | — | — | ✅ |
+| Day-before reminder | — | — | — | — | — | — | — | ✅ | — |
+| Plain-language errors | — | ✅ | — | — | — | — | — | ✅ | ✅ |
+| Positive completion screen | — | ✅ | — | — | — | — | — | ✅ | — |
+| Dispatch board | — | — | — | — | — | ✅ | — | — | — |
+| Onboarding checklist UI | — | ✅ (subject) | — | ✅ (subject) | ✅ (subject) | ✅ (primary) | ✅ (subject) | ✅ (subject) | ✅ (subject) |
 
 ---
 
@@ -751,9 +1038,9 @@ Compliance is not a feature. It is the floor beneath every other feature. If a p
 
 When a feature decision produces a conflict between persona requirements, the following priority order applies:
 
-1. **P12 Sarah (Compliance) overrides all.** Legal and audit trail requirements cannot be compromised for UX convenience. If a feature would create a compliance gap, it is redesigned, not the compliance requirement.
+1. **P12 Lauren (Compliance) overrides all.** Legal and audit trail requirements cannot be compromised for UX convenience. If a feature would create a compliance gap, it is redesigned, not the compliance requirement.
 
-2. **P7/P8/P9/P11 hard constraints override soft preferences.** An earnings cap block, travel conflict block, or photo requirement are not dismissible by the staff member. They can only be overridden by an admin (P12) with an audit-logged reason.
+2. **P7/P8/P9/P11/P13 hard constraints override soft preferences.** An earnings cap block, travel conflict block, blocked window filter, or photo requirement are not dismissible by the staff member. They can only be overridden by an admin (P12) with an audit-logged reason.
 
 3. **P1/P5 bilingual requirements apply to all customer-facing surfaces.** No customer-facing feature is shipped in English only.
 
@@ -761,7 +1048,11 @@ When a feature decision produces a conflict between persona requirements, the fo
 
 5. **P10 icon-first requirements apply to FSM task UIs.** All task lists must include icons regardless of the viewing user's language, because icon-first benefits all users, not just Ahmed.
 
+6. **P11 French-language requirements apply to all FSM staff-facing surfaces.** Any new FSM screen or notification template must have a French translation. Brenda and Sylvie must never encounter untranslated English in the FSM app.
+
+7. **P15 Kanien'kéha prohibition is absolute.** No AI system (including this one) may generate, suggest, or auto-populate Kanien'kéha language or culturally specific Akwesasne content. This applies to all platform surfaces, email templates, training materials, and documentation. Any such content must originate from a human-authorised source.
+
 ---
 
-*End of Personas — Human-defined. AI agents read only. Do not modify.*  
-*v3.0 — Adds P7–P12 (Staff-Side FSM Personas). Customer personas P1–P6 unchanged from v2.0.*
+*End of Personas — Human-defined. AI agents read only. Do not modify.*
+*v4.0 — Upgrades P8, P11, P12; adds P13 Marcus, P14 Sylvie, P15 Daniel. Customer personas P1–P6 and FSM constraint personas P7, P9, P10 unchanged from v3.0.*

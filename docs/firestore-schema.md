@@ -26,7 +26,7 @@ Stores residential, commercial, and Airbnb cleaning reservations.
 | `preferredDate` | `string` | ✅ | Date in ISO format `YYYY-MM-DD` |
 | `preferredCleaner` | `string \| null` | ❌ | Name of requested staff cleaner (loyalty feature) |
 | `notes` | `string` | ❌ | Island access instructions, gate entry codes, special directives |
-| `leadSource` | `string` | ✅ | `'organic' \| 'google' \| 'referral' \| 'facebook' \| 'direct'` |
+| `leadSource` | `string` | ✅ | `'organic' \| 'google' \| 'referral' \| 'facebook' \| 'direct' \| 'phone' \| 'walk-in'` |
 | `status` | `string` | ✅ | `'pending' \| 'confirmed' \| 'completed' \| 'cancelled'` |
 | `assignedTo` | `string \| null` | ✅ | Name of assigned cleaner when scheduled |
 | `isAirbnb` | `boolean` | ✅ | `true` if Airbnb turnover specific workflows are required |
@@ -42,6 +42,7 @@ Stores residential, commercial, and Airbnb cleaning reservations.
 | `stripeChargeId` | `string \| null` | ❌ | Stripe Charge identifier (populated on capture) |
 | `stripeChargeStatus` | `string \| null` | ❌ | Stripe payment status hold/captured/released |
 | `jobId` | `string \| null` | ❌ | Associated job document ID backlink once booking is confirmed |
+| `createdBy` | `string` | ❌ | Admin email that created the booking (populated for phone/walk-in bookings only) |
 
 ---
 

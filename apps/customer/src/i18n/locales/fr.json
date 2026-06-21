@@ -1069,6 +1069,62 @@
       "prevDay": "Jour précédent",
       "nextDay": "Jour suivant",
       "noCleaners": "Aucun nettoyeur actif trouvé."
+    },
+    "bookings": {
+      "newBookingBtn": "Nouvelle réservation",
+      "modal": {
+        "title": "Créer une nouvelle réservation",
+        "subtitle": "Saisissez les détails d'une réservation pour un client par téléphone ou en personne.",
+        "section": {
+          "service": "Service et propriété",
+          "schedule": "Horaire et coordonnées",
+          "controls": "Contrôles administratifs"
+        },
+        "serviceType": "Type de service",
+        "propertyType": "Type de propriété",
+        "bedrooms": "Chambres",
+        "bathrooms": "Salles de bain",
+        "pets": "Animaux de compagnie à domicile",
+        "addOns": "Options supplémentaires (facultatif)",
+        "squareFootage": "Superficie (facultatif)",
+        "squareFootagePlaceholder": "p. ex. 1200",
+        "frequency": "Fréquence de nettoyage",
+        "preferredDate": "Date souhaitée",
+        "firstName": "Prénom",
+        "lastName": "Nom de famille",
+        "email": "Adresse courriel",
+        "phone": "Numéro de téléphone",
+        "address": "Adresse du service",
+        "notes": "Instructions spéciales (facultatif)",
+        "language": "Langue de communication",
+        "leadSource": "Source du client",
+        "assignedTo": "Assigner un nettoyeur (facultatif)",
+        "unassigned": "— Non assigné —",
+        "status": "Statut initial",
+        "marketingConsent": "Le client a accepté de recevoir des courriels promotionnels",
+        "confirmedWarning": "En confirmant immédiatement, un emploi sera créé et un courriel de confirmation sera envoyé au client.",
+        "noStaffWarning": "Aucun nettoyeur assigné — un emploi non assigné sera créé.",
+        "submit": "Créer la réservation",
+        "cancel": "Annuler",
+        "error": "Échec de la création de la réservation. Veuillez réessayer.",
+        "leadSourceOptions": {
+          "phone": "Appel téléphonique",
+          "walk-in": "Présence physique",
+          "organic": "Recherche organique",
+          "google": "Publicité Google",
+          "referral": "Programme de parrainage",
+          "facebook": "Publicité Facebook",
+          "direct": "Trafic direct"
+        },
+        "statusOptions": {
+          "pending": "En attente de confirmation",
+          "confirmed": "Confirmé"
+        },
+        "languageOptions": {
+          "en": "Anglais",
+          "fr": "Français"
+        }
+      }
     }
   },
   "blog": {

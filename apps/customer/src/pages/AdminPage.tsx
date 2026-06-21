@@ -222,7 +222,7 @@ export default function AdminPage() {
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <BookingsTable {...bookingsState} />
+                    <BookingsTable {...bookingsState} adminEmail={user.email ?? ''} />
                   </motion.div>
                 )}
                 {activeTab === 'dispatch' && (

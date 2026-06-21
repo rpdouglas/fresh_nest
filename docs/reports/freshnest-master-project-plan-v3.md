@@ -59,11 +59,12 @@ Phase 3 is structured in four bands:
 **Goal:** Close all unimplemented Phase 1/2 items, eliminate live production bugs, build the growth infrastructure that drives customer lifetime value and organic acquisition, and establish the architectural foundations that make Phase 4 safe to build.
 
 **Estimated duration:** 20–28 weeks
-**Epic count:** 22
+**Epic count:** 26
 **Carryovers from Phase 1:** 5 (P1-E3, P1-E5, P1-E6, P1-E7, P1-E8)
 **Carryovers from Phase 2:** 1 (P2-E5)
 **Original Phase 3 items from v2.0:** 8
 **New items from June 17 deep technical analysis:** 8
+**New items added post-v3 compilation:** 1 (P3-E26 Quote-First System — June 17, 2026)
 
 ---
 
@@ -549,6 +550,50 @@ Phase 3 is structured in four bands:
 
 ---
 
+### P3-E26: Quote-First Booking System *(added June 17, 2026)*
+**Source:** [Product] · **Priority:** P2 · **Complexity:** XL
+
+**Objective:** Add a second intake pathway alongside instant booking. Customers submit a quote request; Lauren conducts an on-site assessment, builds a formal contract, and sends a secure signing link. The customer signs, selects optional add-ons, and pays a deposit atomically. On acceptance, the existing FSM pipeline creates the Job document automatically. The instant-booking flow is unchanged; both pathways coexist at all times.
+
+**Background:** The current instant-booking model cannot handle large or unusual properties, commercial clients with custom scope, or high-value accounts that expect a site visit and signed contract. Competitors (Jobber, Housecall Pro, ZenMaid, ServiceM8) treat quote-first as a standard feature. The existing `onBookingStatusConfirmed` → Job pipeline fires on acceptance with no new job-creation code. An ADR is required before any code is written.
+
+**Personas served:** P6 Gallagher (signed SLA + paper trail for property manager), P4 Baptiste (on-site visit builds trust before any charge), P3 Margaret (human confirmation + change-request negotiation), P1 Diane (price certainty + preferred cleaner locked in contract), P12 Lauren (margin protection on complex properties)
+
+**Key tasks:**
+- Write ADR before any code — web-first PDF approach, deposit-at-signing model, token design
+- `settings/intake` Firestore document + `IntakeModeSettings` admin toggle (new Settings tab in `AdminPage.tsx`); configurable expiry days, notice period, default deposit %, follow-up schedule
+- `BookingPage.tsx` mode-awareness gate: reads `settings/intake` on mount; replaces "Next" with "Request a Free Quote →" for quote-required services
+- Add 6 `BookingStatus` values to `packages/shared/src/types/booking.ts`: `quote_requested`, `quote_sent`, `quote_accepted`, `quote_declined`, `quote_expired`, `changes_requested`
+- New `quotes` Firestore collection (full schema: property assessment, contract terms, cleaning scope, optional add-ons, access details, deposit, follow-up schedule, change request, decline reason, digital signing fields)
+- `/quote` route + `QuoteRequestPage` (2-step: property/service + contact/visit preferences); `/quote-thank-you` confirmation
+- `QuoteWorkspaceModal` (5-tab admin tool: Property Assessment · Quote Terms + Deposit · Cleaning Scope + Optional Add-Ons · Access Details · Preview & Send with `react-to-print`)
+- `/sign-contract/:token` public route + `ContractSigningPage`: full contract, optional add-ons (real-time price update), signature block, Stripe `PaymentElement` for deposit, change/decline actions
+- CSS `@media print` stylesheet on signing page — no server-side PDF generation required
+- 9 Cloud Functions: `onQuoteRequested`, `onQuoteSent`, `onQuoteFollowUpCheck` (scheduled every 2h), `onQuoteExpiryCheck` (scheduled daily 7am UTC), `validateSigningToken`, `onQuoteAccepted` (atomic: quotes + bookings + job + referral + confirmation), `onQuoteChangeRequested`, `onQuoteDeclined`, `onSettingsUpdated`
+- 10 email/SMS templates (16 language variants) — all EN+FR
+- `QuoteAnalyticsDashboard` sub-tab: win rate, conversion funnel, conversion by service type, decline reason breakdown, follow-up impact stats; extends `getAnalyticsKPIs` Cloud Function
+- Customer portal integration: sign-agreement banner (`quote_sent`), agreement download (`accepted`)
+- Firestore security rules: new `quotes` and `settings` rules; updated `bookings` create rule (allows `quote_requested` status and optional `preferredDate`)
+- Update `docs/firestore-schema.md`
+
+**Acceptance criteria:**
+- Lauren toggles any service type in under 30 seconds; change propagates to `/booking` within 60 seconds (Playwright verified)
+- Customer completes `/quote` in under 3 minutes (no payment, no date); owner notified within 60 seconds
+- Admin fills all 5 QuoteWorkspace tabs and sends a contract in under 5 minutes
+- First follow-up SMS fires within 26 hours of `quote_sent`; sequence stops within 2 hours of any status change
+- "Sign & Pay Deposit" captures payment and signature atomically; Stripe failure leaves quote in `quote_sent` — no partial acceptance state
+- Change request pauses follow-up; admin notified within 60 seconds; change request text visible as banner in `QuoteWorkspaceModal`
+- On signing: `bookings.status → quote_accepted` within 30 seconds; Job document created; confirmation email (EN/FR) within 60 seconds
+- Access codes are admin-only (Firestore rules emulator verified)
+- Signing event logged to `auditLog` with customer name, timestamp, IP (from Cloud Function context)
+- All 4 new public routes pass Linguistic_Auditor; all 10 email/SMS templates pass Linguistic_Auditor
+- `BookingStatus` expansion compiles cleanly in both `apps/customer` and `apps/fsm` via `TypeScript_Strict_Enforcer`
+
+**Complexity:** XL
+**Dependencies:** P3-E1 (Stripe — deposit at signing; deposit can be disabled per-quote if P3-E1 is delayed); P3-E3 (Admin Booking Creation — shared QuoteWorkspaceModal UI patterns and TanStack Query data layer); P3-E18 ✅ (Shared Types — `BookingStatus` expansion lives in `packages/shared`); P3-E19 (Cloud Functions Domain Split — 9 new functions slot into `functions/src/triggers/quote.ts` and `functions/src/scheduled/` cleanly)
+
+---
+
 ## Band D — Architecture & Technology Upgrades
 *(Structural refactors and technology improvements that accelerate all future development)*
 
@@ -807,11 +852,12 @@ This pattern appears 20+ times across `firestore.ts`, `useBookings.ts`, `useStaf
 | 3 | P3-E23 | React 19 `useSuspenseQuery` & Suspense | Tech | M | P3 | D | P3-E2 done |
 | 3 | P3-E24 | VitePress Documentation Site | Tech | M | P3 | D | P3-E5 done |
 | 3 | P3-E25 | Storybook for `packages/ui` Primitives | Tech | M | P3 | D | P3-E3, P3-E18 done |
+| 3 | P3-E26 | Quote-First Booking System | Product | XL | P2 | C | P3-E1, P3-E3, P3-E18 ✅, P3-E19 |
 
-**Totals by complexity:** S×5 · M×14 · L×5 · XL×2
-**Totals by priority:** P0×2 · P1×9 · P2×8 · P3×7
-**Totals by source:** Codebase×8 · CTO×5 · Both×3 · Tech×9
-**Totals by band:** A×6 · B×3 · C×8 · D×8
+**Totals by complexity:** S×5 · M×14 · L×5 · XL×3
+**Totals by priority:** P0×2 · P1×9 · P2×9 · P3×7
+**Totals by source:** Codebase×8 · CTO×5 · Both×3 · Tech×9 · Product×1
+**Totals by band:** A×6 · B×3 · C×9 · D×8
 
 ---
 
@@ -848,12 +894,13 @@ This pattern appears 20+ times across `firestore.ts`, `useBookings.ts`, `useStaf
 - P3-E12 Bilingual SEO Routing (XL — longest epic in Phase 3)
 - P3-E13 GBP Integration (M)
 
-### Sprint 7 (Week 16–20): Growth — content & admin
+### Sprint 7 (Week 16–22): Growth — content, admin & quote system
 - P3-E11 CMS-Backed Blog (L)
 - P3-E14 Admin Calendar View (L)
 - P3-E16 Dynamic Pricing (L)
+- P3-E26 Quote-First Booking System (XL — extends sprint to week 22)
 
-### Sprint 8 (Week 20–24): Developer experience
+### Sprint 8 (Week 22–28): Developer experience
 - P3-E23 React 19 `useSuspenseQuery` (M)
 - P3-E24 VitePress Documentation Site (M)
 - P3-E25 Storybook for `packages/ui` (M)
@@ -887,6 +934,8 @@ P3-E22 ──► P3-E16 (pricing worker before dynamic pricing logic)
 Phase 1+2 complete + ADR ──► P3-E12 (bilingual SEO)
 P2-E6 complete ──► P3-E14 (calendar draws from paginated bookings)
 P2-E9 complete ──► P3-E14 (calendar shares dispatch data layer)
+
+P3-E1 + P3-E3 + P3-E19 ──► P3-E26 (quote system needs Stripe, admin booking, and function domain split)
 ```
 
 ---

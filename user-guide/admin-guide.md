@@ -19,6 +19,26 @@ The dashboard is split into seven tabs:
 
 ---
 
+## Creating a Phone-In or Walk-In Booking
+
+When a client calls or walks in, you can enter their booking directly from the admin dashboard without them needing to use the website.
+
+1. Go to the **Bookings** tab.
+2. Click the **New Booking** button (top-right of the bookings panel).
+3. Fill in the three sections:
+   - **Service & Property** — service type, property type, bedrooms/bathrooms, pets, add-ons
+   - **Schedule & Contact** — preferred date, client name/email/phone/address, frequency, notes
+   - **Admin Controls** — communication language, lead source (`Phone Call` or `Walk-In`), assign a cleaner (optional), set the initial status
+4. **Status options:**
+   - `Pending Confirmation` — creates the booking but does not send the confirmation email. Use this if the client needs time to decide.
+   - `Confirmed` — creates the booking AND immediately sends a confirmation email/SMS to the client and creates a job document. A warning banner appears if no cleaner is assigned yet.
+5. **Marketing consent** — only check this box if the client explicitly opted in during the call.
+6. Click **Create Booking**. The booking appears at the top of the bookings list.
+
+> **Note:** A confirmation email and SMS are sent automatically when the booking status is `confirmed` — whether set at creation or updated later.
+
+---
+
 ## Viewing and Managing Bookings
 
 ### Booking Statuses
