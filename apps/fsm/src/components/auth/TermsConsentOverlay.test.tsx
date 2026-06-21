@@ -100,6 +100,38 @@ describe('TermsConsentOverlay Component', () => {
     expect(container.firstChild).toBeNull()
   })
 
+  it('renders consent overlay when acceptedTermsVersion is null (P3-E27-A1 migration case)', () => {
+    // Staff registered before A1 fix (or migrated) will have acceptedTermsVersion: null
+    const nullComplianceProfile = {
+      ...mockStaffProfile,
+      compliance: {
+        acceptedTermsVersion: null,
+        termsHistory: [],
+      },
+    }
+
+    vi.mocked(useStaffAuth).mockReturnValue({
+      user: { uid: 'staff123' } as unknown as User,
+      staffProfile: nullComplianceProfile as unknown as Staff,
+      loading: false,
+      error: null,
+      setError: vi.fn(),
+      signInWithPassword: vi.fn(),
+      sendMagicLink: vi.fn(),
+      completeMagicLinkSignIn: vi.fn(),
+      logout: vi.fn(),
+    })
+
+    act(() => {
+      render(<TermsConsentOverlay />)
+    })
+
+    // Overlay must appear — null means no consent was ever collected
+    expect(screen.getByText('fsm.compliance.terms.title')).toBeInTheDocument()
+    const acceptBtn = screen.getByRole('button', { name: 'fsm.compliance.terms.acceptBtn' })
+    expect(acceptBtn).toBeDisabled()
+  })
+
   it('renders consent overlay when terms version is outdated', () => {
     vi.mocked(useStaffAuth).mockReturnValue({
       user: { uid: 'staff123' } as unknown as User,

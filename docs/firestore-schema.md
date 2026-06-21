@@ -89,7 +89,7 @@ Stores employee profiles, schedule constraints, financial limits, and compliance
 | `preferences` | `map` | ✅ | Preferences: `{ language: 'en' \| 'fr' }` |
 | `constraints` | `map` | ✅ | Constraints: `{ transportMode: 'personal_vehicle' \| 'transit' \| 'rideshare' \| 'walk', transitBufferMinutes: number, blockedWindows: BlockedWindow[] }` |
 | `financials` | `map` | ✅ | Earnings details: `{ monthlyEarningsLimit: number \| null, currentMonthEarnings: number, earningsHistory: Array<{ month: string, total: number }> }` |
-| `compliance` | `map` | ✅ | Terms consent details: `{ acceptedTermsVersion: string, termsHistory: TermsAcceptance[] }` |
+| `compliance` | `map` | ✅ | Terms consent details: `{ acceptedTermsVersion: string \| null, termsHistory: TermsAcceptance[] }`. `null` = employee has not yet accepted any version (P3-E27-A1 fix). Real consent is collected client-side by `TermsConsentOverlay` — never written by admin at registration. |
 | `onboardingChecklist` | `map` | ✅ | Key-value mapping of checkpoints, e.g., `{"backgroundCheck": true}` |
 | `fsmStaffId` | `string \| null` | ❌ | Field service management identifier (optional) |
 | `createdAt` | `Timestamp` | ✅ | Firestore Server Timestamp |

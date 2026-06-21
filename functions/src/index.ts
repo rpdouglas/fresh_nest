@@ -1278,7 +1278,82 @@ export const getAnalyticsKPIs = onCall(async (request) => {
     return payload
   }
 )
+// ─────────────────────────────────────────────────────────────────────────────
+// P3-E27-A1: One-shot PIPEDA compliance migration
+// Nulls out the false acceptedTermsVersion records written by the admin at
+// registration time (before employee saw or agreed to anything).
+// DELETE AFTER P3-E27-A1 MIGRATION IS CONFIRMED IN PRODUCTION.
+// ─────────────────────────────────────────────────────────────────────────────
+export const migrateComplianceRecords = onCall(async (request) => {
+  const authContext = request.auth
+  if (!authContext) {
+    throw new HttpsError('unauthenticated', 'Must be authenticated.')
+  }
 
+  const db = getFirestore()
 
+  // Admin-only gate — same pattern as setUserRole
+  let isAuthorized = authContext.token.role === 'admin'
+  if (!isAuthorized && authContext.token.email) {
+    const adminSnap = await db
+      .collection('admins')
+      .doc(authContext.token.email.trim().toLowerCase())
+      .get()
+    if (adminSnap.exists) isAuthorized = true
+  }
+  if (!isAuthorized) {
+    throw new HttpsError('permission-denied', 'Only administrators can run this migration.')
+  }
 
+  const staffSnap = await db.collection('staff').get()
+  let patched = 0
+  let skipped = 0
+  const batch = db.batch()
+  const auditBatch = db.batch()
+
+  for (const staffDoc of staffSnap.docs) {
+    const data = staffDoc.data()
+    const currentVersion = data.compliance?.acceptedTermsVersion ?? null
+
+    if (currentVersion === null) {
+      // Already null — skip (was registered after A1 fix, or already migrated)
+      skipped++
+      continue
+    }
+
+    // Null out the false consent record
+    batch.update(staffDoc.ref, {
+      'compliance.acceptedTermsVersion': null,
+      'compliance.termsHistory': [],
+    })
+
+    // Write auditLog entry for each patched document
+    const auditRef = db.collection('auditLog').doc()
+    auditBatch.set(auditRef, {
+      collection: 'staff',
+      documentId: staffDoc.id,
+      field: 'compliance',
+      oldValue: { acceptedTermsVersion: currentVersion, termsHistory: data.compliance?.termsHistory ?? [] },
+      newValue: { acceptedTermsVersion: null, termsHistory: [] },
+      changedBy: 'P3-E27-A1-migration',
+      changedAt: Timestamp.now(),
+      reason: 'PIPEDA false-consent remediation — acceptedTermsVersion was written by admin at registration before employee saw or agreed to anything.',
+      overrideType: 'compliance_migration',
+    })
+
+    patched++
+  }
+
+  await batch.commit()
+  await auditBatch.commit()
+
+  const summary = { patched, skipped, total: staffSnap.size }
+  logger.info('[migrateComplianceRecords] P3-E27-A1 migration complete', summary)
+  Sentry.captureMessage('[P3-E27-A1] migrateComplianceRecords completed', {
+    level: 'info',
+    extra: summary,
+  })
+
+  return summary
+})
 

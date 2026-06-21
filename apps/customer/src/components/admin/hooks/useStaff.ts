@@ -84,13 +84,8 @@ export function useStaff(enabled: boolean) {
         earningsHistory: [],
       },
       compliance: {
-        acceptedTermsVersion: '1.0',
-        termsHistory: [
-          {
-            version: '1.0',
-            acceptedAt: new Date(),
-          },
-        ],
+        acceptedTermsVersion: null,
+        termsHistory: [],
       },
       onboardingChecklist: {
         backgroundCheck: false,

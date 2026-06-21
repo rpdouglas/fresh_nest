@@ -42,7 +42,7 @@ export interface Staff {
     earningsHistory: Array<{ month: string; total: number }>
   }
   compliance: {
-    acceptedTermsVersion: string
+    acceptedTermsVersion: string | null
     termsHistory: TermsAcceptance[]
   }
   onboardingChecklist: Record<string, boolean>
