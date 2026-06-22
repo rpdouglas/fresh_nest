@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore'
+import { query, where, getDocs } from 'firebase/firestore'
+import { jobsCollection, auditLogCollection } from '@freshnest/shared'
 import { db, auth } from '@/lib/firebase/firebase'
-import type { Staff, Job, AuditEntry } from '@/types'
+import type { Staff } from '@/types'
 import { useTranslation } from 'react-i18next'
 
 interface ExportRecordModalProps {
@@ -34,17 +35,11 @@ export const ExportRecordModal: React.FC<ExportRecordModalProps> = ({
       if (format === 'csv_payroll') {
         // Query completed jobs for this staff member
         const jobsQ = query(
-          collection(db, 'jobs'),
+          jobsCollection(db),
           where('assignedTo', '==', staff.id)
         )
         const jobsSnapshot = await getDocs(jobsQ)
-        const rawJobs = jobsSnapshot.docs.map((docSnap) => {
-          const data = docSnap.data()
-          return {
-            id: docSnap.id,
-            ...data,
-          } as Job
-        })
+        const rawJobs = jobsSnapshot.docs.map((docSnap) => docSnap.data())
 
         const completedJobs = rawJobs.filter((j) => j.status === 'completed')
 
@@ -82,17 +77,15 @@ export const ExportRecordModal: React.FC<ExportRecordModalProps> = ({
           let hours = 0
 
           if (job.checkedInAt) {
-            const inDate = job.checkedInAt instanceof Timestamp ? job.checkedInAt.toDate() : new Date(job.checkedInAt)
-            checkInStr = inDate.toISOString()
+            checkInStr = job.checkedInAt.toISOString()
           }
           if (job.completedAt) {
-            const outDate = job.completedAt instanceof Timestamp ? job.completedAt.toDate() : new Date(job.completedAt)
-            checkOutStr = outDate.toISOString()
+            checkOutStr = job.completedAt.toISOString()
           }
 
           if (job.checkedInAt && job.completedAt) {
-            const inTime = job.checkedInAt instanceof Timestamp ? job.checkedInAt.toDate().getTime() : new Date(job.checkedInAt).getTime()
-            const outTime = job.completedAt instanceof Timestamp ? job.completedAt.toDate().getTime() : new Date(job.completedAt).getTime()
+            const inTime = job.checkedInAt.getTime()
+            const outTime = job.completedAt.getTime()
             hours = Math.max(0, (outTime - inTime) / (1000 * 60 * 60))
           }
 
@@ -119,37 +112,25 @@ export const ExportRecordModal: React.FC<ExportRecordModalProps> = ({
       } else {
         // Query ALL jobs for this staff member (unassigned/assigned/completed/etc.)
         const jobsQ = query(
-          collection(db, 'jobs'),
+          jobsCollection(db),
           where('assignedTo', '==', staff.id)
         )
         const jobsSnapshot = await getDocs(jobsQ)
-        const jobs = jobsSnapshot.docs.map((docSnap) => {
-          const data = docSnap.data()
-          return {
-            id: docSnap.id,
-            ...data,
-          } as Job
-        })
+        const jobs = jobsSnapshot.docs.map((docSnap) => docSnap.data())
 
         // Query audit logs matching this staff member
         const auditQ = query(
-          collection(db, 'auditLog'),
+          auditLogCollection(db),
           where('documentId', '==', staff.id)
         )
         const auditSnapshot = await getDocs(auditQ)
-        const rawAuditEntries = auditSnapshot.docs.map((docSnap) => {
-          const data = docSnap.data()
-          return {
-            id: docSnap.id,
-            ...data,
-          } as AuditEntry
-        })
+        const rawAuditEntries = auditSnapshot.docs.map((docSnap) => docSnap.data())
 
         // Sort data
         jobs.sort((a, b) => b.scheduledDate.localeCompare(a.scheduledDate))
         rawAuditEntries.sort((a, b) => {
-          const dateA = a.changedAt instanceof Timestamp ? a.changedAt.toDate().getTime() : new Date(a.changedAt).getTime()
-          const dateB = b.changedAt instanceof Timestamp ? b.changedAt.toDate().getTime() : new Date(b.changedAt).getTime()
+          const dateA = a.changedAt.getTime()
+          const dateB = b.changedAt.getTime()
           return dateB - dateA
         })
 
@@ -183,8 +164,8 @@ export const ExportRecordModal: React.FC<ExportRecordModalProps> = ({
             scheduledStartTime: j.scheduledStartTime,
             scheduledEndTime: j.scheduledEndTime,
             status: j.status,
-            checkedInAt: j.checkedInAt instanceof Timestamp ? j.checkedInAt.toDate().toISOString() : j.checkedInAt ? new Date(j.checkedInAt).toISOString() : null,
-            completedAt: j.completedAt instanceof Timestamp ? j.completedAt.toDate().toISOString() : j.completedAt ? new Date(j.completedAt).toISOString() : null,
+            checkedInAt: j.checkedInAt ? j.checkedInAt.toISOString() : null,
+            completedAt: j.completedAt ? j.completedAt.toISOString() : null,
             payRateSnapshot: j.payRateSnapshot || null,
           })),
           auditLogs: rawAuditEntries.map((a) => ({
@@ -195,7 +176,7 @@ export const ExportRecordModal: React.FC<ExportRecordModalProps> = ({
             oldValue: a.oldValue,
             newValue: a.newValue,
             changedBy: a.changedBy,
-            changedAt: a.changedAt instanceof Timestamp ? a.changedAt.toDate().toISOString() : new Date(a.changedAt).toISOString(),
+            changedAt: a.changedAt.toISOString(),
             reason: a.reason,
             overrideType: a.overrideType,
           })),

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call */
 import { renderHook } from '@testing-library/react'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { useAuditLogs } from './useAuditLogs'
@@ -5,15 +6,58 @@ import { useAuditLogs } from './useAuditLogs'
 // Mock tanstack-query-firebase collection query
 const mockUseCollectionQuery = vi.fn()
 vi.mock('@tanstack-query-firebase/react/firestore', () => ({
-  useCollectionQuery: (q: unknown, config: unknown) => mockUseCollectionQuery(q, config) as unknown,
+  useCollectionQuery: (q: any, config: unknown) => {
+    const result = mockUseCollectionQuery(q, config)
+    if (result && result.data && result.data.docs && q && q.col && q.col.converter) {
+      const converter = q.col.converter
+      return {
+        ...result,
+        data: {
+          docs: result.data.docs.map((docSnap: any) => {
+            const rawData = docSnap.data()
+            const mockSnapshot = {
+              id: docSnap.id,
+              data: () => rawData,
+            }
+            return {
+              id: docSnap.id,
+              data: () => converter.fromFirestore(mockSnapshot),
+            }
+          }),
+        },
+      }
+    }
+    return result
+  },
 }))
 
-// Mock Firebase firestore methods
-vi.mock('firebase/firestore', () => ({
-  collection: vi.fn((_db: unknown, name: string) => ({ collection: name })),
-  query: vi.fn((col: unknown) => ({ col })),
-  orderBy: vi.fn((field: string, direction: string) => ({ orderBy: { field, direction } })),
-}))
+vi.mock('firebase/firestore', () => {
+  class MockTimestamp {
+    constructor(public seconds: number, public nanoseconds: number) {}
+    toDate() {
+      return new Date(this.seconds * 1000)
+    }
+    static now() {
+      return new MockTimestamp(Date.now() / 1000, 0)
+    }
+  }
+  const mockRef = (name: string) => {
+    const refObj: any = {
+      collection: name,
+    }
+    refObj.withConverter = vi.fn((converter) => {
+      refObj.converter = converter
+      return refObj
+    })
+    return refObj
+  }
+  return {
+    collection: vi.fn((_db: unknown, name: string) => mockRef(name)),
+    query: vi.fn((col: unknown) => ({ col })),
+    orderBy: vi.fn((field: string, direction: string) => ({ orderBy: { field, direction } })),
+    Timestamp: MockTimestamp,
+  }
+})
 
 // Mock Firebase config db instance
 vi.mock('@/lib/firebase/firebase', () => ({

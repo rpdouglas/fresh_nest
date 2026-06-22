@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useCollectionQuery } from '@tanstack-query-firebase/react/firestore'
-import { collection, query, orderBy, Timestamp } from 'firebase/firestore'
+import { payRatesCollection } from '@freshnest/shared'
+import { query, orderBy } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
 import { createPayRate } from '@/lib/firebase/firestore'
 import type { PayRate, StaffRole } from '@/types'
@@ -12,7 +13,7 @@ export function usePayRates(enabled: boolean) {
   const { user } = useAdminAuth()
 
   const payRatesQuery = useMemo(() => {
-    return query(collection(db, 'payRates'), orderBy('effectiveFrom', 'desc'))
+    return query(payRatesCollection(db), orderBy('effectiveFrom', 'desc'))
   }, [])
 
   const { data, isLoading, error } = useCollectionQuery(payRatesQuery, {
@@ -22,16 +23,7 @@ export function usePayRates(enabled: boolean) {
 
   const payRates = useMemo<PayRate[]>(() => {
     if (!data) return []
-    return data.docs.map((docSnap) => {
-      const docData = docSnap.data()
-      return {
-        id: docSnap.id,
-        ...docData,
-        effectiveFrom: docData.effectiveFrom instanceof Timestamp ? docData.effectiveFrom.toDate() : new Date(),
-        effectiveTo: docData.effectiveTo instanceof Timestamp ? docData.effectiveTo.toDate() : null,
-        createdAt: docData.createdAt instanceof Timestamp ? docData.createdAt.toDate() : new Date(),
-      } as PayRate
-    })
+    return data.docs.map((docSnap) => docSnap.data())
   }, [data])
 
   // Calculate the currently active rate for each role

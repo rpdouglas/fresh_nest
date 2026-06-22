@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useCollectionQuery } from '@tanstack-query-firebase/react/firestore'
-import { collection, query, orderBy } from 'firebase/firestore'
+import { checklistTemplatesCollection } from '@freshnest/shared'
+import { query, orderBy } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
 import {
   createChecklistTemplate,
@@ -18,7 +19,7 @@ export function useChecklistTemplates(isAuthorized: boolean) {
   const queryClient = useQueryClient()
 
   const checklistQuery = useMemo(() => {
-    return query(collection(db, 'checklistTemplates'), orderBy('serviceType', 'asc'))
+    return query(checklistTemplatesCollection(db), orderBy('serviceType', 'asc'))
   }, [])
 
   const { data, isLoading, error } = useCollectionQuery(checklistQuery, {
@@ -28,10 +29,7 @@ export function useChecklistTemplates(isAuthorized: boolean) {
 
   const templates = useMemo<ChecklistTemplate[]>(() => {
     if (!data) return []
-    return data.docs.map((docSnap) => {
-      const docData = docSnap.data()
-      return { id: docSnap.id, ...docData } as ChecklistTemplate
-    })
+    return data.docs.map((docSnap) => docSnap.data())
   }, [data])
 
   const handleCreate = async (template: Omit<ChecklistTemplate, 'id'>): Promise<string> => {

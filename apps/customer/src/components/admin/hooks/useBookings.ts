@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { useQueryClient, useInfiniteQuery } from '@tanstack/react-query'
-import { collection, query, orderBy, limit, startAfter, getDocs, where, Timestamp } from 'firebase/firestore'
+import { bookingsCollection } from '@freshnest/shared'
+import { query, orderBy, limit, startAfter, getDocs, where } from 'firebase/firestore'
 import type { QueryDocumentSnapshot, DocumentData } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
 import { updateBookingStatus, updateBookingAssignment, createAdminBooking } from '@/lib/firebase/firestore'
@@ -45,7 +46,7 @@ export function useBookings(enabled: boolean) {
     queryKey: ['bookings', startDate, endDate, statusFilter, serviceFilter, languageFilter],
     queryFn: async ({ pageParam }) => {
       let q = query(
-        collection(db, 'bookings'),
+        bookingsCollection(db),
         where('preferredDate', '>=', startDate),
         where('preferredDate', '<=', endDate),
         orderBy('preferredDate', 'desc'),
@@ -68,14 +69,7 @@ export function useBookings(enabled: boolean) {
   const bookings = useMemo<Booking[]>(() => {
     if (!data) return []
     return data.pages.flatMap((page) =>
-      page.docs.map((docSnap) => {
-        const docData = docSnap.data()
-        return {
-          id: docSnap.id,
-          ...docData,
-          createdAt: docData.createdAt instanceof Timestamp ? docData.createdAt.toDate() : new Date(),
-        } as Booking
-      })
+      page.docs.map((docSnap) => docSnap.data())
     )
   }, [data])
 

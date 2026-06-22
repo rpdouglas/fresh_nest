@@ -1,14 +1,9 @@
 import { useEffect, useState, useMemo } from 'react'
 import { collection, query, orderBy, onSnapshot, writeBatch, doc } from 'firebase/firestore'
+import { toDate } from '@freshnest/shared'
 import { db } from '../lib/firebase/firebase'
 import { useStaffAuth } from './useStaffAuth'
 import type { Notification } from '../types'
-
-interface FirestoreTimestamp {
-  seconds: number
-  nanoseconds: number
-  toDate?: () => Date
-}
 
 interface RawNotificationDoc {
   title: string
@@ -16,7 +11,7 @@ interface RawNotificationDoc {
   type: 'shift_assigned' | 'shift_unassigned' | 'shift_cancelled' | 'new_shift_board_posting'
   jobId?: string | null
   read?: boolean
-  createdAt: FirestoreTimestamp | string | number | Date
+  createdAt: unknown
 }
 
 export function useNotifications() {
@@ -49,21 +44,6 @@ export function useNotifications() {
         snapshot.forEach((docSnap) => {
           const docData = docSnap.data() as RawNotificationDoc
           
-          let createdAt: Date
-          const rawCreatedAt = docData.createdAt
-          if (
-            rawCreatedAt &&
-            typeof rawCreatedAt === 'object' &&
-            'toDate' in rawCreatedAt &&
-            typeof rawCreatedAt.toDate === 'function'
-          ) {
-            createdAt = rawCreatedAt.toDate()
-          } else if (rawCreatedAt) {
-            createdAt = new Date(rawCreatedAt as string | number | Date)
-          } else {
-            createdAt = new Date()
-          }
-          
           list.push({
             id: docSnap.id,
             title: docData.title,
@@ -71,7 +51,7 @@ export function useNotifications() {
             type: docData.type,
             jobId: docData.jobId ?? null,
             read: docData.read ?? false,
-            createdAt,
+            createdAt: toDate(docData.createdAt),
           })
         })
         setNotifications(list)

@@ -17,15 +17,23 @@ const mockWriteBatch = vi.fn().mockReturnValue({
   commit: () => mockCommit() as unknown,
 })
 
-vi.mock('firebase/firestore', () => ({
-  getFirestore: vi.fn(),
-  collection: vi.fn((_db: unknown, ...paths: string[]) => ({ path: paths.join('/') })),
-  query: vi.fn((col: unknown) => ({ col })),
-  orderBy: vi.fn((field: string, direction: string) => ({ orderBy: { field, direction } })),
-  onSnapshot: (q: unknown, cb: unknown, errCb?: unknown) => mockOnSnapshot(q, cb, errCb) as unknown,
-  writeBatch: () => mockWriteBatch() as unknown,
-  doc: vi.fn((_db: unknown, ...paths: string[]) => ({ path: paths.join('/') })),
-}))
+vi.mock('firebase/firestore', () => {
+  class MockTimestamp {
+    constructor(public seconds: number, public nanoseconds: number) {}
+    toDate() { return new Date(this.seconds * 1000) }
+    static now() { return new MockTimestamp(Date.now() / 1000, 0) }
+  }
+  return {
+    getFirestore: vi.fn(),
+    collection: vi.fn((_db: unknown, ...paths: string[]) => ({ path: paths.join('/') })),
+    query: vi.fn((col: unknown) => ({ col })),
+    orderBy: vi.fn((field: string, direction: string) => ({ orderBy: { field, direction } })),
+    onSnapshot: (q: unknown, cb: unknown, errCb?: unknown) => mockOnSnapshot(q, cb, errCb) as unknown,
+    writeBatch: () => mockWriteBatch() as unknown,
+    doc: vi.fn((_db: unknown, ...paths: string[]) => ({ path: paths.join('/') })),
+    Timestamp: MockTimestamp,
+  }
+})
 
 // Mock Firebase config db instance
 vi.mock('../lib/firebase/firebase', () => ({

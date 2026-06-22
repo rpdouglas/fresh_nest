@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
+import { jobsCollection } from '@freshnest/shared'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { db, storage } from '../lib/firebase/firebase'
 import { getQueuedPhotos, addQueuedPhoto, deleteQueuedPhoto, QueuedPhoto } from '../lib/utils/indexedDb'
 import { OfflineUploadContext } from './OfflineUploadContext'
-import type { Job, JobPhoto, ChecklistCompletion } from '../types'
+import type { JobPhoto, ChecklistCompletion } from '../types'
 
 export const OfflineUploadProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isOnline, setIsOnline] = useState(navigator.onLine)
@@ -56,11 +57,11 @@ export const OfflineUploadProvider: React.FC<{ children: React.ReactNode }> = ({
         const downloadUrl = await getDownloadURL(storageRef)
 
         // 2. Fetch latest Job document to update arrays
-        const jobRef = doc(db, 'jobs', jobId)
+        const jobRef = doc(jobsCollection(db), jobId)
         const jobSnap = await getDoc(jobRef)
 
         if (jobSnap.exists()) {
-          const jobData = jobSnap.data() as Omit<Job, 'id'>
+          const jobData = jobSnap.data()
           const currentPhotos: JobPhoto[] = jobData.photos || []
           const currentCompletions: ChecklistCompletion[] = jobData.checklistCompletions || []
           const tempUrlPattern = `temp:${id}`
@@ -174,10 +175,10 @@ export const OfflineUploadProvider: React.FC<{ children: React.ReactNode }> = ({
 
     // 2. Write temp reference immediately to Firestore cache
     try {
-      const jobRef = doc(db, 'jobs', jobId)
+      const jobRef = doc(jobsCollection(db), jobId)
       const jobSnap = await getDoc(jobRef)
       if (jobSnap.exists()) {
-        const jobData = jobSnap.data() as Omit<Job, 'id'>
+        const jobData = jobSnap.data()
         const currentPhotos: JobPhoto[] = jobData.photos || []
         const currentCompletions: ChecklistCompletion[] = jobData.checklistCompletions || []
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { doc, onSnapshot, Timestamp } from 'firebase/firestore'
+import { doc, onSnapshot } from 'firebase/firestore'
+import { jobsCollection } from '@freshnest/shared'
 import { db } from '../lib/firebase/firebase'
 import type { Job } from '../types'
 
@@ -21,20 +22,13 @@ export function useJob(jobId: string | undefined) {
       return
     }
 
-    const jobRef = doc(db, 'jobs', jobId)
+    const jobRef = doc(jobsCollection(db), jobId)
 
     const unsubscribe = onSnapshot(
       jobRef,
       (docSnap) => {
         if (docSnap.exists()) {
-          const docData = docSnap.data()
-          setJob({
-            id: docSnap.id,
-            ...docData,
-            createdAt:   docData.createdAt instanceof Timestamp ? docData.createdAt.toDate()   : new Date(),
-            checkedInAt: docData.checkedInAt instanceof Timestamp ? docData.checkedInAt.toDate() : null,
-            completedAt: docData.completedAt instanceof Timestamp ? docData.completedAt.toDate() : null,
-          } as Job)
+          setJob(docSnap.data() || null)
         } else {
           setJob(null)
           setError(new Error('Job not found'))

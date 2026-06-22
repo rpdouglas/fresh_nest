@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { collection, query, where, getDocs, doc, updateDoc, Timestamp } from 'firebase/firestore'
+import { query, where, getDocs, doc, updateDoc } from 'firebase/firestore'
+import { bookingsCollection } from '@freshnest/shared'
 import { db } from '@/lib/firebase/firebase'
 import { useCustomerAuthContext } from '@/components/layout/CustomerAuthContext'
 import type { Booking } from '@/types'
@@ -21,7 +22,7 @@ export default function CustomerUpcomingPage() {
       try {
         const todayStr = new Date().toISOString().split('T')[0] // YYYY-MM-DD
         const q = query(
-          collection(db, 'bookings'),
+          bookingsCollection(db),
           where('email', '==', user.email?.trim().toLowerCase()),
           where('preferredDate', '>=', todayStr)
         )
@@ -29,12 +30,8 @@ export default function CustomerUpcomingPage() {
         const loaded: Booking[] = []
         snap.forEach((docSnap) => {
           const data = docSnap.data()
-          if (data['status'] !== 'cancelled') {
-            loaded.push({
-              id: docSnap.id,
-              ...data,
-              createdAt: data['createdAt'] instanceof Timestamp ? data['createdAt'].toDate() : new Date(),
-            } as Booking)
+          if (data.status !== 'cancelled') {
+            loaded.push(data)
           }
         })
         loaded.sort((a, b) => a.preferredDate.localeCompare(b.preferredDate))
@@ -57,7 +54,7 @@ export default function CustomerUpcomingPage() {
   const confirmCancel = async () => {
     if (!cancellingId) return
     try {
-      const docRef = doc(db, 'bookings', cancellingId)
+      const docRef = doc(bookingsCollection(db), cancellingId)
       // Update status to cancelled. Security rules permit this specifically.
       await updateDoc(docRef, { status: 'cancelled' })
       setSuccessMsg(t('customerPortal.upcoming.cancelSuccess'))

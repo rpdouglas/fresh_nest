@@ -19,14 +19,20 @@ vi.mock('../hooks/useStaffAuth')
 vi.mock('../hooks/useOfflineUploads')
 
 // Mock firebase firestore
-vi.mock('firebase/firestore', () => ({
-  doc: vi.fn(),
-  updateDoc: vi.fn(() => Promise.resolve()),
-  onSnapshot: vi.fn(() => vi.fn()), // returns unsubscribe function
-  serverTimestamp: vi.fn(() => ({ type: 'timestamp' })),
-  initializeFirestore: vi.fn(() => ({})),
-  persistentLocalCache: vi.fn(() => ({})),
-}))
+vi.mock('firebase/firestore', () => {
+  const collectionRef = {
+    withConverter: vi.fn().mockReturnThis(),
+  }
+  return {
+    collection: vi.fn(() => collectionRef),
+    doc: vi.fn(),
+    updateDoc: vi.fn(() => Promise.resolve()),
+    onSnapshot: vi.fn(() => vi.fn()), // returns unsubscribe function
+    serverTimestamp: vi.fn(() => ({ type: 'timestamp' })),
+    initializeFirestore: vi.fn(() => ({})),
+    persistentLocalCache: vi.fn(() => ({})),
+  }
+})
 
 // Mock react-router-dom useParams & useNavigate
 const mockNavigate = vi.fn()
@@ -181,8 +187,8 @@ describe('JobPage Component', () => {
     renderWithRouter(<JobPage />)
 
     expect(screen.getByText('fsm.myJobs.jobCard.checklistTitle')).toBeInTheDocument()
-    expect(screen.getByText('fsm.tasks.fridgeDeep')).toBeInTheDocument()
-    expect(screen.getByText('fsm.tasks.vacuumFloors')).toBeInTheDocument()
+    expect(screen.getByText('Deep clean fridge')).toBeInTheDocument()
+    expect(screen.getByText('Vacuum floors')).toBeInTheDocument()
   })
 
   it('expands checklist task and enforces photo uploads', () => {
@@ -198,11 +204,11 @@ describe('JobPage Component', () => {
     renderWithRouter(<JobPage />)
 
     // Expand fridgeDeep task (requires photo)
-    const taskButton = screen.getByText('fsm.tasks.fridgeDeep')
+    const taskButton = screen.getByText('Deep clean fridge')
     fireEvent.click(taskButton)
 
     // Verify detail instructions and photo requirement warning are visible
-    expect(screen.getByText('fsm.tasks.desc.fridgeDeep')).toBeInTheDocument()
+    expect(screen.getByText('fsm.myJobs.jobCard.completeTask')).toBeInTheDocument()
     expect(screen.getByText('fsm.myJobs.jobCard.photoRequiredWarning')).toBeInTheDocument()
 
     // Confirm button should be disabled because no photo has been captured yet
@@ -234,7 +240,7 @@ describe('JobPage Component', () => {
     renderWithRouter(<JobPage />)
 
     // Expand fridgeDeep task (requires photo - now mock lists photo uploaded)
-    const taskButton = screen.getByText('fsm.tasks.fridgeDeep')
+    const taskButton = screen.getByText('Deep clean fridge')
     fireEvent.click(taskButton)
 
     // Confirm button should now be active

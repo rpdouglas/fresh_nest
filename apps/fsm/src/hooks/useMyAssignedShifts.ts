@@ -1,13 +1,14 @@
 import { useMemo } from 'react'
 import { useCollectionQuery } from '@tanstack-query-firebase/react/firestore'
-import { collection, query, where, Timestamp } from 'firebase/firestore'
+import { query, where } from 'firebase/firestore'
+import { jobsCollection } from '@freshnest/shared'
 import { db } from '../lib/firebase/firebase'
 import type { Job } from '../types'
 
 export function useMyAssignedShifts(staffId: string | undefined, enabled: boolean) {
   const assignedQuery = useMemo(() => {
     return query(
-      collection(db, 'jobs'),
+      jobsCollection(db),
       where('assignedTo', '==', staffId || '')
     )
   }, [staffId])
@@ -20,16 +21,7 @@ export function useMyAssignedShifts(staffId: string | undefined, enabled: boolea
   const assignedShifts = useMemo<Job[]>(() => {
     if (!data) return []
     return data.docs
-      .map((docSnap) => {
-        const docData = docSnap.data()
-        return {
-          id: docSnap.id,
-          ...docData,
-          createdAt:   docData.createdAt instanceof Timestamp ? docData.createdAt.toDate()   : new Date(),
-          checkedInAt: docData.checkedInAt instanceof Timestamp ? docData.checkedInAt.toDate() : null,
-          completedAt: docData.completedAt instanceof Timestamp ? docData.completedAt.toDate() : null,
-        } as Job
-      })
+      .map((docSnap) => docSnap.data())
       .filter((job) => job.status !== 'cancelled')
   }, [data])
 

@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react'
 import { useCollectionQuery } from '@tanstack-query-firebase/react/firestore'
-import { collection, query, orderBy, Timestamp, where } from 'firebase/firestore'
+import { query, orderBy, where } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
+import { jobsCollection, staffCollection } from '@freshnest/shared'
 import type { Job, Staff } from '@/types'
 
 export type OpsTimeRange = 'today' | 'this_week' | 'this_month' | 'custom'
@@ -56,7 +57,7 @@ export function useOperationsDashboard(enabled: boolean) {
   // Restricted jobs query based on date range bounds to save database reads
   const jobsQuery = useMemo(() => {
     return query(
-      collection(db, 'jobs'),
+      jobsCollection(db),
       where('scheduledDate', '>=', dateRangeBounds.start),
       where('scheduledDate', '<=', dateRangeBounds.end),
       orderBy('scheduledDate', 'desc')
@@ -65,7 +66,7 @@ export function useOperationsDashboard(enabled: boolean) {
 
   // Staff query remains unbounded since staff count is small and metadata is needed for listing
   const staffQuery = useMemo(() => {
-    return query(collection(db, 'staff'), orderBy('createdAt', 'desc'))
+    return query(staffCollection(db), orderBy('createdAt', 'desc'))
   }, [])
 
   const { data: jobsSnapshot, isLoading: isJobsLoading, error: jobsError } = useCollectionQuery(jobsQuery, {
@@ -80,28 +81,12 @@ export function useOperationsDashboard(enabled: boolean) {
 
   const rawJobs = useMemo<Job[]>(() => {
     if (!jobsSnapshot) return []
-    return jobsSnapshot.docs.map((docSnap) => {
-      const data = docSnap.data()
-      return {
-        id: docSnap.id,
-        ...data,
-        createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toDate() : new Date(),
-        checkedInAt: data.checkedInAt instanceof Timestamp ? data.checkedInAt.toDate() : null,
-        completedAt: data.completedAt instanceof Timestamp ? data.completedAt.toDate() : null,
-      } as Job
-    })
+    return jobsSnapshot.docs.map((docSnap) => docSnap.data())
   }, [jobsSnapshot])
 
   const staffList = useMemo<Staff[]>(() => {
     if (!staffSnapshot) return []
-    return staffSnapshot.docs.map((docSnap) => {
-      const data = docSnap.data()
-      return {
-        id: docSnap.id,
-        ...data,
-        createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toDate() : new Date(),
-      } as Staff
-    })
+    return staffSnapshot.docs.map((docSnap) => docSnap.data())
   }, [staffSnapshot])
 
   // Helper to parse YYYY-MM-DD to Date object

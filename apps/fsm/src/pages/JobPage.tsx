@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { doc, updateDoc, onSnapshot, serverTimestamp } from 'firebase/firestore'
+import { jobsCollection, checklistTemplatesCollection } from '@freshnest/shared'
 import { db } from '../lib/firebase/firebase'
 import { useJob } from '../hooks/useJob'
 import { useStaffAuth } from '../hooks/useStaffAuth'
@@ -68,12 +69,12 @@ export const JobPage: React.FC = () => {
       return
     }
 
-    const templateRef = doc(db, 'checklistTemplates', job.checklistTemplate)
+    const templateRef = doc(checklistTemplatesCollection(db), job.checklistTemplate)
     const unsubscribe = onSnapshot(
       templateRef,
       (docSnap) => {
         if (docSnap.exists()) {
-          setTemplate({ id: docSnap.id, ...docSnap.data() } as ChecklistTemplate)
+          setTemplate(docSnap.data() || null)
         } else {
           setTemplate(null)
         }
@@ -137,7 +138,7 @@ export const JobPage: React.FC = () => {
     const performCheckIn = (lat: number | null, lng: number | null) => {
       const runUpdate = async () => {
         try {
-          const jobRef = doc(db, 'jobs', jobId)
+          const jobRef = doc(jobsCollection(db), jobId)
           await updateDoc(jobRef, {
             status: 'in_progress',
             checkedInAt: serverTimestamp(),
@@ -252,7 +253,7 @@ export const JobPage: React.FC = () => {
         updatedCompletions = [...currentCompletions, newCompletion]
       }
 
-      const jobRef = doc(db, 'jobs', job.id)
+      const jobRef = doc(jobsCollection(db), job.id)
       await updateDoc(jobRef, {
         checklistCompletions: updatedCompletions,
       })
@@ -274,7 +275,7 @@ export const JobPage: React.FC = () => {
     setErrorMessage(null)
 
     try {
-      const jobRef = doc(db, 'jobs', job.id)
+      const jobRef = doc(jobsCollection(db), job.id)
       await updateDoc(jobRef, {
         status: 'completed',
         completedAt: serverTimestamp(),

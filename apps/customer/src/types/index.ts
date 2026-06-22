@@ -22,23 +22,10 @@ export type {
   ChecklistTemplate,
   PayRate,
   AuditEntry,
+  Review,
 } from '@freshnest/shared'
 
 // Customer-app-only types
-import type { Language } from '@freshnest/shared'
-
-export interface Review {
-  id?: string
-  name: string
-  location: string
-  language: Language
-  rating: 1 | 2 | 3 | 4 | 5
-  text: string
-  approved: boolean
-  rejected: boolean
-  jobId: string
-  createdAt: Date
-}
 
 export interface Persona {
   id: string

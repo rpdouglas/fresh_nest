@@ -11,12 +11,12 @@ import {
 } from 'firebase/auth'
 import {
   doc,
-  collection,
   query,
   where,
   getDocs,
   onSnapshot,
 } from 'firebase/firestore'
+import { staffCollection } from '@freshnest/shared'
 import { auth, db } from '../lib/firebase/firebase'
 import { Staff } from '../types'
 import { StaffAuthContext } from './StaffAuthContext'
@@ -68,13 +68,13 @@ export const StaffAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 return
               }
 
-              const staffRef = doc(db, 'staff', currentUser.uid)
+              const staffRef = doc(staffCollection(db), currentUser.uid)
 
               // Set up real-time listener for the user's staff document
               unsubscribeProfile = onSnapshot(staffRef, (docSnapshot) => {
                 const processSnapshot = () => {
-                  if (docSnapshot.exists()) {
-                    setStaffProfile({ id: docSnapshot.id, ...docSnapshot.data() } as Staff)
+                   if (docSnapshot.exists()) {
+                    setStaffProfile(docSnapshot.data() || null)
                     setLoading(false)
                   } else {
                     // P3-E27-A2: After this fix, all new staff have staff/{uid} docs created
@@ -119,7 +119,7 @@ export const StaffAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, [])
 
   const checkEmailExists = async (email: string): Promise<boolean> => {
-    const q = query(collection(db, 'staff'), where('email', '==', email.toLowerCase().trim()))
+    const q = query(staffCollection(db), where('email', '==', email.toLowerCase().trim()))
     const querySnapshot = await getDocs(q)
     return !querySnapshot.empty
   }

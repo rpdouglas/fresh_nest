@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { doc, onSnapshot } from 'firebase/firestore'
+import { checklistTemplatesCollection } from '@freshnest/shared'
 import { db } from '../lib/firebase/firebase'
 import { useStaffAuth } from '../hooks/useStaffAuth'
 import { useMyAssignedShifts } from '../hooks/useMyAssignedShifts'
@@ -58,7 +59,7 @@ export const MyJobsPage: React.FC = () => {
     if (upcomingJobs.length === 0) return
     const unsubscribes = upcomingJobs.map((job) => {
       if (!job.checklistTemplate) return () => {}
-      const templateRef = doc(db, 'checklistTemplates', job.checklistTemplate)
+      const templateRef = doc(checklistTemplatesCollection(db), job.checklistTemplate)
       return onSnapshot(templateRef, () => {})
     })
     return () => {

@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { collection, query, where, getDocs } from 'firebase/firestore'
+import { query, where, getDocs } from 'firebase/firestore'
+import { jobsCollection } from '@freshnest/shared'
 import { DndContext, useDraggable, useDroppable, DragEndEvent } from '@dnd-kit/core'
 import { db, auth } from '@/lib/firebase/firebase'
 import { assignCleanerTransaction } from '@/lib/firebase/firestore'
@@ -316,24 +317,12 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
     setJobsError(null)
     try {
       const q = query(
-        collection(db, 'jobs'),
+        jobsCollection(db),
         where('scheduledDate', '>=', weekBounds.start),
         where('scheduledDate', '<=', weekBounds.end)
       )
       const snap = await getDocs(q)
-      const list = snap.docs.map((docSnap) => {
-        const data = docSnap.data() as Record<string, unknown>
-        const rawCreatedAt = data['createdAt']
-        let resolvedCreatedAt = new Date()
-        if (rawCreatedAt && typeof rawCreatedAt === 'object' && 'toDate' in rawCreatedAt) {
-          resolvedCreatedAt = (rawCreatedAt as { toDate: () => Date }).toDate()
-        }
-        return {
-          id: docSnap.id,
-          ...data,
-          createdAt: resolvedCreatedAt,
-        } as unknown as Job
-      })
+      const list = snap.docs.map((docSnap) => docSnap.data())
       setTimeout(() => {
         setWeeklyJobs(list)
         setLocalAssignments({})

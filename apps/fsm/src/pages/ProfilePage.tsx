@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { doc, updateDoc } from 'firebase/firestore'
+import { staffCollection, cn } from '@freshnest/shared'
 import { db } from '../lib/firebase/firebase'
 import { useStaffAuth } from '../hooks/useStaffAuth'
 import type { TransportMode, BlockedWindow } from '../types'
-import { cn } from '@freshnest/shared'
 
 export const ProfilePage: React.FC = () => {
   const { t } = useTranslation()
@@ -115,7 +115,7 @@ export const ProfilePage: React.FC = () => {
         throw new Error('Monthly earnings limit must be a positive number.')
       }
 
-      const staffRef = doc(db, 'staff', staffProfile.id)
+      const staffRef = doc(staffCollection(db), staffProfile.id)
       await updateDoc(staffRef, {
         'constraints.transportMode': transportMode,
         'constraints.transitBufferMinutes': Number(transitBufferMinutes),

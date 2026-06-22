@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { useQueryClient } from '@tanstack/react-query'
 import { doc, getDoc } from 'firebase/firestore'
+import { jobsCollection } from '@freshnest/shared'
 import { db, auth } from '@/lib/firebase/firebase'
 import { useStaff } from './hooks/useStaff'
 import { assignCleanerTransaction } from '@/lib/firebase/firestore'
@@ -46,11 +47,11 @@ export function BookingDetailPanel({
   // Fetch job details dynamically when panel expands
   useEffect(() => {
     if (b.jobId) {
-      const jobRef = doc(db, 'jobs', b.jobId)
+      const jobRef = doc(jobsCollection(db), b.jobId)
       getDoc(jobRef)
         .then((snap) => {
           if (snap.exists()) {
-            setJob({ id: snap.id, ...snap.data() } as Job)
+            setJob(snap.data())
           }
         })
         .catch((err) => console.error('Error fetching job details:', err))

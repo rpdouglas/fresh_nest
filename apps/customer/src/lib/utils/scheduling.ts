@@ -1,4 +1,5 @@
-import { collection, query, where, getDocs } from 'firebase/firestore'
+import { query, where, getDocs } from 'firebase/firestore'
+import { jobsCollection } from '@freshnest/shared'
 import { db } from '@/lib/firebase/firebase'
 import type { Booking, Job, Staff } from '@/types'
 
@@ -128,13 +129,13 @@ export async function checkCleanerSchedulingConflicts({
 
   try {
     const q = query(
-      collection(db, 'jobs'),
+      jobsCollection(db),
       where('assignedTo', '==', selectedStaff.id),
       where('scheduledDate', '==', booking.preferredDate)
     )
     const snap = await getDocs(q)
     const activeJobs = snap.docs
-      .map((docSnap) => ({ id: docSnap.id, ...docSnap.data() } as Job))
+      .map((docSnap) => docSnap.data())
       .filter((j) => j.status !== 'cancelled' && j.id !== booking.jobId)
 
     for (const exJob of activeJobs) {

@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useCollectionQuery } from '@tanstack-query-firebase/react/firestore'
-import { collection, query, orderBy, Timestamp } from 'firebase/firestore'
+import { query, orderBy } from 'firebase/firestore'
 import { httpsCallable } from 'firebase/functions'
 import { db, functions } from '@/lib/firebase/firebase'
+import { staffCollection } from '@freshnest/shared'
 import type { Staff, StaffRole, StaffStatus, StaffLanguage, TransportMode } from '@/types'
 
 export interface RegisterStaffInput {
@@ -23,7 +24,7 @@ export function useStaff(enabled: boolean) {
   const queryClient = useQueryClient()
 
   const staffQuery = useMemo(() => {
-    return query(collection(db, 'staff'), orderBy('createdAt', 'desc'))
+    return query(staffCollection(db), orderBy('createdAt', 'desc'))
   }, [])
 
   const { data, isLoading, error } = useCollectionQuery(staffQuery, {
@@ -33,14 +34,7 @@ export function useStaff(enabled: boolean) {
 
   const staffList = useMemo<Staff[]>(() => {
     if (!data) return []
-    return data.docs.map((docSnap) => {
-      const docData = docSnap.data()
-      return {
-        id: docSnap.id,
-        ...docData,
-        createdAt: docData.createdAt instanceof Timestamp ? docData.createdAt.toDate() : new Date(),
-      } as Staff
-    })
+    return data.docs.map((docSnap) => docSnap.data())
   }, [data])
 
   const [searchQuery, setSearchQuery] = useState('')

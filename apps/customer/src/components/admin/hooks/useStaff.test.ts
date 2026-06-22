@@ -21,15 +21,20 @@ vi.mock('firebase/functions', () => ({
   getFunctions: vi.fn(),
 }))
 
-vi.mock('firebase/firestore', () => ({
-  collection: vi.fn(),
-  query: vi.fn(),
-  orderBy: vi.fn(),
-  addDoc: mocks.mockAddDoc,
-  Timestamp: { now: vi.fn() },
-  initializeFirestore: vi.fn(),
-  persistentLocalCache: vi.fn(),
-}))
+vi.mock('firebase/firestore', () => {
+  const collectionRef = {
+    withConverter: vi.fn().mockReturnThis(),
+  }
+  return {
+    collection: vi.fn(() => collectionRef),
+    query: vi.fn(),
+    orderBy: vi.fn(),
+    addDoc: mocks.mockAddDoc,
+    Timestamp: { now: vi.fn() },
+    initializeFirestore: vi.fn(),
+    persistentLocalCache: vi.fn(),
+  }
+})
 
 vi.mock('@/lib/firebase/firebase', () => ({
   db: {},

@@ -7,12 +7,18 @@ import { User } from 'firebase/auth'
 import { Staff } from '../types'
 
 // Mock firebase firestore
-vi.mock('firebase/firestore', () => ({
-  doc: vi.fn(() => ({ id: 'staff123' })),
-  updateDoc: vi.fn().mockResolvedValue({}),
-  initializeFirestore: vi.fn(),
-  persistentLocalCache: vi.fn(),
-}))
+vi.mock('firebase/firestore', () => {
+  const collectionRef = {
+    withConverter: vi.fn().mockReturnThis(),
+  }
+  return {
+    collection: vi.fn(() => collectionRef),
+    doc: vi.fn(() => ({ id: 'staff123' })),
+    updateDoc: vi.fn().mockResolvedValue({}),
+    initializeFirestore: vi.fn(),
+    persistentLocalCache: vi.fn(),
+  }
+})
 
 // Mock useStaffAuth hook
 vi.mock('../hooks/useStaffAuth')

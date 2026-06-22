@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { collection, query, where, getDocs, orderBy, Timestamp } from 'firebase/firestore'
+import { bookingsCollection } from '@freshnest/shared'
+import { query, where, getDocs, orderBy } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
 import { useCustomerAuthContext } from '@/components/layout/CustomerAuthContext'
 import type { Booking } from '@/types'
@@ -19,20 +20,12 @@ export default function CustomerBookingsPage() {
     const fetchBookings = async () => {
       try {
         const q = query(
-          collection(db, 'bookings'),
+          bookingsCollection(db),
           where('email', '==', user.email?.trim().toLowerCase()),
           orderBy('createdAt', 'desc')
         )
         const snap = await getDocs(q)
-        const loaded: Booking[] = []
-        snap.forEach((docSnap) => {
-          const data = docSnap.data()
-          loaded.push({
-            id: docSnap.id,
-            ...data,
-            createdAt: data['createdAt'] instanceof Timestamp ? data['createdAt'].toDate() : new Date(),
-          } as Booking)
-        })
+        const loaded: Booking[] = snap.docs.map((docSnap) => docSnap.data())
         setBookings(loaded)
       } catch (err) {
         console.error('Error fetching bookings:', err)

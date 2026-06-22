@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { doc, updateDoc } from 'firebase/firestore'
+import { staffCollection } from '@freshnest/shared'
 import { db } from '../../lib/firebase/firebase'
 import { useStaffAuth } from '../../hooks/useStaffAuth'
 
@@ -26,7 +27,7 @@ export const LanguageSelectionOverlay: React.FC<LanguageSelectionOverlayProps> =
       await i18n.changeLanguage(lang)
 
       // 2. Update Firestore preferences
-      const staffRef = doc(db, 'staff', staffProfile.id)
+      const staffRef = doc(staffCollection(db), staffProfile.id)
       await updateDoc(staffRef, {
         'preferences.language': lang,
       })

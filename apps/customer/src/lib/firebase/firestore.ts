@@ -1,5 +1,4 @@
 import {
-  collection,
   addDoc,
   serverTimestamp,
   Timestamp,
@@ -13,6 +12,15 @@ import {
   getDoc,
 } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
+import {
+  bookingsCollection,
+  jobsCollection,
+  payRatesCollection,
+  reviewsCollection,
+  checklistTemplatesCollection,
+  auditLogCollection,
+  staffCollection,
+} from '@freshnest/shared'
 import type { BookingFormData, AdminBookingFormData } from '@/lib/schemas/bookingSchema'
 import type { Language, Booking, BookingStatus, Job, ChecklistTemplate, PayRate, Review } from '@/types'
 import { calculateQuote } from '@/lib/utils/quotePricing'
@@ -88,10 +96,7 @@ export async function submitBooking(
     docData.consentMethod    = 'booking-form-v2'
   }
 
-  const cleanDocData = Object.fromEntries(
-    Object.entries(docData).filter(([, v]) => v !== undefined),
-  )
-  const ref = await addDoc(collection(db, 'bookings'), cleanDocData)
+  const ref = await addDoc(bookingsCollection(db), docData as unknown as Booking)
   return ref.id
 }
 
@@ -125,20 +130,17 @@ export async function createAdminBooking(
     docData.consentMethod    = 'booking-form-v2'
   }
 
-  const cleanDocData = Object.fromEntries(
-    Object.entries(docData).filter(([, v]) => v !== undefined),
-  )
-  const ref = await addDoc(collection(db, 'bookings'), cleanDocData)
+  const ref = await addDoc(bookingsCollection(db), docData as unknown as Booking)
   return ref.id
 }
 
 export async function updateBookingStatus(bookingId: string, status: BookingStatus): Promise<void> {
-  const docRef = doc(db, 'bookings', bookingId)
+  const docRef = doc(bookingsCollection(db), bookingId)
   await updateDoc(docRef, { status })
 }
 
 export async function updateBookingAssignment(bookingId: string, cleanerName: string | null): Promise<void> {
-  const docRef = doc(db, 'bookings', bookingId)
+  const docRef = doc(bookingsCollection(db), bookingId)
   await updateDoc(docRef, { assignedTo: cleanerName })
 }
 
@@ -165,24 +167,24 @@ export async function assignCleanerTransaction({
 }): Promise<void> {
   await runTransaction(db, async (transaction) => {
     // 1. Booking update
-    const bookingRef = doc(db, 'bookings', bookingId)
+    const bookingRef = doc(bookingsCollection(db), bookingId)
     transaction.update(bookingRef, { assignedTo: cleanerName })
-
+ 
     // 2. Job update
     if (jobId) {
-      const jobRef = doc(db, 'jobs', jobId)
+      const jobRef = doc(jobsCollection(db), jobId)
       transaction.update(jobRef, {
         assignedTo: cleanerId,
         status: cleanerId ? 'assigned' : 'unassigned',
       })
     }
-
+ 
     // 3. Increment new cleaner's earnings
     if (cleanerId) {
-      const newStaffRef = doc(db, 'staff', cleanerId)
+      const newStaffRef = doc(staffCollection(db), cleanerId)
       const newStaffSnap = await transaction.get(newStaffRef)
       if (newStaffSnap.exists()) {
-        const staffData = newStaffSnap.data() as { financials?: { currentMonthEarnings?: number } } | undefined
+        const staffData = newStaffSnap.data()
         const financials = staffData?.financials || {}
         const current = financials.currentMonthEarnings ?? 0
         transaction.update(newStaffRef, {
@@ -190,13 +192,13 @@ export async function assignCleanerTransaction({
         })
       }
     }
-
+ 
     // 4. Decrement old cleaner's earnings
     if (oldCleanerId) {
-      const oldStaffRef = doc(db, 'staff', oldCleanerId)
+      const oldStaffRef = doc(staffCollection(db), oldCleanerId)
       const oldStaffSnap = await transaction.get(oldStaffRef)
       if (oldStaffSnap.exists()) {
-        const staffData = oldStaffSnap.data() as { financials?: { currentMonthEarnings?: number } } | undefined
+        const staffData = oldStaffSnap.data()
         const financials = staffData?.financials || {}
         const current = financials.currentMonthEarnings ?? 0
         transaction.update(oldStaffRef, {
@@ -207,8 +209,9 @@ export async function assignCleanerTransaction({
 
     // 5. Create Audit Log if it is an override
     if (overrideReason && overrideType) {
-      const auditLogRef = doc(collection(db, 'auditLog'))
+      const auditLogRef = doc(auditLogCollection(db))
       transaction.set(auditLogRef, {
+        id: auditLogRef.id,
         collection: 'jobs',
         documentId: jobId || bookingId,
         field: 'assignedTo',
@@ -230,19 +233,9 @@ export function subscribeToJobs(
   callback: (jobs: Job[]) => void,
 ): () => void {
   if (!isAuthorized) return () => {}
-  const q = query(collection(db, 'jobs'), orderBy('createdAt', 'desc'))
+  const q = query(jobsCollection(db), orderBy('createdAt', 'desc'))
   return onSnapshot(q, (snapshot) => {
-    const jobs: Job[] = []
-    snapshot.forEach((docSnap) => {
-      const data = docSnap.data()
-      jobs.push({
-        id: docSnap.id,
-        ...data,
-        createdAt:   data['createdAt']   instanceof Timestamp ? data['createdAt'].toDate()   : new Date(),
-        checkedInAt: data['checkedInAt'] instanceof Timestamp ? data['checkedInAt'].toDate() : null,
-        completedAt: data['completedAt'] instanceof Timestamp ? data['completedAt'].toDate() : null,
-      } as Job)
-    })
+    const jobs = snapshot.docs.map((docSnap) => docSnap.data())
     callback(jobs)
   })
 }
@@ -254,20 +247,16 @@ export function subscribeToChecklistTemplates(
   callback: (templates: ChecklistTemplate[]) => void,
 ): () => void {
   if (!isAuthorized) return () => {}
-  const q = query(collection(db, 'checklistTemplates'), orderBy('serviceType', 'asc'))
+  const q = query(checklistTemplatesCollection(db), orderBy('serviceType', 'asc'))
   return onSnapshot(q, (snapshot) => {
-    const templates: ChecklistTemplate[] = []
-    snapshot.forEach((docSnap) => {
-      templates.push({ id: docSnap.id, ...docSnap.data() } as ChecklistTemplate)
-    })
-    callback(templates)
+    callback(snapshot.docs.map((d) => d.data()))
   })
 }
 
 export async function createChecklistTemplate(
   template: Omit<ChecklistTemplate, 'id'>,
 ): Promise<string> {
-  const ref = await addDoc(collection(db, 'checklistTemplates'), template)
+  const ref = await addDoc(checklistTemplatesCollection(db), template as ChecklistTemplate)
   return ref.id
 }
 
@@ -275,13 +264,13 @@ export async function updateChecklistTemplate(
   templateId: string,
   updates: Partial<Omit<ChecklistTemplate, 'id'>>,
 ): Promise<void> {
-  const docRef = doc(db, 'checklistTemplates', templateId)
+  const docRef = doc(checklistTemplatesCollection(db), templateId)
   await updateDoc(docRef, updates as Record<string, unknown>)
 }
-
+ 
 export async function deleteChecklistTemplate(templateId: string): Promise<void> {
   // Soft-delete: set active to false rather than removing the document
-  const docRef = doc(db, 'checklistTemplates', templateId)
+  const docRef = doc(checklistTemplatesCollection(db), templateId)
   await updateDoc(docRef, { active: false })
 }
 
@@ -292,20 +281,9 @@ export function subscribeToPayRates(
   callback: (rates: PayRate[]) => void,
 ): () => void {
   if (!isAuthorized) return () => {}
-  const q = query(collection(db, 'payRates'), orderBy('effectiveFrom', 'desc'))
+  const q = query(payRatesCollection(db), orderBy('effectiveFrom', 'desc'))
   return onSnapshot(q, (snapshot) => {
-    const rates: PayRate[] = []
-    snapshot.forEach((docSnap) => {
-      const data = docSnap.data()
-      rates.push({
-        id: docSnap.id,
-        ...data,
-        effectiveFrom: data['effectiveFrom'] instanceof Timestamp ? data['effectiveFrom'].toDate() : new Date(),
-        effectiveTo: data['effectiveTo'] instanceof Timestamp ? data['effectiveTo'].toDate() : null,
-        createdAt: data['createdAt'] instanceof Timestamp ? data['createdAt'].toDate() : new Date(),
-      } as PayRate)
-    })
-    callback(rates)
+    callback(snapshot.docs.map((d) => d.data()))
   })
 }
 
@@ -314,11 +292,9 @@ export async function createPayRate(
 ): Promise<string> {
   const docData = {
     ...rate,
-    effectiveFrom: Timestamp.fromDate(rate.effectiveFrom),
-    effectiveTo: rate.effectiveTo ? Timestamp.fromDate(rate.effectiveTo) : null,
     createdAt: serverTimestamp(),
   }
-  const ref = await addDoc(collection(db, 'payRates'), docData)
+  const ref = await addDoc(payRatesCollection(db), docData as unknown as PayRate)
   return ref.id
 }
 
@@ -331,10 +307,10 @@ export async function submitReview(review: Omit<Review, 'id' | 'createdAt'>): Pr
   }
   
   // Submit the review
-  const ref = await addDoc(collection(db, 'reviews'), docData)
+  const ref = await addDoc(reviewsCollection(db), docData as unknown as Review)
   
   // Also update the job document to mark reviewSubmitted: true
-  const jobRef = doc(db, 'jobs', review.jobId)
+  const jobRef = doc(jobsCollection(db), review.jobId)
   await updateDoc(jobRef, { reviewSubmitted: true })
 
   return ref.id
@@ -342,21 +318,12 @@ export async function submitReview(review: Omit<Review, 'id' | 'createdAt'>): Pr
 
 export function subscribeToApprovedReviews(callback: (reviews: Review[]) => void): () => void {
   const q = query(
-    collection(db, 'reviews'),
+    reviewsCollection(db),
     where('approved', '==', true),
     orderBy('createdAt', 'desc')
   )
   return onSnapshot(q, (snapshot) => {
-    const reviews: Review[] = []
-    snapshot.forEach((docSnap) => {
-      const data = docSnap.data()
-      reviews.push({
-        id: docSnap.id,
-        ...data,
-        createdAt: data['createdAt'] instanceof Timestamp ? data['createdAt'].toDate() : new Date(),
-      } as Review)
-    })
-    callback(reviews)
+    callback(snapshot.docs.map((d) => d.data()))
   })
 }
 
@@ -366,22 +333,13 @@ export function subscribeToPendingReviews(
 ): () => void {
   if (!isAuthorized) return () => {}
   const q = query(
-    collection(db, 'reviews'),
+    reviewsCollection(db),
     where('approved', '==', false),
     where('rejected', '==', false),
     orderBy('createdAt', 'desc')
   )
   return onSnapshot(q, (snapshot) => {
-    const reviews: Review[] = []
-    snapshot.forEach((docSnap) => {
-      const data = docSnap.data()
-      reviews.push({
-        id: docSnap.id,
-        ...data,
-        createdAt: data['createdAt'] instanceof Timestamp ? data['createdAt'].toDate() : new Date(),
-      } as Review)
-    })
-    callback(reviews)
+    callback(snapshot.docs.map((d) => d.data()))
   })
 }
 
@@ -389,7 +347,7 @@ export async function updateReviewStatus(
   reviewId: string,
   status: 'approved' | 'rejected'
 ): Promise<void> {
-  const docRef = doc(db, 'reviews', reviewId)
+  const docRef = doc(reviewsCollection(db), reviewId)
   if (status === 'approved') {
     await updateDoc(docRef, { approved: true, rejected: false })
   } else {
@@ -397,19 +355,16 @@ export async function updateReviewStatus(
   }
 }
 
-// Fetch a single job to pre-populate review details
 export async function getJobForReview(jobId: string): Promise<Job | null> {
-  const jobRef = doc(db, 'jobs', jobId)
+  const jobRef = doc(jobsCollection(db), jobId)
   const jobSnap = await getDoc(jobRef)
-  if (!jobSnap.exists()) return null
-  return { id: jobSnap.id, ...jobSnap.data() } as Job
+  return jobSnap.exists() ? (jobSnap.data() ?? null) : null
 }
-
+ 
 export async function getBookingForReview(bookingId: string): Promise<Booking | null> {
-  const bookingRef = doc(db, 'bookings', bookingId)
+  const bookingRef = doc(bookingsCollection(db), bookingId)
   const bookingSnap = await getDoc(bookingRef)
-  if (!bookingSnap.exists()) return null
-  return { id: bookingSnap.id, ...bookingSnap.data() } as Booking
+  return bookingSnap.exists() ? (bookingSnap.data() ?? null) : null
 }
 
 

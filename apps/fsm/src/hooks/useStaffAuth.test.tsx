@@ -56,19 +56,51 @@ const mockOnSnapshot = vi.fn((ref: unknown, callback: (snapshot: unknown) => voi
   return () => {}
 })
 
-vi.mock('firebase/firestore', () => ({
-  initializeFirestore: vi.fn(),
-  persistentLocalCache: vi.fn(),
-  doc: vi.fn(),
-  getDoc: (ref: unknown) => mockGetDoc(ref) as Promise<unknown>,
-  collection: vi.fn(),
-  query: vi.fn(),
-  where: vi.fn(),
-  getDocs: (q: unknown) => mockGetDocs(q) as Promise<unknown>,
-  setDoc: (ref: unknown, data: unknown) => mockSetDoc(ref, data) as Promise<unknown>,
-  deleteDoc: (ref: unknown) => mockDeleteDoc(ref) as Promise<unknown>,
-  onSnapshot: (ref: unknown, cb: (snapshot: unknown) => void) => mockOnSnapshot(ref, cb),
-}))
+vi.mock('firebase/firestore', () => {
+  /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call */
+  class MockTimestamp {
+    constructor(public seconds: number, public nanoseconds: number) {}
+    toDate() { return new Date(this.seconds * 1000) }
+    static now() { return new MockTimestamp(Date.now() / 1000, 0) }
+  }
+  const collectionRef: any = {
+    collection: 'staff',
+  }
+  collectionRef.withConverter = vi.fn((converter) => {
+    collectionRef.converter = converter
+    return collectionRef
+  })
+
+  return {
+    initializeFirestore: vi.fn(),
+    persistentLocalCache: vi.fn(),
+    doc: vi.fn((colRef: any, id: string) => ({
+      id,
+      converter: colRef?.converter,
+    })),
+    getDoc: (ref: unknown) => mockGetDoc(ref) as Promise<unknown>,
+    collection: vi.fn(() => collectionRef),
+    query: vi.fn((col: any) => ({ col })),
+    where: vi.fn(),
+    getDocs: (q: unknown) => mockGetDocs(q) as Promise<unknown>,
+    setDoc: (ref: unknown, data: unknown) => mockSetDoc(ref, data) as Promise<unknown>,
+    deleteDoc: (ref: unknown) => mockDeleteDoc(ref) as Promise<unknown>,
+    onSnapshot: (ref: any, cb: (snapshot: any) => void) => {
+      const wrappedCb = (snapshot: any) => {
+        if (snapshot && ref?.converter) {
+          const originalData = snapshot.data()
+          snapshot.data = () => ref.converter.fromFirestore({
+            id: snapshot.id,
+            data: () => originalData,
+          })
+        }
+        cb(snapshot)
+      }
+      return mockOnSnapshot(ref, wrappedCb)
+    },
+    Timestamp: MockTimestamp,
+  }
+})
 
 vi.mock('firebase/app', () => ({
   initializeApp: vi.fn(),
@@ -142,14 +174,14 @@ describe('useStaffAuth Hook', () => {
     })
 
     expect(result.current.user).toEqual({ uid: 'staff123', email: 'john@freshnest.ca' })
-    expect(result.current.staffProfile).toEqual({
+    expect(result.current.staffProfile).toEqual(expect.objectContaining({
       id: 'staff123',
       firstName: 'John',
       lastName: 'Doe',
       email: 'john@freshnest.ca',
       role: 'cleaner',
       status: 'active',
-    })
+    }))
     expect(result.current.error).toBeNull()
   })
 

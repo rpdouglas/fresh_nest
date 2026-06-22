@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { doc, updateDoc, arrayUnion } from 'firebase/firestore'
+import { staffCollection, cn } from '@freshnest/shared'
 import { db } from '../../lib/firebase/firebase'
 import { useStaffAuth } from '../../hooks/useStaffAuth'
-import { cn } from '@freshnest/shared'
 
 export const TermsConsentOverlay: React.FC = () => {
   const { t, i18n } = useTranslation()
@@ -51,7 +51,7 @@ export const TermsConsentOverlay: React.FC = () => {
     if (!staffProfile || !isChecked || isAccepting) return
     setIsAccepting(true)
     try {
-      const staffRef = doc(db, 'staff', staffProfile.id)
+      const staffRef = doc(staffCollection(db), staffProfile.id)
       await updateDoc(staffRef, {
         'compliance.acceptedTermsVersion': CURRENT_TERMS_VERSION,
         'compliance.termsHistory': arrayUnion({

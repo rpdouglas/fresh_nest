@@ -75,7 +75,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | **P3-E18** | Shared Types Package (`packages/shared`) | M | P1 | ✅ Completed 2026-06-18 |
 | **P3-E19** | Cloud Functions Domain Split | M | P2 | ✅ Completed 2026-06-22 |
 | **P3-E20** | Firebase App Check | S | P1 | ✅ Completed 2026-06-18 |
-| **P3-E21** | Firestore `withConverter()` Adoption | M | P2 | ⬜ Not Started |
+| **P3-E21** | Firestore `withConverter()` Adoption | M | P2 | ✅ Completed 2026-06-22 |
 | **P3-E22** | Pricing Web Worker | M | P2 | ⬜ Not Started |
 | **P3-E23** | React 19 `useSuspenseQuery` & Suspense Boundaries | M | P3 | ⬜ Not Started |
 | **P3-E24** | VitePress Documentation Site | M | P3 | ⬜ Not Started |

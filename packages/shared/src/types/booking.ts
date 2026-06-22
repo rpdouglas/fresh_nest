@@ -38,3 +38,16 @@ export interface Booking {
   jobId?: string
   createdBy?: string
 }
+
+export interface Review {
+  id?: string
+  name: string
+  location: string
+  language: Language
+  rating: 1 | 2 | 3 | 4 | 5
+  text: string
+  approved: boolean
+  rejected: boolean
+  jobId: string
+  createdAt: Date
+}
