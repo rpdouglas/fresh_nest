@@ -135,3 +135,36 @@ describe('useStaff — registerStaff (P3-E27-A2)', () => {
     ).rejects.toThrow('permission-denied')
   })
 })
+
+describe('useStaff — resendWelcome', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockHttpsCallable.mockReturnValue(mockHttpsCallableFn)
+    mockHttpsCallableFn.mockResolvedValue({ data: { success: true, sentAt: '2026-06-22T12:00:00Z' } })
+  })
+
+  it('calls resendWelcomeEmail httpsCallable with the uid parameter', async () => {
+    const { result } = renderHook(() => useStaff(true))
+
+    await act(async () => {
+      await result.current.resendWelcome('uid-123')
+    })
+
+    expect(mockHttpsCallable).toHaveBeenCalledWith(
+      expect.anything(),
+      'resendWelcomeEmail'
+    )
+
+    expect(mockHttpsCallableFn).toHaveBeenCalledWith({ uid: 'uid-123' })
+  })
+
+  it('invalidates the staff query cache after successful resend', async () => {
+    const { result } = renderHook(() => useStaff(true))
+
+    await act(async () => {
+      await result.current.resendWelcome('uid-123')
+    })
+
+    expect(mockInvalidateQueries).toHaveBeenCalledWith({ queryKey: ['staff'] })
+  })
+})

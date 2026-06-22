@@ -26,6 +26,7 @@ export function logError(label: string, err: unknown): void {
 // Secret definitions
 export const RESEND_API_KEY = defineSecret('RESEND_API_KEY')
 export const OWNER_EMAIL = defineSecret('OWNER_EMAIL')
+export const FSM_APP_URL = defineSecret('FSM_APP_URL')
 export const TWILIO_ACCOUNT_SID = defineSecret('TWILIO_ACCOUNT_SID')
 export const TWILIO_AUTH_TOKEN = defineSecret('TWILIO_AUTH_TOKEN')
 export const TWILIO_PHONE_NUMBER = defineSecret('TWILIO_PHONE_NUMBER')

@@ -1,6 +1,15 @@
 import { Resend } from 'resend'
 import type { BookingData } from './emailTemplates'
-import { ownerSubject, ownerText, clientSubject, clientHtml, reviewRequestSubject, reviewRequestHtml } from './emailTemplates'
+import {
+  ownerSubject,
+  ownerText,
+  clientSubject,
+  clientHtml,
+  reviewRequestSubject,
+  reviewRequestHtml,
+  staffWelcomeSubject,
+  staffWelcomeHtml,
+} from './emailTemplates'
 
 export interface EmailConfig {
   resendApiKey: string
@@ -58,5 +67,24 @@ export async function sendReviewRequestEmail(
   })
   if (result.error) {
     throw new Error(`Review request email failed: ${result.error.message}`)
+  }
+}
+
+export async function sendWelcomeEmail(
+  firstName: string,
+  email: string,
+  magicLink: string,
+  lang: 'en' | 'fr',
+  config: EmailConfig,
+): Promise<void> {
+  const resend = new Resend(config.resendApiKey)
+  const result = await resend.emails.send({
+    from:    config.fromEmail,
+    to:      email,
+    subject: staffWelcomeSubject(lang),
+    html:    staffWelcomeHtml(firstName, magicLink, lang),
+  })
+  if (result.error) {
+    throw new Error(`Welcome email failed: ${result.error.message}`)
   }
 }

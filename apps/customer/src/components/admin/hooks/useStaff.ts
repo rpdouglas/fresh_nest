@@ -69,6 +69,16 @@ export function useStaff(enabled: boolean) {
     return result.data.uid
   }
 
+  const resendWelcome = async (uid: string) => {
+    const resendWelcomeFn = httpsCallable<{ uid: string }, { success: boolean; sentAt: string }>(
+      functions,
+      'resendWelcomeEmail'
+    )
+    const result = await resendWelcomeFn({ uid })
+    await queryClient.invalidateQueries({ queryKey: ['staff'] })
+    return result.data
+  }
+
   return {
     staffList,
     filteredStaff,
@@ -81,5 +91,6 @@ export function useStaff(enabled: boolean) {
     statusFilter,
     setStatusFilter,
     registerStaff,
+    resendWelcome,
   }
 }

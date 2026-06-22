@@ -30,7 +30,11 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
     statusFilter,
     setStatusFilter,
     registerStaff,
+    resendWelcome,
   } = useStaff(isAuthorized)
+
+  const [resendingId, setResendingId] = useState<string | null>(null)
+  const [resendError, setResendError] = useState<string | null>(null)
 
   const handleRegister = async (input: RegisterStaffInput) => {
     await registerStaff(input)
@@ -38,6 +42,26 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
     setTimeout(() => {
       setSuccessMessage(null)
     }, 4000)
+  }
+
+  const handleResendInvite = async (uid: string) => {
+    setResendingId(uid)
+    setResendError(null)
+    try {
+      await resendWelcome(uid)
+      setSuccessMessage(t('admin.staff.resendSuccess', { defaultValue: 'Invitation email resent successfully.' }))
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 4000)
+    } catch (err) {
+      console.error('[handleResendInvite] Error resending invite:', err)
+      setResendError(t('admin.staff.resendError', { defaultValue: 'Failed to resend invitation email. Please try again.' }))
+      setTimeout(() => {
+        setResendError(null)
+      }, 5000)
+    } finally {
+      setResendingId(null)
+    }
   }
 
   const getRoleLabel = (role: StaffRole) => {
@@ -94,6 +118,12 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
       {successMessage && (
         <div className="p-4 bg-green-50 border border-green-200 text-green-800 rounded font-body text-base animate-pulse">
           {successMessage}
+        </div>
+      )}
+
+      {resendError && (
+        <div className="p-4 bg-red-50 border border-red-200 text-red-800 rounded font-body text-base animate-pulse">
+          {resendError}
         </div>
       )}
 
@@ -205,6 +235,15 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
                       <div className="flex flex-col">
                         <span>{s.email}</span>
                         <span className="text-text-muted text-base">{s.phone}</span>
+                        {s.welcomeEmailSentAt ? (
+                          <span className="text-xs text-green-600 font-medium mt-1">
+                            {t('admin.staff.welcomeSent', { defaultValue: 'Invite sent' })}: {new Date(s.welcomeEmailSentAt).toLocaleDateString()}
+                          </span>
+                        ) : (
+                          <span className="text-xs text-amber-600 font-medium mt-1">
+                            {t('admin.staff.welcomeNotSent', { defaultValue: 'Invite not sent' })}
+                          </span>
+                        )}
                       </div>
                     </td>
 
@@ -248,16 +287,31 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
 
                     {/* Actions */}
                     <td className="p-4 font-body text-base text-charcoal text-right">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSelectedStaff(s)
-                          setIsExportModalOpen(true)
-                        }}
-                        className="text-slate-brand hover:text-slate-dark font-medium min-h-[48px] px-3 rounded hover:bg-slate-pale transition-colors duration-150"
-                      >
-                        {t('admin.staff.table.export', { defaultValue: 'Export' })}
-                      </button>
+                      <div className="flex flex-col sm:flex-row items-end sm:items-center justify-end gap-2">
+                        <button
+                          type="button"
+                          disabled={resendingId !== null}
+                          onClick={() => { void handleResendInvite(s.id) }}
+                          className={cn(
+                            "text-slate-brand hover:text-slate-dark font-medium min-h-[48px] px-3 rounded hover:bg-slate-pale transition-colors duration-150",
+                            resendingId === s.id && "animate-pulse cursor-wait"
+                          )}
+                        >
+                          {resendingId === s.id 
+                            ? t('admin.staff.table.sending', { defaultValue: 'Sending...' }) 
+                            : t('admin.staff.table.resend', { defaultValue: 'Resend Invite' })}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedStaff(s)
+                            setIsExportModalOpen(true)
+                          }}
+                          className="text-slate-brand hover:text-slate-dark font-medium min-h-[48px] px-3 rounded hover:bg-slate-pale transition-colors duration-150"
+                        >
+                          {t('admin.staff.table.export', { defaultValue: 'Export' })}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

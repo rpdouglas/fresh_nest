@@ -102,6 +102,7 @@ export const staffConverter = createConverter<Staff>((data, id) => ({
   id,
   uid: data.uid || id,
   createdAt: toDate(data.createdAt),
+  welcomeEmailSentAt: data.welcomeEmailSentAt ? toDate(data.welcomeEmailSentAt) : null,
   compliance: {
     ...data.compliance,
     acceptedTermsVersion: data.compliance?.acceptedTermsVersion ?? null,

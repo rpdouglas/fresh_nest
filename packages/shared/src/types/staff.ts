@@ -45,6 +45,7 @@ export interface Staff {
     acceptedTermsVersion: string | null
     termsHistory: TermsAcceptance[]
   }
+  welcomeEmailSentAt?: Date | null
   onboardingChecklist: Record<string, boolean>
   createdAt: Date
 }
