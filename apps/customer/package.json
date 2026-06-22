@@ -24,6 +24,6 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.10.0",
     "@firebase/rules-unit-testing": "^5.0.1",
-    "rollup-plugin-visualizer": "^5.14.0"
+    "rollup-plugin-visualizer": "^7.0.1"
   }
 }
