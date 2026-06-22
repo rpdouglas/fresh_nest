@@ -1,16 +1,23 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
-import { useStaff } from './useStaff'
-import type { RegisterStaffInput } from './useStaff'
+// ── Firebase mocks (hoisted) ──────────────────────────────────────────────────
+const mocks = vi.hoisted(() => {
+  const mockHttpsCallableFn = vi.fn().mockResolvedValue({ data: { uid: 'uid-123', email: 'jasmine@freshnest.ca' } })
+  const mockHttpsCallable = vi.fn(() => mockHttpsCallableFn)
+  const mockAddDoc = vi.fn()
+  const mockInvalidateQueries = vi.fn()
+  return {
+    mockHttpsCallableFn,
+    mockHttpsCallable,
+    mockAddDoc,
+    mockInvalidateQueries,
+  }
+})
 
-// ── Firebase mocks ────────────────────────────────────────────────────────────
-const mockHttpsCallableFn = vi.fn().mockResolvedValue({ data: { uid: 'uid-123', email: 'jasmine@freshnest.ca' } })
-const mockHttpsCallable = vi.fn(() => mockHttpsCallableFn)
-const mockAddDoc = vi.fn()
-const mockInvalidateQueries = vi.fn()
+const { mockHttpsCallableFn, mockHttpsCallable, mockAddDoc, mockInvalidateQueries } = mocks
 
 vi.mock('firebase/functions', () => ({
-  httpsCallable: mockHttpsCallable,
+  httpsCallable: mocks.mockHttpsCallable,
   getFunctions: vi.fn(),
 }))
 
@@ -18,7 +25,7 @@ vi.mock('firebase/firestore', () => ({
   collection: vi.fn(),
   query: vi.fn(),
   orderBy: vi.fn(),
-  addDoc: mockAddDoc,
+  addDoc: mocks.mockAddDoc,
   Timestamp: { now: vi.fn() },
   initializeFirestore: vi.fn(),
   persistentLocalCache: vi.fn(),
@@ -30,12 +37,15 @@ vi.mock('@/lib/firebase/firebase', () => ({
 }))
 
 vi.mock('@tanstack/react-query', () => ({
-  useQueryClient: () => ({ invalidateQueries: mockInvalidateQueries }),
+  useQueryClient: () => ({ invalidateQueries: mocks.mockInvalidateQueries }),
 }))
 
 vi.mock('@tanstack-query-firebase/react/firestore', () => ({
   useCollectionQuery: () => ({ data: null, isLoading: false, error: null }),
 }))
+
+import { useStaff } from './useStaff'
+import type { RegisterStaffInput } from './useStaff'
 
 // ── Test suite ────────────────────────────────────────────────────────────────
 
