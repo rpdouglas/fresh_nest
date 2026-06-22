@@ -171,7 +171,8 @@ service cloud.firestore {
     // ── FSM Collections ──────────────────────────────────────────────────────────
     match /staff/{staffId} {
       allow read:   if (request.auth != null && request.auth.uid == staffId) || isAdmin();
-      allow create: if isAdmin();
+      // P3-E27-A2: create removed — all staff docs created server-side by onStaffRegistered CF
+      // (Admin SDK bypasses rules). Client-side addDoc to staff is now blocked as defence in depth.
       allow update: if isAdmin()
         || (request.auth != null
             && request.auth.uid == staffId

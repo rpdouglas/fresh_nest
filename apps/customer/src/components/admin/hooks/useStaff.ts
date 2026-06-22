@@ -1,8 +1,9 @@
 import { useState, useMemo } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useCollectionQuery } from '@tanstack-query-firebase/react/firestore'
-import { collection, query, orderBy, addDoc, serverTimestamp, Timestamp } from 'firebase/firestore'
-import { db } from '@/lib/firebase/firebase'
+import { collection, query, orderBy, Timestamp } from 'firebase/firestore'
+import { httpsCallable } from 'firebase/functions'
+import { db, functions } from '@/lib/firebase/firebase'
 import type { Staff, StaffRole, StaffStatus, StaffLanguage, TransportMode } from '@/types'
 
 export interface RegisterStaffInput {
@@ -63,40 +64,15 @@ export function useStaff(enabled: boolean) {
   }, [staffList, roleFilter, statusFilter, searchQuery])
 
   const registerStaff = async (input: RegisterStaffInput) => {
-    const docData = {
-      firstName: input.firstName.trim(),
-      lastName: input.lastName.trim(),
-      email: input.email.toLowerCase().trim(),
-      phone: input.phone.trim(),
-      role: input.role,
-      status: input.status,
-      preferences: {
-        language: input.language,
-      },
-      constraints: {
-        transportMode: input.transportMode,
-        transitBufferMinutes: input.transitBufferMinutes,
-        blockedWindows: [],
-      },
-      financials: {
-        monthlyEarningsLimit: input.monthlyEarningsLimit,
-        currentMonthEarnings: 0,
-        earningsHistory: [],
-      },
-      compliance: {
-        acceptedTermsVersion: null,
-        termsHistory: [],
-      },
-      onboardingChecklist: {
-        backgroundCheck: false,
-        trainingCompleted: false,
-      },
-      createdAt: serverTimestamp(),
-    }
-
-    const ref = await addDoc(collection(db, 'staff'), docData)
+    // P3-E27-A2: server-side CF owns Auth account creation + custom claims + staff/{uid} write.
+    // Eliminates the client-side addDoc + email-migration race condition.
+    const registerStaffFn = httpsCallable<RegisterStaffInput, { uid: string; email: string }>(
+      functions,
+      'onStaffRegistered'
+    )
+    const result = await registerStaffFn(input)
     await queryClient.invalidateQueries({ queryKey: ['staff'] })
-    return ref.id
+    return result.data.uid
   }
 
   return {

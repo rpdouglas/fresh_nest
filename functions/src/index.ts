@@ -1357,3 +1357,122 @@ export const migrateComplianceRecords = onCall(async (request) => {
   return summary
 })
 
+// ─────────────────────────────────────────────────────────────────────────────
+// P3-E27-A2: Staff registration — atomic Auth + claims + Firestore write
+// Replaces the client-side addDoc + email-migration race condition.
+// ─────────────────────────────────────────────────────────────────────────────
+export const onStaffRegistered = onCall(async (request) => {
+  const authContext = request.auth
+  if (!authContext) {
+    throw new HttpsError('unauthenticated', 'Must be authenticated.')
+  }
+
+  const db = getFirestore()
+  const auth = getAuth()
+
+  // Admin-only gate — same pattern as setUserRole / migrateComplianceRecords
+  let isAuthorized = authContext.token.role === 'admin'
+  if (!isAuthorized && authContext.token.email) {
+    const adminSnap = await db
+      .collection('admins')
+      .doc(authContext.token.email.trim().toLowerCase())
+      .get()
+    if (adminSnap.exists) isAuthorized = true
+  }
+  if (!isAuthorized) {
+    throw new HttpsError('permission-denied', 'Only administrators can register staff members.')
+  }
+
+  // Validate required payload fields
+  const data = request.data as {
+    firstName?: string
+    lastName?: string
+    email?: string
+    phone?: string
+    role?: string
+    status?: string
+    language?: string
+    transportMode?: string
+    transitBufferMinutes?: number
+    monthlyEarningsLimit?: number | null
+  }
+
+  const VALID_ROLES = ['cleaner', 'lead', 'supervisor']
+  const VALID_STATUSES = ['onboarding', 'active', 'inactive']
+  const VALID_LANGUAGES = ['en', 'fr']
+  const VALID_TRANSPORT = ['personal_vehicle', 'transit', 'rideshare', 'walk']
+
+  if (!data.firstName?.trim()) throw new HttpsError('invalid-argument', 'firstName is required.')
+  if (!data.lastName?.trim()) throw new HttpsError('invalid-argument', 'lastName is required.')
+  if (!data.email?.trim()) throw new HttpsError('invalid-argument', 'email is required.')
+  if (!data.phone?.trim()) throw new HttpsError('invalid-argument', 'phone is required.')
+  if (!data.role || !VALID_ROLES.includes(data.role)) throw new HttpsError('invalid-argument', 'role must be cleaner, lead, or supervisor.')
+  if (!data.status || !VALID_STATUSES.includes(data.status)) throw new HttpsError('invalid-argument', 'status must be onboarding, active, or inactive.')
+  if (!data.language || !VALID_LANGUAGES.includes(data.language)) throw new HttpsError('invalid-argument', 'language must be en or fr.')
+  if (!data.transportMode || !VALID_TRANSPORT.includes(data.transportMode)) throw new HttpsError('invalid-argument', 'transportMode is invalid.')
+  if (typeof data.transitBufferMinutes !== 'number' || data.transitBufferMinutes < 0) throw new HttpsError('invalid-argument', 'transitBufferMinutes must be a non-negative number.')
+
+  const email = data.email.toLowerCase().trim()
+
+  // Map Firestore role to Auth custom claim (coarse-grained — FSM access gate)
+  const authClaim = data.role === 'supervisor' ? 'supervisor' : 'staff'
+
+  // Step 1: Create or retrieve Auth account (idempotent)
+  let uid: string
+  try {
+    const existingUser = await auth.getUserByEmail(email)
+    // Auth account already exists — use its UID (supports safe retry)
+    uid = existingUser.uid
+    logger.info(`[onStaffRegistered] Reusing existing Auth account for ${email} uid=${uid}`)
+  } catch {
+    // Not found — create a new passwordless account
+    const newUser = await auth.createUser({
+      email,
+      emailVerified: false,
+      // No password set — employee logs in via magic link (P3-E27-B1)
+    })
+    uid = newUser.uid
+    logger.info(`[onStaffRegistered] Created Auth account for ${email} uid=${uid}`)
+  }
+
+  // Step 2: Set custom claim (coarse-grained role for FSM gate)
+  await auth.setCustomUserClaims(uid, { role: authClaim })
+
+  // Step 3: Write staff/{uid} document atomically via Admin SDK (bypasses Firestore rules)
+  const staffRef = db.collection('staff').doc(uid)
+  await staffRef.set({
+    firstName: data.firstName.trim(),
+    lastName: data.lastName.trim(),
+    email,
+    phone: data.phone.trim(),
+    role: data.role,
+    status: data.status,
+    preferences: {
+      language: data.language,
+    },
+    constraints: {
+      transportMode: data.transportMode,
+      transitBufferMinutes: data.transitBufferMinutes,
+      blockedWindows: [],
+    },
+    financials: {
+      monthlyEarningsLimit: data.monthlyEarningsLimit ?? null,
+      currentMonthEarnings: 0,
+      earningsHistory: [],
+    },
+    // P3-E27-A1: null — real consent collected by TermsConsentOverlay on first FSM login
+    compliance: {
+      acceptedTermsVersion: null,
+      termsHistory: [],
+    },
+    onboardingChecklist: {
+      backgroundCheck: false,
+      trainingCompleted: false,
+    },
+    createdAt: Timestamp.now(),
+  })
+
+  logger.info(`[onStaffRegistered] staff/${uid} document written for ${email}`)
+
+  return { uid, email }
+})

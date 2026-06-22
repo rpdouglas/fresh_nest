@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from 'react'
-import { 
-  User, 
-  signInWithEmailAndPassword, 
-  sendSignInLinkToEmail, 
-  isSignInWithEmailLink, 
-  signInWithEmailLink, 
-  signOut, 
-  onAuthStateChanged 
+import * as Sentry from '@sentry/react'
+import {
+  User,
+  signInWithEmailAndPassword,
+  sendSignInLinkToEmail,
+  isSignInWithEmailLink,
+  signInWithEmailLink,
+  signOut,
+  onAuthStateChanged
 } from 'firebase/auth'
-import { 
-  doc, 
-  collection, 
-  query, 
-  where, 
-  getDocs, 
-  onSnapshot, 
-  setDoc, 
-  deleteDoc 
+import {
+  doc,
+  collection,
+  query,
+  where,
+  getDocs,
+  onSnapshot,
 } from 'firebase/firestore'
 import { auth, db } from '../lib/firebase/firebase'
 import { Staff } from '../types'
@@ -70,51 +69,27 @@ export const StaffAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
               }
 
               const staffRef = doc(db, 'staff', currentUser.uid)
-              let isLinking = false
 
               // Set up real-time listener for the user's staff document
               unsubscribeProfile = onSnapshot(staffRef, (docSnapshot) => {
-                const processSnapshot = async () => {
+                const processSnapshot = () => {
                   if (docSnapshot.exists()) {
                     setStaffProfile({ id: docSnapshot.id, ...docSnapshot.data() } as Staff)
                     setLoading(false)
                   } else {
-                    if (currentUser.email && !isLinking) {
-                      isLinking = true
-                      try {
-                        // Auto-linking: check if a staff document exists with their email
-                        const emailQ = query(
-                          collection(db, 'staff'),
-                          where('email', '==', currentUser.email.toLowerCase().trim())
-                        )
-                        const emailSnapshot = await getDocs(emailQ)
-                        if (!emailSnapshot.empty) {
-                          const legacyDoc = emailSnapshot.docs[0]
-                          const legacyData = legacyDoc.data()
-
-                          // Copy data to new doc with UID as ID
-                          await setDoc(staffRef, {
-                            ...legacyData,
-                            uid: currentUser.uid,
-                          })
-
-                          // Delete legacy doc
-                          await deleteDoc(legacyDoc.ref)
-                          return
-                        }
-                      } catch (err) {
-                        console.error('Error during auto-linking:', err)
-                      }
-                    }
-
+                    // P3-E27-A2: After this fix, all new staff have staff/{uid} docs created
+                    // server-side by onStaffRegistered CF. Reaching this branch is unexpected.
+                    Sentry.captureMessage(
+                      `[P3-E27-A2] No staff doc at staff/${currentUser.uid} after login — unexpected post-A2`,
+                      { level: 'warning', extra: { uid: currentUser.uid, email: currentUser.email } }
+                    )
                     setStaffProfile(null)
-                    // If authenticated but no profile exists, sign out
                     void signOut(auth)
                     setError('fsm.login.errorNoProfile')
                     setLoading(false)
                   }
                 }
-                void processSnapshot()
+                processSnapshot()
               }, (err) => {
                 console.error('Error on profile snapshot:', err)
                 setLoading(false)
