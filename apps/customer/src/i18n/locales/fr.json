@@ -1042,6 +1042,7 @@
       "blockedWindowWarning": "{{name}} a un créneau bloqué qui chevauche ce quart",
       "overlapWarning": "{{name}} a un quart qui chevauche ({{start}} - {{end}})",
       "backgroundCheckWarning": "{{name}} n'a pas de vérification des antécédents approuvée",
+      "whmisWarning": "{{name}} n'a pas terminé la formation SIMDUT",
       "reasonLabel": "Raison de la dérogation",
       "reasonPlaceholder": "ex. Remplacement urgent à la demande du client",
       "reasonRequired": "La raison de la dérogation est requise.",

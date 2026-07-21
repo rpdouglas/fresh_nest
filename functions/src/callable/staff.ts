@@ -345,6 +345,57 @@ export const updateBackgroundCheckStatus = onCall(async (request) => {
   return { success: true }
 })
 
+// P3-E27-C3: Employee marks a training module complete (comprehension check already
+// verified client-side). onboardingChecklist stays closed to direct client writes —
+// same reasoning as B2's backgroundCheck — so this callable is the only write path,
+// keeping room for D1's future admin-only checklist fields in the same map.
+const TRAINING_MODULE_IDS = [
+  'module1Welcome',
+  'module2AppTraining',
+  'module3CleaningTechniques',
+  'module4Whmis',
+  'module5ClientStandards',
+  'module6EmergencyProcedures',
+] as const
+
+export const completeTrainingModule = onCall(async (request) => {
+  const authContext = request.auth
+  if (!authContext) {
+    throw new HttpsError('unauthenticated', 'Must be authenticated.')
+  }
+
+  const { moduleId } = request.data as { moduleId?: string }
+  if (!moduleId || !TRAINING_MODULE_IDS.includes(moduleId as (typeof TRAINING_MODULE_IDS)[number])) {
+    throw new HttpsError('invalid-argument', 'moduleId must be one of the six known training modules.')
+  }
+
+  const db = getFirestore()
+  const uid = authContext.uid
+  const staffRef = db.collection('staff').doc(uid)
+  const staffSnap = await staffRef.get()
+  if (!staffSnap.exists) {
+    throw new HttpsError('not-found', 'Staff profile not found.')
+  }
+
+  const checklist = staffSnap.data()!.onboardingChecklist || {}
+  const update: Record<string, boolean> = {
+    [`onboardingChecklist.${moduleId}`]: true,
+  }
+
+  const allOtherModulesComplete = TRAINING_MODULE_IDS
+    .filter((id) => id !== moduleId)
+    .every((id) => checklist[id] === true)
+  if (allOtherModulesComplete) {
+    update['onboardingChecklist.platformTrainingCompleted'] = true
+  }
+
+  await staffRef.update(update)
+
+  logger.info(`[completeTrainingModule] staff/${uid} completed ${moduleId}`)
+
+  return { success: true, moduleId }
+})
+
 // P3-E27-A1: One-shot PIPEDA compliance migration
 // DELETE AFTER P3-E27-A1 MIGRATION IS CONFIRMED IN PRODUCTION.
 export const migrateComplianceRecords = onCall(async (request) => {

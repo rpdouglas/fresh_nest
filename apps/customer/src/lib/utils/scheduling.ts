@@ -67,6 +67,7 @@ export interface ConflictCheckResult {
   isOverTravel: boolean
   isOverBlockedWindow: boolean
   isBackgroundCheckIncomplete: boolean
+  isWhmisIncomplete: boolean
   overage: number
   conflictingShift: Job | null
   warnings: string[]
@@ -97,6 +98,9 @@ export async function checkCleanerSchedulingConflicts({
     }
     if (key.includes('backgroundCheckWarning')) {
       return `${name} does not have a cleared background check`
+    }
+    if (key.includes('whmisWarning')) {
+      return `${name} has not completed WHMIS training`
     }
     return 'Scheduling conflict detected'
   }
@@ -187,6 +191,9 @@ export async function checkCleanerSchedulingConflicts({
   // 4. Background check must be cleared before assignment (P3-E27-B2)
   const isBackgroundCheckIncomplete = (selectedStaff.backgroundCheck?.status ?? 'not_started') !== 'cleared'
 
+  // 5. WHMIS training (Module 4) is legally required in Ontario before assignment (P3-E27-C3)
+  const isWhmisIncomplete = selectedStaff.onboardingChecklist?.module4Whmis !== true
+
   const warnings: string[] = []
   const overrideTypes: string[] = []
 
@@ -230,11 +237,21 @@ export async function checkCleanerSchedulingConflicts({
     overrideTypes.push('background_check_not_cleared')
   }
 
+  if (isWhmisIncomplete) {
+    warnings.push(
+      t('admin.override.whmisWarning', {
+        name: newCleanerName,
+      })
+    )
+    overrideTypes.push('whmis_not_completed')
+  }
+
   return {
     isOverEarnings,
     isOverTravel,
     isOverBlockedWindow,
     isBackgroundCheckIncomplete,
+    isWhmisIncomplete,
     overage,
     conflictingShift,
     warnings,

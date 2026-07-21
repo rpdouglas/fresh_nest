@@ -1042,6 +1042,7 @@
       "blockedWindowWarning": "{{name}} has a blocked window that overlaps with this shift",
       "overlapWarning": "{{name}} has an overlapping shift ({{start}} - {{end}})",
       "backgroundCheckWarning": "{{name}} does not have a cleared background check",
+      "whmisWarning": "{{name}} has not completed WHMIS training",
       "reasonLabel": "Override Reason",
       "reasonPlaceholder": "e.g. Urgent replacement requested by client",
       "reasonRequired": "Override reason is required.",

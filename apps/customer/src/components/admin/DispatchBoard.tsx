@@ -421,6 +421,9 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
       // Background check must be cleared for this staff member (P3-E27-B2)
       const isBackgroundCheckIncomplete = (staff.backgroundCheck?.status ?? 'not_started') !== 'cleared'
 
+      // WHMIS training (Module 4) is legally required in Ontario before assignment (P3-E27-C3)
+      const isWhmisIncomplete = staff.onboardingChecklist?.module4Whmis !== true
+
       staffJobs.forEach((job, idx) => {
         const warnings: string[] = []
 
@@ -432,6 +435,11 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
         // Background check not cleared warning
         if (isBackgroundCheckIncomplete) {
           warnings.push(t('admin.override.backgroundCheckWarning', { name: `${staff.firstName} ${staff.lastName}` }))
+        }
+
+        // WHMIS not completed warning
+        if (isWhmisIncomplete) {
+          warnings.push(t('admin.override.whmisWarning', { name: `${staff.firstName} ${staff.lastName}` }))
         }
 
         // 2. Blocked Window check

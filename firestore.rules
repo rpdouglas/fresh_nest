@@ -181,6 +181,10 @@ service cloud.firestore {
       // admin-only sub-fields), same trust model as compliance — safe to add directly here.
       // P3-E27-C2: phone (contact self-service) and corrections (free-text notes to admin)
       // are likewise fully employee-writable with no admin-only sub-fields.
+      // P3-E27-C3: onboardingChecklist stays outside this list too — same reasoning as
+      // backgroundCheck, since D1 will add admin-only fields (idVerified,
+      // supervisedShiftCompleted, ...) into this same map. Training-module flags are
+      // written exclusively by the completeTrainingModule callable.
       allow update: if isAdmin()
         || (request.auth != null
             && request.auth.uid == staffId

@@ -38,6 +38,7 @@ export const FsmLayout: React.FC = () => {
     { to: '/', labelKey: 'fsm.dashboard' },
     { to: '/shifts', labelKey: 'fsm.shifts' },
     { to: '/jobs', labelKey: 'fsm.myJobs' },
+    { to: '/training', labelKey: 'fsm.training.navLabel', defaultValue: 'Training' },
     { to: '/profile', labelKey: 'fsm.profile.title', defaultValue: 'Profile' },
   ]
 

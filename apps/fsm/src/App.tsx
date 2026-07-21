@@ -10,6 +10,7 @@ import ProfilePage from './pages/ProfilePage'
 import ShiftBoardPage from './pages/ShiftBoardPage'
 import MyJobsPage from './pages/MyJobsPage'
 import JobPage from './pages/JobPage'
+import TrainingPage from './pages/TrainingPage'
 
 function PlaceholderPage({ titleKey }: { titleKey: string }) {
   const { t } = useTranslation()
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
               {
                 path: '/profile',
                 element: <ProfilePage />,
+              },
+              {
+                path: '/training',
+                element: <TrainingPage />,
               },
             ],
           },

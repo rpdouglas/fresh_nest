@@ -5,6 +5,170 @@
     "toggleLanguage": "Changer de langue",
     "toggleMobileMenu": "Basculer le menu mobile",
     "dashboard": "Tableau de bord",
+    "training": {
+      "navLabel": "Formation",
+      "pageTitle": "Modules de formation",
+      "pageSubtitle": "Terminez les six modules pour compléter votre intégration. Le module 4 (SIMDUT) est exigé par la loi de l'Ontario avant qu'on puisse vous assigner des quarts.",
+      "backToList": "Retour aux modules",
+      "legallyRequiredBadge": "Exigé par la loi",
+      "completedBadge": "Terminé",
+      "progressLabel": "{{completed}} module(s) sur {{total}} terminé(s)",
+      "moduleNumberLabel": "Module {{number}} sur 6",
+      "startBtn": "Commencer le module",
+      "reviewBtn": "Revoir le module",
+      "quiz": {
+        "title": "Vérification des connaissances",
+        "completeBtn": "J'ai terminé ce module",
+        "completing": "Enregistrement en cours...",
+        "incorrectHint": "Vérifiez vos réponses — une ou plusieurs sont incorrectes.",
+        "allCorrectMsg": "Toutes les réponses sont correctes! Vous pouvez marquer ce module comme terminé."
+      },
+      "submitError": "Échec de l'enregistrement du module. Veuillez réessayer.",
+      "modules": {
+        "module1Welcome": {
+          "title": "Bienvenue chez Fresh Nest Co.",
+          "sec1": "Fresh Nest Co. offre des services de nettoyage et d'organisation aux résidences de Cornwall, Akwesasne, Snye, Long Sault et Morrisburg. Nos clients nous confient leur maison, et cette confiance se gagne par la fiabilité, le respect et une qualité constante à chaque visite.",
+          "sec2": "En tant que membre de l'équipe Fresh Nest Co., on s'attend à ce que vous arriviez à l'heure à chaque quart, que vous communiquiez via l'application FSM et que vous traitiez chaque résidence de client avec autant de soin que la vôtre. Lauren et l'équipe sont là pour vous soutenir — n'hésitez pas à poser vos questions.",
+          "q1": {
+            "question": "Quelles cinq communautés Fresh Nest Co. dessert-elle?",
+            "choiceA": "Ottawa, Toronto et Kingston",
+            "choiceB": "Cornwall, Akwesasne, Snye, Long Sault et Morrisburg",
+            "choiceC": "Seulement Cornwall, Ontario"
+          },
+          "q2": {
+            "question": "Quelle est la chose la plus importante que les clients confient à Fresh Nest Co.?",
+            "choiceA": "Leur maison",
+            "choiceB": "Leur véhicule",
+            "choiceC": "Seulement leurs animaux"
+          },
+          "q3": {
+            "question": "Comment devez-vous communiquer au sujet de vos quarts?",
+            "choiceA": "En appelant Lauren chaque matin",
+            "choiceB": "Vous n'avez pas besoin de communiquer",
+            "choiceC": "Via l'application FSM"
+          }
+        },
+        "module2AppTraining": {
+          "title": "Utiliser l'application Fresh Nest",
+          "sec1": "Le tableau des quarts affiche les quarts disponibles que vous pouvez réclamer selon votre disponibilité et vos contraintes de déplacement. Une fois qu'un quart est réclamé ou assigné, il est de votre responsabilité d'arriver à l'heure et d'effectuer le nettoyage prévu.",
+          "sec2": "Enregistrez-vous dès votre arrivée à la propriété du client, et enregistrez votre départ une fois toutes les tâches terminées. La géolocalisation confirme votre heure d'arrivée et vous protège si un client conteste un jour votre présence.",
+          "sec3": "Chaque travail comporte une liste de tâches obligatoires. Certaines tâches — comme le nettoyage en profondeur de la cuisinière ou des accessoires de la salle de bain principale — nécessitent une photo de vérification. Vous ne pouvez pas enregistrer votre départ tant que la liste n'est pas complète.",
+          "q1": {
+            "question": "Qu'est-ce qui confirme votre heure d'arrivée chez un client?",
+            "choiceA": "Envoyer un texto à Lauren",
+            "choiceB": "L'enregistrement géolocalisé",
+            "choiceC": "Rien — l'heure d'arrivée n'est pas suivie"
+          },
+          "q2": {
+            "question": "Pouvez-vous enregistrer votre départ avec une liste de tâches incomplète?",
+            "choiceA": "Oui, toujours",
+            "choiceB": "Seulement la fin de semaine",
+            "choiceC": "Non — la liste doit être complète avant l'enregistrement du départ"
+          },
+          "q3": {
+            "question": "Que nécessitent les tâches à valeur élevée en plus d'être complétées?",
+            "choiceA": "Une photo de vérification",
+            "choiceB": "Un appel téléphonique au client",
+            "choiceC": "Rien de plus"
+          }
+        },
+        "module3CleaningTechniques": {
+          "title": "Techniques de nettoyage par surface",
+          "sec1": "Nettoyez toujours du haut vers le bas et du sec vers l'humide — la poussière et les débris tombent, alors commencez par les ventilateurs de plafond et les étagères avant les planchers, et passez l'aspirateur avant de laver le plancher. Cela évite de renettoyer des surfaces déjà terminées.",
+          "sec2": "Différentes surfaces nécessitent des soins différents : les planchers de bois franc ne doivent jamais être trempés, l'acier inoxydable doit être essuyé dans le sens du grain pour éviter les traces, et le verre et les miroirs nécessitent un chiffon non pelucheux. En cas de doute sur une surface, demandez avant d'utiliser un produit incertain.",
+          "q1": {
+            "question": "Dans quel ordre devez-vous nettoyer une pièce?",
+            "choiceA": "Du haut vers le bas, du sec vers l'humide",
+            "choiceB": "Du bas vers le haut, de l'humide vers le sec",
+            "choiceC": "Cela n'a pas d'importance"
+          },
+          "q2": {
+            "question": "Comment essuyer l'acier inoxydable pour éviter les traces?",
+            "choiceA": "En cercles",
+            "choiceB": "Dans le sens du grain",
+            "choiceC": "Avec le plus d'eau possible"
+          },
+          "q3": {
+            "question": "Que faire si vous n'êtes pas certain qu'un produit convient à une surface?",
+            "choiceA": "L'utiliser quand même",
+            "choiceB": "Éviter la surface sans en avertir personne",
+            "choiceC": "Demander avant de l'utiliser"
+          }
+        },
+        "module4Whmis": {
+          "title": "Sécurité chimique — SIMDUT",
+          "sec1": "Le SIMDUT (Système d'information sur les matières dangereuses utilisées au travail) est exigé par la loi ontarienne pour tout travailleur qui manipule des produits dangereux — y compris les produits de nettoyage que vous utilisez à chaque quart. Chaque produit que vous utilisez doit avoir une étiquette et une fiche de données de sécurité (FDS) qui explique ses dangers et sa manipulation sécuritaire.",
+          "sec2": "Les pictogrammes SIMDUT sur les étiquettes vous avertissent de dangers précis — inflammabilité, corrosion, risques pour la santé, et plus encore. Lisez l'étiquette avant d'utiliser tout produit que vous n'avez jamais utilisé, et ne retirez ni n'endommagez jamais l'étiquette originale d'un produit.",
+          "sec3": "Ne mélangez jamais de produits de nettoyage — combiner de l'eau de Javel avec des produits à base d'ammoniaque, par exemple, crée un gaz toxique. Utilisez toujours les produits dans un endroit bien ventilé, et portez des gants lorsque l'étiquette l'indique. En cas de doute sur un produit, arrêtez-vous et demandez avant de l'utiliser.",
+          "q1": {
+            "question": "Que doit avoir, par la loi, tout produit de nettoyage dangereux?",
+            "choiceA": "Un parfum agréable",
+            "choiceB": "Une étiquette et une fiche de données de sécurité (FDS)",
+            "choiceC": "Rien de particulier"
+          },
+          "q2": {
+            "question": "Que vous indiquent les pictogrammes SIMDUT sur une étiquette?",
+            "choiceA": "Les dangers précis du produit",
+            "choiceB": "Le numéro de téléphone du fabricant",
+            "choiceC": "Le prix du produit"
+          },
+          "q3": {
+            "question": "Est-il un jour sécuritaire de mélanger de l'eau de Javel et des nettoyants à base d'ammoniaque?",
+            "choiceA": "Oui, ça nettoie mieux",
+            "choiceB": "Seulement en petites quantités",
+            "choiceC": "Non — cela crée un gaz toxique et ne doit jamais être fait"
+          }
+        },
+        "module5ClientStandards": {
+          "title": "Normes dans les résidences des clients",
+          "sec1": "Vous êtes invité dans la résidence de chaque client. Respectez leur vie privée — n'ouvrez pas de tiroirs, de garde-robes ou de zones hors de votre liste de tâches, et n'utilisez jamais le téléphone, la nourriture ou les effets personnels d'un client sans permission.",
+          "sec2": "Communiquez clairement : informez le client de votre arrivée et de la fin de votre travail, si cela fait partie du contrat. Si un client demande quelque chose hors de votre liste de tâches, n'improvisez pas — informez-le que vous transmettrez la demande à Lauren.",
+          "sec3": "Les codes d'accès et les clés sont confidentiels. Ne partagez jamais le code de porte ou la combinaison du coffre à clés d'un client avec qui que ce soit, et assurez-vous toujours que la résidence est verrouillée et sécurisée avant de partir.",
+          "q1": {
+            "question": "Que faire si un client vous demande quelque chose hors de votre liste de tâches?",
+            "choiceA": "L'informer que vous transmettrez la demande à Lauren",
+            "choiceB": "Le faire quand même sans en informer personne",
+            "choiceC": "Refuser et partir"
+          },
+          "q2": {
+            "question": "Pouvez-vous utiliser le téléphone ou la nourriture d'un client sans demander?",
+            "choiceA": "Oui, c'est correct",
+            "choiceB": "Non — jamais sans permission",
+            "choiceC": "Seulement la nourriture, pas le téléphone"
+          },
+          "q3": {
+            "question": "Que devez-vous faire avec le code de porte ou la combinaison du coffre à clés d'un client?",
+            "choiceA": "Le partager avec d'autres nettoyeurs par commodité",
+            "choiceB": "L'afficher dans les notes de l'application FSM",
+            "choiceC": "Le garder confidentiel et ne jamais le partager"
+          }
+        },
+        "module6EmergencyProcedures": {
+          "title": "Quand les choses tournent mal",
+          "sec1": "Si vous brisez ou endommagez accidentellement quelque chose, ne le cachez pas — signalez-le immédiatement via l'application FSM et à Lauren. Un signalement honnête et immédiat est toujours le bon choix et vous protège.",
+          "sec2": "Si un client est contrarié ou conteste quelque chose au sujet du nettoyage, restez calme et ne discutez pas. Écoutez, informez-le que vous transmettrez sa préoccupation à Lauren, et terminez l'interaction de façon professionnelle.",
+          "sec3": "En cas d'urgence médicale, composez le 911 en premier, puis avisez Lauren dès que possible. Pour tout autre problème urgent sur un contrat — un verrouillage, une condition dangereuse, tout ce qui vous empêche de terminer en toute sécurité — contactez Lauren immédiatement.",
+          "q1": {
+            "question": "Que faire si vous endommagez accidentellement quelque chose chez un client?",
+            "choiceA": "Le signaler immédiatement via l'application et à Lauren",
+            "choiceB": "Le cacher en espérant que personne ne le remarque",
+            "choiceC": "Le réparer vous-même sans en informer personne"
+          },
+          "q2": {
+            "question": "Comment réagir si un client conteste quelque chose au sujet de votre nettoyage?",
+            "choiceA": "Discuter jusqu'à ce qu'il soit d'accord avec vous",
+            "choiceB": "Rester calme, écouter, et transmettre la préoccupation à Lauren",
+            "choiceC": "Partir immédiatement sans rien dire"
+          },
+          "q3": {
+            "question": "En cas d'urgence médicale sur un contrat, quelle est la première chose à faire?",
+            "choiceA": "Composer le 911",
+            "choiceB": "Envoyer un texto à Lauren et attendre une réponse",
+            "choiceC": "Terminer le travail d'abord"
+          }
+        }
+      }
+    },
     "shifts": {
       "title": "Quarts disponibles",
       "subtitle": "Réclamez les quarts qui correspondent à votre horaire et à vos préférences.",

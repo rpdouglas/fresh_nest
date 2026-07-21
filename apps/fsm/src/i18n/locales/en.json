@@ -5,6 +5,170 @@
     "toggleLanguage": "Toggle language",
     "toggleMobileMenu": "Toggle mobile menu",
     "dashboard": "Dashboard",
+    "training": {
+      "navLabel": "Training",
+      "pageTitle": "Training Modules",
+      "pageSubtitle": "Complete all six modules to finish onboarding. Module 4 (WHMIS) is required by Ontario law before you can be assigned jobs.",
+      "backToList": "Back to modules",
+      "legallyRequiredBadge": "Required by law",
+      "completedBadge": "Completed",
+      "progressLabel": "{{completed}} of {{total}} modules complete",
+      "moduleNumberLabel": "Module {{number}} of 6",
+      "startBtn": "Start module",
+      "reviewBtn": "Review module",
+      "quiz": {
+        "title": "Comprehension check",
+        "completeBtn": "I've completed this module",
+        "completing": "Saving...",
+        "incorrectHint": "Review your answers — one or more is incorrect.",
+        "allCorrectMsg": "All answers correct! You can mark this module complete."
+      },
+      "submitError": "Failed to save module completion. Please try again.",
+      "modules": {
+        "module1Welcome": {
+          "title": "Welcome to Fresh Nest Co.",
+          "sec1": "Fresh Nest Co. provides cleaning and organizing services to homes across Cornwall, Akwesasne, Snye, Long Sault, and Morrisburg. Our clients trust us with their homes, and that trust is earned through reliability, respect, and consistent quality on every visit.",
+          "sec2": "As a Fresh Nest Co. team member, you're expected to arrive on time for every shift, communicate through the FSM app, and treat every client home with the same care you'd give your own. Lauren and the team are here to support you — reach out anytime you have a question.",
+          "q1": {
+            "question": "What five communities does Fresh Nest Co. serve?",
+            "choiceA": "Ottawa, Toronto, and Kingston",
+            "choiceB": "Cornwall, Akwesasne, Snye, Long Sault, and Morrisburg",
+            "choiceC": "Only Cornwall, Ontario"
+          },
+          "q2": {
+            "question": "What is the most important thing clients trust Fresh Nest Co. with?",
+            "choiceA": "Their homes",
+            "choiceB": "Their vehicles",
+            "choiceC": "Their pets only"
+          },
+          "q3": {
+            "question": "How should you communicate about your shifts?",
+            "choiceA": "By calling Lauren every morning",
+            "choiceB": "You don't need to communicate",
+            "choiceC": "Through the FSM app"
+          }
+        },
+        "module2AppTraining": {
+          "title": "Using the Fresh Nest App",
+          "sec1": "The Shift Board shows available shifts you can claim based on your availability and travel constraints. Once you claim or are assigned a shift, it's your responsibility to arrive on time and complete the scheduled clean.",
+          "sec2": "Check in as soon as you arrive at the client property, and check out once every task is complete. Geotagging confirms your arrival time and protects you if a client ever disputes when you were there.",
+          "sec3": "Every job has a checklist of required tasks. Some tasks — like deep-cleaning the stove or main bathroom fixtures — require a verification photo. You can't check out of a job until the checklist is complete.",
+          "q1": {
+            "question": "What confirms your arrival time at a client property?",
+            "choiceA": "Texting Lauren",
+            "choiceB": "Geotagged check-in",
+            "choiceC": "Nothing — arrival time isn't tracked"
+          },
+          "q2": {
+            "question": "Can you check out of a job with an incomplete checklist?",
+            "choiceA": "Yes, always",
+            "choiceB": "Only on weekends",
+            "choiceC": "No — checklist completion is required before checkout"
+          },
+          "q3": {
+            "question": "What do high-value checklist tasks require in addition to being completed?",
+            "choiceA": "A verification photo",
+            "choiceB": "A phone call to the client",
+            "choiceC": "Nothing extra"
+          }
+        },
+        "module3CleaningTechniques": {
+          "title": "Cleaning Techniques by Surface",
+          "sec1": "Always clean top to bottom and dry to wet — dust and debris fall, so start with ceiling fans and shelves before floors, and vacuum before mopping. This avoids re-cleaning surfaces you already finished.",
+          "sec2": "Different surfaces need different care: hardwood floors should never be soaked, stainless steel should be wiped in the direction of the grain to avoid streaking, and glass and mirrors need a lint-free cloth. When in doubt about a surface, ask before using a product you're unsure of.",
+          "q1": {
+            "question": "What order should you clean a room in?",
+            "choiceA": "Top to bottom, dry to wet",
+            "choiceB": "Bottom to top, wet to dry",
+            "choiceC": "It doesn't matter"
+          },
+          "q2": {
+            "question": "How should stainless steel be wiped to avoid streaking?",
+            "choiceA": "In circles",
+            "choiceB": "In the direction of the grain",
+            "choiceC": "With as much water as possible"
+          },
+          "q3": {
+            "question": "What should you do if you're unsure whether a product is safe for a surface?",
+            "choiceA": "Use it anyway",
+            "choiceB": "Skip the surface entirely without telling anyone",
+            "choiceC": "Ask before using it"
+          }
+        },
+        "module4Whmis": {
+          "title": "Chemical Safety — WHMIS",
+          "sec1": "WHMIS (Workplace Hazardous Materials Information System) is Ontario law for any worker who handles hazardous products — including the cleaning chemicals you use every shift. Every product you use must have a label and a Safety Data Sheet (SDS) that explains its hazards and safe handling.",
+          "sec2": "WHMIS pictograms on product labels warn you about specific hazards — flammability, corrosion, health hazards, and more. Read the label before using any product you haven't used before, and never remove or deface a product's original label.",
+          "sec3": "Never mix cleaning chemicals — combining bleach and ammonia-based products, for example, creates toxic gas. Always use products in a well-ventilated area, and wear gloves when a label instructs you to. If you're ever unsure about a product, stop and ask before using it.",
+          "q1": {
+            "question": "What must every hazardous cleaning product have, by law?",
+            "choiceA": "A pleasant scent",
+            "choiceB": "A label and a Safety Data Sheet (SDS)",
+            "choiceC": "Nothing special"
+          },
+          "q2": {
+            "question": "What do WHMIS pictograms on a label tell you?",
+            "choiceA": "Specific hazards of the product",
+            "choiceB": "The manufacturer's phone number",
+            "choiceC": "The product's price"
+          },
+          "q3": {
+            "question": "Is it ever safe to mix bleach and ammonia-based cleaners?",
+            "choiceA": "Yes, it cleans better",
+            "choiceB": "Only in small amounts",
+            "choiceC": "No — it creates toxic gas and must never be done"
+          }
+        },
+        "module5ClientStandards": {
+          "title": "Client Home Standards",
+          "sec1": "You're a guest in every client's home. Respect their privacy — don't open drawers, closets, or areas outside your checklist, and never use a client's phone, food, or belongings without permission.",
+          "sec2": "Communicate clearly: let the client know when you've arrived and when you're finishing up, if that's part of the job. If a client asks for something outside your checklist, don't improvise — let them know you'll pass the request to Lauren.",
+          "sec3": "Access codes and keys are confidential. Never share a client's door code or lockbox combination with anyone, and always make sure the home is locked and secure before you leave.",
+          "q1": {
+            "question": "What should you do if a client asks you to do something outside your checklist?",
+            "choiceA": "Let them know you'll pass the request to Lauren",
+            "choiceB": "Do it anyway without telling anyone",
+            "choiceC": "Refuse and leave"
+          },
+          "q2": {
+            "question": "Can you use a client's phone or food without asking?",
+            "choiceA": "Yes, it's fine",
+            "choiceB": "No — never without permission",
+            "choiceC": "Only food, not the phone"
+          },
+          "q3": {
+            "question": "What must you do with a client's door code or lockbox combination?",
+            "choiceA": "Share it with other cleaners for convenience",
+            "choiceB": "Post it in the FSM app notes",
+            "choiceC": "Keep it confidential and never share it"
+          }
+        },
+        "module6EmergencyProcedures": {
+          "title": "When Things Go Wrong",
+          "sec1": "If you accidentally break or damage something, don't hide it — report it through the FSM app and to Lauren right away. Honest, immediate reporting is always the right call and protects you.",
+          "sec2": "If a client is upset or disputes something about the clean, stay calm and don't argue. Listen, let them know you'll pass their concern to Lauren, and end the interaction professionally.",
+          "sec3": "In a medical emergency, call 911 first, then notify Lauren as soon as it's safe to do so. For any other urgent issue on a job — a lockout, an unsafe condition, anything that stops you from finishing safely — contact Lauren immediately.",
+          "q1": {
+            "question": "What should you do if you accidentally damage something in a client's home?",
+            "choiceA": "Report it through the app and to Lauren right away",
+            "choiceB": "Hide it and hope no one notices",
+            "choiceC": "Fix it yourself without telling anyone"
+          },
+          "q2": {
+            "question": "How should you respond if a client disputes something about your clean?",
+            "choiceA": "Argue until they agree with you",
+            "choiceB": "Stay calm, listen, and pass the concern to Lauren",
+            "choiceC": "Leave immediately without saying anything"
+          },
+          "q3": {
+            "question": "In a medical emergency on the job, what's the first thing you should do?",
+            "choiceA": "Call 911",
+            "choiceB": "Text Lauren and wait for a reply",
+            "choiceC": "Finish the job first"
+          }
+        }
+      }
+    },
     "shifts": {
       "title": "Available Shifts",
       "subtitle": "Claim shifts that match your schedule and preferences.",
