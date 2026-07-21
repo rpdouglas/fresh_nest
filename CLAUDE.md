@@ -22,7 +22,7 @@ Live: https://lilypad-freshnest.web.app
 - Framer Motion
 - react-i18next (bilingual EN/FR — launch requirement)
 - clsx + tailwind-merge → cn() at @/lib/utils.ts
-- Firebase: Hosting, Firestore (2 DBs), Auth (Phase 5), Functions (Phase 3)
+- Firebase: Hosting, Firestore (2 DBs), Auth (live — email/password + magic-link, custom-claims RBAC per ADR-010/ADR-011), Functions (live — callable/scheduled/triggers in functions/)
 
 ## Tailwind Rules — CRITICAL
 THIS IS TAILWIND v3. NOT v4.
@@ -152,7 +152,7 @@ These are not aspirational — they are done conditions.
 3. Write docs/reports/[epic]-close-YYYY-MM-DD.md
 4. Verify persona test passes (name it explicitly)
 5. Update user-guide/ if user-visible behaviour changed
-6. Return summary. Stop. Do not commit.
+6. Commit and push with a clear, descriptive commit message. Return summary.
 
 ---
 
@@ -165,6 +165,5 @@ These are not aspirational — they are done conditions.
 - TypeScript_Strict_Enforcer: strictly enforces TypeScript types, resolving Zod schema mismatches, and fixing `tsc -b` failures without using `any` or `@ts-ignore`
 
 ## Git Rules (ABSOLUTE)
-- NEVER run git add, git commit, or git push
 - NEVER modify ADR files once Accepted
 - ALWAYS run npm run build before Phase C close
