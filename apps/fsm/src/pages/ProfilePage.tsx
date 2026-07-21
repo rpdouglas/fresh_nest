@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { doc, updateDoc } from 'firebase/firestore'
+import { doc, updateDoc, arrayUnion } from 'firebase/firestore'
 import { staffCollection, cn } from '@freshnest/shared'
 import { db } from '../lib/firebase/firebase'
 import { useStaffAuth } from '../hooks/useStaffAuth'
-import type { TransportMode, BlockedWindow } from '../types'
+import type { TransportMode, BlockedWindow, StaffLanguage } from '../types'
 
 export const ProfilePage: React.FC = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { staffProfile } = useStaffAuth()
 
   // Profile fields state
@@ -26,6 +26,22 @@ export const ProfilePage: React.FC = () => {
   const [blockedWindows, setBlockedWindows] = useState<BlockedWindow[]>(
     () => staffProfile?.constraints?.blockedWindows || []
   )
+
+  // P3-E27-C2: contact / preferences / emergency contact / corrections
+  const [phone, setPhone] = useState<string>(() => staffProfile?.phone || '')
+  const [language, setLanguage] = useState<StaffLanguage>(
+    () => staffProfile?.preferences?.language || 'en'
+  )
+  const [emergencyName, setEmergencyName] = useState<string>(
+    () => staffProfile?.emergencyContact?.name || ''
+  )
+  const [emergencyPhone, setEmergencyPhone] = useState<string>(
+    () => staffProfile?.emergencyContact?.phone || ''
+  )
+  const [emergencyRelationship, setEmergencyRelationship] = useState<string>(
+    () => staffProfile?.emergencyContact?.relationship || ''
+  )
+  const [correctionText, setCorrectionText] = useState<string>('')
 
   // Blocked Window Form State
   const [newDayOfWeek, setNewDayOfWeek] = useState<number>(1) // Monday
@@ -115,13 +131,47 @@ export const ProfilePage: React.FC = () => {
         throw new Error('Monthly earnings limit must be a positive number.')
       }
 
-      const staffRef = doc(staffCollection(db), staffProfile.id)
-      await updateDoc(staffRef, {
+      if (!phone.trim()) {
+        throw new Error(t('fsm.profile.contact.phoneRequired'))
+      }
+
+      // P3-E27-C2: emergency contact fields must be all-or-nothing
+      const emergencyFieldsFilled = [emergencyName, emergencyPhone, emergencyRelationship].filter((v) => v.trim()).length
+      if (emergencyFieldsFilled > 0 && emergencyFieldsFilled < 3) {
+        throw new Error(t('fsm.profile.emergencyContact.incompleteError'))
+      }
+
+      const updatePayload: Record<string, unknown> = {
         'constraints.transportMode': transportMode,
         'constraints.transitBufferMinutes': Number(transitBufferMinutes),
         'constraints.blockedWindows': blockedWindows,
         'financials.monthlyEarningsLimit': parsedLimit,
-      })
+        phone: phone.trim(),
+        'preferences.language': language,
+      }
+
+      if (emergencyFieldsFilled === 3) {
+        updatePayload.emergencyContact = {
+          name: emergencyName.trim(),
+          phone: emergencyPhone.trim(),
+          relationship: emergencyRelationship.trim(),
+        }
+      }
+
+      if (correctionText.trim()) {
+        updatePayload.corrections = arrayUnion({
+          text: correctionText.trim(),
+          flaggedAt: new Date(),
+        })
+      }
+
+      const staffRef = doc(staffCollection(db), staffProfile.id)
+      await updateDoc(staffRef, updatePayload)
+
+      if (language !== i18n.language) {
+        await i18n.changeLanguage(language)
+      }
+      setCorrectionText('')
 
       setSuccessMsg(t('fsm.profile.saveSuccess'))
       // Clear success message after 3 seconds
@@ -185,7 +235,7 @@ export const ProfilePage: React.FC = () => {
 
         <form onSubmit={(e) => { void handleSaveProfile(e) }} className="flex flex-col gap-8">
           
-          {/* Card 1: Read-Only Personal Details */}
+          {/* Card 1: My Details */}
           <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-6">
             <h2 className="font-sub text-2xl text-charcoal border-b border-sand pb-3">
               {t('fsm.profile.personalInfo')}
@@ -215,21 +265,123 @@ export const ProfilePage: React.FC = () => {
                   {staffProfile.email}
                 </span>
               </div>
-              <div>
-                <span className="font-body text-sm text-text-muted block">
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="phone" className="font-body text-base text-charcoal font-medium">
                   {t('fsm.profile.phone')}
-                </span>
-                <span className="font-body text-base text-charcoal font-medium">
-                  {staffProfile.phone}
-                </span>
+                </label>
+                <input
+                  id="phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="min-h-[48px] px-4 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                />
               </div>
               <div>
                 <span className="font-body text-sm text-text-muted block">
                   {t('fsm.profile.role')}
                 </span>
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded text-sm font-medium bg-slate-pale text-slate-brand mt-1 capitalize">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded text-base font-medium bg-slate-pale text-slate-brand mt-1 capitalize">
                   {t(`fsm.profile.roles.${staffProfile.role}`)}
                 </span>
+              </div>
+              <div>
+                <span className="font-body text-sm text-text-muted block">
+                  {t('fsm.profile.status')}
+                </span>
+                <span className={cn(
+                  'inline-flex items-center px-2.5 py-0.5 rounded text-base font-medium mt-1 capitalize',
+                  staffProfile.status === 'active' ? 'bg-emerald-100 text-emerald-800' :
+                  staffProfile.status === 'onboarding' ? 'bg-amber-100 text-amber-800' :
+                  'bg-red-100 text-red-800'
+                )}>
+                  {t(`fsm.profile.statuses.${staffProfile.status}`)}
+                </span>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="language" className="font-body text-base text-charcoal font-medium">
+                  {t('fsm.profile.language')}
+                </label>
+                <select
+                  id="language"
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value as StaffLanguage)}
+                  className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                >
+                  <option value="en">{t('fsm.profile.languages.en')}</option>
+                  <option value="fr">{t('fsm.profile.languages.fr')}</option>
+                  <option value="ar">{t('fsm.profile.languages.ar')}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Card: Flag a Correction */}
+          <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-4">
+            <div>
+              <h2 className="font-sub text-2xl text-charcoal border-b border-sand pb-3">
+                {t('fsm.profile.corrections.title')}
+              </h2>
+              <p className="font-body text-base text-text-muted mt-2">
+                {t('fsm.profile.corrections.subtitle')}
+              </p>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="correctionText" className="font-body text-base text-charcoal font-medium">
+                {t('fsm.profile.corrections.label')}
+              </label>
+              <textarea
+                id="correctionText"
+                value={correctionText}
+                onChange={(e) => setCorrectionText(e.target.value)}
+                rows={3}
+                placeholder={t('fsm.profile.corrections.placeholder')}
+                className="min-h-[48px] px-4 py-2 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+              />
+            </div>
+          </div>
+
+          {/* Card: Emergency Contact */}
+          <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-6">
+            <h2 className="font-sub text-2xl text-charcoal border-b border-sand pb-3">
+              {t('fsm.profile.emergencyContact.title')}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="emergencyName" className="font-body text-base text-charcoal font-medium">
+                  {t('fsm.profile.emergencyContact.nameLabel')}
+                </label>
+                <input
+                  id="emergencyName"
+                  type="text"
+                  value={emergencyName}
+                  onChange={(e) => setEmergencyName(e.target.value)}
+                  className="min-h-[48px] px-4 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="emergencyRelationship" className="font-body text-base text-charcoal font-medium">
+                  {t('fsm.profile.emergencyContact.relationshipLabel')}
+                </label>
+                <input
+                  id="emergencyRelationship"
+                  type="text"
+                  value={emergencyRelationship}
+                  onChange={(e) => setEmergencyRelationship(e.target.value)}
+                  className="min-h-[48px] px-4 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="emergencyPhone" className="font-body text-base text-charcoal font-medium">
+                  {t('fsm.profile.emergencyContact.phoneLabel')}
+                </label>
+                <input
+                  id="emergencyPhone"
+                  type="tel"
+                  value={emergencyPhone}
+                  onChange={(e) => setEmergencyPhone(e.target.value)}
+                  className="min-h-[48px] px-4 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                />
               </div>
             </div>
           </div>

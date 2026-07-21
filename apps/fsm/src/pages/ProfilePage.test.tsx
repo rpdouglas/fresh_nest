@@ -2,7 +2,7 @@ import { render, screen, fireEvent, act } from '@testing-library/react'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import ProfilePage from './ProfilePage'
 import { useStaffAuth } from '../hooks/useStaffAuth'
-import { updateDoc } from 'firebase/firestore'
+import { updateDoc, arrayUnion } from 'firebase/firestore'
 import { User } from 'firebase/auth'
 import { Staff } from '../types'
 
@@ -15,18 +15,29 @@ vi.mock('firebase/firestore', () => {
     collection: vi.fn(() => collectionRef),
     doc: vi.fn(() => ({ id: 'staff123' })),
     updateDoc: vi.fn().mockResolvedValue({}),
+    arrayUnion: vi.fn((val: unknown) => ({ __arrayUnion: val })),
     initializeFirestore: vi.fn(),
     persistentLocalCache: vi.fn(),
   }
 })
 
+// Mock the app's firebase module directly — avoids initializing real Firebase Auth
+// (which throws auth/invalid-api-key without live env vars), matching the pattern
+// already used in useNotifications.test.tsx / BackgroundCheckConsentScreen.test.tsx.
+vi.mock('../lib/firebase/firebase', () => ({
+  db: {},
+}))
+
 // Mock useStaffAuth hook
 vi.mock('../hooks/useStaffAuth')
+
+const mockChangeLanguage = vi.fn().mockResolvedValue(undefined)
 
 // Mock i18next
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
+    i18n: { language: 'en', changeLanguage: mockChangeLanguage },
   }),
 }))
 
@@ -66,6 +77,12 @@ describe('ProfilePage Component', () => {
       termsHistory: [],
     },
     onboardingChecklist: {},
+    backgroundCheck: {
+      consentGiven: true, consentGivenAt: new Date(), consentIpAddress: '1.2.3.4', status: 'cleared', completedAt: new Date(),
+    },
+    employmentAgreement: { version: '1.0', acceptedAt: new Date(), signedByName: 'Carla ODSP', ipAddress: '1.2.3.4' },
+    emergencyContact: { name: 'Pat ODSP', phone: '6135559999', relationship: 'Spouse' },
+    corrections: [],
     createdAt: new Date(),
   }
 
@@ -84,13 +101,18 @@ describe('ProfilePage Component', () => {
     })
   })
 
-  it('renders read-only personal details', () => {
+  it('renders read-only personal details and an editable phone field', () => {
     render(<ProfilePage />)
 
     expect(screen.getByText('Carla')).toBeInTheDocument()
     expect(screen.getByText('ODSP')).toBeInTheDocument()
     expect(screen.getByText('carla@freshnest.ca')).toBeInTheDocument()
-    expect(screen.getByText('6135551234')).toBeInTheDocument()
+    expect(screen.getByLabelText('fsm.profile.phone')).toHaveValue('6135551234')
+  })
+
+  it('shows a status badge (P3-E27-C2)', () => {
+    render(<ProfilePage />)
+    expect(screen.getByText('fsm.profile.statuses.active')).toBeInTheDocument()
   })
 
   it('shows and hides transit buffer based on transport mode selection', () => {
@@ -158,7 +180,118 @@ describe('ProfilePage Component', () => {
         'constraints.transportMode': 'personal_vehicle',
         'constraints.transitBufferMinutes': 60,
         'financials.monthlyEarningsLimit': 1000,
+        phone: '6135551234',
+        'preferences.language': 'en',
       })
     )
+  })
+
+  it('saves an edited phone number (P3-E27-C2)', async () => {
+    render(<ProfilePage />)
+
+    fireEvent.change(screen.getByLabelText('fsm.profile.phone'), { target: { value: '6135550000' } })
+
+    const saveBtn = screen.getByRole('button', { name: 'fsm.profile.saving' })
+    await act(async () => {
+      fireEvent.click(saveBtn)
+      await Promise.resolve()
+    })
+
+    expect(updateDoc).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ phone: '6135550000' })
+    )
+  })
+
+  it('changes the FSM UI language on save when the language selector changes', async () => {
+    render(<ProfilePage />)
+
+    fireEvent.change(screen.getByLabelText('fsm.profile.language'), { target: { value: 'fr' } })
+
+    const saveBtn = screen.getByRole('button', { name: 'fsm.profile.saving' })
+    await act(async () => {
+      fireEvent.click(saveBtn)
+      await Promise.resolve()
+    })
+
+    expect(updateDoc).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ 'preferences.language': 'fr' })
+    )
+    expect(mockChangeLanguage).toHaveBeenCalledWith('fr')
+  })
+
+  it('pre-fills the emergency contact card from staffProfile.emergencyContact', () => {
+    render(<ProfilePage />)
+
+    expect(screen.getByLabelText('fsm.profile.emergencyContact.nameLabel')).toHaveValue('Pat ODSP')
+    expect(screen.getByLabelText('fsm.profile.emergencyContact.relationshipLabel')).toHaveValue('Spouse')
+    expect(screen.getByLabelText('fsm.profile.emergencyContact.phoneLabel')).toHaveValue('6135559999')
+  })
+
+  it('saves an updated emergency contact', async () => {
+    render(<ProfilePage />)
+
+    fireEvent.change(screen.getByLabelText('fsm.profile.emergencyContact.nameLabel'), { target: { value: 'Sam ODSP' } })
+
+    const saveBtn = screen.getByRole('button', { name: 'fsm.profile.saving' })
+    await act(async () => {
+      fireEvent.click(saveBtn)
+      await Promise.resolve()
+    })
+
+    expect(updateDoc).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        emergencyContact: { name: 'Sam ODSP', phone: '6135559999', relationship: 'Spouse' },
+      })
+    )
+  })
+
+  it('rejects an incomplete emergency contact edit instead of saving', async () => {
+    render(<ProfilePage />)
+
+    fireEvent.change(screen.getByLabelText('fsm.profile.emergencyContact.nameLabel'), { target: { value: '' } })
+
+    const saveBtn = screen.getByRole('button', { name: 'fsm.profile.saving' })
+    await act(async () => {
+      fireEvent.click(saveBtn)
+      await Promise.resolve()
+    })
+
+    expect(updateDoc).not.toHaveBeenCalled()
+    expect(screen.getByText('fsm.profile.emergencyContact.incompleteError')).toBeInTheDocument()
+  })
+
+  it('flags a correction via arrayUnion without disturbing other fields', async () => {
+    render(<ProfilePage />)
+
+    fireEvent.change(screen.getByLabelText('fsm.profile.corrections.label'), { target: { value: 'My last name is misspelled' } })
+
+    const saveBtn = screen.getByRole('button', { name: 'fsm.profile.saving' })
+    await act(async () => {
+      fireEvent.click(saveBtn)
+      await Promise.resolve()
+    })
+
+    expect(arrayUnion).toHaveBeenCalledWith(
+      expect.objectContaining({ text: 'My last name is misspelled' })
+    )
+    const payload = vi.mocked(updateDoc).mock.calls[0][1] as unknown as Record<string, unknown>
+    expect(payload).toHaveProperty('corrections')
+  })
+
+  it('does not touch corrections when the correction field is left empty', async () => {
+    render(<ProfilePage />)
+
+    const saveBtn = screen.getByRole('button', { name: 'fsm.profile.saving' })
+    await act(async () => {
+      fireEvent.click(saveBtn)
+      await Promise.resolve()
+    })
+
+    expect(arrayUnion).not.toHaveBeenCalled()
+    const payload = vi.mocked(updateDoc).mock.calls[0][1] as unknown as Record<string, unknown>
+    expect(payload).not.toHaveProperty('corrections')
   })
 })

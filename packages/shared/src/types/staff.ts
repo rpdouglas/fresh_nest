@@ -1,4 +1,6 @@
-export type StaffLanguage = 'en' | 'fr'
+// 'ar' included per P10 Ahmed's FSM Arabic toggle (LanguageSelectionOverlay already
+// writes it at runtime; this type previously omitted it — P3-E27-C2 correction).
+export type StaffLanguage = 'en' | 'fr' | 'ar'
 export type TransportMode = 'personal_vehicle' | 'transit' | 'rideshare' | 'walk'
 export type StaffRole = 'cleaner' | 'lead' | 'supervisor'
 export type StaffStatus = 'onboarding' | 'active' | 'inactive'
@@ -44,6 +46,11 @@ export interface EmergencyContact {
   relationship: string
 }
 
+export interface ProfileCorrection {
+  text: string
+  flaggedAt: Date
+}
+
 export interface Staff {
   id: string
   uid?: string
@@ -75,5 +82,6 @@ export interface Staff {
   backgroundCheck: BackgroundCheck
   employmentAgreement: EmploymentAgreement | null
   emergencyContact: EmergencyContact | null
+  corrections: ProfileCorrection[]
   createdAt: Date
 }

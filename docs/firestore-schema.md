@@ -86,7 +86,7 @@ Stores employee profiles, schedule constraints, financial limits, and compliance
 | `phone` | `string` | ✅ | Employee phone number |
 | `role` | `string` | ✅ | `'cleaner' \| 'lead' \| 'supervisor'` |
 | `status` | `string` | ✅ | `'onboarding' \| 'active' \| 'inactive'` |
-| `preferences` | `map` | ✅ | Preferences: `{ language: 'en' \| 'fr' }` |
+| `preferences` | `map` | ✅ | Preferences: `{ language: 'en' \| 'fr' \| 'ar' }`. `'ar'` supported since `LanguageSelectionOverlay` (P10 Ahmed's FSM Arabic toggle) — the `StaffLanguage` type previously omitted it; corrected in P3-E27-C2. |
 | `constraints` | `map` | ✅ | Constraints: `{ transportMode: 'personal_vehicle' \| 'transit' \| 'rideshare' \| 'walk', transitBufferMinutes: number, blockedWindows: BlockedWindow[] }` |
 | `financials` | `map` | ✅ | Earnings details: `{ monthlyEarningsLimit: number \| null, currentMonthEarnings: number, earningsHistory: Array<{ month: string, total: number }> }` |
 | `compliance` | `map` | ✅ | Terms consent details: `{ acceptedTermsVersion: string \| null, termsHistory: TermsAcceptance[] }`. `null` = employee has not yet accepted any version (P3-E27-A1 fix). Real consent is collected client-side by `TermsConsentOverlay` — never written by admin at registration. |
@@ -95,6 +95,7 @@ Stores employee profiles, schedule constraints, financial limits, and compliance
 | `backgroundCheck` | `map` | ✅ | `{ consentGiven: boolean, consentGivenAt: Timestamp \| null, consentIpAddress: string \| null, status: 'not_started' \| 'pending' \| 'cleared' \| 'flagged', completedAt: Timestamp \| null, provider?: string, notes?: string }`. Replaces the pre-P3-E27-B2 `onboardingChecklist.backgroundCheck: boolean` flag, which was written by the admin at registration before the employee had consented to anything. `consentGiven`/`consentGivenAt`/`consentIpAddress` are written exclusively by the `submitBackgroundCheckConsent` callable (server-observed timestamp/IP); `status`/`completedAt`/`provider`/`notes` are written exclusively by the admin-only `updateBackgroundCheckStatus` callable, which also logs to `auditLog`. `firestore.rules` closes this field to all direct client writes — both paths go through the Admin SDK. |
 | `employmentAgreement` | `map \| null` | ✅ | `{ version: string, acceptedAt: Timestamp, signedByName: string, ipAddress: string \| null } \| null`. `null` until the employee completes Step 1 of the P3-E27-C1 first-login sequence. Client-writable by the employee only (same trust model as `compliance`). |
 | `emergencyContact` | `map \| null` | ✅ | `{ name: string, phone: string, relationship: string } \| null`. `null` until the employee completes Step 4 of the P3-E27-C1 first-login sequence. Deliberately top-level (not nested under a `personalDetails` map, which doesn't exist elsewhere in this schema) — client-writable by the employee only. |
+| `corrections` | `array` | ✅ | `Array<{ text: string, flaggedAt: Timestamp }>`. Free-text notes an employee flags for Lauren from `ProfilePage` (P3-E27-C2) — e.g. a name typo'd at registration. Client-writable by the employee only (`arrayUnion`, same pattern as `compliance.termsHistory`); no admin review UI yet (deferred to P3-E27-D1). |
 | `fsmStaffId` | `string \| null` | ❌ | Field service management identifier (optional) |
 | `createdAt` | `Timestamp` | ✅ | Firestore Server Timestamp |
 

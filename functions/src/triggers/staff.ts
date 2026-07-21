@@ -93,6 +93,21 @@ export const onStaffUpdatedTrigger = onDocumentUpdated(
       })
     }
 
+    // 5. Phone number change (P3-E27-C2 — employee self-service from ProfilePage)
+    if (before.phone !== after.phone) {
+      auditLogs.push({
+        collection: 'staff',
+        documentId: staffId,
+        field: 'phone',
+        oldValue: before.phone || null,
+        newValue: after.phone || null,
+        changedBy: staffId, // Phone is self-service edited by the employee
+        changedAt: new Date(),
+        reason: 'Phone number updated from Profile',
+        overrideType: null,
+      })
+    }
+
     // Write all audit logs
     if (auditLogs.length > 0) {
       const batch = db.batch()

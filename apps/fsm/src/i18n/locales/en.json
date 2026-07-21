@@ -104,6 +104,34 @@
         "lead": "Lead Cleaner",
         "supervisor": "Supervisor"
       },
+      "status": "Status",
+      "statuses": {
+        "onboarding": "Onboarding",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "language": "Preferred Language",
+      "languages": {
+        "en": "English",
+        "fr": "Français",
+        "ar": "العربية (Arabic)"
+      },
+      "contact": {
+        "phoneRequired": "Phone number is required."
+      },
+      "corrections": {
+        "title": "Flag a Correction",
+        "subtitle": "Notice something wrong with your details above? Let Lauren know here.",
+        "label": "What needs to be corrected?",
+        "placeholder": "e.g. My last name is spelled incorrectly"
+      },
+      "emergencyContact": {
+        "title": "Emergency Contact",
+        "nameLabel": "Contact name",
+        "relationshipLabel": "Relationship",
+        "phoneLabel": "Phone number",
+        "incompleteError": "Please fill in all three emergency contact fields, or leave all three unchanged."
+      },
       "transport": {
         "title": "Transportation & Commute",
         "mode": "Transport Mode",

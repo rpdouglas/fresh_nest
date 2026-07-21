@@ -10,7 +10,7 @@ import {
 } from 'firebase/firestore'
 import type { Booking, Review } from '../types/booking'
 import type { Job, JobPhoto, ChecklistCompletion } from '../types/job'
-import type { Staff, TermsAcceptance, BackgroundCheck, EmploymentAgreement, EmergencyContact } from '../types/staff'
+import type { Staff, TermsAcceptance, BackgroundCheck, EmploymentAgreement, EmergencyContact, ProfileCorrection } from '../types/staff'
 import type { ChecklistTemplate, PayRate, AuditEntry } from '../types/common'
 
 // Helper to convert dynamic values to Date
@@ -127,6 +127,11 @@ export const staffConverter = createConverter<Staff>((data, id) => ({
     ? ({ ...data.employmentAgreement, acceptedAt: toDate(data.employmentAgreement.acceptedAt) } as EmploymentAgreement)
     : null,
   emergencyContact: (data.emergencyContact ?? null) as EmergencyContact | null,
+  // P3-E27-C2: new — default to [] for every doc created before this migration.
+  corrections: (data.corrections || []).map((c: any) => ({
+    ...c,
+    flaggedAt: toDate(c.flaggedAt),
+  } as ProfileCorrection)),
 } as Staff))
 
 // Review Converter

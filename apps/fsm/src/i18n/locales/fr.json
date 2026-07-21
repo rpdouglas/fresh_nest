@@ -104,6 +104,34 @@
         "lead": "Chef d'équipe",
         "supervisor": "Superviseur/Superviseuse"
       },
+      "status": "Statut",
+      "statuses": {
+        "onboarding": "En intégration",
+        "active": "Actif",
+        "inactive": "Inactif"
+      },
+      "language": "Langue préférée",
+      "languages": {
+        "en": "English",
+        "fr": "Français",
+        "ar": "العربية (Arabe)"
+      },
+      "contact": {
+        "phoneRequired": "Le numéro de téléphone est requis."
+      },
+      "corrections": {
+        "title": "Signaler une correction",
+        "subtitle": "Vous remarquez une erreur dans vos renseignements ci-dessus? Informez-en Lauren ici.",
+        "label": "Que faut-il corriger?",
+        "placeholder": "p. ex. Mon nom de famille est mal orthographié"
+      },
+      "emergencyContact": {
+        "title": "Contact d'urgence",
+        "nameLabel": "Nom du contact",
+        "relationshipLabel": "Lien de parenté",
+        "phoneLabel": "Numéro de téléphone",
+        "incompleteError": "Veuillez remplir les trois champs du contact d'urgence, ou les laisser tous les trois inchangés."
+      },
       "transport": {
         "title": "Transport et déplacements",
         "mode": "Mode de transport",

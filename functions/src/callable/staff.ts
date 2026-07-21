@@ -127,6 +127,8 @@ export const onStaffRegistered = onCall(
       // during the first-login consent sequence.
       employmentAgreement: null,
       emergencyContact: null,
+      // P3-E27-C2: appended to by the employee from ProfilePage's "Flag a correction".
+      corrections: [],
       createdAt: Timestamp.now(),
     })
 
