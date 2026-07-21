@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils/utils'
-import type { StaffRole, StaffStatus, Staff } from '@/types'
+import type { StaffRole, StaffStatus, Staff, BackgroundCheckStatus } from '@/types'
 import { RegisterStaffModal } from './RegisterStaffModal'
 import { ExportRecordModal } from './ExportRecordModal'
 import { useStaff, RegisterStaffInput } from './hooks/useStaff'
@@ -31,10 +31,21 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
     setStatusFilter,
     registerStaff,
     resendWelcome,
+    updateBackgroundCheckStatus,
   } = useStaff(isAuthorized)
 
   const [resendingId, setResendingId] = useState<string | null>(null)
   const [resendError, setResendError] = useState<string | null>(null)
+
+  // P3-E27-B2: background check status/provider/notes editor
+  const [editingBgCheckId, setEditingBgCheckId] = useState<string | null>(null)
+  const [bgDraft, setBgDraft] = useState<{ status: BackgroundCheckStatus; provider: string; notes: string }>({
+    status: 'not_started',
+    provider: '',
+    notes: '',
+  })
+  const [bgSaving, setBgSaving] = useState(false)
+  const [bgError, setBgError] = useState<string | null>(null)
 
   const handleRegister = async (input: RegisterStaffInput) => {
     await registerStaff(input)
@@ -74,6 +85,50 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
         return t('admin.staff.modal.roleOption.supervisor', { defaultValue: 'Supervisor' })
       default:
         return role
+    }
+  }
+
+  const getBgCheckStatusLabel = (status: BackgroundCheckStatus) => {
+    switch (status) {
+      case 'not_started':
+        return t('admin.staff.backgroundCheck.statusOption.not_started', { defaultValue: 'Not Started' })
+      case 'pending':
+        return t('admin.staff.backgroundCheck.statusOption.pending', { defaultValue: 'Pending' })
+      case 'cleared':
+        return t('admin.staff.backgroundCheck.statusOption.cleared', { defaultValue: 'Cleared' })
+      case 'flagged':
+        return t('admin.staff.backgroundCheck.statusOption.flagged', { defaultValue: 'Flagged' })
+      default:
+        return status
+    }
+  }
+
+  const openBgCheckEditor = (s: Staff) => {
+    setBgError(null)
+    setEditingBgCheckId(s.id)
+    setBgDraft({
+      status: s.backgroundCheck?.status ?? 'not_started',
+      provider: s.backgroundCheck?.provider ?? '',
+      notes: s.backgroundCheck?.notes ?? '',
+    })
+  }
+
+  const handleSaveBgCheck = async (uid: string) => {
+    setBgSaving(true)
+    setBgError(null)
+    try {
+      await updateBackgroundCheckStatus({
+        uid,
+        status: bgDraft.status,
+        provider: bgDraft.provider.trim() || undefined,
+        notes: bgDraft.notes.trim() || undefined,
+      })
+      setEditingBgCheckId(null)
+    } catch (err) {
+      console.error('[handleSaveBgCheck] Error updating background check status:', err)
+      setBgError(t('admin.staff.backgroundCheck.saveError', { defaultValue: 'Failed to update background check status.' }))
+    } finally {
+      setBgSaving(false)
     }
   }
 
@@ -215,6 +270,9 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
                     {t('admin.staff.table.status')}
                   </th>
                   <th className="p-4 font-body text-base font-semibold text-charcoal">
+                    {t('admin.staff.backgroundCheck.columnLabel', { defaultValue: 'Background Check' })}
+                  </th>
+                  <th className="p-4 font-body text-base font-semibold text-charcoal">
                     {t('admin.staff.modal.transport')}
                   </th>
                   <th className="p-4 font-body text-base font-semibold text-charcoal text-right">
@@ -269,6 +327,71 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
                       )}>
                         {getStatusLabel(s.status)}
                       </span>
+                    </td>
+
+                    {/* Background Check (P3-E27-B2) */}
+                    <td className="p-4 font-body text-base text-charcoal">
+                      {editingBgCheckId === s.id ? (
+                        <div className="flex flex-col gap-2 min-w-[180px]">
+                          <select
+                            value={bgDraft.status}
+                            onChange={(e) => setBgDraft((prev) => ({ ...prev, status: e.target.value as BackgroundCheckStatus }))}
+                            disabled={bgSaving}
+                            className="min-h-[48px] px-2 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                          >
+                            <option value="not_started">{getBgCheckStatusLabel('not_started')}</option>
+                            <option value="pending">{getBgCheckStatusLabel('pending')}</option>
+                            <option value="cleared">{getBgCheckStatusLabel('cleared')}</option>
+                            <option value="flagged">{getBgCheckStatusLabel('flagged')}</option>
+                          </select>
+                          <input
+                            type="text"
+                            value={bgDraft.provider}
+                            onChange={(e) => setBgDraft((prev) => ({ ...prev, provider: e.target.value }))}
+                            placeholder={t('admin.staff.backgroundCheck.providerPlaceholder', { defaultValue: 'Provider (optional)' })}
+                            disabled={bgSaving}
+                            className="min-h-[48px] px-2 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                          />
+                          {bgError && <span className="text-base text-red-600">{bgError}</span>}
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => { void handleSaveBgCheck(s.id) }}
+                              disabled={bgSaving}
+                              className="min-h-[48px] px-3 bg-slate-brand hover:bg-slate-dark text-white font-body font-medium rounded transition-colors"
+                            >
+                              {bgSaving ? t('admin.staff.backgroundCheck.saving', { defaultValue: 'Saving...' }) : t('admin.staff.backgroundCheck.save', { defaultValue: 'Save' })}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setEditingBgCheckId(null)}
+                              disabled={bgSaving}
+                              className="min-h-[48px] px-3 border border-sand rounded font-body font-medium text-charcoal hover:bg-cream transition-colors"
+                            >
+                              {t('admin.staff.backgroundCheck.cancel', { defaultValue: 'Cancel' })}
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-start gap-1.5">
+                          <span className={cn(
+                            'inline-flex items-center px-2.5 py-0.5 rounded text-base font-medium',
+                            s.backgroundCheck?.status === 'cleared' ? 'bg-emerald-100 text-emerald-800' :
+                            s.backgroundCheck?.status === 'pending' ? 'bg-amber-100 text-amber-800' :
+                            s.backgroundCheck?.status === 'flagged' ? 'bg-red-100 text-red-800' :
+                            'bg-slate-100 text-slate-800'
+                          )}>
+                            {getBgCheckStatusLabel(s.backgroundCheck?.status ?? 'not_started')}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => openBgCheckEditor(s)}
+                            className="text-slate-brand hover:text-slate-dark font-medium min-h-[48px] px-1 text-base transition-colors duration-150"
+                          >
+                            {t('admin.staff.backgroundCheck.edit', { defaultValue: 'Update' })}
+                          </button>
+                        </div>
+                      )}
                     </td>
 
                     {/* Transportation & Constraints */}

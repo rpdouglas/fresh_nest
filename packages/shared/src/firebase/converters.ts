@@ -10,7 +10,7 @@ import {
 } from 'firebase/firestore'
 import type { Booking, Review } from '../types/booking'
 import type { Job, JobPhoto, ChecklistCompletion } from '../types/job'
-import type { Staff, TermsAcceptance } from '../types/staff'
+import type { Staff, TermsAcceptance, BackgroundCheck } from '../types/staff'
 import type { ChecklistTemplate, PayRate, AuditEntry } from '../types/common'
 
 // Helper to convert dynamic values to Date
@@ -111,6 +111,17 @@ export const staffConverter = createConverter<Staff>((data, id) => ({
       acceptedAt: toDate(t.acceptedAt),
     } as TermsAcceptance)),
   },
+  // P3-E27-B2: defaults cover legacy docs still on the pre-migration
+  // onboardingChecklist.backgroundCheck boolean flag, which never populated this map.
+  backgroundCheck: {
+    consentGiven: data.backgroundCheck?.consentGiven ?? false,
+    consentGivenAt: toDateOrNull(data.backgroundCheck?.consentGivenAt),
+    consentIpAddress: data.backgroundCheck?.consentIpAddress ?? null,
+    status: data.backgroundCheck?.status ?? 'not_started',
+    completedAt: toDateOrNull(data.backgroundCheck?.completedAt),
+    ...(data.backgroundCheck?.provider !== undefined ? { provider: data.backgroundCheck.provider } : {}),
+    ...(data.backgroundCheck?.notes !== undefined ? { notes: data.backgroundCheck.notes } : {}),
+  } as BackgroundCheck,
 } as Staff))
 
 // Review Converter

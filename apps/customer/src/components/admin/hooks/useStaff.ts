@@ -5,7 +5,7 @@ import { query, orderBy } from 'firebase/firestore'
 import { httpsCallable } from 'firebase/functions'
 import { db, functions } from '@/lib/firebase/firebase'
 import { staffCollection } from '@freshnest/shared'
-import type { Staff, StaffRole, StaffStatus, StaffLanguage, TransportMode } from '@/types'
+import type { Staff, StaffRole, StaffStatus, StaffLanguage, TransportMode, BackgroundCheckStatus } from '@/types'
 
 export interface RegisterStaffInput {
   firstName: string
@@ -79,6 +79,21 @@ export function useStaff(enabled: boolean) {
     return result.data
   }
 
+  const updateBackgroundCheckStatus = async (input: {
+    uid: string
+    status: BackgroundCheckStatus
+    provider?: string
+    notes?: string
+  }) => {
+    const updateStatusFn = httpsCallable<typeof input, { success: boolean }>(
+      functions,
+      'updateBackgroundCheckStatus'
+    )
+    const result = await updateStatusFn(input)
+    await queryClient.invalidateQueries({ queryKey: ['staff'] })
+    return result.data
+  }
+
   return {
     staffList,
     filteredStaff,
@@ -92,5 +107,6 @@ export function useStaff(enabled: boolean) {
     setStatusFilter,
     registerStaff,
     resendWelcome,
+    updateBackgroundCheckStatus,
   }
 }

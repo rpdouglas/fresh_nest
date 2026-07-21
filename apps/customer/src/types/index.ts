@@ -12,6 +12,8 @@ export type {
   StaffStatus,
   BlockedWindow,
   TermsAcceptance,
+  BackgroundCheck,
+  BackgroundCheckStatus,
   Staff,
   JobStatus,
   PayRateSnapshot,

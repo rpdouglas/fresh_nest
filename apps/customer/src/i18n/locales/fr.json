@@ -1041,6 +1041,7 @@
       "travelWarning": "{{name}} a besoin de {{buffer}} min de trajet avec le quart {{start}}-{{end}}",
       "blockedWindowWarning": "{{name}} a un créneau bloqué qui chevauche ce quart",
       "overlapWarning": "{{name}} a un quart qui chevauche ({{start}} - {{end}})",
+      "backgroundCheckWarning": "{{name}} n'a pas de vérification des antécédents approuvée",
       "reasonLabel": "Raison de la dérogation",
       "reasonPlaceholder": "ex. Remplacement urgent à la demande du client",
       "reasonRequired": "La raison de la dérogation est requise.",

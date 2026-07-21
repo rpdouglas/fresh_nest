@@ -418,12 +418,20 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
 
       const isOverMonthlyCap = limit !== null && current > limit
 
+      // Background check must be cleared for this staff member (P3-E27-B2)
+      const isBackgroundCheckIncomplete = (staff.backgroundCheck?.status ?? 'not_started') !== 'cleared'
+
       staffJobs.forEach((job, idx) => {
         const warnings: string[] = []
 
         // Earnings cap overage warning
         if (isOverMonthlyCap) {
           warnings.push(t('admin.override.earningsWarning', { name: `${staff.firstName} ${staff.lastName}`, overage: Math.max(0, current - limit) }))
+        }
+
+        // Background check not cleared warning
+        if (isBackgroundCheckIncomplete) {
+          warnings.push(t('admin.override.backgroundCheckWarning', { name: `${staff.firstName} ${staff.lastName}` }))
         }
 
         // 2. Blocked Window check

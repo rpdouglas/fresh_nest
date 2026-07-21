@@ -168,3 +168,35 @@ describe('useStaff — resendWelcome', () => {
     expect(mockInvalidateQueries).toHaveBeenCalledWith({ queryKey: ['staff'] })
   })
 })
+
+describe('useStaff — updateBackgroundCheckStatus (P3-E27-B2)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockHttpsCallable.mockReturnValue(mockHttpsCallableFn)
+    mockHttpsCallableFn.mockResolvedValue({ data: { success: true } })
+  })
+
+  it('calls updateBackgroundCheckStatus httpsCallable with the full payload', async () => {
+    const { result } = renderHook(() => useStaff(true))
+
+    await act(async () => {
+      await result.current.updateBackgroundCheckStatus({ uid: 'uid-123', status: 'cleared', provider: 'Certn' })
+    })
+
+    expect(mockHttpsCallable).toHaveBeenCalledWith(
+      expect.anything(),
+      'updateBackgroundCheckStatus'
+    )
+    expect(mockHttpsCallableFn).toHaveBeenCalledWith({ uid: 'uid-123', status: 'cleared', provider: 'Certn' })
+  })
+
+  it('invalidates the staff query cache after a successful status update', async () => {
+    const { result } = renderHook(() => useStaff(true))
+
+    await act(async () => {
+      await result.current.updateBackgroundCheckStatus({ uid: 'uid-123', status: 'cleared' })
+    })
+
+    expect(mockInvalidateQueries).toHaveBeenCalledWith({ queryKey: ['staff'] })
+  })
+})

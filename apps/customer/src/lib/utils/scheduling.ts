@@ -66,6 +66,7 @@ export interface ConflictCheckResult {
   isOverEarnings: boolean
   isOverTravel: boolean
   isOverBlockedWindow: boolean
+  isBackgroundCheckIncomplete: boolean
   overage: number
   conflictingShift: Job | null
   warnings: string[]
@@ -93,6 +94,9 @@ export async function checkCleanerSchedulingConflicts({
     }
     if (key.includes('blockedWindowWarning')) {
       return `${name} has a blocked window that overlaps with this shift`
+    }
+    if (key.includes('backgroundCheckWarning')) {
+      return `${name} does not have a cleared background check`
     }
     return 'Scheduling conflict detected'
   }
@@ -180,6 +184,9 @@ export async function checkCleanerSchedulingConflicts({
     }
   }
 
+  // 4. Background check must be cleared before assignment (P3-E27-B2)
+  const isBackgroundCheckIncomplete = (selectedStaff.backgroundCheck?.status ?? 'not_started') !== 'cleared'
+
   const warnings: string[] = []
   const overrideTypes: string[] = []
 
@@ -214,10 +221,20 @@ export async function checkCleanerSchedulingConflicts({
     overrideTypes.push('blocked_window_overlap')
   }
 
+  if (isBackgroundCheckIncomplete) {
+    warnings.push(
+      t('admin.override.backgroundCheckWarning', {
+        name: newCleanerName,
+      })
+    )
+    overrideTypes.push('background_check_not_cleared')
+  }
+
   return {
     isOverEarnings,
     isOverTravel,
     isOverBlockedWindow,
+    isBackgroundCheckIncomplete,
     overage,
     conflictingShift,
     warnings,

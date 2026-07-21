@@ -99,6 +99,8 @@ The **Analytics & Metrics** tab contains two sub-tabs to segment marketing/sales
 
 *   **View Registry:** Lists all employees with their names, roles, statuses, and contact information.
 *   **Register New Staff:** Click **Register New Staff** to open the creation modal. Fill in the employee's name, email, phone, role (cleaner, lead, supervisor), default transport mode, transit buffer minutes, and monthly earnings limit (useful for ODSP tracking). Creating the profile registers the staff email to allow secure login.
+*   **Background Check Column:** Shows each employee's background check status (`Not Started`, `Pending`, `Cleared`, `Flagged`). The employee must explicitly consent on their first FSM login before this leaves `Not Started` — you cannot set consent on their behalf. Click **Update** to record the result once it comes back from your screening provider (status, provider name, and optional notes). Every status change is logged to the Audit Logs tab automatically.
+*   **Dispatch Safeguard:** An employee whose background check isn't `Cleared` triggers the same **Administrator Override Required** modal as earnings/travel/blocked-window conflicts if you try to assign them a job on the Visual Dispatch Board — confirming still requires a logged override reason.
 
 ---
 
@@ -115,7 +117,7 @@ The **Analytics & Metrics** tab contains two sub-tabs to segment marketing/sales
 
 *   **View Pending Reviews:** Lists all customer reviews that have been submitted but not yet moderated. Shows reviewer name, location (automatically formatted based on address), selected language, rating (1-5 stars), review text, and submission date.
 *   **Approve Review:** Click **Approve** to immediately make the review public on the `/reviews` page.
-*   **Reject Review:** Click **Reject** to hide the review. For compliance and auditability (P12 Sarah), rejected reviews are flagged in Firestore as `rejected: true` but are not deleted from the database.
+*   **Reject Review:** Click **Reject** to hide the review. For compliance and auditability (P12 Lauren), rejected reviews are flagged in Firestore as `rejected: true` but are not deleted from the database.
 
 
 ---

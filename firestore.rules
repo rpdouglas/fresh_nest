@@ -173,6 +173,10 @@ service cloud.firestore {
       allow read:   if (request.auth != null && request.auth.uid == staffId) || isAdmin();
       // P3-E27-A2: create removed — all staff docs created server-side by onStaffRegistered CF
       // (Admin SDK bypasses rules). Client-side addDoc to staff is now blocked as defence in depth.
+      // P3-E27-B2: backgroundCheck is intentionally absent from the self-service hasOnly list —
+      // it mixes employee-writable (consent) and admin-only (status/completedAt/provider/notes)
+      // fields in one map, so all writes to it go through submitBackgroundCheckConsent /
+      // updateBackgroundCheckStatus (Admin SDK, bypasses rules) instead of a client updateDoc.
       allow update: if isAdmin()
         || (request.auth != null
             && request.auth.uid == staffId

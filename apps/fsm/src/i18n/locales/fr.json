@@ -195,6 +195,18 @@
       }
     },
     "compliance": {
+      "backgroundCheck": {
+        "title": "Consentement à la vérification des antécédents",
+        "subtitle": "Veuillez lire et confirmer avant de poursuivre vos premières étapes de connexion.",
+        "explanation": "Fresh Nest Co. exige une vérification des antécédents comme condition d'emploi. Cette vérification sera effectuée par notre fournisseur de dépistage et les résultats serviront uniquement à évaluer votre aptitude à travailler dans les résidences des clients.",
+        "rights": "Vous avez le droit d'obtenir une copie des résultats. Les résultats resteront confidentiels.",
+        "checkbox": "Je consens à ce qu'une vérification des antécédents soit effectuée en mon nom.",
+        "consentBtn": "Je consens et je continue",
+        "submitting": "Envoi en cours...",
+        "declineBtn": "Je ne consens pas",
+        "declining": "Déconnexion en cours...",
+        "submitError": "Échec de l'envoi du consentement. Veuillez réessayer ou contacter Lauren."
+      },
       "terms": {
         "title": "Conditions d'utilisation et directives de travail",
         "subtitle": "Veuillez lire et accepter nos dernières directives avant de continuer.",

@@ -19,6 +19,18 @@ export interface TermsAcceptance {
   ipAddress?: string
 }
 
+export type BackgroundCheckStatus = 'not_started' | 'pending' | 'cleared' | 'flagged'
+
+export interface BackgroundCheck {
+  consentGiven: boolean
+  consentGivenAt: Date | null
+  consentIpAddress: string | null
+  status: BackgroundCheckStatus
+  completedAt: Date | null
+  provider?: string
+  notes?: string
+}
+
 export interface Staff {
   id: string
   uid?: string
@@ -47,5 +59,6 @@ export interface Staff {
   }
   welcomeEmailSentAt?: Date | null
   onboardingChecklist: Record<string, boolean>
+  backgroundCheck: BackgroundCheck
   createdAt: Date
 }

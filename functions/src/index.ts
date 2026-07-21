@@ -10,7 +10,7 @@ export { setUserRole } from './callable/auth'
 export { createPaymentIntent, stripeWebhookHandler } from './callable/payments'
 export { claimJob } from './callable/job'
 export { getAnalyticsKPIs } from './callable/analytics'
-export { onStaffRegistered, migrateComplianceRecords, resendWelcomeEmail } from './callable/staff'
+export { onStaffRegistered, migrateComplianceRecords, resendWelcomeEmail, submitBackgroundCheckConsent, updateBackgroundCheckStatus } from './callable/staff'
 
 // Domain scheduled cron re-exports
 export { onDailyReminderCheck } from './scheduled/reminders'

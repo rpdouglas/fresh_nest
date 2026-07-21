@@ -112,8 +112,16 @@ export const onStaffRegistered = onCall(
       },
       welcomeEmailSentAt: null,
       onboardingChecklist: {
-        backgroundCheck: false,
         trainingCompleted: false,
+      },
+      // P3-E27-B2: structured consent record — replaces the fabricated
+      // onboardingChecklist.backgroundCheck boolean that was never actually consented to.
+      backgroundCheck: {
+        consentGiven: false,
+        consentGivenAt: null,
+        consentIpAddress: null,
+        status: 'not_started',
+        completedAt: null,
       },
       createdAt: Timestamp.now(),
     })
@@ -224,6 +232,112 @@ export const resendWelcomeEmail = onCall(
     }
   }
 )
+
+// P3-E27-B2: Employee submits background check consent (server-observed timestamp + IP).
+// backgroundCheck stays closed to all direct client writes in firestore.rules — this is
+// the only path an employee has to set consentGiven, matching the A2 pattern for staff docs.
+export const submitBackgroundCheckConsent = onCall(async (request) => {
+  const authContext = request.auth
+  if (!authContext) {
+    throw new HttpsError('unauthenticated', 'Must be authenticated.')
+  }
+
+  const db = getFirestore()
+  const uid = authContext.uid
+
+  const staffRef = db.collection('staff').doc(uid)
+  const staffSnap = await staffRef.get()
+  if (!staffSnap.exists) {
+    throw new HttpsError('not-found', 'Staff profile not found.')
+  }
+
+  const existing = staffSnap.data()!.backgroundCheck
+  if (existing?.consentGiven === true) {
+    // Idempotent — already consented, nothing to do.
+    return { consentGiven: true, consentGivenAt: existing.consentGivenAt?.toDate?.().toISOString() ?? null }
+  }
+
+  // request.rawRequest.ip reflects the nearest proxy/CDN hop under Firebase Hosting rewrites,
+  // not necessarily the employee's raw client IP — acceptable for consent-audit purposes,
+  // same precision class as the ipify.org lookup TermsConsentOverlay uses client-side.
+  const ipAddress = request.rawRequest?.ip || null
+  const consentGivenAt = Timestamp.now()
+
+  await staffRef.update({
+    'backgroundCheck.consentGiven': true,
+    'backgroundCheck.consentGivenAt': consentGivenAt,
+    'backgroundCheck.consentIpAddress': ipAddress,
+    'backgroundCheck.status': 'pending',
+  })
+
+  logger.info(`[submitBackgroundCheckConsent] Consent recorded for staff/${uid}`)
+
+  return { consentGiven: true, consentGivenAt: consentGivenAt.toDate().toISOString() }
+})
+
+// P3-E27-B2: Admin updates background check status/provider/notes; writes an auditLog entry.
+export const updateBackgroundCheckStatus = onCall(async (request) => {
+  const authContext = request.auth
+  if (!authContext) {
+    throw new HttpsError('unauthenticated', 'Must be authenticated.')
+  }
+
+  const db = getFirestore()
+
+  let isAuthorized = authContext.token.role === 'admin'
+  if (!isAuthorized && authContext.token.email) {
+    const adminSnap = await db
+      .collection('admins')
+      .doc(authContext.token.email.trim().toLowerCase())
+      .get()
+    if (adminSnap.exists) isAuthorized = true
+  }
+  if (!isAuthorized) {
+    throw new HttpsError('permission-denied', 'Only administrators can update background check status.')
+  }
+
+  const data = request.data as { uid?: string; status?: string; provider?: string; notes?: string }
+  const VALID_STATUSES = ['not_started', 'pending', 'cleared', 'flagged']
+
+  if (!data.uid?.trim()) throw new HttpsError('invalid-argument', 'uid is required.')
+  if (!data.status || !VALID_STATUSES.includes(data.status)) {
+    throw new HttpsError('invalid-argument', 'status must be not_started, pending, cleared, or flagged.')
+  }
+
+  const staffRef = db.collection('staff').doc(data.uid)
+  const staffSnap = await staffRef.get()
+  if (!staffSnap.exists) {
+    throw new HttpsError('not-found', `Staff member with uid ${data.uid} not found.`)
+  }
+
+  const previous = staffSnap.data()!.backgroundCheck ?? {}
+  const completedAt = data.status === 'cleared' || data.status === 'flagged' ? Timestamp.now() : (previous.completedAt ?? null)
+
+  const update: Record<string, unknown> = {
+    'backgroundCheck.status': data.status,
+    'backgroundCheck.completedAt': completedAt,
+  }
+  if (data.provider !== undefined) update['backgroundCheck.provider'] = data.provider
+  if (data.notes !== undefined) update['backgroundCheck.notes'] = data.notes
+
+  await staffRef.update(update)
+
+  await db.collection('auditLog').add({
+    collection: 'staff',
+    documentId: data.uid,
+    field: 'backgroundCheck',
+    oldValue: { status: previous.status ?? 'not_started', provider: previous.provider ?? null, notes: previous.notes ?? null },
+    newValue: { status: data.status, provider: data.provider ?? previous.provider ?? null, notes: data.notes ?? previous.notes ?? null },
+    changedBy: authContext.token.email || authContext.uid,
+    changedAt: Timestamp.now(),
+    reason: null,
+    overrideType: 'background_check_status_update',
+  })
+
+  logger.info(`[updateBackgroundCheckStatus] staff/${data.uid} backgroundCheck.status -> ${data.status}`)
+
+  return { success: true }
+})
 
 // P3-E27-A1: One-shot PIPEDA compliance migration
 // DELETE AFTER P3-E27-A1 MIGRATION IS CONFIRMED IN PRODUCTION.

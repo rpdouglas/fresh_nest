@@ -195,6 +195,18 @@
       }
     },
     "compliance": {
+      "backgroundCheck": {
+        "title": "Background Check Consent",
+        "subtitle": "Please review and confirm before continuing to your first login steps.",
+        "explanation": "Fresh Nest Co. requires a background check as a condition of employment. This check will be conducted by our screening provider and the results will be used solely to assess your suitability for working in client homes.",
+        "rights": "You have the right to a copy of the results. Results will be kept confidential.",
+        "checkbox": "I consent to a background check being conducted on my behalf.",
+        "consentBtn": "I Consent & Continue",
+        "submitting": "Submitting...",
+        "declineBtn": "I do not consent",
+        "declining": "Signing out...",
+        "submitError": "Failed to submit consent. Please try again or contact Lauren."
+      },
       "terms": {
         "title": "Terms of Service & Workplace Guidelines",
         "subtitle": "Please review and accept our latest guidelines before continuing.",
