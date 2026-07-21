@@ -177,10 +177,12 @@ service cloud.firestore {
       // it mixes employee-writable (consent) and admin-only (status/completedAt/provider/notes)
       // fields in one map, so all writes to it go through submitBackgroundCheckConsent /
       // updateBackgroundCheckStatus (Admin SDK, bypasses rules) instead of a client updateDoc.
+      // P3-E27-C1: employmentAgreement and emergencyContact are fully employee-writable (no
+      // admin-only sub-fields), same trust model as compliance — safe to add directly here.
       allow update: if isAdmin()
         || (request.auth != null
             && request.auth.uid == staffId
-            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['constraints', 'preferences', 'financials', 'compliance'])
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['constraints', 'preferences', 'financials', 'compliance', 'employmentAgreement', 'emergencyContact'])
             && (!request.resource.data.financials.diff(resource.data.financials).affectedKeys().hasAny(['currentMonthEarnings', 'earningsHistory']))
            );
       allow delete: if false;

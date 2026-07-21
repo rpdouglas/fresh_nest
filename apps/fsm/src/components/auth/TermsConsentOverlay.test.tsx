@@ -20,6 +20,13 @@ vi.mock('firebase/firestore', () => {
   }
 })
 
+// Mock the app's firebase module directly — avoids initializing real Firebase Auth
+// (which throws auth/invalid-api-key without live env vars), matching the pattern
+// already used in useNotifications.test.tsx / BackgroundCheckConsentScreen.test.tsx.
+vi.mock('../../lib/firebase/firebase', () => ({
+  db: {},
+}))
+
 vi.mock('../../hooks/useStaffAuth')
 
 vi.mock('react-i18next', () => ({
@@ -195,5 +202,22 @@ describe('TermsConsentOverlay Component', () => {
     })
 
     expect(updateDoc).toHaveBeenCalledTimes(1)
+  })
+
+  it('shows the step label when provided (P3-E27-C1)', () => {
+    vi.mocked(useStaffAuth).mockReturnValue({
+      user: { uid: 'staff123' } as unknown as User,
+      staffProfile: mockStaffProfile as unknown as Staff,
+      loading: false,
+      error: null,
+      setError: vi.fn(),
+      signInWithPassword: vi.fn(),
+      sendMagicLink: vi.fn(),
+      completeMagicLinkSignIn: vi.fn(),
+      logout: vi.fn(),
+    })
+
+    render(<TermsConsentOverlay stepLabel="Step 3 of 4" />)
+    expect(screen.getByText('Step 3 of 4')).toBeInTheDocument()
   })
 })

@@ -7,9 +7,10 @@ import { useStaffAuth } from '../../hooks/useStaffAuth'
 
 interface LanguageSelectionOverlayProps {
   onComplete?: () => void
+  stepLabel?: string
 }
 
-export const LanguageSelectionOverlay: React.FC<LanguageSelectionOverlayProps> = ({ onComplete }) => {
+export const LanguageSelectionOverlay: React.FC<LanguageSelectionOverlayProps> = ({ onComplete, stepLabel }) => {
   const { i18n } = useTranslation()
   const { staffProfile } = useStaffAuth()
   const [isUpdating, setIsUpdating] = useState(false)
@@ -49,7 +50,10 @@ export const LanguageSelectionOverlay: React.FC<LanguageSelectionOverlayProps> =
         aria-labelledby="lang-select-title"
       >
         <div className="space-y-2">
-          <h2 
+          {stepLabel && (
+            <p className="font-body text-base font-semibold text-slate-brand">{stepLabel}</p>
+          )}
+          <h2
             id="lang-select-title"
             className="font-display text-3xl font-bold text-charcoal"
           >

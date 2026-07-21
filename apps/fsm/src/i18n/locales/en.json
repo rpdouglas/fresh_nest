@@ -195,6 +195,29 @@
       }
     },
     "compliance": {
+      "onboarding": {
+        "stepLabel": "Step {{current}} of {{total}}"
+      },
+      "employmentAgreement": {
+        "title": "Employment Agreement",
+        "subtitle": "Before you get started, please review and sign the Fresh Nest Co. Employment Agreement.",
+        "text": "By signing below, you agree to perform cleaning and organizing services for Fresh Nest Co. clients in accordance with the schedules, checklists, and standards communicated to you through the FSM app. You agree to arrive on time for assigned shifts, follow all workplace safety guidelines, and represent Fresh Nest Co. professionally in every client home. This agreement remains in effect for the duration of your employment and may be updated with notice.",
+        "signLabel": "Type your full legal name to sign",
+        "signPlaceholder": "Full name",
+        "checkbox": "I have read and agree to the Fresh Nest Co. Employment Agreement.",
+        "signBtn": "Sign & Continue",
+        "signing": "Signing...",
+        "ipLabel": "IP Address: {{ip}}"
+      },
+      "emergencyContact": {
+        "title": "Emergency Contact",
+        "subtitle": "Please provide an emergency contact before your first shift.",
+        "nameLabel": "Contact name",
+        "relationshipLabel": "Relationship",
+        "phoneLabel": "Phone number",
+        "saveBtn": "Save & Continue",
+        "saving": "Saving..."
+      },
       "backgroundCheck": {
         "title": "Background Check Consent",
         "subtitle": "Please review and confirm before continuing to your first login steps.",

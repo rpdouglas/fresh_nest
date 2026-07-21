@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useStaffAuth } from '../../hooks/useStaffAuth'
-import { LanguageSelectionOverlay } from '../auth/LanguageSelectionOverlay'
-import { BackgroundCheckConsentScreen } from '../auth/BackgroundCheckConsentScreen'
-import { TermsConsentOverlay } from '../auth/TermsConsentOverlay'
 import { cn } from '@freshnest/shared'
 import { useNotifications } from '../../hooks/useNotifications'
 
@@ -309,9 +306,6 @@ export const FsmLayout: React.FC = () => {
         </div>
       </footer>
 
-      <LanguageSelectionOverlay />
-      <BackgroundCheckConsentScreen />
-      <TermsConsentOverlay />
     </div>
   )
 }

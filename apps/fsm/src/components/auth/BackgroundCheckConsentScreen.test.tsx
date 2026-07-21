@@ -151,6 +151,23 @@ describe('BackgroundCheckConsentScreen Component', () => {
     })
   })
 
+  it('shows the step label when provided (P3-E27-C1)', () => {
+    vi.mocked(useStaffAuth).mockReturnValue({
+      user: { uid: 'staff123' } as unknown as User,
+      staffProfile: mockStaffProfile as unknown as Staff,
+      loading: false,
+      error: null,
+      setError: vi.fn(),
+      signInWithPassword: vi.fn(),
+      sendMagicLink: vi.fn(),
+      completeMagicLinkSignIn: vi.fn(),
+      logout: logoutMock,
+    })
+
+    render(<BackgroundCheckConsentScreen stepLabel="Step 2 of 4" />)
+    expect(screen.getByText('Step 2 of 4')).toBeInTheDocument()
+  })
+
   it('signs the employee out when declining', async () => {
     vi.mocked(useStaffAuth).mockReturnValue({
       user: { uid: 'staff123' } as unknown as User,

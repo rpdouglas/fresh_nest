@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { StaffAuthProvider } from './context/StaffAuthProvider'
 import { OfflineUploadProvider } from './context/OfflineUploadProvider'
 import { ProtectedRoute } from './components/auth/ProtectedRoute'
+import { OnboardingSequenceGuard } from './components/auth/OnboardingSequenceGuard'
 import FsmLayout from './components/layout/FsmLayout'
 import LoginPage from './pages/LoginPage'
 import ProfilePage from './pages/ProfilePage'
@@ -32,27 +33,32 @@ const router = createBrowserRouter([
     element: <ProtectedRoute />,
     children: [
       {
-        element: <FsmLayout />,
+        element: <OnboardingSequenceGuard />,
         children: [
           {
-            path: '/',
-            element: <PlaceholderPage titleKey="fsm.dashboard" />,
-          },
-          {
-            path: '/shifts',
-            element: <ShiftBoardPage />,
-          },
-          {
-            path: '/jobs',
-            element: <MyJobsPage />,
-          },
-          {
-            path: '/jobs/:id',
-            element: <JobPage />,
-          },
-          {
-            path: '/profile',
-            element: <ProfilePage />,
+            element: <FsmLayout />,
+            children: [
+              {
+                path: '/',
+                element: <PlaceholderPage titleKey="fsm.dashboard" />,
+              },
+              {
+                path: '/shifts',
+                element: <ShiftBoardPage />,
+              },
+              {
+                path: '/jobs',
+                element: <MyJobsPage />,
+              },
+              {
+                path: '/jobs/:id',
+                element: <JobPage />,
+              },
+              {
+                path: '/profile',
+                element: <ProfilePage />,
+              },
+            ],
           },
         ],
       },

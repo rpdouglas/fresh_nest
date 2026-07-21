@@ -10,7 +10,7 @@ import {
 } from 'firebase/firestore'
 import type { Booking, Review } from '../types/booking'
 import type { Job, JobPhoto, ChecklistCompletion } from '../types/job'
-import type { Staff, TermsAcceptance, BackgroundCheck } from '../types/staff'
+import type { Staff, TermsAcceptance, BackgroundCheck, EmploymentAgreement, EmergencyContact } from '../types/staff'
 import type { ChecklistTemplate, PayRate, AuditEntry } from '../types/common'
 
 // Helper to convert dynamic values to Date
@@ -122,6 +122,11 @@ export const staffConverter = createConverter<Staff>((data, id) => ({
     ...(data.backgroundCheck?.provider !== undefined ? { provider: data.backgroundCheck.provider } : {}),
     ...(data.backgroundCheck?.notes !== undefined ? { notes: data.backgroundCheck.notes } : {}),
   } as BackgroundCheck,
+  // P3-E27-C1: both new — default to null for every doc created before this migration.
+  employmentAgreement: data.employmentAgreement
+    ? ({ ...data.employmentAgreement, acceptedAt: toDate(data.employmentAgreement.acceptedAt) } as EmploymentAgreement)
+    : null,
+  emergencyContact: (data.emergencyContact ?? null) as EmergencyContact | null,
 } as Staff))
 
 // Review Converter

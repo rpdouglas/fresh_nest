@@ -31,6 +31,19 @@ export interface BackgroundCheck {
   notes?: string
 }
 
+export interface EmploymentAgreement {
+  version: string
+  acceptedAt: Date
+  signedByName: string
+  ipAddress: string | null
+}
+
+export interface EmergencyContact {
+  name: string
+  phone: string
+  relationship: string
+}
+
 export interface Staff {
   id: string
   uid?: string
@@ -60,5 +73,7 @@ export interface Staff {
   welcomeEmailSentAt?: Date | null
   onboardingChecklist: Record<string, boolean>
   backgroundCheck: BackgroundCheck
+  employmentAgreement: EmploymentAgreement | null
+  emergencyContact: EmergencyContact | null
   createdAt: Date
 }

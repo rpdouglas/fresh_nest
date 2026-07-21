@@ -123,6 +123,10 @@ export const onStaffRegistered = onCall(
         status: 'not_started',
         completedAt: null,
       },
+      // P3-E27-C1: populated by EmploymentAgreementScreen / EmergencyContactScreen
+      // during the first-login consent sequence.
+      employmentAgreement: null,
+      emergencyContact: null,
       createdAt: Timestamp.now(),
     })
 

@@ -5,7 +5,11 @@ import { cn } from '@freshnest/shared'
 import { functions } from '../../lib/firebase/firebase'
 import { useStaffAuth } from '../../hooks/useStaffAuth'
 
-export const BackgroundCheckConsentScreen: React.FC = () => {
+interface BackgroundCheckConsentScreenProps {
+  stepLabel?: string
+}
+
+export const BackgroundCheckConsentScreen: React.FC<BackgroundCheckConsentScreenProps> = ({ stepLabel }) => {
   const { t, i18n } = useTranslation()
   const { staffProfile, logout } = useStaffAuth()
   const [isChecked, setIsChecked] = useState(false)
@@ -13,8 +17,9 @@ export const BackgroundCheckConsentScreen: React.FC = () => {
   const [isDeclining, setIsDeclining] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Screen 2 of the eventual P3-E27-C1 sequence — shown standalone ahead of
-  // TermsConsentOverlay until OnboardingSequenceGuard formalizes the ordering.
+  // Step 2 of the P3-E27-C1 first-login sequence. OnboardingSequenceGuard renders
+  // this only when it's the current step, but the internal check is kept as
+  // defense in depth against any other caller mounting this directly.
   const showOverlay = staffProfile && staffProfile.backgroundCheck?.consentGiven !== true
 
   if (!showOverlay) return null
@@ -49,9 +54,7 @@ export const BackgroundCheckConsentScreen: React.FC = () => {
   const isRtl = i18n.language === 'ar'
 
   return (
-    // z-[60]: must stack above TermsConsentOverlay (z-50) so background check consent
-    // (Screen 2 of the eventual P3-E27-C1 sequence) is always resolved before Terms (Screen 3).
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-charcoal/80 p-4 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/80 p-4 backdrop-blur-sm">
       <div
         className={cn(
           'w-full max-w-2xl bg-white border border-sand rounded shadow-xl p-6 md:p-8 flex flex-col max-h-[90vh]',
@@ -63,6 +66,9 @@ export const BackgroundCheckConsentScreen: React.FC = () => {
         dir={isRtl ? 'rtl' : 'ltr'}
       >
         <div className="mb-4">
+          {stepLabel && (
+            <p className="font-body text-base font-semibold text-slate-brand mb-1">{stepLabel}</p>
+          )}
           <h2
             id="background-check-modal-title"
             className="font-display text-3xl font-bold text-charcoal leading-tight"

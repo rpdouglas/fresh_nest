@@ -5,7 +5,11 @@ import { staffCollection, cn } from '@freshnest/shared'
 import { db } from '../../lib/firebase/firebase'
 import { useStaffAuth } from '../../hooks/useStaffAuth'
 
-export const TermsConsentOverlay: React.FC = () => {
+interface TermsConsentOverlayProps {
+  stepLabel?: string
+}
+
+export const TermsConsentOverlay: React.FC<TermsConsentOverlayProps> = ({ stepLabel }) => {
   const { t, i18n } = useTranslation()
   const { staffProfile } = useStaffAuth()
   const [isChecked, setIsChecked] = useState(false)
@@ -84,6 +88,9 @@ export const TermsConsentOverlay: React.FC = () => {
       >
         {/* Header */}
         <div className="mb-4">
+          {stepLabel && (
+            <p className="font-body text-base font-semibold text-slate-brand mb-1">{stepLabel}</p>
+          )}
           <h2
             id="terms-modal-title"
             className="font-display text-3xl font-bold text-charcoal leading-tight"
