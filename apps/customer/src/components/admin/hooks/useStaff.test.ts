@@ -266,3 +266,83 @@ describe('useStaff — activateEmployee (P3-E27-D1)', () => {
     expect(mockInvalidateQueries).toHaveBeenCalledWith({ queryKey: ['staff'] })
   })
 })
+
+describe('useStaff — completeCheckIn (P3-E27-D2)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockUpdateDoc.mockResolvedValue(undefined)
+  })
+
+  it('writes the whole probation.checkIns array directly via updateDoc (no callable)', async () => {
+    const { result } = renderHook(() => useStaff(true))
+    const checkIns = [
+      { id: 'ci-30', dayOffset: 30 as const, scheduledDate: '2026-01-31', completedDate: '2026-01-31', notes: null, rating: 5 as const, completedBy: 'lauren@freshnestco.ca' },
+    ]
+
+    await act(async () => {
+      await result.current.completeCheckIn('uid-123', checkIns)
+    })
+
+    expect(mockUpdateDoc).toHaveBeenCalledWith(
+      expect.anything(),
+      { 'probation.checkIns': checkIns }
+    )
+    expect(mockHttpsCallable).not.toHaveBeenCalled()
+  })
+})
+
+describe('useStaff — setProbationOutcome (P3-E27-D2)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockUpdateDoc.mockResolvedValue(undefined)
+  })
+
+  it('writes probationOutcome only for "passed"', async () => {
+    const { result } = renderHook(() => useStaff(true))
+
+    await act(async () => {
+      await result.current.setProbationOutcome('uid-123', 'passed')
+    })
+
+    expect(mockUpdateDoc).toHaveBeenCalledWith(
+      expect.anything(),
+      { 'probation.probationOutcome': 'passed' }
+    )
+  })
+
+  it('also transitions status to inactive for "terminated" — status only, per D1 precedent', async () => {
+    const { result } = renderHook(() => useStaff(true))
+
+    await act(async () => {
+      await result.current.setProbationOutcome('uid-123', 'terminated')
+    })
+
+    expect(mockUpdateDoc).toHaveBeenCalledWith(
+      expect.anything(),
+      { 'probation.probationOutcome': 'terminated', status: 'inactive' }
+    )
+  })
+})
+
+describe('useStaff — extendProbation (P3-E27-D2)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockUpdateDoc.mockResolvedValue(undefined)
+  })
+
+  it('appends 3 new check-ins and resets probationOutcome to pending', async () => {
+    const { result } = renderHook(() => useStaff(true))
+
+    await act(async () => {
+      await result.current.extendProbation('uid-123', '2026-04-01')
+    })
+
+    const payload = mockUpdateDoc.mock.calls[0][1] as unknown as {
+      'probation.checkIns': Array<{ dayOffset: number }>
+      'probation.probationOutcome': string
+    }
+    expect(payload['probation.checkIns']).toHaveLength(3)
+    expect(payload['probation.checkIns'].map((c) => c.dayOffset)).toEqual([30, 60, 90])
+    expect(payload['probation.probationOutcome']).toBe('pending')
+  })
+})

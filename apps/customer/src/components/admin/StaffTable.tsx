@@ -10,9 +10,10 @@ import { useStaff, RegisterStaffInput } from './hooks/useStaff'
 
 interface StaffTableProps {
   isAuthorized: boolean
+  adminEmail: string
 }
 
-export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
+export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized, adminEmail }) => {
   const { t } = useTranslation()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
@@ -39,6 +40,9 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
     updateBackgroundCheckStatus,
     updateChecklistItem,
     activateEmployee,
+    completeCheckIn,
+    setProbationOutcome,
+    extendProbation,
   } = useStaff(isAuthorized)
 
   const [resendingId, setResendingId] = useState<string | null>(null)
@@ -314,9 +318,13 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
                         {isExpanded && (
                           <StaffDetailPanel
                             staff={s}
+                            adminEmail={adminEmail}
                             updateBackgroundCheckStatus={updateBackgroundCheckStatus}
                             updateChecklistItem={updateChecklistItem}
                             activateEmployee={activateEmployee}
+                            completeCheckIn={completeCheckIn}
+                            setProbationOutcome={setProbationOutcome}
+                            extendProbation={extendProbation}
                             onResendInvite={(uid) => { void handleResendInvite(uid) }}
                             onExport={(staffRecord) => {
                               setSelectedStaff(staffRecord)

@@ -51,6 +51,25 @@ export interface ProfileCorrection {
   flaggedAt: Date
 }
 
+export type ProbationOutcome = 'pending' | 'passed' | 'extended' | 'terminated'
+
+export interface ProbationCheckIn {
+  id: string
+  dayOffset: 30 | 60 | 90
+  scheduledDate: string
+  completedDate: string | null
+  notes: string | null
+  rating: 1 | 2 | 3 | 4 | 5 | null
+  completedBy: string | null
+}
+
+export interface Probation {
+  startDate: string
+  endDate: string
+  checkIns: ProbationCheckIn[]
+  probationOutcome: ProbationOutcome
+}
+
 export interface Staff {
   id: string
   uid?: string
@@ -83,5 +102,6 @@ export interface Staff {
   employmentAgreement: EmploymentAgreement | null
   emergencyContact: EmergencyContact | null
   corrections: ProfileCorrection[]
+  probation: Probation | null
   createdAt: Date
 }

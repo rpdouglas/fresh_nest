@@ -286,7 +286,7 @@ export default function AdminPage() {
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <StaffTable isAuthorized={isAuthorized} />
+                    <StaffTable isAuthorized={isAuthorized} adminEmail={user.email ?? ''} />
                   </motion.div>
                 )}
                 {activeTab === 'templates' && (

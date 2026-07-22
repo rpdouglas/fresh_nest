@@ -9,6 +9,10 @@ import {
   reviewRequestHtml,
   staffWelcomeSubject,
   staffWelcomeHtml,
+  probationActivationSubject,
+  probationActivationHtml,
+  probationCheckInDueSubject,
+  probationCheckInDueText,
 } from './emailTemplates'
 
 export interface EmailConfig {
@@ -86,5 +90,43 @@ export async function sendWelcomeEmail(
   })
   if (result.error) {
     throw new Error(`Welcome email failed: ${result.error.message}`)
+  }
+}
+
+// P3-E27-D2: sent to the employee by onStaffStatusActivated
+export async function sendProbationActivationEmail(
+  firstName: string,
+  email: string,
+  lang: 'en' | 'fr',
+  config: EmailConfig,
+): Promise<void> {
+  const resend = new Resend(config.resendApiKey)
+  const result = await resend.emails.send({
+    from:    config.fromEmail,
+    to:      email,
+    subject: probationActivationSubject(lang),
+    html:    probationActivationHtml(firstName, lang),
+  })
+  if (result.error) {
+    throw new Error(`Probation activation email failed: ${result.error.message}`)
+  }
+}
+
+// P3-E27-D2: sent to Lauren by onProbationCheckInDue — always EN, matches sendOwnerNotification
+export async function sendProbationCheckInDueEmail(
+  employeeName: string,
+  dayOffset: number,
+  staffUid: string,
+  config: EmailConfig,
+): Promise<void> {
+  const resend = new Resend(config.resendApiKey)
+  const result = await resend.emails.send({
+    from:    config.fromEmail,
+    to:      config.ownerEmail,
+    subject: probationCheckInDueSubject(employeeName, dayOffset),
+    text:    probationCheckInDueText(employeeName, dayOffset, staffUid),
+  })
+  if (result.error) {
+    throw new Error(`Probation check-in due email failed: ${result.error.message}`)
   }
 }

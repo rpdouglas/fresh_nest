@@ -129,6 +129,8 @@ export const onStaffRegistered = onCall(
       emergencyContact: null,
       // P3-E27-C2: appended to by the employee from ProfilePage's "Flag a correction".
       corrections: [],
+      // P3-E27-D2: null until onStaffStatusActivated first initializes it.
+      probation: null,
       createdAt: Timestamp.now(),
     })
 

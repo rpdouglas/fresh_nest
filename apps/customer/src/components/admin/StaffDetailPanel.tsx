@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils/utils'
-import type { Staff, BackgroundCheckStatus } from '@/types'
+import type { Staff, BackgroundCheckStatus, ProbationCheckIn, ProbationOutcome } from '@/types'
 import type { AdminChecklistItem } from './hooks/useStaff'
 
 const TRAINING_MODULE_ORDER: { key: string; labelKey: string }[] = [
@@ -16,12 +16,25 @@ const TRAINING_MODULE_ORDER: { key: string; labelKey: string }[] = [
 
 interface StaffDetailPanelProps {
   staff: Staff
+  adminEmail: string
   updateBackgroundCheckStatus: (input: { uid: string; status: BackgroundCheckStatus; provider?: string; notes?: string }) => Promise<unknown>
   updateChecklistItem: (uid: string, item: AdminChecklistItem, value: boolean) => Promise<void>
   activateEmployee: (uid: string) => Promise<void>
+  completeCheckIn: (uid: string, checkIns: ProbationCheckIn[]) => Promise<void>
+  setProbationOutcome: (uid: string, outcome: ProbationOutcome) => Promise<void>
+  extendProbation: (uid: string, currentEndDate: string) => Promise<void>
   onResendInvite: (uid: string) => void
   onExport: (staff: Staff) => void
   resendingId: string | null
+}
+
+type CheckInStatus = 'complete' | 'overdue' | 'due' | 'upcoming'
+
+function getCheckInStatus(checkIn: ProbationCheckIn, today: string): CheckInStatus {
+  if (checkIn.completedDate) return 'complete'
+  if (checkIn.scheduledDate < today) return 'overdue'
+  if (checkIn.scheduledDate === today) return 'due'
+  return 'upcoming'
 }
 
 function ChecklistStatus({ complete }: { complete: boolean }) {
@@ -38,9 +51,13 @@ function ChecklistStatus({ complete }: { complete: boolean }) {
 
 export const StaffDetailPanel: React.FC<StaffDetailPanelProps> = ({
   staff,
+  adminEmail,
   updateBackgroundCheckStatus,
   updateChecklistItem,
   activateEmployee,
+  completeCheckIn,
+  setProbationOutcome,
+  extendProbation,
   onResendInvite,
   onExport,
   resendingId,
@@ -63,6 +80,18 @@ export const StaffDetailPanel: React.FC<StaffDetailPanelProps> = ({
 
   const [isActivating, setIsActivating] = useState(false)
   const [activateError, setActivateError] = useState<string | null>(null)
+
+  // Probation check-in completion (P3-E27-D2)
+  const [editingCheckInId, setEditingCheckInId] = useState<string | null>(null)
+  const [checkInDraft, setCheckInDraft] = useState<{ completedDate: string; notes: string; rating: 1 | 2 | 3 | 4 | 5 }>({
+    completedDate: new Date().toISOString().slice(0, 10),
+    notes: '',
+    rating: 5,
+  })
+  const [checkInSaving, setCheckInSaving] = useState(false)
+  const [checkInError, setCheckInError] = useState<string | null>(null)
+  const [outcomeSaving, setOutcomeSaving] = useState(false)
+  const [outcomeError, setOutcomeError] = useState<string | null>(null)
 
   const getBgCheckStatusLabel = (status: BackgroundCheckStatus) => {
     switch (status) {
@@ -143,6 +172,67 @@ export const StaffDetailPanel: React.FC<StaffDetailPanelProps> = ({
   }
 
   const dateFmt = (d: Date | null | undefined) => d ? d.toLocaleDateString(i18n.language === 'fr' ? 'fr-CA' : 'en-CA') : null
+
+  const today = new Date().toISOString().slice(0, 10)
+  const probationCheckIns = staff.probation?.checkIns ?? []
+  const allCheckInsComplete = probationCheckIns.length > 0 && probationCheckIns.every((c) => c.completedDate != null)
+
+  const openCheckInEditor = (checkIn: ProbationCheckIn) => {
+    setCheckInError(null)
+    setCheckInDraft({ completedDate: today, notes: '', rating: 5 })
+    setEditingCheckInId(checkIn.id)
+  }
+
+  const handleSaveCheckIn = async () => {
+    if (!editingCheckInId || !staff.probation) return
+    setCheckInSaving(true)
+    setCheckInError(null)
+    try {
+      const updated = staff.probation.checkIns.map((c) =>
+        c.id === editingCheckInId
+          ? { ...c, completedDate: checkInDraft.completedDate, notes: checkInDraft.notes.trim() || null, rating: checkInDraft.rating, completedBy: adminEmail || null }
+          : c
+      )
+      await completeCheckIn(staff.id, updated)
+      setEditingCheckInId(null)
+    } catch (err) {
+      console.error('[StaffDetailPanel] Error completing probation check-in:', err)
+      setCheckInError(t('admin.staff.detail.probation.checkInSaveError', { defaultValue: 'Failed to save check-in.' }))
+    } finally {
+      setCheckInSaving(false)
+    }
+  }
+
+  const handleSetOutcome = async (outcome: ProbationOutcome) => {
+    if (!staff.probation) return
+    setOutcomeSaving(true)
+    setOutcomeError(null)
+    try {
+      if (outcome === 'extended') {
+        await extendProbation(staff.id, staff.probation.endDate)
+      } else {
+        await setProbationOutcome(staff.id, outcome)
+      }
+    } catch (err) {
+      console.error('[StaffDetailPanel] Error setting probation outcome:', err)
+      setOutcomeError(t('admin.staff.detail.probation.outcomeSaveError', { defaultValue: 'Failed to update probation outcome.' }))
+    } finally {
+      setOutcomeSaving(false)
+    }
+  }
+
+  const getCheckInStatusLabel = (status: CheckInStatus) => {
+    switch (status) {
+      case 'complete':
+        return t('admin.staff.detail.probation.status.complete', { defaultValue: 'Complete' })
+      case 'overdue':
+        return t('admin.staff.detail.probation.status.overdue', { defaultValue: 'Overdue' })
+      case 'due':
+        return t('admin.staff.detail.probation.status.due', { defaultValue: 'Due Today' })
+      default:
+        return t('admin.staff.detail.probation.status.upcoming', { defaultValue: 'Upcoming' })
+    }
+  }
 
   const adminToggleRows: { item: AdminChecklistItem; labelKey: string }[] = [
     { item: 'idVerified', labelKey: 'admin.staff.detail.checklist.idVerified' },
@@ -366,6 +456,140 @@ export const StaffDetailPanel: React.FC<StaffDetailPanelProps> = ({
                       ? t('admin.staff.detail.status.activating', { defaultValue: 'Activating...' })
                       : t('admin.staff.detail.status.activateBtn', { defaultValue: 'Activate Employee' })}
                 </button>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <h4 className="font-sub text-xl text-charcoal font-bold border-b border-sand pb-1.5">
+                  {t('admin.staff.detail.probation.title', { defaultValue: '30/60/90 Day Probation Tracking' })}
+                </h4>
+                {!staff.probation ? (
+                  <p className="font-body text-base text-text-muted">
+                    {t('admin.staff.detail.probation.notStarted', { defaultValue: 'Probation tracking begins once this employee is activated.' })}
+                  </p>
+                ) : (
+                  <>
+                    <ul className="flex flex-col gap-2">
+                      {probationCheckIns.map((checkIn) => {
+                        const status = getCheckInStatus(checkIn, today)
+                        const isEditing = editingCheckInId === checkIn.id
+                        return (
+                          <li key={checkIn.id} className="border border-sand rounded p-3 flex flex-col gap-2">
+                            <div className="flex items-center justify-between gap-3">
+                              <span className="font-body text-base font-medium text-charcoal">
+                                {t('admin.staff.detail.probation.checkInLabel', { day: checkIn.dayOffset, defaultValue: `Day ${checkIn.dayOffset} Check-In` })}
+                                <span className="block text-base text-text-muted">{checkIn.scheduledDate}</span>
+                              </span>
+                              <span className={cn(
+                                'inline-flex items-center px-2.5 py-0.5 rounded text-base font-medium shrink-0',
+                                status === 'complete' ? 'bg-emerald-100 text-emerald-800' :
+                                status === 'overdue' ? 'bg-red-100 text-red-800' :
+                                status === 'due' ? 'bg-amber-100 text-amber-800' :
+                                'bg-slate-100 text-slate-800'
+                              )}>
+                                {getCheckInStatusLabel(status)}
+                              </span>
+                            </div>
+
+                            {checkIn.completedDate ? (
+                              <p className="font-body text-base text-text-muted">
+                                {t('admin.staff.detail.probation.completedOn', { date: checkIn.completedDate, defaultValue: `Completed ${checkIn.completedDate}` })}
+                                {checkIn.rating != null && ` — ${checkIn.rating}/5`}
+                                {checkIn.notes && <span className="block">{checkIn.notes}</span>}
+                              </p>
+                            ) : isEditing ? (
+                              <div className="flex flex-col gap-2 bg-white border border-sand rounded p-3">
+                                <input
+                                  type="date"
+                                  value={checkInDraft.completedDate}
+                                  onChange={(e) => setCheckInDraft((prev) => ({ ...prev, completedDate: e.target.value }))}
+                                  disabled={checkInSaving}
+                                  className="min-h-[48px] px-2 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                                />
+                                <select
+                                  value={checkInDraft.rating}
+                                  onChange={(e) => setCheckInDraft((prev) => ({ ...prev, rating: Number(e.target.value) as 1 | 2 | 3 | 4 | 5 }))}
+                                  disabled={checkInSaving}
+                                  className="min-h-[48px] px-2 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                                >
+                                  {[1, 2, 3, 4, 5].map((n) => (
+                                    <option key={n} value={n}>{n} / 5</option>
+                                  ))}
+                                </select>
+                                <textarea
+                                  value={checkInDraft.notes}
+                                  onChange={(e) => setCheckInDraft((prev) => ({ ...prev, notes: e.target.value }))}
+                                  placeholder={t('admin.staff.detail.probation.notesPlaceholder', { defaultValue: 'Notes (optional)' })}
+                                  disabled={checkInSaving}
+                                  className="min-h-[48px] px-2 py-2 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                                />
+                                {checkInError && <span className="text-base text-red-600">{checkInError}</span>}
+                                <div className="flex gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => { void handleSaveCheckIn() }}
+                                    disabled={checkInSaving}
+                                    className="min-h-[48px] px-3 bg-slate-brand hover:bg-slate-dark text-white font-body font-medium rounded transition-colors"
+                                  >
+                                    {checkInSaving ? t('admin.staff.detail.probation.saving', { defaultValue: 'Saving...' }) : t('admin.staff.detail.probation.save', { defaultValue: 'Save' })}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setEditingCheckInId(null)}
+                                    disabled={checkInSaving}
+                                    className="min-h-[48px] px-3 border border-sand rounded font-body font-medium text-charcoal hover:bg-cream transition-colors"
+                                  >
+                                    {t('admin.staff.detail.probation.cancel', { defaultValue: 'Cancel' })}
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => openCheckInEditor(checkIn)}
+                                className="min-h-[48px] px-3 self-start border border-sand rounded font-body text-base font-medium text-charcoal hover:bg-cream transition-colors"
+                              >
+                                {t('admin.staff.detail.probation.completeCheckIn', { defaultValue: 'Complete Check-In' })}
+                              </button>
+                            )}
+                          </li>
+                        )
+                      })}
+                    </ul>
+
+                    <div className="flex flex-col gap-2 mt-2">
+                      <span className="font-body text-base text-charcoal font-medium">
+                        {t('admin.staff.detail.probation.outcome', { defaultValue: 'Probation Outcome' })}: {staff.probation.probationOutcome}
+                      </span>
+                      {outcomeError && <span className="text-base text-red-600">{outcomeError}</span>}
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          disabled={!allCheckInsComplete || outcomeSaving}
+                          onClick={() => { void handleSetOutcome('passed') }}
+                          className="min-h-[48px] px-4 rounded font-body text-base font-medium bg-emerald-100 text-emerald-800 hover:bg-emerald-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                          {t('admin.staff.detail.probation.markPassed', { defaultValue: 'Mark Passed' })}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={!allCheckInsComplete || outcomeSaving}
+                          onClick={() => { void handleSetOutcome('extended') }}
+                          className="min-h-[48px] px-4 rounded font-body text-base font-medium bg-amber-100 text-amber-800 hover:bg-amber-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                          {t('admin.staff.detail.probation.markExtended', { defaultValue: 'Extend 90 Days' })}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={!allCheckInsComplete || outcomeSaving}
+                          onClick={() => { void handleSetOutcome('terminated') }}
+                          className="min-h-[48px] px-4 rounded font-body text-base font-medium bg-red-100 text-red-800 hover:bg-red-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                          {t('admin.staff.detail.probation.markTerminated', { defaultValue: 'Terminate' })}
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
 
               <div className="flex flex-col gap-3">

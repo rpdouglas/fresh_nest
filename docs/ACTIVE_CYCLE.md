@@ -62,7 +62,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | **P3-E16** | Dynamic Pricing Engine & Conversion Optimisation | L | P3 | ⬜ Not Started |
 | **P3-E17** | Multi-Tenancy Schema Flag & ADR | S | P3 | ⬜ Not Started |
 | **P3-E26** | Quote-First Booking System | XL | P2 | ⬜ Not Started |
-| **P3-E27** | Employee Onboarding System | XL | P1 | 🔄 In Progress — A1 ✅ 2026-06-21 · A2 ✅ 2026-06-22 · B1 ✅ 2026-06-22 · B2 ✅ 2026-07-21 · C1 ✅ 2026-07-21 · C2 ✅ 2026-07-21 · C3 ✅ 2026-07-21 · D1 ✅ 2026-07-21 · D2/D3 pending |
+| **P3-E27** | Employee Onboarding System | XL | P1 | 🔄 In Progress — A1 ✅ 2026-06-21 · A2 ✅ 2026-06-22 · B1 ✅ 2026-06-22 · B2 ✅ 2026-07-21 · C1 ✅ 2026-07-21 · C2 ✅ 2026-07-21 · C3 ✅ 2026-07-21 · D1 ✅ 2026-07-21 · D2 ✅ 2026-07-22 · D3 pending |
 | **P3-E28** | Cleaner Suggestion & Auto-Assignment Engine v2 | L+M+S+M | P2 | ⬜ Not Started |
 
 ---

@@ -61,3 +61,16 @@ export async function sendOnMyWaySms(
   await client.messages.create({ body, from: config.fromNumber, to })
 }
 
+// P3-E27-D2: sent to Lauren (admin) by onProbationCheckInDue — always EN, same
+// admin-alert pattern as onBookingCancelled's SMS to OWNER_PHONE.
+export async function sendProbationCheckInDueSms(
+  employeeName: string,
+  dayOffset: number,
+  adminPhone: string,
+  config: SmsConfig,
+): Promise<void> {
+  const body = `Fresh Nest Co. Alert: Probation check-in due for ${employeeName} (Day ${dayOffset}). Complete it from the Staff Detail Panel.`
+  const client = twilio(config.accountSid, config.authToken)
+  await client.messages.create({ body, from: config.fromNumber, to: adminPhone })
+}
+

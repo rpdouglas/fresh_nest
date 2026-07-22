@@ -13,9 +13,13 @@ vi.mock('react-i18next', () => ({
 function renderPanel(staff: Staff, overrides: Partial<Parameters<typeof StaffDetailPanel>[0]> = {}) {
   const props = {
     staff,
+    adminEmail: 'lauren@freshnestco.ca',
     updateBackgroundCheckStatus: vi.fn().mockResolvedValue({ success: true }),
     updateChecklistItem: vi.fn().mockResolvedValue(undefined),
     activateEmployee: vi.fn().mockResolvedValue(undefined),
+    completeCheckIn: vi.fn().mockResolvedValue(undefined),
+    setProbationOutcome: vi.fn().mockResolvedValue(undefined),
+    extendProbation: vi.fn().mockResolvedValue(undefined),
     onResendInvite: vi.fn(),
     onExport: vi.fn(),
     resendingId: null,
@@ -50,6 +54,7 @@ const baseStaff: Staff = {
   employmentAgreement: { version: '1.0', acceptedAt: new Date(), signedByName: 'Jasmine Beausoleil', ipAddress: '1.2.3.4' },
   emergencyContact: { name: 'Sam', phone: '6135551111', relationship: 'Sibling' },
   corrections: [],
+  probation: null,
   createdAt: new Date(),
 }
 
@@ -130,5 +135,73 @@ describe('StaffDetailPanel (P3-E27-D1)', () => {
 
     fireEvent.click(screen.getByText('Export'))
     expect(props.onExport).toHaveBeenCalledWith(baseStaff)
+  })
+
+  describe('Probation tracking (P3-E27-D2)', () => {
+    const probationStaff: Staff = {
+      ...baseStaff,
+      status: 'active',
+      probation: {
+        startDate: '2026-01-01',
+        endDate: '2026-04-01',
+        probationOutcome: 'pending',
+        checkIns: [
+          { id: 'ci-30', dayOffset: 30, scheduledDate: '2026-01-31', completedDate: null, notes: null, rating: null, completedBy: null },
+          { id: 'ci-60', dayOffset: 60, scheduledDate: '2026-03-02', completedDate: null, notes: null, rating: null, completedBy: null },
+          { id: 'ci-90', dayOffset: 90, scheduledDate: '2026-04-01', completedDate: null, notes: null, rating: null, completedBy: null },
+        ],
+      },
+    }
+
+    it('shows a not-started message when probation is null', () => {
+      renderPanel(baseStaff)
+      expect(screen.getByText('Probation tracking begins once this employee is activated.')).toBeInTheDocument()
+    })
+
+    it('completes a check-in and calls completeCheckIn with the updated array', async () => {
+      const { props } = renderPanel(probationStaff)
+
+      const [completeBtn] = screen.getAllByText('Complete Check-In')
+      fireEvent.click(completeBtn)
+
+      await act(async () => {
+        fireEvent.click(screen.getByText('Save'))
+        await Promise.resolve()
+      })
+
+      const today = new Date().toISOString().slice(0, 10)
+      expect(props.completeCheckIn).toHaveBeenCalledWith(
+        'staff123',
+        expect.arrayContaining([expect.objectContaining({ id: 'ci-30', completedDate: today, rating: 5, completedBy: 'lauren@freshnestco.ca' })])
+      )
+    })
+
+    it('disables outcome buttons until all check-ins are complete', () => {
+      renderPanel(probationStaff)
+      expect(screen.getByText('Mark Passed')).toBeDisabled()
+      expect(screen.getByText('Extend 90 Days')).toBeDisabled()
+      expect(screen.getByText('Terminate')).toBeDisabled()
+    })
+
+    it('enables and calls setProbationOutcome once all check-ins are complete', async () => {
+      const completedStaff: Staff = {
+        ...probationStaff,
+        probation: {
+          ...probationStaff.probation!,
+          checkIns: probationStaff.probation!.checkIns.map((c) => ({ ...c, completedDate: '2026-01-31', rating: 5 })),
+        },
+      }
+      const { props } = renderPanel(completedStaff)
+
+      const passedBtn = screen.getByText('Mark Passed')
+      expect(passedBtn).not.toBeDisabled()
+
+      await act(async () => {
+        fireEvent.click(passedBtn)
+        await Promise.resolve()
+      })
+
+      expect(props.setProbationOutcome).toHaveBeenCalledWith('staff123', 'passed')
+    })
   })
 })
