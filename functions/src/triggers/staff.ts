@@ -19,6 +19,8 @@ export const onStaffUpdatedTrigger = onDocumentUpdated(
     const afterCompliance = after.compliance || {}
     const beforeFinancials = before.financials || {}
     const afterFinancials = after.financials || {}
+    const beforeChecklist = before.onboardingChecklist || {}
+    const afterChecklist = after.onboardingChecklist || {}
 
     type AuditLogEntry = {
       collection: string
@@ -106,6 +108,24 @@ export const onStaffUpdatedTrigger = onDocumentUpdated(
         reason: 'Phone number updated from Profile',
         overrideType: null,
       })
+    }
+
+    // 6. Admin-only onboarding checklist items (P3-E27-D1 — no employee-facing counterpart)
+    const ADMIN_CHECKLIST_ITEMS = ['idVerified', 'supervisedShiftCompleted', 'uniformIssued', 'directDepositOnFile'] as const
+    for (const item of ADMIN_CHECKLIST_ITEMS) {
+      if (beforeChecklist[item] !== afterChecklist[item]) {
+        auditLogs.push({
+          collection: 'staff',
+          documentId: staffId,
+          field: `onboardingChecklist.${item}`,
+          oldValue: beforeChecklist[item] ?? false,
+          newValue: afterChecklist[item] ?? false,
+          changedBy: 'admin',
+          changedAt: new Date(),
+          reason: `Onboarding checklist item "${item}" updated`,
+          overrideType: null,
+        })
+      }
     }
 
     // Write all audit logs

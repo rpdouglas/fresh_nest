@@ -5,16 +5,18 @@ const mocks = vi.hoisted(() => {
   const mockHttpsCallableFn = vi.fn().mockResolvedValue({ data: { uid: 'uid-123', email: 'jasmine@freshnest.ca' } })
   const mockHttpsCallable = vi.fn(() => mockHttpsCallableFn)
   const mockAddDoc = vi.fn()
+  const mockUpdateDoc = vi.fn().mockResolvedValue(undefined)
   const mockInvalidateQueries = vi.fn()
   return {
     mockHttpsCallableFn,
     mockHttpsCallable,
     mockAddDoc,
+    mockUpdateDoc,
     mockInvalidateQueries,
   }
 })
 
-const { mockHttpsCallableFn, mockHttpsCallable, mockAddDoc, mockInvalidateQueries } = mocks
+const { mockHttpsCallableFn, mockHttpsCallable, mockAddDoc, mockUpdateDoc, mockInvalidateQueries } = mocks
 
 vi.mock('firebase/functions', () => ({
   httpsCallable: mocks.mockHttpsCallable,
@@ -29,7 +31,9 @@ vi.mock('firebase/firestore', () => {
     collection: vi.fn(() => collectionRef),
     query: vi.fn(),
     orderBy: vi.fn(),
+    doc: vi.fn(() => ({ id: 'uid-123' })),
     addDoc: mocks.mockAddDoc,
+    updateDoc: mocks.mockUpdateDoc,
     Timestamp: { now: vi.fn() },
     initializeFirestore: vi.fn(),
     persistentLocalCache: vi.fn(),
@@ -195,6 +199,68 @@ describe('useStaff — updateBackgroundCheckStatus (P3-E27-B2)', () => {
 
     await act(async () => {
       await result.current.updateBackgroundCheckStatus({ uid: 'uid-123', status: 'cleared' })
+    })
+
+    expect(mockInvalidateQueries).toHaveBeenCalledWith({ queryKey: ['staff'] })
+  })
+})
+
+describe('useStaff — updateChecklistItem (P3-E27-D1)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockUpdateDoc.mockResolvedValue(undefined)
+  })
+
+  it('writes the onboardingChecklist item directly via updateDoc (no callable)', async () => {
+    const { result } = renderHook(() => useStaff(true))
+
+    await act(async () => {
+      await result.current.updateChecklistItem('uid-123', 'idVerified', true)
+    })
+
+    expect(mockUpdateDoc).toHaveBeenCalledWith(
+      expect.anything(),
+      { 'onboardingChecklist.idVerified': true }
+    )
+    expect(mockHttpsCallable).not.toHaveBeenCalled()
+  })
+
+  it('invalidates the staff query cache after a successful toggle', async () => {
+    const { result } = renderHook(() => useStaff(true))
+
+    await act(async () => {
+      await result.current.updateChecklistItem('uid-123', 'uniformIssued', false)
+    })
+
+    expect(mockInvalidateQueries).toHaveBeenCalledWith({ queryKey: ['staff'] })
+  })
+})
+
+describe('useStaff — activateEmployee (P3-E27-D1)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockUpdateDoc.mockResolvedValue(undefined)
+  })
+
+  it('writes status: active directly via updateDoc (no callable)', async () => {
+    const { result } = renderHook(() => useStaff(true))
+
+    await act(async () => {
+      await result.current.activateEmployee('uid-123')
+    })
+
+    expect(mockUpdateDoc).toHaveBeenCalledWith(
+      expect.anything(),
+      { status: 'active' }
+    )
+    expect(mockHttpsCallable).not.toHaveBeenCalled()
+  })
+
+  it('invalidates the staff query cache after activation', async () => {
+    const { result } = renderHook(() => useStaff(true))
+
+    await act(async () => {
+      await result.current.activateEmployee('uid-123')
     })
 
     expect(mockInvalidateQueries).toHaveBeenCalledWith({ queryKey: ['staff'] })

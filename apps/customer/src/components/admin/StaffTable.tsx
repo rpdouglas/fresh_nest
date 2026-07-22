@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils/utils'
-import type { StaffRole, StaffStatus, Staff, BackgroundCheckStatus } from '@/types'
+import type { StaffRole, StaffStatus, Staff } from '@/types'
 import { RegisterStaffModal } from './RegisterStaffModal'
 import { ExportRecordModal } from './ExportRecordModal'
+import { StaffDetailPanel } from './StaffDetailPanel'
 import { useStaff, RegisterStaffInput } from './hooks/useStaff'
 
 interface StaffTableProps {
@@ -14,10 +16,13 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
   const { t } = useTranslation()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
-  
+
   // Export modal state
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null)
   const [isExportModalOpen, setIsExportModalOpen] = useState(false)
+
+  // P3-E27-D1: expandable row -> StaffDetailPanel (mirrors BookingsTable/BookingDetailPanel)
+  const [expandedRowId, setExpandedRowId] = useState<string | null>(null)
 
   const {
     filteredStaff,
@@ -32,20 +37,12 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
     registerStaff,
     resendWelcome,
     updateBackgroundCheckStatus,
+    updateChecklistItem,
+    activateEmployee,
   } = useStaff(isAuthorized)
 
   const [resendingId, setResendingId] = useState<string | null>(null)
   const [resendError, setResendError] = useState<string | null>(null)
-
-  // P3-E27-B2: background check status/provider/notes editor
-  const [editingBgCheckId, setEditingBgCheckId] = useState<string | null>(null)
-  const [bgDraft, setBgDraft] = useState<{ status: BackgroundCheckStatus; provider: string; notes: string }>({
-    status: 'not_started',
-    provider: '',
-    notes: '',
-  })
-  const [bgSaving, setBgSaving] = useState(false)
-  const [bgError, setBgError] = useState<string | null>(null)
 
   const handleRegister = async (input: RegisterStaffInput) => {
     await registerStaff(input)
@@ -85,50 +82,6 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
         return t('admin.staff.modal.roleOption.supervisor', { defaultValue: 'Supervisor' })
       default:
         return role
-    }
-  }
-
-  const getBgCheckStatusLabel = (status: BackgroundCheckStatus) => {
-    switch (status) {
-      case 'not_started':
-        return t('admin.staff.backgroundCheck.statusOption.not_started', { defaultValue: 'Not Started' })
-      case 'pending':
-        return t('admin.staff.backgroundCheck.statusOption.pending', { defaultValue: 'Pending' })
-      case 'cleared':
-        return t('admin.staff.backgroundCheck.statusOption.cleared', { defaultValue: 'Cleared' })
-      case 'flagged':
-        return t('admin.staff.backgroundCheck.statusOption.flagged', { defaultValue: 'Flagged' })
-      default:
-        return status
-    }
-  }
-
-  const openBgCheckEditor = (s: Staff) => {
-    setBgError(null)
-    setEditingBgCheckId(s.id)
-    setBgDraft({
-      status: s.backgroundCheck?.status ?? 'not_started',
-      provider: s.backgroundCheck?.provider ?? '',
-      notes: s.backgroundCheck?.notes ?? '',
-    })
-  }
-
-  const handleSaveBgCheck = async (uid: string) => {
-    setBgSaving(true)
-    setBgError(null)
-    try {
-      await updateBackgroundCheckStatus({
-        uid,
-        status: bgDraft.status,
-        provider: bgDraft.provider.trim() || undefined,
-        notes: bgDraft.notes.trim() || undefined,
-      })
-      setEditingBgCheckId(null)
-    } catch (err) {
-      console.error('[handleSaveBgCheck] Error updating background check status:', err)
-      setBgError(t('admin.staff.backgroundCheck.saveError', { defaultValue: 'Failed to update background check status.' }))
-    } finally {
-      setBgSaving(false)
     }
   }
 
@@ -270,174 +223,112 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
                     {t('admin.staff.table.status')}
                   </th>
                   <th className="p-4 font-body text-base font-semibold text-charcoal">
-                    {t('admin.staff.backgroundCheck.columnLabel', { defaultValue: 'Background Check' })}
-                  </th>
-                  <th className="p-4 font-body text-base font-semibold text-charcoal">
                     {t('admin.staff.modal.transport')}
                   </th>
                   <th className="p-4 font-body text-base font-semibold text-charcoal text-right">
-                    {t('admin.staff.table.actions', { defaultValue: 'Actions' })}
+                    {t('admin.staff.detail.expandHint', { defaultValue: 'Details' })}
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {filteredStaff.map((s) => (
-                  <tr key={s.id} className="border-b border-sand hover:bg-warm-white transition-colors duration-150">
-                    {/* Name */}
-                    <td className="p-4 font-body text-base font-medium text-charcoal">
-                      {s.firstName} {s.lastName}
-                    </td>
-                    
-                    {/* Contact */}
-                    <td className="p-4 font-body text-base text-charcoal">
-                      <div className="flex flex-col">
-                        <span>{s.email}</span>
-                        <span className="text-text-muted text-base">{s.phone}</span>
-                        {s.welcomeEmailSentAt ? (
-                          <span className="text-xs text-green-600 font-medium mt-1">
-                            {t('admin.staff.welcomeSent', { defaultValue: 'Invite sent' })}: {new Date(s.welcomeEmailSentAt).toLocaleDateString()}
-                          </span>
-                        ) : (
-                          <span className="text-xs text-amber-600 font-medium mt-1">
-                            {t('admin.staff.welcomeNotSent', { defaultValue: 'Invite not sent' })}
-                          </span>
+                {filteredStaff.map((s) => {
+                  const isExpanded = expandedRowId === s.id
+                  return (
+                    <tr key={s.id} className="contents">
+                      <tr
+                        onClick={() => setExpandedRowId(isExpanded ? null : s.id)}
+                        className={cn(
+                          'border-b border-sand hover:bg-warm-white transition-colors duration-150 cursor-pointer',
+                          isExpanded && 'bg-warm-white'
                         )}
-                      </div>
-                    </td>
+                      >
+                        {/* Name */}
+                        <td className="p-4 font-body text-base font-medium text-charcoal">
+                          {s.firstName} {s.lastName}
+                        </td>
 
-                    {/* Role */}
-                    <td className="p-4 font-body text-base text-charcoal">
-                      <span className={cn(
-                        'inline-flex items-center px-2.5 py-0.5 rounded text-base font-medium',
-                        s.role === 'supervisor' ? 'bg-indigo-100 text-indigo-800' :
-                        s.role === 'lead' ? 'bg-green-100 text-green-800' :
-                        'bg-slate-100 text-slate-800'
-                      )}>
-                        {getRoleLabel(s.role)}
-                      </span>
-                    </td>
-
-                    {/* Status */}
-                    <td className="p-4 font-body text-base text-charcoal">
-                      <span className={cn(
-                        'inline-flex items-center px-2.5 py-0.5 rounded text-base font-medium',
-                        s.status === 'active' ? 'bg-emerald-100 text-emerald-800' :
-                        s.status === 'onboarding' ? 'bg-amber-100 text-amber-800' :
-                        'bg-red-100 text-red-800'
-                      )}>
-                        {getStatusLabel(s.status)}
-                      </span>
-                    </td>
-
-                    {/* Background Check (P3-E27-B2) */}
-                    <td className="p-4 font-body text-base text-charcoal">
-                      {editingBgCheckId === s.id ? (
-                        <div className="flex flex-col gap-2 min-w-[180px]">
-                          <select
-                            value={bgDraft.status}
-                            onChange={(e) => setBgDraft((prev) => ({ ...prev, status: e.target.value as BackgroundCheckStatus }))}
-                            disabled={bgSaving}
-                            className="min-h-[48px] px-2 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
-                          >
-                            <option value="not_started">{getBgCheckStatusLabel('not_started')}</option>
-                            <option value="pending">{getBgCheckStatusLabel('pending')}</option>
-                            <option value="cleared">{getBgCheckStatusLabel('cleared')}</option>
-                            <option value="flagged">{getBgCheckStatusLabel('flagged')}</option>
-                          </select>
-                          <input
-                            type="text"
-                            value={bgDraft.provider}
-                            onChange={(e) => setBgDraft((prev) => ({ ...prev, provider: e.target.value }))}
-                            placeholder={t('admin.staff.backgroundCheck.providerPlaceholder', { defaultValue: 'Provider (optional)' })}
-                            disabled={bgSaving}
-                            className="min-h-[48px] px-2 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
-                          />
-                          {bgError && <span className="text-base text-red-600">{bgError}</span>}
-                          <div className="flex gap-2">
-                            <button
-                              type="button"
-                              onClick={() => { void handleSaveBgCheck(s.id) }}
-                              disabled={bgSaving}
-                              className="min-h-[48px] px-3 bg-slate-brand hover:bg-slate-dark text-white font-body font-medium rounded transition-colors"
-                            >
-                              {bgSaving ? t('admin.staff.backgroundCheck.saving', { defaultValue: 'Saving...' }) : t('admin.staff.backgroundCheck.save', { defaultValue: 'Save' })}
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setEditingBgCheckId(null)}
-                              disabled={bgSaving}
-                              className="min-h-[48px] px-3 border border-sand rounded font-body font-medium text-charcoal hover:bg-cream transition-colors"
-                            >
-                              {t('admin.staff.backgroundCheck.cancel', { defaultValue: 'Cancel' })}
-                            </button>
+                        {/* Contact */}
+                        <td className="p-4 font-body text-base text-charcoal">
+                          <div className="flex flex-col">
+                            <span>{s.email}</span>
+                            <span className="text-text-muted text-base">{s.phone}</span>
+                            {s.welcomeEmailSentAt ? (
+                              <span className="text-xs text-green-600 font-medium mt-1">
+                                {t('admin.staff.welcomeSent', { defaultValue: 'Invite sent' })}: {new Date(s.welcomeEmailSentAt).toLocaleDateString()}
+                              </span>
+                            ) : (
+                              <span className="text-xs text-amber-600 font-medium mt-1">
+                                {t('admin.staff.welcomeNotSent', { defaultValue: 'Invite not sent' })}
+                              </span>
+                            )}
                           </div>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-start gap-1.5">
+                        </td>
+
+                        {/* Role */}
+                        <td className="p-4 font-body text-base text-charcoal">
                           <span className={cn(
                             'inline-flex items-center px-2.5 py-0.5 rounded text-base font-medium',
-                            s.backgroundCheck?.status === 'cleared' ? 'bg-emerald-100 text-emerald-800' :
-                            s.backgroundCheck?.status === 'pending' ? 'bg-amber-100 text-amber-800' :
-                            s.backgroundCheck?.status === 'flagged' ? 'bg-red-100 text-red-800' :
+                            s.role === 'supervisor' ? 'bg-indigo-100 text-indigo-800' :
+                            s.role === 'lead' ? 'bg-green-100 text-green-800' :
                             'bg-slate-100 text-slate-800'
                           )}>
-                            {getBgCheckStatusLabel(s.backgroundCheck?.status ?? 'not_started')}
+                            {getRoleLabel(s.role)}
                           </span>
-                          <button
-                            type="button"
-                            onClick={() => openBgCheckEditor(s)}
-                            className="text-slate-brand hover:text-slate-dark font-medium min-h-[48px] px-1 text-base transition-colors duration-150"
-                          >
-                            {t('admin.staff.backgroundCheck.edit', { defaultValue: 'Update' })}
-                          </button>
-                        </div>
-                      )}
-                    </td>
+                        </td>
 
-                    {/* Transportation & Constraints */}
-                    <td className="p-4 font-body text-base text-charcoal">
-                      <div className="flex flex-col text-base text-text-muted">
-                        <span className="capitalize font-medium text-charcoal">
-                          {s.constraints?.transportMode ? t(`admin.staff.modal.transportOption.${s.constraints.transportMode}`, { defaultValue: s.constraints.transportMode.replace('_', ' ') }) : '—'}
-                        </span>
-                        {s.constraints?.transportMode === 'transit' && (
-                          <span>
-                            {t('admin.staff.modal.buffer')}: {s.constraints.transitBufferMinutes} min
+                        {/* Status */}
+                        <td className="p-4 font-body text-base text-charcoal">
+                          <span className={cn(
+                            'inline-flex items-center px-2.5 py-0.5 rounded text-base font-medium',
+                            s.status === 'active' ? 'bg-emerald-100 text-emerald-800' :
+                            s.status === 'onboarding' ? 'bg-amber-100 text-amber-800' :
+                            'bg-red-100 text-red-800'
+                          )}>
+                            {getStatusLabel(s.status)}
                           </span>
+                        </td>
+
+                        {/* Transportation & Constraints */}
+                        <td className="p-4 font-body text-base text-charcoal">
+                          <div className="flex flex-col text-base text-text-muted">
+                            <span className="capitalize font-medium text-charcoal">
+                              {s.constraints?.transportMode ? t(`admin.staff.modal.transportOption.${s.constraints.transportMode}`, { defaultValue: s.constraints.transportMode.replace('_', ' ') }) : '—'}
+                            </span>
+                            {s.constraints?.transportMode === 'transit' && (
+                              <span>
+                                {t('admin.staff.modal.buffer')}: {s.constraints.transitBufferMinutes} min
+                              </span>
+                            )}
+                          </div>
+                        </td>
+
+                        {/* Expand indicator */}
+                        <td className="p-4 font-body text-base text-slate-brand font-medium text-right">
+                          {isExpanded
+                            ? t('admin.staff.detail.hideDetails', { defaultValue: 'Hide' })
+                            : t('admin.staff.detail.viewDetails', { defaultValue: 'View' })}
+                        </td>
+                      </tr>
+
+                      <AnimatePresence initial={false}>
+                        {isExpanded && (
+                          <StaffDetailPanel
+                            staff={s}
+                            updateBackgroundCheckStatus={updateBackgroundCheckStatus}
+                            updateChecklistItem={updateChecklistItem}
+                            activateEmployee={activateEmployee}
+                            onResendInvite={(uid) => { void handleResendInvite(uid) }}
+                            onExport={(staffRecord) => {
+                              setSelectedStaff(staffRecord)
+                              setIsExportModalOpen(true)
+                            }}
+                            resendingId={resendingId}
+                          />
                         )}
-                      </div>
-                    </td>
-
-                    {/* Actions */}
-                    <td className="p-4 font-body text-base text-charcoal text-right">
-                      <div className="flex flex-col sm:flex-row items-end sm:items-center justify-end gap-2">
-                        <button
-                          type="button"
-                          disabled={resendingId !== null}
-                          onClick={() => { void handleResendInvite(s.id) }}
-                          className={cn(
-                            "text-slate-brand hover:text-slate-dark font-medium min-h-[48px] px-3 rounded hover:bg-slate-pale transition-colors duration-150",
-                            resendingId === s.id && "animate-pulse cursor-wait"
-                          )}
-                        >
-                          {resendingId === s.id 
-                            ? t('admin.staff.table.sending', { defaultValue: 'Sending...' }) 
-                            : t('admin.staff.table.resend', { defaultValue: 'Resend Invite' })}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSelectedStaff(s)
-                            setIsExportModalOpen(true)
-                          }}
-                          className="text-slate-brand hover:text-slate-dark font-medium min-h-[48px] px-3 rounded hover:bg-slate-pale transition-colors duration-150"
-                        >
-                          {t('admin.staff.table.export', { defaultValue: 'Export' })}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      </AnimatePresence>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>

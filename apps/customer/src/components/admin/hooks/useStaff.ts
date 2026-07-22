@@ -1,11 +1,16 @@
 import { useState, useMemo } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useCollectionQuery } from '@tanstack-query-firebase/react/firestore'
-import { query, orderBy } from 'firebase/firestore'
+import { query, orderBy, doc, updateDoc } from 'firebase/firestore'
 import { httpsCallable } from 'firebase/functions'
 import { db, functions } from '@/lib/firebase/firebase'
 import { staffCollection } from '@freshnest/shared'
 import type { Staff, StaffRole, StaffStatus, StaffLanguage, TransportMode, BackgroundCheckStatus } from '@/types'
+
+// P3-E27-D1: the four admin-only onboarding checklist items with no employee-facing
+// counterpart. Written directly — isAdmin() already grants unrestricted staff-doc
+// write access, and onStaffUpdatedTrigger picks these up for auditLog automatically.
+export type AdminChecklistItem = 'idVerified' | 'supervisedShiftCompleted' | 'uniformIssued' | 'directDepositOnFile'
 
 export interface RegisterStaffInput {
   firstName: string
@@ -94,6 +99,18 @@ export function useStaff(enabled: boolean) {
     return result.data
   }
 
+  const updateChecklistItem = async (uid: string, item: AdminChecklistItem, value: boolean) => {
+    const staffRef = doc(staffCollection(db), uid)
+    await updateDoc(staffRef, { [`onboardingChecklist.${item}`]: value })
+    await queryClient.invalidateQueries({ queryKey: ['staff'] })
+  }
+
+  const activateEmployee = async (uid: string) => {
+    const staffRef = doc(staffCollection(db), uid)
+    await updateDoc(staffRef, { status: 'active' })
+    await queryClient.invalidateQueries({ queryKey: ['staff'] })
+  }
+
   return {
     staffList,
     filteredStaff,
@@ -108,5 +125,7 @@ export function useStaff(enabled: boolean) {
     registerStaff,
     resendWelcome,
     updateBackgroundCheckStatus,
+    updateChecklistItem,
+    activateEmployee,
   }
 }
