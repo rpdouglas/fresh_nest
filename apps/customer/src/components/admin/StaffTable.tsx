@@ -43,6 +43,10 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized, adminEmail
     completeCheckIn,
     setProbationOutcome,
     extendProbation,
+    updateOffboardingChecklist,
+    setDepartureReason,
+    setFinalNotes,
+    reactivateStaff,
   } = useStaff(isAuthorized)
 
   const [resendingId, setResendingId] = useState<string | null>(null)
@@ -325,6 +329,10 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized, adminEmail
                             completeCheckIn={completeCheckIn}
                             setProbationOutcome={setProbationOutcome}
                             extendProbation={extendProbation}
+                            updateOffboardingChecklist={updateOffboardingChecklist}
+                            setDepartureReason={setDepartureReason}
+                            setFinalNotes={setFinalNotes}
+                            reactivateStaff={reactivateStaff}
                             onResendInvite={(uid) => { void handleResendInvite(uid) }}
                             onExport={(staffRecord) => {
                               setSelectedStaff(staffRecord)

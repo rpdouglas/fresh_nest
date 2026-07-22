@@ -131,6 +131,8 @@ export const onStaffRegistered = onCall(
       corrections: [],
       // P3-E27-D2: null until onStaffStatusActivated first initializes it.
       probation: null,
+      // P3-E27-D3: null until onStaffDeactivated first initializes it.
+      offboarding: null,
       createdAt: Timestamp.now(),
     })
 
@@ -343,6 +345,84 @@ export const updateBackgroundCheckStatus = onCall(async (request) => {
   })
 
   logger.info(`[updateBackgroundCheckStatus] staff/${data.uid} backgroundCheck.status -> ${data.status}`)
+
+  return { success: true }
+})
+
+// P3-E27-D3: Admin reactivates a formerly-deactivated employee. This must be a callable
+// (not a direct client updateDoc like D1/D2's checklist toggles) because restoring FSM
+// access requires real Firebase Auth Admin API calls (re-enable the account, restore the
+// role custom claim) that only the Admin SDK can make — a client-side updateDoc has no
+// way to touch Auth at all.
+export const reactivateStaff = onCall(async (request) => {
+  const authContext = request.auth
+  if (!authContext) {
+    throw new HttpsError('unauthenticated', 'Must be authenticated.')
+  }
+
+  const db = getFirestore()
+
+  let isAuthorized = authContext.token.role === 'admin'
+  if (!isAuthorized && authContext.token.email) {
+    const adminSnap = await db
+      .collection('admins')
+      .doc(authContext.token.email.trim().toLowerCase())
+      .get()
+    if (adminSnap.exists) isAuthorized = true
+  }
+  if (!isAuthorized) {
+    throw new HttpsError('permission-denied', 'Only administrators can reactivate staff.')
+  }
+
+  const { uid } = request.data as { uid?: string }
+  if (!uid?.trim()) throw new HttpsError('invalid-argument', 'uid is required.')
+
+  const staffRef = db.collection('staff').doc(uid)
+  const staffSnap = await staffRef.get()
+  if (!staffSnap.exists) {
+    throw new HttpsError('not-found', `Staff member with uid ${uid} not found.`)
+  }
+
+  const staffData = staffSnap.data()!
+  if (staffData.status !== 'inactive') {
+    throw new HttpsError('failed-precondition', 'Only inactive staff can be reactivated.')
+  }
+
+  const auth = getAuth()
+  // Same role -> Auth claim mapping onStaffRegistered already uses.
+  const authClaim = staffData.role === 'supervisor' ? 'supervisor' : 'staff'
+
+  try {
+    await auth.updateUser(uid, { disabled: false })
+    await auth.setCustomUserClaims(uid, { role: authClaim })
+  } catch (err: any) {
+    logger.error(`[reactivateStaff] Failed to restore Auth access for staff/${uid}:`, err)
+    Sentry.captureException(err, { tags: { function: 'reactivateStaff' } })
+    throw new HttpsError('internal', `Failed to restore Auth access: ${err.message || err}`)
+  }
+
+  // P3-E27-D3: reactivation is treated as a new employment period (human-confirmed
+  // default) — probation and offboarding both reset to null so onStaffStatusActivated
+  // naturally reinitializes a fresh 30/60/90 window, same as any other first activation.
+  await staffRef.update({
+    status: 'active',
+    probation: null,
+    offboarding: null,
+  })
+
+  await db.collection('auditLog').add({
+    collection: 'staff',
+    documentId: uid,
+    field: 'status',
+    oldValue: 'inactive',
+    newValue: 'active',
+    changedBy: authContext.token.email || authContext.uid,
+    changedAt: Timestamp.now(),
+    reason: 'Staff reactivated — Auth access restored',
+    overrideType: 'staff_reactivated',
+  })
+
+  logger.info(`[reactivateStaff] staff/${uid} reactivated, Auth access restored with role claim '${authClaim}'.`)
 
   return { success: true }
 })

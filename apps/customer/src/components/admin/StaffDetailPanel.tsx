@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils/utils'
-import type { Staff, BackgroundCheckStatus, ProbationCheckIn, ProbationOutcome } from '@/types'
-import type { AdminChecklistItem } from './hooks/useStaff'
+import type { Staff, BackgroundCheckStatus, ProbationCheckIn, ProbationOutcome, DepartureReason } from '@/types'
+import type { AdminChecklistItem, OffboardingChecklistItem } from './hooks/useStaff'
 
 const TRAINING_MODULE_ORDER: { key: string; labelKey: string }[] = [
   { key: 'module1Welcome', labelKey: 'admin.staff.detail.training.module1' },
@@ -23,6 +23,10 @@ interface StaffDetailPanelProps {
   completeCheckIn: (uid: string, checkIns: ProbationCheckIn[]) => Promise<void>
   setProbationOutcome: (uid: string, outcome: ProbationOutcome) => Promise<void>
   extendProbation: (uid: string, currentEndDate: string) => Promise<void>
+  updateOffboardingChecklist: (uid: string, item: OffboardingChecklistItem, value: boolean) => Promise<void>
+  setDepartureReason: (uid: string, reason: DepartureReason) => Promise<void>
+  setFinalNotes: (uid: string, notes: string) => Promise<void>
+  reactivateStaff: (uid: string) => Promise<unknown>
   onResendInvite: (uid: string) => void
   onExport: (staff: Staff) => void
   resendingId: string | null
@@ -58,6 +62,10 @@ export const StaffDetailPanel: React.FC<StaffDetailPanelProps> = ({
   completeCheckIn,
   setProbationOutcome,
   extendProbation,
+  updateOffboardingChecklist,
+  setDepartureReason,
+  setFinalNotes,
+  reactivateStaff,
   onResendInvite,
   onExport,
   resendingId,
@@ -92,6 +100,16 @@ export const StaffDetailPanel: React.FC<StaffDetailPanelProps> = ({
   const [checkInError, setCheckInError] = useState<string | null>(null)
   const [outcomeSaving, setOutcomeSaving] = useState(false)
   const [outcomeError, setOutcomeError] = useState<string | null>(null)
+
+  // Offboarding (P3-E27-D3)
+  const [togglingOffboardingItem, setTogglingOffboardingItem] = useState<OffboardingChecklistItem | null>(null)
+  const [offboardingToggleError, setOffboardingToggleError] = useState<string | null>(null)
+  const [departureReasonDraft, setDepartureReasonDraft] = useState<DepartureReason | ''>(staff.offboarding?.departureReason ?? '')
+  const [finalNotesDraft, setFinalNotesDraft] = useState<string>(staff.offboarding?.finalNotes ?? '')
+  const [offboardingSaving, setOffboardingSaving] = useState(false)
+  const [offboardingSaveError, setOffboardingSaveError] = useState<string | null>(null)
+  const [isReactivating, setIsReactivating] = useState(false)
+  const [reactivateError, setReactivateError] = useState<string | null>(null)
 
   const getBgCheckStatusLabel = (status: BackgroundCheckStatus) => {
     switch (status) {
@@ -156,6 +174,7 @@ export const StaffDetailPanel: React.FC<StaffDetailPanelProps> = ({
   const isTrainingComplete = checklist.platformTrainingCompleted === true
   const canActivate = isBackgroundCheckCleared && isIdVerified && isAgreementSigned && isTrainingComplete
   const isAlreadyActive = staff.status === 'active'
+  const isDeactivated = staff.status === 'inactive'
 
   const handleActivate = async () => {
     if (!canActivate || isActivating || isAlreadyActive) return
@@ -233,6 +252,67 @@ export const StaffDetailPanel: React.FC<StaffDetailPanelProps> = ({
         return t('admin.staff.detail.probation.status.upcoming', { defaultValue: 'Upcoming' })
     }
   }
+
+  const handleToggleOffboardingItem = async (item: OffboardingChecklistItem, value: boolean) => {
+    setTogglingOffboardingItem(item)
+    setOffboardingToggleError(null)
+    try {
+      await updateOffboardingChecklist(staff.id, item, value)
+    } catch (err) {
+      console.error('[StaffDetailPanel] Error updating offboarding checklist item:', err)
+      setOffboardingToggleError(t('admin.staff.detail.offboarding.toggleError', { defaultValue: 'Failed to update checklist item.' }))
+    } finally {
+      setTogglingOffboardingItem(null)
+    }
+  }
+
+  const handleSaveOffboardingDetails = async () => {
+    setOffboardingSaving(true)
+    setOffboardingSaveError(null)
+    try {
+      if (departureReasonDraft) {
+        await setDepartureReason(staff.id, departureReasonDraft)
+      }
+      await setFinalNotes(staff.id, finalNotesDraft)
+    } catch (err) {
+      console.error('[StaffDetailPanel] Error saving offboarding details:', err)
+      setOffboardingSaveError(t('admin.staff.detail.offboarding.saveError', { defaultValue: 'Failed to save offboarding details.' }))
+    } finally {
+      setOffboardingSaving(false)
+    }
+  }
+
+  const handleReactivate = async () => {
+    setIsReactivating(true)
+    setReactivateError(null)
+    try {
+      await reactivateStaff(staff.id)
+    } catch (err) {
+      console.error('[StaffDetailPanel] Error reactivating employee:', err)
+      setReactivateError(t('admin.staff.detail.offboarding.reactivateError', { defaultValue: 'Failed to reactivate employee.' }))
+    } finally {
+      setIsReactivating(false)
+    }
+  }
+
+  const getDepartureReasonLabel = (reason: DepartureReason) => {
+    switch (reason) {
+      case 'voluntary':
+        return t('admin.staff.detail.offboarding.reason.voluntary', { defaultValue: 'Voluntary' })
+      case 'performance':
+        return t('admin.staff.detail.offboarding.reason.performance', { defaultValue: 'Performance' })
+      case 'seasonal':
+        return t('admin.staff.detail.offboarding.reason.seasonal', { defaultValue: 'Seasonal' })
+      default:
+        return t('admin.staff.detail.offboarding.reason.other', { defaultValue: 'Other' })
+    }
+  }
+
+  const offboardingToggleRows: { item: OffboardingChecklistItem; labelKey: string }[] = [
+    { item: 'keysReturned', labelKey: 'admin.staff.detail.offboarding.keysReturned' },
+    { item: 'accessCodesChanged', labelKey: 'admin.staff.detail.offboarding.accessCodesChanged' },
+    { item: 'finalPayCalculated', labelKey: 'admin.staff.detail.offboarding.finalPayCalculated' },
+  ]
 
   const adminToggleRows: { item: AdminChecklistItem; labelKey: string }[] = [
     { item: 'idVerified', labelKey: 'admin.staff.detail.checklist.idVerified' },
@@ -440,22 +520,33 @@ export const StaffDetailPanel: React.FC<StaffDetailPanelProps> = ({
                     {activateError}
                   </div>
                 )}
-                <button
-                  type="button"
-                  title={!canActivate ? t('admin.staff.detail.status.activateTooltip', { defaultValue: 'Complete background check, ID verification, employment agreement, and training first' }) : undefined}
-                  disabled={!canActivate || isActivating || isAlreadyActive}
-                  onClick={() => { void handleActivate() }}
-                  className={cn(
-                    'min-h-[48px] px-6 py-2 self-start rounded font-body text-base font-medium transition-colors',
-                    'bg-slate-brand hover:bg-slate-dark text-white disabled:opacity-50 disabled:cursor-not-allowed'
-                  )}
-                >
-                  {isAlreadyActive
-                    ? t('admin.staff.detail.status.alreadyActive', { defaultValue: 'Already Active' })
-                    : isActivating
-                      ? t('admin.staff.detail.status.activating', { defaultValue: 'Activating...' })
-                      : t('admin.staff.detail.status.activateBtn', { defaultValue: 'Activate Employee' })}
-                </button>
+                {isDeactivated ? (
+                  // P3-E27-D3: the plain Activate button only ever does updateDoc({status:
+                  // 'active'}) — it has no way to re-enable a disabled Auth account. Showing
+                  // it here for a deactivated employee would silently fail to restore real
+                  // access, so it's replaced with a pointer to the Offboarding section's
+                  // dedicated Reactivate flow (which goes through the reactivateStaff callable).
+                  <p className="font-body text-base text-text-muted">
+                    {t('admin.staff.detail.status.deactivatedPointer', { defaultValue: 'This employee is deactivated. Use Reactivate in the Offboarding section below to restore access.' })}
+                  </p>
+                ) : (
+                  <button
+                    type="button"
+                    title={!canActivate ? t('admin.staff.detail.status.activateTooltip', { defaultValue: 'Complete background check, ID verification, employment agreement, and training first' }) : undefined}
+                    disabled={!canActivate || isActivating || isAlreadyActive}
+                    onClick={() => { void handleActivate() }}
+                    className={cn(
+                      'min-h-[48px] px-6 py-2 self-start rounded font-body text-base font-medium transition-colors',
+                      'bg-slate-brand hover:bg-slate-dark text-white disabled:opacity-50 disabled:cursor-not-allowed'
+                    )}
+                  >
+                    {isAlreadyActive
+                      ? t('admin.staff.detail.status.alreadyActive', { defaultValue: 'Already Active' })
+                      : isActivating
+                        ? t('admin.staff.detail.status.activating', { defaultValue: 'Activating...' })
+                        : t('admin.staff.detail.status.activateBtn', { defaultValue: 'Activate Employee' })}
+                  </button>
+                )}
               </div>
 
               <div className="flex flex-col gap-3">
@@ -591,6 +682,115 @@ export const StaffDetailPanel: React.FC<StaffDetailPanelProps> = ({
                   </>
                 )}
               </div>
+
+              {isDeactivated && staff.offboarding && (
+                <div className="flex flex-col gap-3">
+                  <h4 className="font-sub text-xl text-charcoal font-bold border-b border-sand pb-1.5">
+                    {t('admin.staff.detail.offboarding.title', { defaultValue: 'Offboarding' })}
+                  </h4>
+
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="font-body text-base text-charcoal">
+                      {t('admin.staff.detail.offboarding.authRevoked', { defaultValue: 'Auth Access Revoked' })}
+                      {staff.offboarding.deactivatedAt && (
+                        <span className="block text-base text-text-muted">
+                          {dateFmt(staff.offboarding.deactivatedAt)}
+                        </span>
+                      )}
+                    </span>
+                    <ChecklistStatus complete={staff.offboarding.checklist.authRevoked} />
+                  </div>
+
+                  {offboardingToggleError && (
+                    <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded font-body text-base">
+                      {offboardingToggleError}
+                    </div>
+                  )}
+
+                  {offboardingToggleRows.map(({ item, labelKey }) => {
+                    const complete = staff.offboarding?.checklist[item] === true
+                    return (
+                      <div key={item} className="flex items-center justify-between gap-3">
+                        <span className="font-body text-base text-charcoal">
+                          {t(labelKey)}
+                        </span>
+                        <button
+                          type="button"
+                          disabled={togglingOffboardingItem === item}
+                          onClick={() => { void handleToggleOffboardingItem(item, !complete) }}
+                          className={cn(
+                            'min-h-[48px] px-3 rounded font-body text-base font-medium transition-colors',
+                            complete ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-slate-100 text-slate-800 hover:bg-slate-200'
+                          )}
+                        >
+                          {togglingOffboardingItem === item
+                            ? t('admin.staff.detail.offboarding.saving', { defaultValue: 'Saving...' })
+                            : complete
+                              ? t('admin.staff.detail.checklist.markIncomplete', { defaultValue: 'Mark Incomplete' })
+                              : t('admin.staff.detail.checklist.markComplete', { defaultValue: 'Mark Complete' })}
+                        </button>
+                      </div>
+                    )
+                  })}
+
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="departure-reason" className="font-body text-base text-charcoal font-medium">
+                      {t('admin.staff.detail.offboarding.departureReason', { defaultValue: 'Departure Reason' })}
+                    </label>
+                    <select
+                      id="departure-reason"
+                      value={departureReasonDraft}
+                      onChange={(e) => setDepartureReasonDraft(e.target.value as DepartureReason | '')}
+                      disabled={offboardingSaving}
+                      className="min-h-[48px] px-2 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                    >
+                      <option value="">{t('admin.staff.detail.offboarding.reasonUnset', { defaultValue: 'Not set' })}</option>
+                      <option value="voluntary">{getDepartureReasonLabel('voluntary')}</option>
+                      <option value="performance">{getDepartureReasonLabel('performance')}</option>
+                      <option value="seasonal">{getDepartureReasonLabel('seasonal')}</option>
+                      <option value="other">{getDepartureReasonLabel('other')}</option>
+                    </select>
+
+                    <label htmlFor="final-notes" className="font-body text-base text-charcoal font-medium">
+                      {t('admin.staff.detail.offboarding.finalNotes', { defaultValue: 'Final Notes' })}
+                    </label>
+                    <textarea
+                      id="final-notes"
+                      value={finalNotesDraft}
+                      onChange={(e) => setFinalNotesDraft(e.target.value)}
+                      disabled={offboardingSaving}
+                      className="min-h-[48px] px-2 py-2 border border-sand rounded font-body text-base text-charcoal bg-transparent focus:outline-none focus:ring-2 focus:ring-slate-brand"
+                    />
+
+                    {offboardingSaveError && <span className="text-base text-red-600">{offboardingSaveError}</span>}
+
+                    <button
+                      type="button"
+                      onClick={() => { void handleSaveOffboardingDetails() }}
+                      disabled={offboardingSaving}
+                      className="min-h-[48px] px-3 self-start bg-slate-brand hover:bg-slate-dark text-white font-body font-medium rounded transition-colors"
+                    >
+                      {offboardingSaving ? t('admin.staff.detail.offboarding.saving', { defaultValue: 'Saving...' }) : t('admin.staff.detail.offboarding.save', { defaultValue: 'Save' })}
+                    </button>
+                  </div>
+
+                  {reactivateError && (
+                    <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded font-body text-base">
+                      {reactivateError}
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    disabled={isReactivating}
+                    onClick={() => { void handleReactivate() }}
+                    className="min-h-[48px] px-6 py-2 self-start rounded font-body text-base font-medium bg-slate-brand hover:bg-slate-dark text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {isReactivating
+                      ? t('admin.staff.detail.offboarding.reactivating', { defaultValue: 'Reactivating...' })
+                      : t('admin.staff.detail.offboarding.reactivateBtn', { defaultValue: 'Reactivate' })}
+                  </button>
+                </div>
+              )}
 
               <div className="flex flex-col gap-3">
                 <h4 className="font-sub text-xl text-charcoal font-bold border-b border-sand pb-1.5">

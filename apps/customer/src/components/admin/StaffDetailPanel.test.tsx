@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, act } from '@testing-library/react'
+import { render, screen, fireEvent, act, within } from '@testing-library/react'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { StaffDetailPanel } from './StaffDetailPanel'
 import type { Staff } from '@/types'
@@ -20,6 +20,10 @@ function renderPanel(staff: Staff, overrides: Partial<Parameters<typeof StaffDet
     completeCheckIn: vi.fn().mockResolvedValue(undefined),
     setProbationOutcome: vi.fn().mockResolvedValue(undefined),
     extendProbation: vi.fn().mockResolvedValue(undefined),
+    updateOffboardingChecklist: vi.fn().mockResolvedValue(undefined),
+    setDepartureReason: vi.fn().mockResolvedValue(undefined),
+    setFinalNotes: vi.fn().mockResolvedValue(undefined),
+    reactivateStaff: vi.fn().mockResolvedValue({ success: true }),
     onResendInvite: vi.fn(),
     onExport: vi.fn(),
     resendingId: null,
@@ -55,6 +59,7 @@ const baseStaff: Staff = {
   emergencyContact: { name: 'Sam', phone: '6135551111', relationship: 'Sibling' },
   corrections: [],
   probation: null,
+  offboarding: null,
   createdAt: new Date(),
 }
 
@@ -202,6 +207,83 @@ describe('StaffDetailPanel (P3-E27-D1)', () => {
       })
 
       expect(props.setProbationOutcome).toHaveBeenCalledWith('staff123', 'passed')
+    })
+  })
+
+  describe('Offboarding (P3-E27-D3)', () => {
+    const inactiveStaff: Staff = {
+      ...baseStaff,
+      status: 'inactive',
+      offboarding: {
+        deactivatedAt: new Date('2026-07-20'),
+        checklist: {
+          authRevoked: true,
+          keysReturned: false,
+          accessCodesChanged: false,
+          finalPayCalculated: false,
+          recordArchived: false,
+        },
+        finalNotes: null,
+        departureReason: null,
+      },
+    }
+
+    it('does not render the Offboarding section for active/onboarding staff', () => {
+      renderPanel(baseStaff)
+      expect(screen.queryByText('Offboarding')).not.toBeInTheDocument()
+    })
+
+    it('replaces the plain Activate button with a pointer to Reactivate for inactive staff', () => {
+      renderPanel(inactiveStaff)
+      expect(screen.queryByRole('button', { name: 'Activate Employee' })).not.toBeInTheDocument()
+      expect(screen.getByText('This employee is deactivated. Use Reactivate in the Offboarding section below to restore access.')).toBeInTheDocument()
+    })
+
+    it('shows authRevoked as read-only, with no toggle button', () => {
+      renderPanel(inactiveStaff)
+      const authRevokedRow = screen.getByText('Auth Access Revoked').closest('.flex.items-center.justify-between') as HTMLElement
+      expect(within(authRevokedRow).queryByRole('button')).not.toBeInTheDocument()
+    })
+
+    it('toggles an offboarding checklist item and calls updateOffboardingChecklist', async () => {
+      const { props } = renderPanel(inactiveStaff)
+
+      // Scope to the Offboarding section — the D1 admin checklist toggles also render
+      // "Mark Complete" buttons, so an unscoped query would hit the wrong one.
+      const offboardingSection = screen.getByText('Offboarding').closest('div') as HTMLElement
+      const [keysReturnedBtn] = within(offboardingSection).getAllByText('Mark Complete')
+      await act(async () => {
+        fireEvent.click(keysReturnedBtn)
+        await Promise.resolve()
+      })
+
+      expect(props.updateOffboardingChecklist).toHaveBeenCalledWith('staff123', 'keysReturned', true)
+    })
+
+    it('saves departure reason and final notes', async () => {
+      const { props } = renderPanel(inactiveStaff)
+
+      fireEvent.change(screen.getByLabelText('Departure Reason'), { target: { value: 'voluntary' } })
+      fireEvent.change(screen.getByLabelText('Final Notes'), { target: { value: 'Moved out of province.' } })
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+        await Promise.resolve()
+      })
+
+      expect(props.setDepartureReason).toHaveBeenCalledWith('staff123', 'voluntary')
+      expect(props.setFinalNotes).toHaveBeenCalledWith('staff123', 'Moved out of province.')
+    })
+
+    it('calls reactivateStaff when Reactivate is clicked', async () => {
+      const { props } = renderPanel(inactiveStaff)
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole('button', { name: 'Reactivate' }))
+        await Promise.resolve()
+      })
+
+      expect(props.reactivateStaff).toHaveBeenCalledWith('staff123')
     })
   })
 })

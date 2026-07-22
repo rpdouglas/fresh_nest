@@ -13,6 +13,8 @@ import {
   probationActivationHtml,
   probationCheckInDueSubject,
   probationCheckInDueText,
+  staffDeactivatedSubject,
+  staffDeactivatedText,
 } from './emailTemplates'
 
 export interface EmailConfig {
@@ -128,5 +130,23 @@ export async function sendProbationCheckInDueEmail(
   })
   if (result.error) {
     throw new Error(`Probation check-in due email failed: ${result.error.message}`)
+  }
+}
+
+// P3-E27-D3: sent to Lauren by onStaffDeactivated — always EN, matches sendOwnerNotification
+export async function sendStaffDeactivatedEmail(
+  employeeName: string,
+  staffUid: string,
+  config: EmailConfig,
+): Promise<void> {
+  const resend = new Resend(config.resendApiKey)
+  const result = await resend.emails.send({
+    from:    config.fromEmail,
+    to:      config.ownerEmail,
+    subject: staffDeactivatedSubject(employeeName),
+    text:    staffDeactivatedText(employeeName, staffUid),
+  })
+  if (result.error) {
+    throw new Error(`Staff deactivated email failed: ${result.error.message}`)
   }
 }

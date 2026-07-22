@@ -247,6 +247,7 @@
       "orDivider": "ou",
       "errorNoProfile": "Accès refusé. Votre adresse courriel n'est pas enregistrée dans le système.",
       "errorInvalid": "Courriel ou mot de passe invalide.",
+      "errorDeactivated": "Votre compte a été désactivé. Communiquez avec Fresh Nest Co. pour obtenir de l'aide.",
       "errorGeneral": "Une erreur est survenue. Veuillez réessayer.",
       "emailRequired": "L'adresse courriel est obligatoire.",
       "magicLinkSent": "Un lien de connexion a été envoyé à votre adresse courriel. Veuillez vérifier votre boîte de réception.",

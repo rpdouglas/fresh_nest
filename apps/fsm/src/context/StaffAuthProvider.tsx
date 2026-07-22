@@ -138,7 +138,13 @@ export const StaffAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     } catch (err) {
       console.error('Password sign in error:', err)
       const errorInstance = err as Error
-      if (errorInstance.message !== 'No staff profile found') {
+      if (errorInstance.message === 'No staff profile found') {
+        // error already set above
+      } else if ((err as { code?: string }).code === 'auth/user-disabled') {
+        // P3-E27-D3: deactivated employees get a clear, human message instead of a
+        // generic invalid-credentials error.
+        setError('fsm.login.errorDeactivated')
+      } else {
         setError('fsm.login.errorInvalid')
       }
       setLoading(false)
@@ -196,7 +202,9 @@ export const StaffAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         window.localStorage.removeItem('emailForSignIn')
       } catch (err) {
         console.error('Error completing magic link sign in:', err)
-        setError('fsm.login.errorGeneral')
+        // P3-E27-D3: deactivated employees get a clear, human message instead of a
+        // generic error.
+        setError((err as { code?: string }).code === 'auth/user-disabled' ? 'fsm.login.errorDeactivated' : 'fsm.login.errorGeneral')
         setLoading(false)
       }
     }

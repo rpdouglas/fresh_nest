@@ -62,7 +62,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | **P3-E16** | Dynamic Pricing Engine & Conversion Optimisation | L | P3 | ⬜ Not Started |
 | **P3-E17** | Multi-Tenancy Schema Flag & ADR | S | P3 | ⬜ Not Started |
 | **P3-E26** | Quote-First Booking System | XL | P2 | ⬜ Not Started |
-| **P3-E27** | Employee Onboarding System | XL | P1 | 🔄 In Progress — A1 ✅ 2026-06-21 · A2 ✅ 2026-06-22 · B1 ✅ 2026-06-22 · B2 ✅ 2026-07-21 · C1 ✅ 2026-07-21 · C2 ✅ 2026-07-21 · C3 ✅ 2026-07-21 · D1 ✅ 2026-07-21 · D2 ✅ 2026-07-22 · D3 pending |
+| **P3-E27** | Employee Onboarding System | XL | P1 | ✅ Completed 2026-07-22 — A1 ✅ 2026-06-21 · A2 ✅ 2026-06-22 · B1 ✅ 2026-06-22 · B2 ✅ 2026-07-21 · C1 ✅ 2026-07-21 · C2 ✅ 2026-07-21 · C3 ✅ 2026-07-21 · D1 ✅ 2026-07-21 · D2 ✅ 2026-07-22 · D3 ✅ 2026-07-22 |
 | **P3-E28** | Cleaner Suggestion & Auto-Assignment Engine v2 | L+M+S+M | P2 | ⬜ Not Started |
 
 ---
@@ -94,7 +94,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | Sprint 5 | 9–11 | **P3-E27-A1** (P0 PIPEDA), **P3-E27-A2** (P0 race condition), P3-E19 (functions split), P3-E21 (converters) |
 | Sprint 6 | 11–14 | P3-E27-B1 (welcome email), P3-E27-B2 (background check consent), P3-E22 (pricing worker), P3-E17 (schema flag) |
 | Sprint 7 | 14–18 | P3-E27-C1 (consent sequence), P3-E27-C2 (employee profile), P3-E27-D1 (staff panel) |
-| Sprint 8 | 18–22 | P3-E27-C3 (training/WHMIS), P3-E27-D2 (probation), P3-E27-D3 (offboarding), P3-E10 (referral loop), P3-E15 (PIPEDA erasure) |
+| Sprint 8 | 18–22 | ✅ P3-E27-C3 (training/WHMIS), ✅ P3-E27-D2 (probation), ✅ P3-E27-D3 (offboarding), P3-E10 (referral loop), P3-E15 (PIPEDA erasure) |
 | Sprint 9 | 22–27 | P3-E26 (quote-first — XL), P3-E28 Stage 1 (suggestion engine) |
 | Sprint 10 | 27–34 | P3-E11 (CMS blog), P3-E12 (bilingual SEO — XL), P3-E13 (GBP), P3-E14 (calendar), P3-E16 (dynamic pricing), P3-E28 Stages 2–4, P3-E23 (Suspense), P3-E24 (VitePress), P3-E25 (Storybook) |
 

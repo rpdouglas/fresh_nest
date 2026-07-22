@@ -51,6 +51,7 @@ const baseProfile: Staff = {
   employmentAgreement: { version: '1.0', acceptedAt: new Date(), signedByName: 'Jasmine Beausoleil', ipAddress: '1.2.3.4' },
   corrections: [],
   probation: null,
+  offboarding: null,
   emergencyContact: { name: 'Sam', phone: '6135551111', relationship: 'Sibling' },
   createdAt: new Date(),
 }

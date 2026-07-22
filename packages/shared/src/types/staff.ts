@@ -70,6 +70,25 @@ export interface Probation {
   probationOutcome: ProbationOutcome
 }
 
+export type DepartureReason = 'voluntary' | 'performance' | 'seasonal' | 'other'
+
+export interface OffboardingChecklist {
+  authRevoked: boolean
+  keysReturned: boolean
+  accessCodesChanged: boolean
+  finalPayCalculated: boolean
+  // P3-E15 territory (Data Retention & PIPEDA Right-to-Erasure) — schema-only,
+  // always false, no admin toggle, no archival job. Not built by P3-E27-D3.
+  recordArchived: boolean
+}
+
+export interface Offboarding {
+  deactivatedAt: Date | null
+  checklist: OffboardingChecklist
+  finalNotes: string | null
+  departureReason: DepartureReason | null
+}
+
 export interface Staff {
   id: string
   uid?: string
@@ -103,5 +122,6 @@ export interface Staff {
   emergencyContact: EmergencyContact | null
   corrections: ProfileCorrection[]
   probation: Probation | null
+  offboarding: Offboarding | null
   createdAt: Date
 }

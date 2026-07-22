@@ -346,3 +346,90 @@ describe('useStaff — extendProbation (P3-E27-D2)', () => {
     expect(payload['probation.probationOutcome']).toBe('pending')
   })
 })
+
+describe('useStaff — updateOffboardingChecklist (P3-E27-D3)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockUpdateDoc.mockResolvedValue(undefined)
+  })
+
+  it('writes the offboarding checklist item directly via updateDoc (no callable)', async () => {
+    const { result } = renderHook(() => useStaff(true))
+
+    await act(async () => {
+      await result.current.updateOffboardingChecklist('uid-123', 'keysReturned', true)
+    })
+
+    expect(mockUpdateDoc).toHaveBeenCalledWith(
+      expect.anything(),
+      { 'offboarding.checklist.keysReturned': true }
+    )
+    expect(mockHttpsCallable).not.toHaveBeenCalled()
+  })
+})
+
+describe('useStaff — setDepartureReason / setFinalNotes (P3-E27-D3)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockUpdateDoc.mockResolvedValue(undefined)
+  })
+
+  it('writes departureReason directly via updateDoc', async () => {
+    const { result } = renderHook(() => useStaff(true))
+
+    await act(async () => {
+      await result.current.setDepartureReason('uid-123', 'voluntary')
+    })
+
+    expect(mockUpdateDoc).toHaveBeenCalledWith(
+      expect.anything(),
+      { 'offboarding.departureReason': 'voluntary' }
+    )
+  })
+
+  it('writes finalNotes, trimming to null when empty', async () => {
+    const { result } = renderHook(() => useStaff(true))
+
+    await act(async () => {
+      await result.current.setFinalNotes('uid-123', '  ')
+    })
+
+    expect(mockUpdateDoc).toHaveBeenCalledWith(
+      expect.anything(),
+      { 'offboarding.finalNotes': null }
+    )
+  })
+})
+
+describe('useStaff — reactivateStaff (P3-E27-D3)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockHttpsCallable.mockReturnValue(mockHttpsCallableFn)
+    mockHttpsCallableFn.mockResolvedValue({ data: { success: true } })
+  })
+
+  it('calls the reactivateStaff callable (not a direct updateDoc — Auth calls require Admin SDK)', async () => {
+    const { result } = renderHook(() => useStaff(true))
+
+    await act(async () => {
+      await result.current.reactivateStaff('uid-123')
+    })
+
+    expect(mockHttpsCallable).toHaveBeenCalledWith(
+      expect.anything(),
+      'reactivateStaff'
+    )
+    expect(mockHttpsCallableFn).toHaveBeenCalledWith({ uid: 'uid-123' })
+    expect(mockUpdateDoc).not.toHaveBeenCalled()
+  })
+
+  it('invalidates the staff query cache after reactivation', async () => {
+    const { result } = renderHook(() => useStaff(true))
+
+    await act(async () => {
+      await result.current.reactivateStaff('uid-123')
+    })
+
+    expect(mockInvalidateQueries).toHaveBeenCalledWith({ queryKey: ['staff'] })
+  })
+})

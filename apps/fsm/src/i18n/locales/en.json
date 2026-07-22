@@ -247,6 +247,7 @@
       "orDivider": "or",
       "errorNoProfile": "Access Denied. Your email is not registered in the system.",
       "errorInvalid": "Invalid email or password.",
+      "errorDeactivated": "Your account has been deactivated. Contact Fresh Nest Co. for assistance.",
       "errorGeneral": "An error occurred. Please try again.",
       "emailRequired": "Email is required.",
       "magicLinkSent": "A sign-in link has been sent to your email. Please check your inbox.",

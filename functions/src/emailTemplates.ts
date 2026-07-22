@@ -411,6 +411,25 @@ export function probationCheckInDueText(employeeName: string, dayOffset: number,
   ].join('\n')
 }
 
+// ── P3-E27-D3: Staff deactivation (admin-facing, always EN) ──────────────
+
+export function staffDeactivatedSubject(employeeName: string): string {
+  return `Staff account deactivated: ${employeeName}`
+}
+
+export function staffDeactivatedText(employeeName: string, staffUid: string): string {
+  return [
+    'Fresh Nest Co. — Staff account deactivated',
+    '',
+    `Employee:    ${employeeName}`,
+    `Staff UID:   ${staffUid}`,
+    '',
+    'Firebase Auth access has been automatically revoked. An offboarding checklist',
+    '(keys returned, access codes changed, final pay calculated) is pending in the',
+    'Staff Detail Panel.',
+  ].join('\n')
+}
+
 export function staffWelcomeSubject(lang: 'en' | 'fr'): string {
   return lang === 'fr'
     ? 'Bienvenue chez Fresh Nest Co. — Votre compte est prêt'

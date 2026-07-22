@@ -10,7 +10,7 @@ import {
 } from 'firebase/firestore'
 import type { Booking, Review } from '../types/booking'
 import type { Job, JobPhoto, ChecklistCompletion } from '../types/job'
-import type { Staff, TermsAcceptance, BackgroundCheck, EmploymentAgreement, EmergencyContact, ProfileCorrection, Probation } from '../types/staff'
+import type { Staff, TermsAcceptance, BackgroundCheck, EmploymentAgreement, EmergencyContact, ProfileCorrection, Probation, Offboarding } from '../types/staff'
 import type { ChecklistTemplate, PayRate, AuditEntry } from '../types/common'
 
 // Helper to convert dynamic values to Date
@@ -136,6 +136,10 @@ export const staffConverter = createConverter<Staff>((data, id) => ({
   // scheduledDate/completedDate are plain YYYY-MM-DD strings (not Timestamps), matching
   // Job.scheduledDate — no date conversion needed.
   probation: (data.probation ?? null) as Probation | null,
+  // P3-E27-D3: null until onStaffDeactivated first initializes it.
+  offboarding: data.offboarding
+    ? ({ ...data.offboarding, deactivatedAt: toDateOrNull(data.offboarding.deactivatedAt) } as Offboarding)
+    : null,
 } as Staff))
 
 // Review Converter

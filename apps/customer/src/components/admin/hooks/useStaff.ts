@@ -5,12 +5,16 @@ import { query, orderBy, doc, updateDoc } from 'firebase/firestore'
 import { httpsCallable } from 'firebase/functions'
 import { db, functions } from '@/lib/firebase/firebase'
 import { staffCollection } from '@freshnest/shared'
-import type { Staff, StaffRole, StaffStatus, StaffLanguage, TransportMode, BackgroundCheckStatus, ProbationCheckIn, ProbationOutcome } from '@/types'
+import type { Staff, StaffRole, StaffStatus, StaffLanguage, TransportMode, BackgroundCheckStatus, ProbationCheckIn, ProbationOutcome, DepartureReason } from '@/types'
 
 // P3-E27-D1: the four admin-only onboarding checklist items with no employee-facing
 // counterpart. Written directly — isAdmin() already grants unrestricted staff-doc
 // write access, and onStaffUpdatedTrigger picks these up for auditLog automatically.
 export type AdminChecklistItem = 'idVerified' | 'supervisedShiftCompleted' | 'uniformIssued' | 'directDepositOnFile'
+
+// P3-E27-D3: the 3 admin-editable offboarding checklist items. authRevoked is trigger-set
+// only (onStaffDeactivated); recordArchived is schema-only (P3-E15) — neither belongs here.
+export type OffboardingChecklistItem = 'keysReturned' | 'accessCodesChanged' | 'finalPayCalculated'
 
 // P3-E27-D2: generates the 3 extension check-ins when an admin sets outcome to 'extended'.
 // Mirrors onStaffStatusActivated's makeCheckIn — kept in sync manually since one runs
@@ -171,6 +175,37 @@ export function useStaff(enabled: boolean) {
     await queryClient.invalidateQueries({ queryKey: ['staff'] })
   }
 
+  // P3-E27-D3: same direct-write, closed-union pattern as updateChecklistItem.
+  const updateOffboardingChecklist = async (uid: string, item: OffboardingChecklistItem, value: boolean) => {
+    const staffRef = doc(staffCollection(db), uid)
+    await updateDoc(staffRef, { [`offboarding.checklist.${item}`]: value })
+    await queryClient.invalidateQueries({ queryKey: ['staff'] })
+  }
+
+  const setDepartureReason = async (uid: string, reason: DepartureReason) => {
+    const staffRef = doc(staffCollection(db), uid)
+    await updateDoc(staffRef, { 'offboarding.departureReason': reason })
+    await queryClient.invalidateQueries({ queryKey: ['staff'] })
+  }
+
+  const setFinalNotes = async (uid: string, notes: string) => {
+    const staffRef = doc(staffCollection(db), uid)
+    await updateDoc(staffRef, { 'offboarding.finalNotes': notes.trim() || null })
+    await queryClient.invalidateQueries({ queryKey: ['staff'] })
+  }
+
+  // P3-E27-D3: must be a callable — restoring Auth access (re-enable account, restore role
+  // claim) requires Admin SDK calls a client-side updateDoc cannot make.
+  const reactivateStaff = async (uid: string) => {
+    const reactivateStaffFn = httpsCallable<{ uid: string }, { success: boolean }>(
+      functions,
+      'reactivateStaff'
+    )
+    const result = await reactivateStaffFn({ uid })
+    await queryClient.invalidateQueries({ queryKey: ['staff'] })
+    return result.data
+  }
+
   return {
     staffList,
     filteredStaff,
@@ -190,5 +225,9 @@ export function useStaff(enabled: boolean) {
     completeCheckIn,
     setProbationOutcome,
     extendProbation,
+    updateOffboardingChecklist,
+    setDepartureReason,
+    setFinalNotes,
+    reactivateStaff,
   }
 }
