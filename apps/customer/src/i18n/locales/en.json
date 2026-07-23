@@ -830,7 +830,8 @@
         "templates": "Checklist Templates",
         "payRates": "Pay Rates",
         "auditLogs": "Audit Logs",
-        "reviews": "Reviews Moderation"
+        "reviews": "Reviews Moderation",
+        "rewards": "Rewards"
       },
       "analytics": {
         "title": "Performance Analytics Dashboard",
@@ -1141,6 +1142,48 @@
           "fr": "French"
         }
       }
+    },
+    "rewards": {
+      "title": "Referral Rewards",
+      "subtitle": "Credits issued and redeemed across all customers. Adjust or revoke a credit as needed.",
+      "createBtn": "Issue Manual Credit",
+      "errorLoading": "Error loading credits.",
+      "revokeBtn": "Revoke",
+      "revoking": "Revoking...",
+      "revokeSuccess": "Credit revoked successfully.",
+      "revokeError": "Failed to revoke credit.",
+      "status": {
+        "available": "Available",
+        "redeemed": "Redeemed",
+        "revoked": "Revoked"
+      },
+      "reason": {
+        "referralReward": "Referral reward",
+        "adminAdjustment": "Manual adjustment"
+      },
+      "table": {
+        "customer": "Customer",
+        "amount": "Amount",
+        "reason": "Reason",
+        "status": "Status",
+        "issuedAt": "Issued",
+        "actions": "Actions",
+        "empty": "No credits recorded yet."
+      },
+      "form": {
+        "title": "Issue a Manual Credit",
+        "customerEmail": "Customer Email",
+        "amount": "Credit Amount (CAD)",
+        "notes": "Notes (optional)",
+        "submit": "Issue Credit",
+        "cancel": "Cancel",
+        "success": "Credit issued successfully.",
+        "errors": {
+          "customerEmail": "A valid email address is required.",
+          "amount": "A valid amount greater than 0 is required.",
+          "saveError": "Failed to issue credit."
+        }
+      }
     }
   },
   "blog": {
@@ -1167,7 +1210,8 @@
     "referralShareDesc": "Give your friends $20 off their first clean. When they book, you'll receive a $20 discount on your next service!",
     "copyLink": "Copy Referral Link",
     "linkCopied": "Link copied to clipboard!",
-    "referredBy": "Referred by {{name}}"
+    "referredBy": "Referred by {{name}}",
+    "discountLineLabel": "Referral discount"
   },
   "customerPortal": {
     "login": {
@@ -1196,7 +1240,8 @@
       "bookings": "My Bookings",
       "upcoming": "Upcoming Cleans",
       "profile": "My Profile",
-      "logout": "Sign Out"
+      "logout": "Sign Out",
+      "rewards": "Rewards"
     },
     "bookings": {
       "title": "My Booking History",
@@ -1235,6 +1280,19 @@
       "address": "Address",
       "savingState": "Saving...",
       "saveError": "Failed to update profile"
+    },
+    "rewards": {
+      "title": "Referrals & Rewards",
+      "subtitle": "Share your code, earn credit, and track your balance.",
+      "balanceLabel": "Available credit balance",
+      "noCodeYet": "Your referral code will appear here after your first booking.",
+      "historyTitle": "Credit History",
+      "noHistory": "You haven't earned any referral credit yet.",
+      "status": {
+        "available": "Available",
+        "redeemed": "Redeemed",
+        "revoked": "Revoked"
+      }
     }
   },
   "leaveReview": {

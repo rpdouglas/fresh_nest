@@ -168,6 +168,24 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // P3-E10: reward amounts, kept configurable rather than hardcoded. Public read —
+    // the booking wizard needs it before checkout to show the discount pre-payment.
+    match /config/referralConfig {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // P3-E10: customer credit ledger. NO client writes at all, not even admin — every
+    // mutation (issue on referral confirmation, redeem at checkout, admin adjust/
+    // revoke) goes through a Cloud Function (Admin SDK, bypasses these rules), since
+    // this collection feeds a live Stripe charge calculation and needs server-side
+    // validation + guaranteed audit logging on every change.
+    match /credits/{creditId} {
+      allow read: if isAdmin()
+        || (request.auth != null && request.auth.token.email == resource.data.customerEmail);
+      allow write: if false;
+    }
+
     // ── FSM Collections ──────────────────────────────────────────────────────────
     match /staff/{staffId} {
       allow read:   if (request.auth != null && request.auth.uid == staffId) || isAdmin();

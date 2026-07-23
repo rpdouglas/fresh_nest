@@ -31,6 +31,11 @@ export type {
   PayRate,
   AuditEntry,
   Review,
+  Referral,
+  ReferralConfig,
+  Credit,
+  CreditReason,
+  CreditStatus,
 } from '@freshnest/shared'
 
 // Customer-app-only types

@@ -35,6 +35,9 @@ export const onBookingCreated = onDocumentCreated(
       try {
         await db.collection('referrals').doc(refCode).set({
           ownerName: `${booking.firstName} ${booking.lastName ? booking.lastName.charAt(0) + '.' : ''}`,
+          // P3-E10: needed so a future referral-reward credit can be issued to the
+          // right customer without an extra bookings lookup.
+          ownerEmail: booking.email,
           bookingId: docId,
           active: true,
           createdAt: new Date(),
@@ -97,12 +100,13 @@ export const onBookingStatusConfirmed = onDocumentUpdated(
     }
 
     const stripePaymentIntentId = after.stripePaymentIntentId as string | undefined
+    let capturedIntent: { metadata?: Record<string, string> } | undefined
     if (stripePaymentIntentId) {
       const stripeKey = process.env['STRIPE_SECRET_KEY']
       if (stripeKey) {
         const stripeClient = new Stripe(stripeKey)
         try {
-          await stripeClient.paymentIntents.capture(stripePaymentIntentId)
+          capturedIntent = await stripeClient.paymentIntents.capture(stripePaymentIntentId)
           await getFirestore().collection('bookings').doc(bookingId).update({
             stripeChargeStatus: 'captured',
           })
@@ -112,6 +116,72 @@ export const onBookingStatusConfirmed = onDocumentUpdated(
         }
       } else {
         console.warn('[onBookingStatusConfirmed] STRIPE_SECRET_KEY not set — skipping capture.')
+      }
+    }
+
+    // P3-E10: settle this booking's referral/credit consequences now that it's
+    // confirmed — same "only actually happens once confirmed" timing as the Stripe
+    // capture above, not folded into a separate trigger since both are the same
+    // concern (this booking's financial consequences), not audit-logging.
+    const db = getFirestore()
+
+    // (a) finalize any credits the payer spent on this booking (reserved, not yet
+    // burned, at createPaymentIntent time — only actually consumed once confirmed,
+    // so an abandoned checkout never permanently loses the customer's credit).
+    const appliedCreditIdsRaw = capturedIntent?.metadata?.['appliedCreditIds']
+    if (appliedCreditIdsRaw) {
+      const creditIds = appliedCreditIdsRaw.split(',').filter(Boolean)
+      try {
+        const batch = db.batch()
+        for (const creditId of creditIds) {
+          batch.update(db.collection('credits').doc(creditId), {
+            status: 'redeemed',
+            redeemedAt: new Date(),
+            redeemedOnBookingId: bookingId,
+          })
+        }
+        await batch.commit()
+        console.log(`[onBookingStatusConfirmed] Finalized ${creditIds.length} redeemed credit(s) for booking '${bookingId}'.`)
+      } catch (creditErr) {
+        logError(`[onBookingStatusConfirmed] Failed to finalize redeemed credits for booking '${bookingId}':`, creditErr)
+      }
+    }
+
+    // (b) issue a reward credit to the referrer, if this booking used a referral code.
+    // Idempotency guard keyed on sourceBookingId — a booking can only ever be "the
+    // referred booking" once, so this also protects against duplicate status writes.
+    const referredBy = after['referredBy'] as string | undefined | null
+    if (referredBy) {
+      try {
+        const existing = await db.collection('credits').where('sourceBookingId', '==', bookingId).limit(1).get()
+        if (existing.empty) {
+          const referralSnap = await db.collection('referrals').doc(referredBy).get()
+          const referralData = referralSnap.data()
+          if (referralSnap.exists && referralData?.['ownerEmail']) {
+            const configSnap = await db.collection('config').doc('referralConfig').get()
+            const configData = configSnap.data()
+            const configEnabled = configData?.['enabled'] !== false
+            const rewardAmount = configEnabled ? (configData?.['referrerRewardAmount'] ?? 20) : 0
+            if (rewardAmount > 0) {
+              await db.collection('credits').add({
+                customerEmail: referralData['ownerEmail'],
+                amount: rewardAmount,
+                currency: 'CAD',
+                reason: 'referral_reward',
+                sourceBookingId: bookingId,
+                sourceReferralCode: referredBy,
+                status: 'available',
+                issuedAt: new Date(),
+                redeemedAt: null,
+                redeemedOnBookingId: null,
+                adjustedBy: null,
+              })
+              console.log(`[onBookingStatusConfirmed] Issued $${rewardAmount} referral credit to ${referralData['ownerEmail']} for booking '${bookingId}'.`)
+            }
+          }
+        }
+      } catch (referralErr) {
+        logError(`[onBookingStatusConfirmed] Failed to issue referral credit for booking '${bookingId}':`, referralErr)
       }
     }
   },
@@ -164,6 +234,19 @@ export const onBookingCancelled = onDocumentUpdated(
         }
       } catch (jobErr) {
         logError(`[onBookingCancelled] Failed to update associated job status:`, jobErr)
+      }
+
+      // P3-E10: closes the gap ADR-009's own "Consequences" section flagged as
+      // unresolved — a cancelled booking's referral code stays active forever
+      // otherwise, still redeemable by new clients.
+      const referralCode = after['referralCode'] as string | undefined | null
+      if (referralCode) {
+        try {
+          await db.collection('referrals').doc(referralCode).update({ active: false })
+          console.log(`[onBookingCancelled] Deactivated referral code '${referralCode}' owned by cancelled booking '${bookingId}'.`)
+        } catch (referralErr) {
+          logError(`[onBookingCancelled] Failed to deactivate referral code '${referralCode}':`, referralErr)
+        }
       }
 
       const smsConfig = {

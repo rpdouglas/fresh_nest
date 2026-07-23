@@ -14,6 +14,7 @@ import { AnalyticsDashboard } from '@/components/admin/AnalyticsDashboard'
 import { StaffTable } from '@/components/admin/StaffTable'
 import { ChecklistTemplateManager } from '@/components/admin/ChecklistTemplateManager'
 import { PayRatesManager } from '@/components/admin/PayRatesManager'
+import { RewardsManager } from '@/components/admin/RewardsManager'
 import { OperationsDashboard } from '@/components/admin/OperationsDashboard'
 import { AuditLogsTable } from '@/components/admin/AuditLogsTable'
 import { ReviewsModerationTab } from '@/components/admin/ReviewsModerationTab'
@@ -25,7 +26,7 @@ export default function AdminPage() {
   const bookingsState = useBookings(isAuthorized)
   const analyticsState = useAdminAnalytics()
 
-  const [activeTab, setActiveTab] = useState<'bookings' | 'dispatch' | 'analytics' | 'staff' | 'templates' | 'payRates' | 'auditLogs' | 'reviews'>('bookings')
+  const [activeTab, setActiveTab] = useState<'bookings' | 'dispatch' | 'analytics' | 'staff' | 'templates' | 'payRates' | 'rewards' | 'auditLogs' | 'reviews'>('bookings')
   const [analyticsSubTab, setAnalyticsSubTab] = useState<'marketing' | 'operations'>('marketing')
 
   if (loading) {
@@ -190,6 +191,17 @@ export default function AdminPage() {
                   {t('admin.dashboard.tabs.payRates')}
                 </button>
                 <button
+                  onClick={() => setActiveTab('rewards')}
+                  className={cn(
+                    'min-h-[48px] py-3 px-6 font-body font-medium text-base border-b-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2 shrink-0',
+                    activeTab === 'rewards'
+                      ? 'border-slate-brand text-slate-brand'
+                      : 'border-transparent text-text-muted hover:text-charcoal hover:border-sand'
+                  )}
+                >
+                  {t('admin.dashboard.tabs.rewards')}
+                </button>
+                <button
                   onClick={() => setActiveTab('auditLogs')}
                   className={cn(
                     'min-h-[48px] py-3 px-6 font-body font-medium text-base border-b-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2 shrink-0',
@@ -309,6 +321,17 @@ export default function AdminPage() {
                     transition={{ duration: 0.2 }}
                   >
                     <PayRatesManager isAuthorized={isAuthorized} />
+                  </motion.div>
+                )}
+                {activeTab === 'rewards' && (
+                  <motion.div
+                    key="tab-rewards"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <RewardsManager isAuthorized={isAuthorized} />
                   </motion.div>
                 )}
                 {activeTab === 'auditLogs' && (

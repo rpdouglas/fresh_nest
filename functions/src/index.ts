@@ -7,10 +7,11 @@ export { onUserCreated } from './triggers/auth'
 
 // Domain callable re-exports
 export { setUserRole } from './callable/auth'
-export { createPaymentIntent, stripeWebhookHandler } from './callable/payments'
+export { createPaymentIntent, applyReferralDiscount, stripeWebhookHandler } from './callable/payments'
 export { claimJob } from './callable/job'
 export { getAnalyticsKPIs } from './callable/analytics'
 export { onStaffRegistered, migrateComplianceRecords, resendWelcomeEmail, submitBackgroundCheckConsent, updateBackgroundCheckStatus, completeTrainingModule, reactivateStaff } from './callable/staff'
+export { adjustCredit } from './callable/referrals'
 
 // Domain scheduled cron re-exports
 export { onDailyReminderCheck } from './scheduled/reminders'

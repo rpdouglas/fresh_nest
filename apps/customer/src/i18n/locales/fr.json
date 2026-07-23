@@ -830,7 +830,8 @@
         "templates": "Modèles de liste de contrôle",
         "payRates": "Taux de Rémunération",
         "auditLogs": "Journaux d'audit",
-        "reviews": "Modération des avis"
+        "reviews": "Modération des avis",
+        "rewards": "Récompenses"
       },
       "analytics": {
         "title": "Tableau de bord des analyses",
@@ -1141,6 +1142,48 @@
           "fr": "Français"
         }
       }
+    },
+    "rewards": {
+      "title": "Récompenses de parrainage",
+      "subtitle": "Crédits émis et utilisés pour tous les clients. Ajustez ou révoquez un crédit au besoin.",
+      "createBtn": "Émettre un crédit manuel",
+      "errorLoading": "Erreur lors du chargement des crédits.",
+      "revokeBtn": "Révoquer",
+      "revoking": "Révocation...",
+      "revokeSuccess": "Crédit révoqué avec succès.",
+      "revokeError": "Échec de la révocation du crédit.",
+      "status": {
+        "available": "Disponible",
+        "redeemed": "Utilisé",
+        "revoked": "Révoqué"
+      },
+      "reason": {
+        "referralReward": "Récompense de parrainage",
+        "adminAdjustment": "Ajustement manuel"
+      },
+      "table": {
+        "customer": "Client",
+        "amount": "Montant",
+        "reason": "Raison",
+        "status": "Statut",
+        "issuedAt": "Émis",
+        "actions": "Actions",
+        "empty": "Aucun crédit enregistré."
+      },
+      "form": {
+        "title": "Émettre un crédit manuel",
+        "customerEmail": "Courriel du client",
+        "amount": "Montant du crédit (CAD)",
+        "notes": "Notes (facultatif)",
+        "submit": "Émettre le crédit",
+        "cancel": "Annuler",
+        "success": "Crédit émis avec succès.",
+        "errors": {
+          "customerEmail": "Une adresse courriel valide est requise.",
+          "amount": "Un montant valide supérieur à 0 est requis.",
+          "saveError": "Échec de l'émission du crédit."
+        }
+      }
     }
   },
   "blog": {
@@ -1167,7 +1210,8 @@
     "referralShareDesc": "Offrez 20 $ de rabais à vos amis sur leur premier nettoyage. Lorsqu'ils réservent, vous recevez un rabais de 20 $ !",
     "copyLink": "Copier le lien de parrainage",
     "linkCopied": "Lien copié dans le presse-papiers !",
-    "referredBy": "Parrainé par {{name}}"
+    "referredBy": "Parrainé par {{name}}",
+    "discountLineLabel": "Remise de parrainage"
   },
   "customerPortal": {
     "login": {
@@ -1196,7 +1240,8 @@
       "bookings": "Mes Réservations",
       "upcoming": "Prochains Nettoyages",
       "profile": "Mon Profil",
-      "logout": "Se déconnecter"
+      "logout": "Se déconnecter",
+      "rewards": "Récompenses"
     },
     "bookings": {
       "title": "Mon Historique de Réservations",
@@ -1235,6 +1280,19 @@
       "address": "Adresse",
       "savingState": "Enregistrement...",
       "saveError": "Échec de la mise à jour du profil"
+    },
+    "rewards": {
+      "title": "Parrainages et récompenses",
+      "subtitle": "Partagez votre code, gagnez un crédit et suivez votre solde.",
+      "balanceLabel": "Solde de crédit disponible",
+      "noCodeYet": "Votre code de parrainage apparaîtra ici après votre première réservation.",
+      "historyTitle": "Historique des crédits",
+      "noHistory": "Vous n'avez pas encore gagné de crédit de parrainage.",
+      "status": {
+        "available": "Disponible",
+        "redeemed": "Utilisé",
+        "revoked": "Révoqué"
+      }
     }
   },
   "leaveReview": {

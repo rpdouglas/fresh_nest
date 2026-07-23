@@ -16,6 +16,7 @@ export default function CustomerPortalLayout() {
   const tabs = [
     { to: '/account/bookings', label: t('customerPortal.nav.bookings') },
     { to: '/account/upcoming', label: t('customerPortal.nav.upcoming') },
+    { to: '/account/rewards', label: t('customerPortal.nav.rewards') },
     { to: '/account/profile', label: t('customerPortal.nav.profile') },
   ]
 

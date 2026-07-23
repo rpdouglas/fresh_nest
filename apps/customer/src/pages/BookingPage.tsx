@@ -127,12 +127,20 @@ export default function BookingPage() {
       )
 
       const createPaymentIntentFn = httpsCallable<
-        { estimatedPrice: number },
+        { estimatedPrice: number; email?: string; referredBy?: string | null },
         { clientSecret: string }
       >(getFunctions(), 'createPaymentIntent')
 
       try {
-        const result = await createPaymentIntentFn({ estimatedPrice })
+        // P3-E10: referredBy is only known here if pre-filled via a ?ref= URL param
+        // that resolved before this effect ran — the common case (manually typing a
+        // code once Step 4 has already rendered) is handled by BookingStep4's own
+        // applyReferralDiscount call after verification succeeds.
+        const result = await createPaymentIntentFn({
+          estimatedPrice,
+          email: values.email,
+          referredBy: values.referredBy,
+        })
         setClientSecret(result.data.clientSecret)
       } catch (err) {
         console.error('[BookingPage] createPaymentIntent failed:', err)
@@ -242,6 +250,7 @@ export default function BookingPage() {
                     ref={step4Ref}
                     submitError={submitError}
                     stepHeaderRef={focusHeading}
+                    paymentIntentClientSecret={clientSecret}
                   />
                 </Elements>
               )}

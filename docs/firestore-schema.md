@@ -69,9 +69,41 @@ Stores the active referral codes and their ownership details to enable sharing l
 | Field Name | Type | Required | Description / Allowed Values |
 | :--- | :--- | :--- | :--- |
 | `ownerName` | `string` | ✅ | The formatted name of the referral owner (e.g., `"Diane L."`) |
+| `ownerEmail` | `string` | ✅ | The referral owner's email (P3-E10) — added so `onBookingStatusConfirmed` can issue a reward credit to the right customer without an extra `bookings` lookup. Written at code-generation time (`onBookingCreated`); absent on any code generated before P3-E10 shipped. |
 | `bookingId` | `string` | ✅ | The Firestore booking ID that generated this code |
-| `active` | `boolean` | ✅ | `true` if the referral code is active and valid for discounts |
+| `active` | `boolean` | ✅ | `true` if the referral code is active and valid for discounts. Set to `false` by `onBookingCancelled` (P3-E10) if the booking that owns this code is cancelled — closes the gap ADR-009 itself flagged as unresolved. |
 | `createdAt` | `Timestamp` | ✅ | Timestamp of referral code generation |
+
+---
+
+## 3a. Document: `config/referralConfig` (P3-E10)
+Single configuration document. Public-read (the booking wizard needs it before checkout to display the discount pre-payment), admin-only write.
+
+| Field Name | Type | Required | Description / Allowed Values |
+| :--- | :--- | :--- | :--- |
+| `referrerRewardAmount` | `number` | ✅ | CAD credit issued to the referrer when their referred booking is confirmed. Default `20` if this document doesn't exist yet. |
+| `refereeDiscountAmount` | `number` | ✅ | CAD discount applied immediately to a new client's booking when they enter a valid referral code. Default `20`. |
+| `currency` | `string` | ✅ | `'CAD'` |
+| `enabled` | `boolean` | ✅ | Kill switch — if `false`, no new discounts/credits are applied (existing credits are unaffected). |
+
+---
+
+## 3b. Collection: `credits` (P3-E10)
+Customer credit ledger. **No direct client writes at all, not even admin** — every mutation goes through a Cloud Function (`onBookingStatusConfirmed` issues; `adjustCredit` admin-gated callable adjusts/revokes), since this collection feeds a live Stripe charge calculation (`createPaymentIntent`/`applyReferralDiscount`) and needs server-side validation plus guaranteed audit logging on every change. Customers can read only their own credits (`request.auth.token.email == resource.data.customerEmail`); admin can read all.
+
+| Field Name | Type | Required | Description / Allowed Values |
+| :--- | :--- | :--- | :--- |
+| `customerEmail` | `string` | ✅ | Lowercased, trimmed. The credit's owner — matched against `request.auth.token.email` for customer-scoped reads. |
+| `amount` | `number` | ✅ | CAD |
+| `currency` | `string` | ✅ | `'CAD'` |
+| `reason` | `string` | ✅ | `'referral_reward' \| 'admin_adjustment'` |
+| `sourceBookingId` | `string \| null` | ✅ | The referred booking that triggered this credit (`reason: 'referral_reward'` only) |
+| `sourceReferralCode` | `string \| null` | ✅ | The referral code that triggered this credit (`reason: 'referral_reward'` only) |
+| `status` | `string` | ✅ | `'available' \| 'redeemed' \| 'revoked'`. Reserved (amount already reflected in a live `PaymentIntent`'s reduced `amount`) but not marked `redeemed` until the spending booking's `status` reaches `'confirmed'` — an abandoned checkout never permanently burns the credit. |
+| `issuedAt` | `Timestamp` | ✅ | |
+| `redeemedAt` | `Timestamp \| null` | ✅ | Set when `status` becomes `'redeemed'` |
+| `redeemedOnBookingId` | `string \| null` | ✅ | The booking this credit was spent on |
+| `adjustedBy` | `string \| null` | ✅ | Admin email/uid, set only for manual `adjustCredit` actions (create or revoke) |
 
 ---
 

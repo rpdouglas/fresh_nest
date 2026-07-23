@@ -34,6 +34,7 @@ const LoginConfirmPage     = lazy(() => import('@/pages/customer/LoginConfirmPag
 const CustomerBookingsPage = lazy(() => import('@/pages/customer/CustomerBookingsPage'))
 const CustomerUpcomingPage = lazy(() => import('@/pages/customer/CustomerUpcomingPage'))
 const CustomerProfilePage  = lazy(() => import('@/pages/customer/CustomerProfilePage'))
+const CustomerRewardsPage  = lazy(() => import('@/pages/customer/CustomerRewardsPage'))
 
 /**
  * React Router v6 browser router.
@@ -117,6 +118,7 @@ const router = createBrowserRouter([
           { index: true,         element: <CustomerBookingsPage /> },
           { path: 'bookings',    element: <CustomerBookingsPage /> },
           { path: 'upcoming',    element: <CustomerUpcomingPage /> },
+          { path: 'rewards',     element: <CustomerRewardsPage /> },
           { path: 'profile',     element: <CustomerProfilePage /> },
         ],
       },

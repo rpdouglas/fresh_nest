@@ -1,7 +1,9 @@
 import {
   collection,
+  doc,
   CollectionReference,
   DocumentData,
+  DocumentReference,
   Firestore,
   FirestoreDataConverter,
   QueryDocumentSnapshot,
@@ -11,7 +13,7 @@ import {
 import type { Booking, Review } from '../types/booking'
 import type { Job, JobPhoto, ChecklistCompletion } from '../types/job'
 import type { Staff, TermsAcceptance, BackgroundCheck, EmploymentAgreement, EmergencyContact, ProfileCorrection, Probation, Offboarding } from '../types/staff'
-import type { ChecklistTemplate, PayRate, AuditEntry } from '../types/common'
+import type { ChecklistTemplate, PayRate, AuditEntry, Referral, ReferralConfig, Credit } from '../types/common'
 
 // Helper to convert dynamic values to Date
 export function toDate(val: any): Date {
@@ -171,6 +173,31 @@ export const auditEntryConverter = createConverter<AuditEntry>((data, id) => ({
   changedAt: toDate(data.changedAt),
 } as AuditEntry))
 
+// Referral Converter (P3-E10)
+export const referralConverter = createConverter<Referral>((data, id) => ({
+  ...data,
+  id,
+  createdAt: toDate(data.createdAt),
+} as Referral))
+
+// ReferralConfig Converter (P3-E10) — single document, no id-bearing collection semantics needed
+export const referralConfigConverter: FirestoreDataConverter<ReferralConfig> = {
+  toFirestore(model: ReferralConfig): DocumentData {
+    return cleanUndefined(model)
+  },
+  fromFirestore(snapshot: QueryDocumentSnapshot, options: SnapshotOptions): ReferralConfig {
+    return snapshot.data(options) as ReferralConfig
+  },
+}
+
+// Credit Converter (P3-E10)
+export const creditConverter = createConverter<Credit>((data, id) => ({
+  ...data,
+  id,
+  issuedAt: toDate(data.issuedAt),
+  redeemedAt: toDateOrNull(data.redeemedAt),
+} as Credit))
+
 // Collection Factories
 export const bookingsCollection = (db: Firestore): CollectionReference<Booking> =>
   collection(db, 'bookings').withConverter(bookingConverter)
@@ -186,6 +213,15 @@ export const reviewsCollection = (db: Firestore): CollectionReference<Review> =>
 
 export const payRatesCollection = (db: Firestore): CollectionReference<PayRate> =>
   collection(db, 'payRates').withConverter(payRateConverter)
+
+export const referralsCollection = (db: Firestore): CollectionReference<Referral> =>
+  collection(db, 'referrals').withConverter(referralConverter)
+
+export const referralConfigDoc = (db: Firestore): DocumentReference<ReferralConfig> =>
+  doc(db, 'config', 'referralConfig').withConverter(referralConfigConverter)
+
+export const creditsCollection = (db: Firestore): CollectionReference<Credit> =>
+  collection(db, 'credits').withConverter(creditConverter)
 
 export const checklistTemplatesCollection = (db: Firestore): CollectionReference<ChecklistTemplate> =>
   collection(db, 'checklistTemplates').withConverter(checklistTemplateConverter)

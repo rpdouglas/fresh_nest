@@ -4,6 +4,7 @@ import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js'
 import { doc, getDoc } from 'firebase/firestore'
+import { getFunctions, httpsCallable } from 'firebase/functions'
 import { db } from '@/lib/firebase/firebase'
 import { cn } from '@/lib/utils/utils'
 import { computeBookingEstimatedPrice } from '@/lib/firebase/firestore'
@@ -16,10 +17,14 @@ export interface BookingStep4Handle {
 interface Props {
   submitError?: string | null
   stepHeaderRef?: React.Ref<HTMLHeadingElement>
+  // P3-E10: needed to update the already-created PaymentIntent's amount once a
+  // referral code is verified — the intent is created before this step's promo
+  // field is ever touched.
+  paymentIntentClientSecret?: string | null
 }
 
 const BookingStep4 = forwardRef<BookingStep4Handle, Props>(function BookingStep4(
-  { submitError, stepHeaderRef },
+  { submitError, stepHeaderRef, paymentIntentClientSecret },
   ref,
 ) {
   const { t } = useTranslation()
@@ -33,6 +38,23 @@ const BookingStep4 = forwardRef<BookingStep4Handle, Props>(function BookingStep4
   const [promoStatus, setPromoStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle')
   const [promoMessage, setPromoMessage] = useState('')
   const [paymentError, setPaymentError] = useState<string | null>(null)
+  // P3-E10: mirrors referralConfig.refereeDiscountAmount so the price summary matches
+  // what the Stripe PaymentElement actually charges — fetched once, public-read.
+  const [refereeDiscountAmount, setRefereeDiscountAmount] = useState(20)
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        const configSnap = await getDoc(doc(db, 'config', 'referralConfig'))
+        const configData = configSnap.data()
+        if (configSnap.exists() && typeof configData?.['refereeDiscountAmount'] === 'number') {
+          setRefereeDiscountAmount(configData['refereeDiscountAmount'])
+        }
+      } catch (err) {
+        console.error('[BookingStep4] Failed to load referralConfig, using default $20:', err)
+      }
+    })()
+  }, [])
 
   useImperativeHandle(ref, () => ({
     submitPayment: async () => {
@@ -79,6 +101,36 @@ const BookingStep4 = forwardRef<BookingStep4Handle, Props>(function BookingStep4
         setValue('referredBy', cleanCode)
         const owner = (data['ownerName'] as string) || ''
         setPromoMessage(t('referrals.promoValid') + (owner ? ` (${t('referrals.referredBy', { name: owner })})` : ''))
+
+        // P3-E10: the PaymentIntent was already created (with the full price) before
+        // this step's promo field could ever be touched — update it now that a valid
+        // code has been confirmed, rather than silently charging the full amount.
+        if (paymentIntentClientSecret) {
+          try {
+            const currentValues = getValues()
+            const estimatedPrice = computeBookingEstimatedPrice(
+              currentValues.propertyType,
+              currentValues.serviceType,
+              currentValues.frequency,
+            )
+            const paymentIntentId = paymentIntentClientSecret.split('_secret_')[0]
+            const applyDiscountFn = httpsCallable<
+              { paymentIntentId: string; referralCode: string; estimatedPrice: number; email?: string },
+              { success: boolean; newAmount: number }
+            >(getFunctions(), 'applyReferralDiscount')
+            await applyDiscountFn({
+              paymentIntentId,
+              referralCode: cleanCode,
+              estimatedPrice,
+              email: currentValues.email,
+            })
+          } catch (discountErr) {
+            // The code is still recorded as valid on the booking (referredBy is set
+            // above) even if the live amount update fails — surfacing a payment error
+            // here would be confusing since the customer hasn't touched payment yet.
+            console.error('[BookingStep4] Failed to apply referral discount to PaymentIntent:', discountErr)
+          }
+        }
       } else {
         setPromoStatus('invalid')
         setValue('referredBy', null)
@@ -90,7 +142,7 @@ const BookingStep4 = forwardRef<BookingStep4Handle, Props>(function BookingStep4
       setValue('referredBy', null)
       setPromoMessage(t('referrals.promoInvalid'))
     }
-  }, [setValue, t])
+  }, [setValue, t, paymentIntentClientSecret, getValues])
 
   useEffect(() => {
     const refParam = searchParams.get('ref')
@@ -114,7 +166,9 @@ const BookingStep4 = forwardRef<BookingStep4Handle, Props>(function BookingStep4
   // HST: 13% ON at launch. QC rate (14.975%) TBD — requires billing address province detection.
   const hstRate = 0.13
   const hstAmount = subtotal * hstRate
-  const total = subtotal + hstAmount
+  const preDiscountTotal = subtotal + hstAmount
+  const referralDiscountApplied = promoStatus === 'valid'
+  const total = referralDiscountApplied ? Math.max(0, preDiscountTotal - refereeDiscountAmount) : preDiscountTotal
 
   const fmt = (n: number) =>
     n.toLocaleString('en-CA', { style: 'currency', currency: 'CAD' })
@@ -189,6 +243,12 @@ const BookingStep4 = forwardRef<BookingStep4Handle, Props>(function BookingStep4
             <span>{t('booking.payment.hst')}</span>
             <span>{fmt(hstAmount)}</span>
           </div>
+          {referralDiscountApplied && (
+            <div className="flex justify-between font-body text-base text-green-600">
+              <span>{t('referrals.discountLineLabel')}</span>
+              <span>-{fmt(refereeDiscountAmount)}</span>
+            </div>
+          )}
           <div className="flex justify-between font-body text-lg text-charcoal font-bold pt-2 border-t border-sand">
             <span>{t('booking.payment.total')}</span>
             <span>{fmt(total)}</span>

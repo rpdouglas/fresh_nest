@@ -53,7 +53,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 
 | Epic ID | Epic Name | Complexity | Priority | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| **P3-E10** | Loyalty & Referral Reward Loop | L | P2 | ⬜ Not Started |
+| **P3-E10** | Loyalty & Referral Reward Loop | L | P2 | ✅ Completed 2026-07-22 (`firestore.rules` change awaiting deploy sign-off) |
 | **P3-E11** | CMS-Backed Blog | L | P3 | ⬜ Not Started |
 | **P3-E12** | Bilingual SEO — Path-Based Language Routing | XL | P2 | ⬜ Not Started |
 | **P3-E13** | Google Business Profile Booking Integration | M | P3 | ⬜ Not Started |
@@ -94,7 +94,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | Sprint 5 | 9–11 | **P3-E27-A1** (P0 PIPEDA), **P3-E27-A2** (P0 race condition), P3-E19 (functions split), P3-E21 (converters) |
 | Sprint 6 | 11–14 | P3-E27-B1 (welcome email), P3-E27-B2 (background check consent), P3-E22 (pricing worker), P3-E17 (schema flag) |
 | Sprint 7 | 14–18 | P3-E27-C1 (consent sequence), P3-E27-C2 (employee profile), P3-E27-D1 (staff panel) |
-| Sprint 8 | 18–22 | ✅ P3-E27-C3 (training/WHMIS), ✅ P3-E27-D2 (probation), ✅ P3-E27-D3 (offboarding), P3-E10 (referral loop), P3-E15 (PIPEDA erasure) |
+| Sprint 8 | 18–22 | ✅ P3-E27-C3 (training/WHMIS), ✅ P3-E27-D2 (probation), ✅ P3-E27-D3 (offboarding), ✅ P3-E10 (referral loop — rules deploy pending), P3-E15 (PIPEDA erasure) |
 | Sprint 9 | 22–27 | P3-E26 (quote-first — XL), P3-E28 Stage 1 (suggestion engine) |
 | Sprint 10 | 27–34 | P3-E11 (CMS blog), P3-E12 (bilingual SEO — XL), P3-E13 (GBP), P3-E14 (calendar), P3-E16 (dynamic pricing), P3-E28 Stages 2–4, P3-E23 (Suspense), P3-E24 (VitePress), P3-E25 (Storybook) |
 
