@@ -9,9 +9,7 @@ import {
   getDoc,
   setDoc,
   updateDoc,
-  deleteDoc,
   serverTimestamp,
-  Timestamp,
 } from 'firebase/firestore'
 import { readFileSync } from 'fs'
 import path from 'path'

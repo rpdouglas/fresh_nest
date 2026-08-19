@@ -2,14 +2,14 @@ import { renderHook, act } from '@testing-library/react'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { useAdminAuth } from './useAdminAuth'
 import { signInWithPopup, signOut } from 'firebase/auth'
-import type { User, IdTokenResult } from 'firebase/auth'
+import type { User } from 'firebase/auth'
 
 // Mock react-i18next translation
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string, params?: Record<string, unknown>) => {
+    t: (key: string, params?: { email?: string }) => {
       if (key === 'admin.login.errorMessage') {
-        return `Unauthorized: ${params?.email || ''}`
+        return `Unauthorized: ${params?.email ?? ''}`
       }
       return key
     },
@@ -29,7 +29,7 @@ vi.mock('firebase/auth', () => {
     GoogleAuthProvider: vi.fn(),
     signInWithPopup: vi.fn(),
     signOut: vi.fn(),
-    onAuthStateChanged: vi.fn((_auth, cb) => {
+    onAuthStateChanged: vi.fn((_auth: unknown, cb: (user: User | null) => void) => {
       authStateCallback = cb
       return () => {}
     }),
@@ -51,10 +51,10 @@ describe('useAdminAuth hook', () => {
     expect(result.current.authError).toBeNull()
   })
 
-  it('should set loading to false and authorize to false when auth state changes to null user', async () => {
+  it('should set loading to false and authorize to false when auth state changes to null user', () => {
     const { result } = renderHook(() => useAdminAuth())
 
-    await act(async () => {
+    act(() => {
       if (authStateCallback) {
         authStateCallback(null)
       }
@@ -71,7 +71,7 @@ describe('useAdminAuth hook', () => {
       email: 'hacker@test.com',
       getIdTokenResult: vi.fn().mockResolvedValue({
         claims: { role: 'customer' },
-      } as unknown as IdTokenResult),
+      }),
     } as unknown as User
 
     const { result } = renderHook(() => useAdminAuth())
@@ -80,6 +80,7 @@ describe('useAdminAuth hook', () => {
       if (authStateCallback) {
         authStateCallback(mockUser)
       }
+      await Promise.resolve()
     })
 
     expect(result.current.loading).toBe(false)
@@ -93,7 +94,7 @@ describe('useAdminAuth hook', () => {
       email: 'owner@freshnest.ca',
       getIdTokenResult: vi.fn().mockResolvedValue({
         claims: { role: 'admin' },
-      } as unknown as IdTokenResult),
+      }),
     } as unknown as User
 
     const { result } = renderHook(() => useAdminAuth())
@@ -102,6 +103,7 @@ describe('useAdminAuth hook', () => {
       if (authStateCallback) {
         authStateCallback(mockUser)
       }
+      await Promise.resolve()
     })
 
     expect(result.current.loading).toBe(false)
