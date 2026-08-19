@@ -6,6 +6,11 @@ import { updateDoc } from 'firebase/firestore'
 import { User } from 'firebase/auth'
 import { Staff } from '../types'
 
+// Mock Firebase config db instance
+vi.mock('../lib/firebase/firebase', () => ({
+  db: {},
+}))
+
 // Mock firebase firestore
 vi.mock('firebase/firestore', () => {
   const collectionRef = {

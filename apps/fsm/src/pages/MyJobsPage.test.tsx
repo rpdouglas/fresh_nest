@@ -7,6 +7,11 @@ import { useMyAssignedShifts } from '../hooks/useMyAssignedShifts'
 import { User } from 'firebase/auth'
 import { Staff, Job } from '../types'
 
+// Mock Firebase config db instance
+vi.mock('../lib/firebase/firebase', () => ({
+  db: {},
+}))
+
 // Mock useStaffAuth hook
 vi.mock('../hooks/useStaffAuth')
 
