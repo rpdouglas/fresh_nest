@@ -16,6 +16,11 @@ vi.mock('../hooks/useShifts')
 // Mock useMyAssignedShifts hook
 vi.mock('../hooks/useMyAssignedShifts')
 
+// Mock Firebase config functions instance
+vi.mock('../lib/firebase/firebase', () => ({
+  functions: {},
+}))
+
 // Mock firebase functions
 const mockClaimJobFn = vi.fn().mockResolvedValue({ data: { success: true, newEarnings: 800 } })
 vi.mock('firebase/functions', () => ({

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
 
 // FSM Staff Portal E2E spec — Strategy 1 (Mock-Centric)
 //
@@ -37,7 +37,7 @@ const STAFF_JWT = makeMockJwt({
 
 // Intercepts Firebase Auth + Firestore REST endpoints with mock responses.
 // Called inside test.beforeEach for authenticated-flow describe blocks.
-async function mockFirebase(page: InstanceType<typeof import('@playwright/test').Page>) {
+async function mockFirebase(page: Page) {
   // Firebase Auth — signInWithPassword
   await page.route('**/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword**', async (route) => {
     await route.fulfill({

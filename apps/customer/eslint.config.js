@@ -20,15 +20,15 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
       parserOptions: {
-        projectService: {
-          allowDefaultProject: [
-            'playwright.config.ts',
-            'vitest.config.ts',
-            'e2e/*.ts'
-          ],
-        },
+        projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },
+    },
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
+      ],
     },
   },
 ])
