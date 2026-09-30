@@ -46,7 +46,7 @@ THIS IS TAILWIND v3. NOT v4.
 - Language: EN (default) + FR — applies to BOTH the customer app and the FSM staff app
 - **Release language scope is EN + FR ONLY (human decision 2026-09-30).**
   Do NOT add Arabic or any other language — no locale files, toggles, RTL handling,
-  `lang`/`dir` switching, or `'ar'` values — even where docs/PERSONAS.md (P10 Ahmed) asks for it.
+  `lang`/`dir` switching, or `'ar'` values. P10 Ahmed's Arabic UI is deferred (PERSONAS.md v4.1);
   P10 is served by the icon-first UI for this release. `apps/fsm/src/i18n/i18n.test.ts` enforces this.
 - i18n library: react-i18next — config at src/i18n/index.ts
 - All UI strings: in en.json / fr.json — never hardcoded in components
@@ -123,7 +123,7 @@ These are not aspirational — they are done conditions.
 
 ### NEVER modify
 - docs/decisions/ADR-*.md once Accepted (immutable)
-- docs/PERSONAS.md (human-defined; AI reads only)
+- docs/PERSONAS.md (human-defined; AI reads only — unless the human explicitly authorises a specific change in the conversation)
 - .env.local or any secrets file
 - firestore.rules (security changes require human approval)
 
