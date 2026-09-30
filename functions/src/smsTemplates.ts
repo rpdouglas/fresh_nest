@@ -21,10 +21,17 @@ export function confirmationSms(
   serviceType: string,
   preferredDate: string,
   lang: 'en' | 'fr',
+  quoteRequest = true,
 ): string {
   const service = lang === 'fr'
     ? (SMS_SERVICE_FR[serviceType] ?? serviceType)
     : (SMS_SERVICE_EN[serviceType] ?? serviceType)
+  // P3-E29: public requests have no agreed price yet — say a quote will follow.
+  if (quoteRequest) {
+    return lang === 'fr'
+      ? `Fresh Nest Co. : Bonjour ${firstName}, nous avons reçu votre demande de devis (${service}, ${preferredDate}). Nous vous contacterons dans les 24 heures. (613) 935-3555`
+      : `Fresh Nest Co.: Hi ${firstName}, we received your quote request (${service}, ${preferredDate}). We'll contact you within 24 hours with your quote. (613) 935-3555`
+  }
   return lang === 'fr'
     ? `Fresh Nest Co. : Bonjour ${firstName}, votre ${service} est réservé pour le ${preferredDate} ! Nous confirmerons l'heure bientôt. (613) 935-3555`
     : `Fresh Nest Co.: Hi ${firstName}, your ${service} is booked for ${preferredDate}! We'll confirm the time soon. Questions? (613) 935-3555`

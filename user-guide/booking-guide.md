@@ -1,44 +1,45 @@
 # Booking Guide — Fresh Nest Co.
-**For:** Clients booking online  
-**Updated:** 2026-06-13 (Phase 4 — Blog & Referrals)
+**For:** Clients requesting a cleaning online  
+**Updated:** 2026-09-30 (P3-E29 — quote-first requests, no online pricing)
 
 ---
 
-## How to Book a Cleaning
+## How to Request a Cleaning Quote
 
-1. **Visit our booking page** at [lilypad-freshnest.web.app/booking](https://lilypad-freshnest.web.app/booking).
-2. **Step 1 — Service Details:** Select your service type (Standard, Deep, Move-Out, Airbnb, etc.) and enter your property details (bedrooms, bathrooms, pets). If you select Airbnb Turnover, a note confirms the 11am–3pm service window. Click **Next** to proceed.
-3. **Step 2 — Schedule & Add-Ons:** Choose your preferred frequency (one-time, weekly, biweekly, monthly), your preferred date, and any optional add-ons (oven, fridge, windows, etc.). Click **Next** to proceed.
-4. **Step 3 — Contact Info:** Enter your name, email, phone number, and service address. Include your Cornwall Island address or bridge crossing notes if applicable. Click **Next** to proceed.
-5. **Step 4 — Review & Promos:** Verify all details. If you were referred by a friend, enter their referral code (or check if it was pre-populated from a referral link) in the **Promo / Referral Code** box and click **Verify**. Once verified, a $20 discount confirmation will display. You can also choose to opt-in to marketing communications.
-6. **Submit:** Click the **Confirm Booking** button to finalize your appointment.
+The website doesn't show prices. Every home is different, so you send a **quote request** and a member of our team contacts you within 24 hours with a quote. No payment is taken online.
 
-**Tip:** If you used the Instant Quote Calculator, your property size and service type are carried forward automatically when you click "Book Now".
+1. **Start on the home page or visit** [lilypad-freshnest.web.app/booking](https://lilypad-freshnest.web.app/booking). The old `/pricing` address now leads to this form.
+2. **Step 1 — Service Details:** select your service type (Standard, Deep, Move-Out, Airbnb and so on) and enter your property details (bedrooms, bathrooms, pets). If you select Airbnb Turnover, a note confirms the 11am–3pm service window. Click **Next**.
+3. **Step 2 — Schedule & Add-Ons:** choose how often you'd like us (one-time, weekly, every two weeks, monthly), your preferred date, and any optional add-ons (oven, fridge, windows and so on). Click **Next**.
+4. **Step 3 — Contact Info:** enter your name, email, phone number and service address. Include your Cornwall Island address or bridge-crossing notes if they apply. Click **Next**.
+5. **Step 4 — Review:** check your details. You can opt in to marketing emails. There's no payment step.
+6. **Send:** click **Send Quote Request**.
+
+**Tip:** if you start from the home page's **"Get Your Cleaning Quote"** section, your property size, service type and frequency are carried into the form when you click **Request a Quote**.
 
 ---
 
-## After You Book
+## After You Send Your Request
 
-- After submitting, you are taken to a **confirmation page** at `/thank-you` showing your booking summary. 
-- **Referral Sharing Loop:** The thank-you page displays a **"Give $20, Get $20"** card with your custom referral code (e.g., `FIRSTNAME-12AB`) and a shareable link. Copy this link or code to share with friends. When they book, they save $20, and you earn a $20 credit!
-- You will receive an **email confirmation** within 60 seconds. (French clients receive French-language confirmations.)
-- You will receive an **SMS confirmation** to your mobile number within 60 seconds.
-- A team member will confirm your booking within 24 hours.
-- You will receive a **reminder SMS** 48 hours before your scheduled clean.
-- You will receive an **"On My Way" SMS** immediately when your cleaner checks in to start the job.
+- **Confirmation page:** you're taken to `/thank-you`, which shows a summary of your request and a reference number.
+- **Email and SMS:** an **email** and an **SMS** confirming your request arrive within about 60 seconds. French clients receive them in French.
+- **Your quote:** a team member **calls or emails you within 24 hours**. They'll confirm the details and give you a quote. Pricing, recurring-schedule options and payment are all arranged then.
+- **After you accept:** once you accept the quote, your cleaning is confirmed. You'll get a **reminder SMS** before your scheduled clean, and an **"On My Way" SMS** when your cleaner checks in.
+
+> **Referral codes:** the "Give $20, Get $20" referral card and the promo-code field have been removed from the website.
 
 ---
 
 ## Organic Blog & Cleaning Tips
 
-We publish regular clean-living guides, cost analyses, and local Cornwall area service updates on our [Fresh Nest Co. Blog](https://lilypad-freshnest.web.app/blog). Check it out for professional tips!
+We publish regular clean-living guides, checklists, and local Cornwall area service updates on our [Fresh Nest Co. Blog](https://lilypad-freshnest.web.app/blog). Check it out for professional tips!
 
 ---
 
 ## Special Areas
 
 ### Cornwall Island / Akwesasne
-We serve Cornwall Island! Please include your island address and any bridge crossing notes in the **Notes** field when booking.
+We serve Cornwall Island! Please include your island address and any bridge crossing notes in the **Notes** field of your request.
 
 ### Snye, QC (Akwesasne Quebec side)
 We cross the provincial border to serve the Quebec side of Akwesasne. Include your Snye address when booking.

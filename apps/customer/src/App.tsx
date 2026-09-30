@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import Layout from '@/components/layout/Layout'
 import { CORNWALL_ON, AKWESASNE, SNYE_QC, LONG_SAULT, MORRISBURG } from '@/lib/data/locationData'
 import { SERVICE_CONFIG_MAP } from '@/lib/data/serviceData'
@@ -15,7 +15,6 @@ const LocationPage         = lazy(() => import('@/pages/LocationPage'))
 const LocationsOverview    = lazy(() => import('@/pages/LocationsOverview'))
 const FaqPage              = lazy(() => import('@/pages/FaqPage'))
 const BookingPage          = lazy(() => import('@/pages/BookingPage'))
-const PricingPage          = lazy(() => import('@/pages/PricingPage'))
 const AirbnbTurnoverPage   = lazy(() => import('@/pages/AirbnbTurnoverPage'))
 const ServicePage          = lazy(() => import('@/pages/ServicePage'))
 const ServicesOverview     = lazy(() => import('@/pages/ServicesOverview'))
@@ -48,7 +47,7 @@ const CustomerProfilePage  = lazy(() => import('@/pages/customer/CustomerProfile
  *  /locations/:location     — Individual location pages
  *  /locations/akwesasne     — (Kahnawà:ke P4)
  *  /locations/snye-qc       — (Sophie P5)
- *  /pricing                 — Pricing page
+ *  /pricing                 — Redirects to /booking (P3-E29: no public pricing)
  *  /faq                     — FAQ
  *  /gallery                 — Before/After Gallery
  *  /booking                 — Multi-Step Booking Form
@@ -84,7 +83,7 @@ const router = createBrowserRouter([
       { path: 'locations/morrisburg',  element: <LocationPage config={MORRISBURG} /> },
 
       // ── Marketing & info pages ──
-      { path: 'pricing',      element: <PricingPage /> },
+      { path: 'pricing',      element: <Navigate to="/booking" replace /> },
       { path: 'faq',          element: <FaqPage /> },
       { path: 'gallery',      element: <Gallery /> },
       { path: 'booking',      element: <BookingPage /> },

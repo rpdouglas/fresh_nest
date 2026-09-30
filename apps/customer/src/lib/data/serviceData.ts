@@ -1,9 +1,6 @@
-import type { QuoteServiceType } from '@/lib/utils/quotePricing'
-
 export interface ServiceConfig {
   key: 'standard' | 'deep' | 'moveout' | 'postconstruction' | 'commercial'
   route: string
-  pricingKey?: QuoteServiceType
   includedItems: readonly string[]
   isCommercial: boolean
 }
@@ -11,7 +8,6 @@ export interface ServiceConfig {
 const standard: ServiceConfig = {
   key: 'standard',
   route: 'standard-cleaning',
-  pricingKey: 'standard',
   includedItems: ['floors', 'kitchen', 'bathrooms', 'dusting', 'trash', 'beds'],
   isCommercial: false,
 }
@@ -19,7 +15,6 @@ const standard: ServiceConfig = {
 const deep: ServiceConfig = {
   key: 'deep',
   route: 'deep-cleaning',
-  pricingKey: 'deep',
   includedItems: ['everything', 'appliances', 'cabinets', 'baseboards', 'windowSills', 'fixtures', 'grout'],
   isCommercial: false,
 }
@@ -27,7 +22,6 @@ const deep: ServiceConfig = {
 const moveout: ServiceConfig = {
   key: 'moveout',
   route: 'move-out-cleaning',
-  pricingKey: 'moveout',
   includedItems: ['allRooms', 'appliances', 'cupboards', 'behindAppliances', 'windowsDoorsFrames', 'checklistWalkthrough'],
   isCommercial: false,
 }
@@ -35,7 +29,6 @@ const moveout: ServiceConfig = {
 const postconstruction: ServiceConfig = {
   key: 'postconstruction',
   route: 'post-construction',
-  pricingKey: 'postconstruction',
   includedItems: ['dustRemoval', 'hepaVacuum', 'adhesiveRemoval', 'windows', 'vents', 'debrisRemoval'],
   isCommercial: false,
 }

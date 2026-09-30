@@ -3,14 +3,12 @@ import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils/utils'
-import {
-  calculateQuote,
-  FREQUENCY_DISCOUNT,
-  type QuoteFrequency,
-  type QuotePropertySize,
-  type QuoteServiceType,
+import type {
+  QuoteFrequency,
+  QuotePropertySize,
+  QuoteServiceType,
 } from '@/lib/utils/quotePricing'
-import { logQuoteCalculated } from '@/lib/firebase/analytics'
+import { logQuoteRequestStarted } from '@/lib/firebase/analytics'
 import { fadeUp } from '@/lib/utils/animations'
 
 const SIZE_OPTIONS: { value: QuotePropertySize; labelKey: string }[] = [
@@ -47,14 +45,14 @@ function btnClass(isActive: boolean) {
   )
 }
 
+// P3-E29: a "what do you need?" selector — no prices or discounts are shown.
+// The selections pre-fill the quote request form (P2 Travis: three taps, no account).
 export default function QuoteCalculator() {
   const { t } = useTranslation()
 
   const [size, setSize]           = useState<QuotePropertySize>('3-4bed')
   const [service, setService]     = useState<QuoteServiceType>('standard')
   const [frequency, setFrequency] = useState<QuoteFrequency>('biweekly')
-
-  const quote = calculateQuote(size, service, frequency)
 
   const bookingHref = useMemo(() => {
     if (size === 'commercial') return '/booking?commercial=1'
@@ -161,70 +159,44 @@ export default function QuoteCalculator() {
                   {t('quote.frequencyLabel')}
                 </p>
                 <div role="group" aria-labelledby="freq-label" className="flex flex-wrap gap-2">
-                  {FREQUENCY_OPTIONS.map(({ value, labelKey }) => {
-                    const discount = FREQUENCY_DISCOUNT[value]
-                    const isActive = frequency === value
-                    return (
-                      <button
-                        key={value}
-                        type="button"
-                        aria-pressed={isActive}
-                        onClick={() => setFrequency(value)}
-                        className={btnClass(isActive)}
-                      >
-                        {t(labelKey)}
-                        {discount > 0 && (
-                          <span className="font-body text-sm ml-1.5 opacity-75">
-                            {t('quote.discountBadge', { pct: Math.round(discount * 100) })}
-                          </span>
-                        )}
-                      </button>
-                    )
-                  })}
+                  {FREQUENCY_OPTIONS.map(({ value, labelKey }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      aria-pressed={frequency === value}
+                      onClick={() => setFrequency(value)}
+                      className={btnClass(frequency === value)}
+                    >
+                      {t(labelKey)}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Result panel */}
+          {/* Call to action */}
           <div
             role="status"
             aria-live="polite"
             aria-atomic="true"
             className="mt-8 p-6 bg-white rounded border border-sand text-center"
           >
-            {quote.type === 'commercial' ? (
-              <div className="space-y-3">
-                <p className="font-sub text-2xl text-charcoal">
-                  {t('quote.commercialTitle')}
-                </p>
-                <p className="font-body text-base text-text-muted">
-                  {t('quote.commercialBody')}
-                </p>
-                <Link
-                  to="/booking?commercial=1"
-                  className="inline-flex items-center border border-slate-brand text-slate-brand font-body font-medium rounded px-6 py-3 min-h-[48px] hover:bg-slate-pale transition-colors duration-200"
-                >
-                  {t('quote.commercialCta')}
-                </Link>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <p className="font-display text-4xl text-charcoal">
-                  {t('quote.startingAt', { price: quote.min })}
-                </p>
-                <p className="font-body text-base text-text-muted">
-                  {t('quote.typicallyRange', { min: quote.min, max: quote.max })}
-                </p>
-                <Link
-                  to={bookingHref}
-                  onClick={() => logQuoteCalculated(service, quote.min)}
-                  className="inline-flex items-center bg-slate-brand text-white font-body font-medium rounded px-6 py-3 min-h-[48px] hover:bg-slate-dark transition-colors duration-200"
-                >
-                  {t('quote.bookNowCta')}
-                </Link>
-              </div>
-            )}
+            <div className="space-y-3">
+              <p className="font-sub text-2xl text-charcoal">
+                {size === 'commercial' ? t('quote.commercialTitle') : t('quote.ctaTitle')}
+              </p>
+              <p className="font-body text-base text-text-muted">
+                {size === 'commercial' ? t('quote.commercialBody') : t('quote.ctaBody')}
+              </p>
+              <Link
+                to={bookingHref}
+                onClick={() => logQuoteRequestStarted(size === 'commercial' ? 'commercial' : service)}
+                className="inline-flex items-center bg-slate-brand text-white font-body font-medium rounded px-6 py-3 min-h-[48px] hover:bg-slate-dark transition-colors duration-200"
+              >
+                {t('quote.requestCta')}
+              </Link>
+            </div>
           </div>
         </motion.div>
       </div>

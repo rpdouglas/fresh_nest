@@ -6,7 +6,7 @@ import {
   logCustomEvent,
   logBookingStarted,
   logBookingCompleted,
-  logQuoteCalculated,
+  logQuoteRequestStarted,
   logPhoneClicked,
   logLanguageToggled,
   _resetForTesting,
@@ -60,12 +60,11 @@ describe('Analytics', () => {
     })
   })
 
-  it('logQuoteCalculated logs quote_calculated', () => {
+  it('logQuoteRequestStarted logs quote_request_started without a price', () => {
     initializeAnalytics()
-    logQuoteCalculated('Deep Cleaning', 200)
-    expect(logEvent).toHaveBeenCalledWith(expect.anything(), 'quote_calculated', {
-      service_type: 'Deep Cleaning',
-      value: 200,
+    logQuoteRequestStarted('deep')
+    expect(logEvent).toHaveBeenCalledWith(expect.anything(), 'quote_request_started', {
+      service_type: 'deep',
     })
   })
 

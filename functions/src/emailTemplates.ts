@@ -23,6 +23,16 @@ export interface BookingData {
   referralCode?: string | null
   referredBy?: string | null
   assignedTo?: string | null
+  status?: string
+}
+
+/**
+ * P3-E29: public submissions are quote requests (status 'pending') — no price has been agreed,
+ * so client/owner messages say "request received, quote to follow". Admin phone-in bookings
+ * created as 'confirmed' keep the confirmed wording.
+ */
+export function isQuoteRequest(b: Pick<BookingData, 'status'>): boolean {
+  return b.status !== 'confirmed'
 }
 
 function esc(value: string | null | undefined): string {
@@ -69,13 +79,16 @@ const FREQ_FR: Record<string, string> = {
 
 export function ownerSubject(b: BookingData): string {
   const svc = SERVICE_EN[b.serviceType] ?? b.serviceType
-  return `New booking — ${b.firstName} ${b.lastName} · ${svc} · ${b.preferredDate}`
+  const kind = isQuoteRequest(b) ? 'New quote request' : 'New booking'
+  return `${kind} — ${b.firstName} ${b.lastName} · ${svc} · ${b.preferredDate}`
 }
 
 export function ownerText(b: BookingData, docId: string): string {
   const addOns = (b.addOns ?? []).join(', ') || '—'
   return [
-    'New booking received — Fresh Nest Co.',
+    isQuoteRequest(b)
+      ? 'New quote request received — follow up with a quote within 24 hours. Fresh Nest Co.'
+      : 'New booking received — Fresh Nest Co.',
     '',
     `Name:               ${b.firstName} ${b.lastName}`,
     `Email:              ${b.email}`,
@@ -100,7 +113,12 @@ export function ownerText(b: BookingData, docId: string): string {
 
 // ── Client confirmation (HTML, EN or FR) ─────────────────────────────────
 
-export function clientSubject(lang: 'en' | 'fr'): string {
+export function clientSubject(lang: 'en' | 'fr', quoteRequest = true): string {
+  if (quoteRequest) {
+    return lang === 'fr'
+      ? 'Nous avons reçu votre demande de devis — Fresh Nest Co.'
+      : 'We received your cleaning quote request — Fresh Nest Co.'
+  }
   return lang === 'fr'
     ? 'Votre nettoyage est réservé — Fresh Nest Co.'
     : 'Your cleaning is booked — Fresh Nest Co.'
@@ -131,13 +149,24 @@ export function clientHtml(b: BookingData, lang: 'en' | 'fr'): string {
     ? (FREQ_FR[b.frequency] ?? b.frequency)
     : (FREQ_EN[b.frequency] ?? b.frequency)
 
-  const heading    = isFr ? 'Votre réservation est confirmée !' : 'Your booking is confirmed!'
-  const greeting   = isFr
-    ? `Merci, ${esc(b.firstName)}. Voici les détails de votre réservation :`
-    : `Thank you, ${esc(b.firstName)}. Here's what we have scheduled:`
-  const nextSteps  = isFr
-    ? 'Nous confirmerons l\'heure exacte dans les 24 heures.'
-    : 'We\'ll confirm the exact time within 24 hours.'
+  const quote = isQuoteRequest(b)
+  const heading    = quote
+    ? (isFr ? 'Nous avons reçu votre demande !' : 'We received your request!')
+    : (isFr ? 'Votre réservation est confirmée !' : 'Your booking is confirmed!')
+  const greeting   = quote
+    ? (isFr
+      ? `Merci, ${esc(b.firstName)}. Voici les détails de votre demande de devis :`
+      : `Thank you, ${esc(b.firstName)}. Here are the details of your quote request:`)
+    : (isFr
+      ? `Merci, ${esc(b.firstName)}. Voici les détails de votre réservation :`
+      : `Thank you, ${esc(b.firstName)}. Here's what we have scheduled:`)
+  const nextSteps  = quote
+    ? (isFr
+      ? 'Un membre de notre équipe vous contactera dans les 24 heures pour confirmer les détails et vous remettre un devis.'
+      : 'A member of our team will contact you within 24 hours to confirm the details and give you a quote.')
+    : (isFr
+      ? 'Nous confirmerons l\'heure exacte dans les 24 heures.'
+      : 'We\'ll confirm the exact time within 24 hours.')
   const callUs     = isFr
     ? 'Des questions ? Appelez-nous au'
     : 'Questions? Call us at'

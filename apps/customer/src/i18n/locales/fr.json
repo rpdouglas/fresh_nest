@@ -20,9 +20,9 @@
     "bilingual": "Service bilingue"
   },
   "quote": {
-    "ariaLabel": "Calculateur de devis instantané",
-    "sectionHeading": "Obtenez un devis instantané",
-    "sectionSubhead": "Tarifs transparents pour Cornwall et les communautés avoisinantes. Aucun engagement requis.",
+    "ariaLabel": "Demander un devis de nettoyage",
+    "sectionHeading": "Obtenez votre devis de nettoyage",
+    "sectionSubhead": "Dites-nous ce dont vous avez besoin. Chaque maison est différente : nous vous ferons parvenir un devis adapté à la vôtre. Aucun engagement requis.",
     "sizeLabel": "Superficie du logement",
     "serviceLabel": "Type de service",
     "frequencyLabel": "À quelle fréquence ?",
@@ -46,20 +46,18 @@
       "biweekly": "Aux deux semaines",
       "monthly": "Mensuel"
     },
-    "discountBadge": "{{pct}} % de rabais",
-    "startingAt": "À partir de {{price}} $",
-    "typicallyRange": "Généralement {{min}} $–{{max}} $",
-    "bookNowCta": "Réservez maintenant",
-    "commercialTitle": "Devis personnalisé pour votre entreprise",
-    "commercialBody": "Les tarifs de nettoyage commercial sont adaptés à votre espace et à votre horaire. Contactez-nous pour une évaluation gratuite.",
-    "commercialCta": "Nous contacter pour un devis"
+    "commercialTitle": "Un devis adapté à votre entreprise",
+    "commercialBody": "Le nettoyage commercial est adapté à votre espace et à votre horaire. Demandez un devis et nous organiserons une évaluation sur place.",
+    "ctaTitle": "Prêt pour votre devis ?",
+    "ctaBody": "Donnez-nous quelques détails et nous vous contacterons dans les 24 heures avec un devis pour votre maison.",
+    "requestCta": "Demander un devis"
   },
   "services": {
     "ariaLabel": "Nos services de nettoyage",
     "sectionHeading": "Nos services",
     "sectionSubhead": "Un nettoyage professionnel pour chaque besoin — résidentiel, locatif et commercial. Fièrement au service de Cornwall et des communautés environnantes.",
-    "bookNow": "Réserver",
-    "bookAriaLabel": "Réserver {{service}}",
+    "bookNow": "Demander un devis",
+    "bookAriaLabel": "Demander un devis pour {{service}}",
     "viewDetailsAriaLabel": "En savoir plus sur {{service}}",
     "standard": {
       "title": "Nettoyage standard",
@@ -83,7 +81,7 @@
     },
     "commercial": {
       "title": "Nettoyage commercial",
-      "description": "Programmes de nettoyage sur mesure pour bureaux, commerces et établissements d'affaires. Horaires flexibles, tarifs sur volume et gestion de compte dédiée."
+      "description": "Programmes de nettoyage sur mesure pour bureaux, commerces et établissements d'affaires. Horaires flexibles et gestion de compte dédiée."
     }
   },
   "gallery": {
@@ -125,10 +123,10 @@
     }
   },
   "howItWorks": {
-    "ariaLabel": "Comment fonctionne le processus de réservation",
+    "ariaLabel": "Comment fonctionne la demande de devis",
     "sectionHeading": "Comment ça marche",
-    "sectionSubhead": "De la réservation à une maison impeccable — quatre étapes simples.",
-    "step1Title": "Réservez en ligne",
+    "sectionSubhead": "De votre demande à une maison impeccable — quatre étapes simples.",
+    "step1Title": "Demandez un devis",
     "step1Desc": "Choisissez votre service, la superficie de votre logement et votre date de préférence. Aucun compte requis — moins de 3 minutes.",
     "step2Title": "Nous confirmons",
     "step2Desc": "Vous recevrez notre confirmation dans les 24 heures avec le nom de votre nettoyeur attitré et votre créneau d'arrivée.",
@@ -139,16 +137,15 @@
     "faqLink": "Des questions ? Consultez notre FAQ"
   },
   "recurring": {
-    "ariaLabel": "Forfaits de nettoyage récurrents et tarifs",
-    "sectionHeading": "Économisez à chaque nettoyage",
-    "sectionSubhead": "Réservez un nettoyage récurrent et économisez jusqu'à 20 % — sans contrat, annulation à tout moment.",
+    "ariaLabel": "Horaires de nettoyage récurrents",
+    "sectionHeading": "Un nettoyage récurrent à votre rythme",
+    "sectionSubhead": "Hebdomadaire, aux deux semaines ou mensuel — sans contrat, annulation à tout moment. Nous inclurons votre horaire dans votre devis.",
     "mostPopular": "Le plus populaire",
-    "discountBadge": "{{pct}} % de rabais",
-    "bookCta": "Réserver — {{freq}}",
-    "bookAriaLabel": "Réserver un nettoyage {{freq}}",
+    "bookCta": "Devis — {{freq}}",
+    "bookAriaLabel": "Demander un devis pour un nettoyage {{freq}}",
     "tagline": {
       "weekly": "Idéal pour les foyers actifs. Votre maison, toujours impeccable, chaque semaine.",
-      "biweekly": "Réservez et oubliez. L'option la plus populaire — propre aux deux semaines.",
+      "biweekly": "Planifiez et oubliez. L'option la plus populaire — propre aux deux semaines.",
       "monthly": "Nettoyage récurrent flexible. Idéal pour les maisons moins fréquentées ou les remises à neuf saisonnières."
     }
   },
@@ -183,8 +180,8 @@
     "ariaLabel": "Zones desservies",
     "servicesHeading": "Services disponibles ici",
     "mapLabel": "Carte de {{location}}",
-    "bookCta": "Réserver un nettoyage à {{location}}",
-    "bookAriaLabel": "Réserver un nettoyage à {{location}}",
+    "bookCta": "Demander un devis à {{location}}",
+    "bookAriaLabel": "Demander un devis de nettoyage à {{location}}",
     "overview": {
       "pageTitle": "Zones desservies | Fresh Nest Co.",
       "metaDesc": "Fresh Nest Co. dessert Cornwall ON, Akwesasne, Snye QC, Long Sault et Morrisburg. Services de nettoyage professionnels bilingues.",
@@ -205,7 +202,7 @@
       "heading": "Services de nettoyage à Akwesasne",
       "subhead": "Nous desservons l'ensemble de la communauté d'Akwesasne — incluant l'île de Cornwall.",
       "description": "Nous traversons le pont international Seaway pour desservir l'île de Cornwall et la communauté d'Akwesasne. Nettoyage standard, en profondeur, de déménagement et post-construction disponibles. Veuillez indiquer votre adresse sur l'île et les instructions d'accès dans les notes de réservation.",
-      "islandNote": "Nous desservons l'île de Cornwall — nous traversons le pont. Veuillez indiquer votre adresse sur l'île et les instructions d'accès dans les notes de réservation."
+      "islandNote": "Nous desservons l'île de Cornwall — nous traversons le pont. Veuillez indiquer votre adresse sur l'île et les instructions d'accès dans les notes de votre demande."
     },
     "snyeQc": {
       "pageTitle": "Nettoyage professionnel à Snye, QC | Fresh Nest Co.",
@@ -231,19 +228,19 @@
     }
   },
   "booking": {
-    "pageTitle": "Réserver un nettoyage | Fresh Nest Co.",
-    "metaDesc": "Réservez des services de nettoyage professionnel en ligne. Réservation rapide et bilingue pour Cornwall, Akwesasne, Snye QC, Long Sault et Morrisburg.",
-    "heading": "Réserver un nettoyage",
-    "subhead": "Quatre étapes rapides — environ 3 minutes sur votre téléphone.",
+    "pageTitle": "Demander un devis de nettoyage | Fresh Nest Co.",
+    "metaDesc": "Demandez un devis de nettoyage en ligne. Demande rapide et bilingue pour Cornwall, Akwesasne, Snye QC, Long Sault et Morrisburg.",
+    "heading": "Demander un devis de nettoyage",
+    "subhead": "Quatre étapes rapides — environ 3 minutes sur votre téléphone. Aucun paiement requis.",
     "progress": "Étape {{current}} sur {{total}}",
     "next": "Suivant",
     "back": "Retour",
-    "submit": "Confirmer la réservation",
+    "submit": "Envoyer la demande de devis",
     "submitting": "Envoi en cours…",
     "step1Title": "Quel type de nettoyage ?",
     "step2Title": "Quand souhaitez-vous notre visite ?",
     "step3Title": "Vos coordonnées",
-    "step4Title": "Vérifiez votre réservation",
+    "step4Title": "Vérifiez votre demande",
     "airbnbNote": "Les rotations Airbnb incluent le changement de literie, le réapprovisionnement des articles de toilette et les photos de dommages. Généralement effectuées dans le créneau 11h–15h.",
     "fields": {
       "serviceType": {
@@ -280,11 +277,6 @@
           "weekly": "Hebdomadaire",
           "biweekly": "Aux deux semaines",
           "monthly": "Mensuel"
-        },
-        "discounts": {
-          "weekly": "Économisez 20 %",
-          "biweekly": "Économisez 15 %",
-          "monthly": "Économisez 10 %"
         }
       },
       "preferredDate": {
@@ -346,21 +338,10 @@
       "phone": "Veuillez entrer un numéro de téléphone valide (minimum 10 chiffres).",
       "minLength": "Ce champ est trop court.",
       "date": "Veuillez sélectionner une date.",
-      "submit": "Une erreur s'est produite lors de l'enregistrement. Veuillez réessayer ou nous appeler :",
-      "payment": "Impossible d'initialiser le paiement. Veuillez réessayer ou nous appeler.",
-      "cardDeclined": "Votre carte a été refusée. Veuillez vérifier vos informations de carte et réessayer.",
-      "paymentUnavailable": "Le formulaire de paiement se charge. Veuillez patienter."
-    },
-    "payment": {
-      "heading": "Paiement",
-      "subtotal": "Sous-total",
-      "hst": "TVH (13 % ON)",
-      "total": "Total",
-      "secure": "Votre paiement est sécurisé par Stripe",
-      "loading": "Préparation du formulaire de paiement sécurisé…"
+      "submit": "Une erreur s'est produite lors de l'envoi de votre demande. Veuillez réessayer ou nous appeler :"
     },
     "review": {
-      "heading": "Vérifiez votre réservation",
+      "heading": "Vérifiez votre demande",
       "service": "Service",
       "property": "Propriété",
       "schedule": "Horaire",
@@ -382,7 +363,7 @@
     "heading": "Questions fréquentes",
     "subhead": "Réponses rapides sur la réservation, les services et à quoi s'attendre.",
     "ctaHeading": "Vous avez d'autres questions ?",
-    "ctaSubhead": "Nous sommes là pour vous aider — appelez-nous ou réservez en ligne.",
+    "ctaSubhead": "Nous sommes là pour vous aider — appelez-nous ou demandez un devis en ligne.",
     "item1": {
       "q": "Dois-je être présent pendant le nettoyage ?",
       "a": "Non, vous n'avez pas besoin d'être à la maison. Beaucoup de nos clients nous laissent une clé ou un code d'accès. Nous suivons vos instructions et verrouillons soigneusement à notre départ."
@@ -409,7 +390,7 @@
     },
     "item7": {
       "q": "Puis-je reporter ou annuler ma réservation ?",
-      "a": "Oui — nous demandons un préavis d'au moins 24 heures pour reporter ou annuler sans frais. Pour les annulations le jour même, des frais de courte notice peuvent s'appliquer."
+      "a": "Oui — veuillez nous donner un préavis d'au moins 24 heures pour reporter ou annuler."
     },
     "item8": {
       "q": "Êtes-vous assurés et cautionnés ?",
@@ -417,7 +398,7 @@
     },
     "item9": {
       "q": "Que se passe-t-il si je ne suis pas satisfait du nettoyage ?",
-      "a": "Nous offrons une garantie de satisfaction de 24 heures. Si quelque chose a été oublié, contactez-nous dans les 24 heures et nous reviendrons corriger la situation sans frais supplémentaires."
+      "a": "Nous offrons une garantie de satisfaction de 24 heures. Si quelque chose a été oublié, contactez-nous dans les 24 heures et nous reviendrons corriger la situation."
     },
     "item10": {
       "q": "Quels modes de paiement acceptez-vous ?",
@@ -431,10 +412,9 @@
     "home": "Accueil",
     "services": "Services",
     "locations": "Secteurs desservis",
-    "pricing": "Tarifs",
     "faq": "FAQ",
     "blog": "Blogue",
-    "booking": "Réservez maintenant",
+    "booking": "Demander un devis",
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
     "skipToContent": "Passer au contenu principal",
@@ -469,42 +449,15 @@
     "bilingual": "Service disponible en anglais et en français",
     "insured": "Entièrement assuré et cautionné"
   },
-  "pricing": {
-    "meta": {
-      "title": "Tarifs de nettoyage transparents — Fresh Nest Co.",
-      "description": "Tarifs transparents, sans frais cachés, pour les services de nettoyage standard, en profondeur, de déménagement, Airbnb et commercial."
-    },
-    "pageTitle": "Tarifs | Fresh Nest Co.",
-    "hero": {
-      "title": "Tarifs transparents",
-      "subtitle": "Aucun frais caché. Aucun devis requis. Réservez en quelques minutes."
-    },
-    "services": {
-      "heading": "Tarifs par service",
-      "reference": "Prix indiqués pour une maison de 1 à 2 chambres, nettoyage ponctuel.",
-      "commercial": "Devis personnalisé"
-    },
-    "frequency": {
-      "heading": "Économisez avec un nettoyage récurrent",
-      "cta": "Sélectionnez votre fréquence dans la calculatrice ci-dessous pour voir votre prix réduit."
-    },
-    "cta": {
-      "heading": "Prêt à réserver ?",
-      "button": "Réserver un nettoyage"
-    },
-    "price": {
-      "range": "{{min}} $–{{max}} $"
-    }
-  },
   "lang": {
     "toggle": "EN",
     "current": "FR",
     "switchTo": "Passer à l'anglais"
   },
   "common": {
-    "bookNow": "Réservez maintenant",
+    "bookNow": "Demander un devis",
     "learnMore": "En savoir plus",
-    "getQuote": "Obtenir un devis gratuit",
+    "getQuote": "Obtenir un devis",
     "callUs": "Appelez-nous",
     "loading": "Chargement…",
     "error": "Une erreur s'est produite. Veuillez réessayer.",
@@ -564,14 +517,13 @@
       "label3": "Documentation photographique à chaque nettoyage"
     },
     "pricing": {
-      "heading": "Tarifs transparents pour la remise en état",
-      "starting": "À partir de {{min}} $ par remise en état",
-      "volume": "Tarifs de volume disponibles pour 4+ remises en état par mois",
-      "cta": "Voir les tarifs complets"
+      "heading": "Chaque remise en état est différente",
+      "volume": "Parlez-nous de votre propriété et du nombre de remises en état prévues chaque mois — nous vous ferons parvenir un devis adapté.",
+      "cta": "Demander un devis de remise en état"
     },
     "form": {
       "heading": "Demander un compte commercial",
-      "subhead": "Configurez une planification prioritaire, des tarifs de volume et des remises en état documentées pour votre propriété.",
+      "subhead": "Configurez une planification prioritaire et des remises en état documentées pour votre propriété. Nous vous ferons parvenir un devis.",
       "firstName": "Prénom",
       "lastName": "Nom de famille",
       "email": "Adresse courriel",
@@ -594,15 +546,12 @@
   },
   "servicePage": {
     "backLink": "← Retour aux services",
-    "bookCta": "Réserver ce service",
-    "bookBanner": "Prêt à réserver votre {{service}} ?",
-    "bookBannerCta": "Réserver maintenant",
-    "pricingHeading": "Tarifs transparents",
-    "pricingStarting": "À partir de {{min}} $ pour un logement de 1–2 chambres",
-    "pricingCta": "Voir les tarifs complets",
-    "customPricingHeading": "Tarification personnalisée pour votre entreprise",
-    "customPricingBody": "Les tarifs de nettoyage commercial sont adaptés à votre espace, votre équipe et votre horaire. Contactez-nous pour une évaluation gratuite sur place.",
-    "customPricingCta": "Réserver une consultation",
+    "bookCta": "Demander un devis",
+    "bookBanner": "Prêt à obtenir un devis pour votre {{service}} ?",
+    "bookBannerCta": "Demander un devis",
+    "customPricingHeading": "Un devis adapté à votre entreprise",
+    "customPricingBody": "Le nettoyage commercial est adapté à votre espace, votre équipe et votre horaire. Demandez un devis et nous organiserons une évaluation sur place.",
+    "customPricingCta": "Demander un devis",
     "overview": {
       "heading": "Nos services de nettoyage",
       "subhead": "Services de nettoyage professionnels et bilingues à Cornwall, Akwesasne, Snye QC et dans les communautés environnantes."
@@ -611,7 +560,7 @@
       "includedHeading": "Ce qui est inclus",
       "howItWorksHeading": "Comment ça fonctionne",
       "trustHeading": "Pourquoi choisir Fresh Nest",
-      "step1Title": "Réservez en ligne",
+      "step1Title": "Demandez un devis",
       "step1Desc": "Choisissez votre service, votre date et la taille de votre maison. Confirmation en moins de 2 minutes.",
       "step2Title": "Nous nettoyons",
       "step2Desc": "Votre préposé attitré arrive à l'heure et suit une liste de vérification cohérente.",
@@ -699,25 +648,28 @@
         "wasteRemoval": "Enlèvement des ordures et recyclage",
         "flexibleScheduling": "Disponibilité en dehors des heures et les fins de semaine"
       }
-    }
+    },
+    "quoteHeading": "Chaque maison est différente",
+    "quoteBody": "La taille, l'état et la fréquence souhaitée influencent le travail. Parlez-nous de votre maison et nous vous ferons parvenir un devis dans les 24 heures.",
+    "quoteCta": "Demander un devis"
   },
   "thankYou": {
     "meta": {
-      "title": "Réservation confirmée — Fresh Nest Co.",
-      "description": "Votre réservation de nettoyage Fresh Nest Co. est confirmée. Consultez votre courriel pour les détails."
+      "title": "Demande de devis reçue — Fresh Nest Co.",
+      "description": "Nous avons reçu votre demande de devis de nettoyage. Nous vous contacterons dans les 24 heures."
     },
-    "heading": "C'est réservé, {{name}} !",
-    "subhead": "Votre réservation est confirmée. Un courriel de confirmation est en route vers {{email}}.",
-    "genericHeading": "Votre réservation est confirmée !",
-    "genericSubhead": "Consultez votre boîte de réception pour les détails de votre réservation.",
-    "summaryHeading": "Résumé de la réservation",
+    "heading": "Merci, {{name}} — nous avons reçu votre demande !",
+    "subhead": "Nous vous contacterons dans les 24 heures avec votre devis. Un courriel de confirmation est en route vers {{email}}.",
+    "genericHeading": "Votre demande de devis a été reçue !",
+    "genericSubhead": "Nous vous contacterons dans les 24 heures avec votre devis.",
+    "summaryHeading": "Résumé de la demande",
     "referenceLabel": "Numéro de référence",
     "serviceLabel": "Service",
     "dateLabel": "Date préférée",
     "frequencyLabel": "Fréquence",
     "nextHeading": "La suite",
     "step1Title": "Courriel de confirmation envoyé",
-    "step1Desc": "Vérifiez votre boîte de réception — les détails de votre réservation sont en route.",
+    "step1Desc": "Vérifiez votre boîte de réception — la confirmation de votre demande est en route. Nous vous appellerons ou vous écrirons avec votre devis dans les 24 heures.",
     "step2Title": "Nous confirmons votre préposé",
     "step2Desc": "Nous assignerons votre préposé et confirmerons les détails dans les 24 heures.",
     "step3Title": "Votre préposé arrive",
@@ -1144,7 +1096,7 @@
   "blog": {
     "meta": {
       "title": "Blogue de Fresh Nest Co. — Conseils de Nettoyage",
-      "description": "Lisez nos guides de prix, listes de déménagement et astuces de nettoyage à Cornwall et Akwesasne."
+      "description": "Lisez nos listes de nettoyage, guides de déménagement et astuces saisonnières à Cornwall et Akwesasne."
     },
     "pageHeading": "Le Blogue Fresh Nest",
     "pageSubhead": "Conseils saisonniers, guides de nettoyage et astuces d’entretien résidentiel pour nos communautés.",
@@ -1154,18 +1106,6 @@
     "noPosts": "Aucun article trouvé.",
     "backToBlog": "← Retour au blogue",
     "metaPost": "{{title}} | Blogue Fresh Nest"
-  },
-  "referrals": {
-    "promoCodeLabel": "Code de parrainage (Optionnel)",
-    "promoPlaceholder": "Entrez le code de votre ami",
-    "promoValid": "Code de parrainage valide ! Réduction de 20 $ appliquée.",
-    "promoInvalid": "Code de parrainage invalide. Veuillez vérifier.",
-    "promoChecking": "Vérification du code...",
-    "referralShareTitle": "Partagez l'amour Fresh Nest",
-    "referralShareDesc": "Offrez 20 $ de rabais à vos amis sur leur premier nettoyage. Lorsqu'ils réservent, vous recevez un rabais de 20 $ !",
-    "copyLink": "Copier le lien de parrainage",
-    "linkCopied": "Lien copié dans le presse-papiers !",
-    "referredBy": "Parrainé par {{name}}"
   },
   "customerPortal": {
     "login": {
@@ -1215,7 +1155,7 @@
       "cancelBtn": "Annuler le nettoyage",
       "confirmCancelTitle": "Annuler ce nettoyage ?",
       "confirmCancelDesc": "Êtes-vous sûr de vouloir annuler votre nettoyage du {{date}} ? Cette action est irréversible.",
-      "cancelSuccess": "Votre nettoyage a été annulé. Votre retenue de paiement a été libérée.",
+      "cancelSuccess": "Votre nettoyage a été annulé.",
       "changeFreqBtn": "Modifier la récurrence",
       "frequencyLabel": "Modifier la récurrence à :",
       "scheduledDateLabel": "Date prévue :",
@@ -1354,5 +1294,9 @@
     "body": "Installez notre application sur votre appareil pour un accès rapide aux réservations, même hors ligne.",
     "installBtn": "Installer",
     "dismissBtn": "Pas maintenant"
+  },
+  "quoteRequest": {
+    "nextStepsHeading": "La suite",
+    "nextStepsBody": "Aucun paiement n'est demandé maintenant. Un membre de notre équipe vous contactera dans les 24 heures pour confirmer les détails et vous remettre un devis."
   }
 }

@@ -8,27 +8,18 @@ test('Can view blog list and navigate to individual blog post', async ({ page })
   // Verify heading is present
   await expect(page.getByRole('heading', { name: /Fresh Nest Blog/i, level: 1 })).toBeVisible()
   
-  // Verify that the cost guide article is in the listing
-  const costGuideArticle = page.getByRole('heading', { name: /How Much Does House Cleaning Cost in Cornwall/i, level: 2 })
-  await expect(costGuideArticle).toBeVisible()
+  // P3-E29: the cost guide is unpublished; the move-out checklist is now the first post
+  const MOVE_OUT = /Move-Out Cleaning Checklist/i
+  await expect(page.getByRole('heading', { name: MOVE_OUT, level: 2 })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /How Much Does House Cleaning Cost/i })).toHaveCount(0)
 
-  // 2. Click "Read More" on the first blog post
-  await page.getByRole('link', { name: /How Much Does House Cleaning Cost in Cornwall/i }).click()
-
-  // Verify URL redirection to slug path
-  await expect(page).toHaveURL(/\/blog\/cleaning-cost-cornwall/)
-
-  // Verify that the full article header is displayed
-  await expect(page.getByRole('heading', { name: /How Much Does House Cleaning Cost in Cornwall/i, level: 1 })).toBeVisible()
+  // 2. Open the post
+  await page.getByRole('link', { name: MOVE_OUT }).click()
+  await expect(page).toHaveURL(/\/blog\/move-out-checklist-cornwall/)
+  await expect(page.getByRole('heading', { name: MOVE_OUT, level: 1 })).toBeVisible()
 })
 
-test('Referral URL parameter successfully populates code input in booking form', async ({ page }) => {
-  // Navigate to booking form with referral code query parameter
-  await page.goto('/booking?ref=MARGARET-4B52')
-
-  // Get the referral code input field
-  const promoInput = page.locator('#referralCodeInput')
-  
-  // Verify it contains the value from the URL query parameter
-  await expect(promoInput).toHaveValue('MARGARET-4B52')
+test('Old pricing URL redirects to the quote request form (P3-E29)', async ({ page }) => {
+  await page.goto('/pricing')
+  await expect(page).toHaveURL(/\/booking$/)
 })

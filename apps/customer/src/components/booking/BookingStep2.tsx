@@ -9,14 +9,13 @@ type AddOnValue = BookingFormData['addOns'][number]
 interface FrequencyOption {
   value: FrequencyValue
   labelKey: string
-  discountKey?: string
 }
 
 const FREQUENCY_OPTIONS: FrequencyOption[] = [
   { value: 'one-time',  labelKey: 'booking.fields.frequency.options.one-time' },
-  { value: 'weekly',    labelKey: 'booking.fields.frequency.options.weekly',   discountKey: 'booking.fields.frequency.discounts.weekly'   },
-  { value: 'biweekly',  labelKey: 'booking.fields.frequency.options.biweekly', discountKey: 'booking.fields.frequency.discounts.biweekly' },
-  { value: 'monthly',   labelKey: 'booking.fields.frequency.options.monthly',  discountKey: 'booking.fields.frequency.discounts.monthly'  },
+  { value: 'weekly',    labelKey: 'booking.fields.frequency.options.weekly'   },
+  { value: 'biweekly',  labelKey: 'booking.fields.frequency.options.biweekly' },
+  { value: 'monthly',   labelKey: 'booking.fields.frequency.options.monthly'  },
 ]
 
 const ADD_ON_OPTIONS: { value: AddOnValue; labelKey: string }[] = [
@@ -65,7 +64,7 @@ export default function BookingStep2({ stepHeaderRef }: { stepHeaderRef?: React.
               <label
                 key={opt.value}
                 className={cn(
-                  'flex items-center justify-between border rounded p-4 cursor-pointer transition-colors min-h-[48px]',
+                  'flex items-center border rounded p-4 cursor-pointer transition-colors min-h-[48px]',
                   currentFreq === opt.value
                     ? 'border-slate-brand bg-slate-pale'
                     : 'border-sand bg-white hover:border-slate-light'
@@ -80,11 +79,6 @@ export default function BookingStep2({ stepHeaderRef }: { stepHeaderRef?: React.
                   />
                   <span className="font-body text-base text-charcoal">{t(opt.labelKey)}</span>
                 </span>
-                {opt.discountKey && (
-                  <span className="font-body text-base font-medium text-slate-brand bg-slate-pale border border-slate-brand rounded px-2 py-0.5">
-                    {t(opt.discountKey)}
-                  </span>
-                )}
               </label>
             ))}
           </div>

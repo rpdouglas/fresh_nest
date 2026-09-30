@@ -30,12 +30,13 @@ When a client calls or walks in, you can enter their booking directly from the a
    - **Schedule & Contact** — preferred date, client name/email/phone/address, frequency, notes
    - **Admin Controls** — communication language, lead source (`Phone Call` or `Walk-In`), assign a cleaner (optional), set the initial status
 4. **Status options:**
-   - `Pending Confirmation` — creates the booking but does not send the confirmation email. Use this if the client needs time to decide.
-   - `Confirmed` — creates the booking AND immediately sends a confirmation email/SMS to the client and creates a job document. A warning banner appears if no cleaner is assigned yet.
+   - `Pending Confirmation` — creates the booking as a **quote request**. The client immediately receives a "we received your request — we'll follow up with a quote" email/SMS (P3-E29). Use this when the price still needs to be agreed.
+   - `Confirmed` — creates the booking, immediately sends a "your booking is confirmed" email/SMS to the client, and creates a job document. Use this when the price was agreed on the call. A warning banner appears if no cleaner is assigned yet.
 5. **Marketing consent** — only check this box if the client explicitly opted in during the call.
 6. Click **Create Booking**. The booking appears at the top of the bookings list.
 
-> **Note:** A confirmation email and SMS are sent automatically when the booking status is `confirmed` — whether set at creation or updated later.
+> **Note:** Client email/SMS is sent **once, when a booking is created** — wording depends on the status at creation (`pending` → "quote request received", `confirmed` → "booking confirmed").
+> **Changing a booking from `pending` to `confirmed` later does not send any message to the client** (it creates the job only). After a client accepts a quote, confirm the date and time with them directly by phone or email.
 
 ---
 
@@ -44,7 +45,7 @@ When a client calls or walks in, you can enter their booking directly from the a
 ### Booking Statuses
 | Status | Meaning |
 | :--- | :--- |
-| `pending` | New booking submitted, not yet confirmed |
+| `pending` | **Quote request** — the website shows no prices (P3-E29). Call or email the client within 24 hours with a quote, then set to `confirmed` once they accept |
 | `confirmed` | Booking confirmed and scheduled |
 | `completed` | Clean completed |
 | `cancelled` | Booking cancelled by client or owner |
