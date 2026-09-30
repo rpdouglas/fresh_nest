@@ -9,6 +9,7 @@ export { onUserCreated } from './triggers/auth'
 export { setUserRole } from './callable/auth'
 export { createPaymentIntent, stripeWebhookHandler } from './callable/payments'
 export { claimJob } from './callable/job'
+export { listOpenShifts } from './callable/shifts'
 export { getAnalyticsKPIs } from './callable/analytics'
 export { onStaffRegistered, migrateComplianceRecords, resendWelcomeEmail } from './callable/staff'
 

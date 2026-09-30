@@ -18,7 +18,19 @@
       "disabledOverage": "يتجاوز الحد الشهري بمقدار {{overage}} دولار",
       "disabledConflict": "تعارض في الانتقال: بحاجة إلى {{buffer}} دقيقة وقت إضافي مع الوردية {{start}}-{{end}}",
       "durationHours": "({{count}} ساعة)",
-      "noShifts": "لا توجد ورديات متاحة حالياً."
+      "noShifts": "لا توجد ورديات متاحة حالياً.",
+      "loadError": "تعذّر تحميل الورديات الآن. تحقّق من الاتصال وحاول مرة أخرى.",
+      "areaLabel": "منطقة الخدمة",
+      "areaUnknown": "المنطقة قيد التأكيد",
+      "addressAfterClaim": "يظهر العنوان الكامل في وظائفي بعد حجز هذه الوردية.",
+      "serviceTypes": {
+        "standard": "تنظيف عادي",
+        "deep": "تنظيف عميق",
+        "moveout": "تنظيف عند الانتقال",
+        "postconstruction": "تنظيف بعد البناء",
+        "airbnb": "تجهيز Airbnb",
+        "commercial": "تنظيف تجاري"
+      }
     },
     "myJobs": {
       "title": "وظائفي",

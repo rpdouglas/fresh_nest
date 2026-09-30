@@ -16,7 +16,19 @@
       "disabledOverage": "Exceeds monthly limit by ${{overage}}",
       "disabledConflict": "Travel conflict: Needs {{buffer}}m buffer with shift {{start}}-{{end}}",
       "durationHours": "({{count}} hrs)",
-      "noShifts": "No available shifts at the moment."
+      "noShifts": "No available shifts at the moment.",
+      "loadError": "We couldn't load shifts right now. Check your connection and try again.",
+      "areaLabel": "Service Area",
+      "areaUnknown": "Area to be confirmed",
+      "addressAfterClaim": "The full address appears in My Jobs after you claim this shift.",
+      "serviceTypes": {
+        "standard": "Standard Clean",
+        "deep": "Deep Clean",
+        "moveout": "Move-Out Clean",
+        "postconstruction": "Post-Construction Clean",
+        "airbnb": "Airbnb Turnover",
+        "commercial": "Commercial Clean"
+      }
     },
     "myJobs": {
       "title": "My Jobs",

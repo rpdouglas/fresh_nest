@@ -1,95 +1,24 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useQueryClient } from '@tanstack/react-query'
 import { httpsCallable } from 'firebase/functions'
 import { functions } from '../lib/firebase/firebase'
 import { useStaffAuth } from '../hooks/useStaffAuth'
-import { useShifts } from '../hooks/useShifts'
-import { useMyAssignedShifts } from '../hooks/useMyAssignedShifts'
+import { useShifts, AVAILABLE_SHIFTS_QUERY_KEY } from '../hooks/useShifts'
 import { cn } from '@freshnest/shared'
-import type { Job } from '../types'
 
-// F06 Helpers
-const timeToMinutes = (timeStr: string): number => {
-  try {
-    const [h, m] = timeStr.split(':').map(Number)
-    return h * 60 + m
-  } catch {
-    return 0
-  }
-}
-
-const extractPostalPrefix = (address: string): string | null => {
-  if (!address) return null
-  const match = address.match(/([A-Za-z]\d[A-Za-z])/i)
-  return match ? match[1].toUpperCase() : null
-}
-
-interface TravelShift {
-  startTime: string
-  endTime: string
-  address: string
-}
-
-const hasTravelConflict = (
-  candidate: TravelShift,
-  existing: TravelShift,
-  bufferMinutes: number
-): boolean => {
-  const startC = timeToMinutes(candidate.startTime)
-  const endC = timeToMinutes(candidate.endTime)
-  const startA = timeToMinutes(existing.startTime)
-  const endA = timeToMinutes(existing.endTime)
-
-  // 1. Direct overlap check
-  if (startC < endA && endC > startA) {
-    return true
-  }
-
-  // 2. Waive buffer if they share the same postal prefix
-  const fsaC = extractPostalPrefix(candidate.address)
-  const fsaA = extractPostalPrefix(existing.address)
-  if (fsaC && fsaA && fsaC === fsaA) {
-    return false
-  }
-
-  // 3. Buffer check
-  if (endC <= startA) {
-    const gap = startA - endC
-    if (gap < bufferMinutes) {
-      return true
-    }
-  } else if (endA <= startC) {
-    const gap = startC - endA
-    if (gap < bufferMinutes) {
-      return true
-    }
-  }
-
-  return false
-}
-
+// HOTFIX-02: blocked-window filtering (P9), earnings cap (P7/P13) and travel buffer
+// (P8/P15) are evaluated server-side by listOpenShifts using the same code as claimJob.
 export const ShiftBoardPage: React.FC = () => {
   const { t, i18n } = useTranslation()
   const { staffProfile } = useStaffAuth()
   const { shifts, isLoading, error } = useShifts(!!staffProfile)
-  const { assignedShifts } = useMyAssignedShifts(staffProfile?.uid, !!staffProfile)
+  const queryClient = useQueryClient()
 
   // Feedback states
   const [claimingId, setClaimingId] = useState<string | null>(null)
   const [successMsg, setSuccessMsg] = useState<string | null>(null)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
-
-  // Calculate shift duration in hours
-  const getShiftDurationHours = (startTime: string, endTime: string): number => {
-    try {
-      const [startH, startM] = startTime.split(':').map(Number)
-      const [endH, endM] = endTime.split(':').map(Number)
-      const diff = (endH + endM / 60) - (startH + startM / 60)
-      return diff > 0 ? diff : 2
-    } catch {
-      return 2
-    }
-  }
 
   // Format date based on selected locale
   const formatShiftDate = (dateStr: string): string => {
@@ -118,6 +47,7 @@ export const ShiftBoardPage: React.FC = () => {
         'claimJob'
       )
       await claimJobFn({ jobId })
+      void queryClient.invalidateQueries({ queryKey: AVAILABLE_SHIFTS_QUERY_KEY })
 
       // Show success feedback
       setSuccessMsg(t('fsm.shifts.claimingSuccess'))
@@ -161,33 +91,6 @@ export const ShiftBoardPage: React.FC = () => {
       safetyState = 'safe'
     }
   }
-
-  // Filter shifts that overlap with blocked windows
-  const blockedWindows = staffProfile.constraints?.blockedWindows || []
-  const visibleShifts = shifts.filter((job) => {
-    const shiftDate = job.scheduledDate
-    const shiftDayOfWeek = new Date(shiftDate + 'T00:00:00').getDay()
-    const startS = timeToMinutes(job.scheduledStartTime)
-    const endS = timeToMinutes(job.scheduledEndTime)
-
-    for (const window of blockedWindows) {
-      let isMatch = false
-      if (window.recurring) {
-        isMatch = window.dayOfWeek === shiftDayOfWeek
-      } else if (window.date) {
-        isMatch = window.date === shiftDate
-      }
-
-      if (isMatch) {
-        const startW = timeToMinutes(window.startTime)
-        const endW = timeToMinutes(window.endTime)
-        if (startS < endW && endS > startW) {
-          return false // Hide shift completely
-        }
-      }
-    }
-    return true
-  })
 
   return (
     <main className="min-h-screen bg-warm-white py-12 px-4 md:py-16 md:px-6">
@@ -277,52 +180,21 @@ export const ShiftBoardPage: React.FC = () => {
           </div>
         ) : error ? (
           <div className="p-6 bg-red-50 border border-red-200 text-red-800 rounded font-body text-base">
-            {t('fsm.shifts.claimingError')}: {error.message}
+            {t('fsm.shifts.loadError')}
           </div>
-        ) : visibleShifts.length === 0 ? (
+        ) : shifts.length === 0 ? (
           <div className="bg-white border border-sand rounded p-8 text-center text-text-muted italic font-body text-base shadow-sm">
             {t('fsm.shifts.noShifts')}
           </div>
         ) : (
           /* Shift Cards Grid */
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {visibleShifts.map((job) => {
-              const duration = getShiftDurationHours(job.scheduledStartTime, job.scheduledEndTime)
-              const rate = job.payRateSnapshot?.amount || 0
-              const estPay = rate * duration
-
-              // Earnings cap restriction checks
-              const remainingLimit = limitValue !== null ? limitValue - currentEarnings : null
-              const isOverLimit = remainingLimit !== null && estPay > remainingLimit
-              const overage = remainingLimit !== null && isOverLimit ? estPay - remainingLimit : 0
-
-              // Travel buffer checks
-              const constraints = staffProfile.constraints || {}
-              const transportMode = constraints.transportMode || 'transit'
-              const defaultBuffer = transportMode === 'transit' ? 60 : 30
-              const bufferMinutes = typeof constraints.transitBufferMinutes === 'number'
-                ? constraints.transitBufferMinutes
-                : defaultBuffer
-
-              const sameDayAssigned = assignedShifts.filter((s) => s.scheduledDate === job.scheduledDate)
-              let travelConflictShift: Job | null = null
-              for (const existing of sameDayAssigned) {
-                const cand = {
-                  startTime: job.scheduledStartTime,
-                  endTime: job.scheduledEndTime,
-                  address: job.clientAddress,
-                }
-                const ex = {
-                  startTime: existing.scheduledStartTime,
-                  endTime: existing.scheduledEndTime,
-                  address: existing.clientAddress,
-                }
-                if (hasTravelConflict(cand, ex, bufferMinutes)) {
-                  travelConflictShift = existing
-                  break
-                }
-              }
-              const isConflict = !!travelConflictShift
+            {shifts.map((job) => {
+              const { durationHours: duration, estimatedPay: estPay, overage, travelConflict } = job.eligibility
+              const rate = job.payRate
+              const isOverLimit = overage > 0
+              const isConflict = travelConflict !== null
+              const areaText = [job.area.municipality, job.area.postalPrefix].filter(Boolean).join(' · ')
 
               return (
                 <div 
@@ -338,7 +210,7 @@ export const ShiftBoardPage: React.FC = () => {
                     {/* Header: Service Badge & Rate */}
                     <div className="flex justify-between items-start gap-4">
                       <span className="inline-flex items-center px-3 py-1 rounded text-xs font-semibold bg-slate-pale text-slate-dark border border-sand capitalize font-body">
-                        {t(`booking.fields.propertyType.options.${job.serviceType}`, { defaultValue: job.serviceType })}
+                        {t(`fsm.shifts.serviceTypes.${job.serviceType}`, { defaultValue: job.serviceType })}
                       </span>
                       <span className="font-body text-sm font-semibold text-slate-brand">
                         {t('fsm.shifts.estimatedPay', { pay: estPay, hours: duration, rate })}
@@ -355,13 +227,16 @@ export const ShiftBoardPage: React.FC = () => {
                       </span>
                     </div>
 
-                    {/* Location Address (Accessibility: Tel / Map target) */}
+                    {/* Service area only — full client address is revealed after claiming (HOTFIX-02, PIPEDA) */}
                     <div className="text-left font-body pt-2 border-t border-sand/50">
                       <span className="text-xs text-text-muted uppercase tracking-wider block font-semibold">
-                        {t('admin.dashboard.details.address')}
+                        {t('fsm.shifts.areaLabel')}
                       </span>
                       <span className="text-charcoal text-sm font-medium block mt-0.5 leading-snug">
-                        {job.clientAddress}
+                        {areaText || t('fsm.shifts.areaUnknown')}
+                      </span>
+                      <span className="text-text-muted text-base block mt-1">
+                        {t('fsm.shifts.addressAfterClaim')}
                       </span>
                     </div>
                   </div>
@@ -374,12 +249,12 @@ export const ShiftBoardPage: React.FC = () => {
                       </span>
                     )}
 
-                    {isConflict && travelConflictShift && (
+                    {travelConflict && (
                       <span className="font-body text-xs font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-3 py-2 rounded text-center">
                         ⚠️ {t('fsm.shifts.disabledConflict', { 
-                          buffer: bufferMinutes, 
-                          start: travelConflictShift.scheduledStartTime, 
-                          end: travelConflictShift.scheduledEndTime 
+                          buffer: travelConflict.bufferMinutes,
+                          start: travelConflict.startTime,
+                          end: travelConflict.endTime,
                         })}
                       </span>
                     )}

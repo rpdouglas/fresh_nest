@@ -1,31 +1,28 @@
-import { useMemo } from 'react'
-import { useCollectionQuery } from '@tanstack-query-firebase/react/firestore'
-import { query, where, orderBy } from 'firebase/firestore'
-import { jobsCollection } from '@freshnest/shared'
-import { db } from '../lib/firebase/firebase'
-import type { Job } from '../types'
+import { useQuery } from '@tanstack/react-query'
+import { httpsCallable } from 'firebase/functions'
+import { functions } from '../lib/firebase/firebase'
+import type { OpenShift } from '../types'
 
+export const AVAILABLE_SHIFTS_QUERY_KEY = ['availableShifts'] as const
+
+// HOTFIX-02: staff cannot query unassigned jobs directly (firestore.rules), so the
+// board reads a PII-minimised, eligibility-evaluated list from the listOpenShifts callable.
 export function useShifts(enabled: boolean) {
-  const shiftsQuery = useMemo(() => {
-    return query(
-      jobsCollection(db),
-      where('status', '==', 'unassigned'),
-      orderBy('createdAt', 'desc')
-    )
-  }, [])
-
-  const { data, isLoading, error } = useCollectionQuery(shiftsQuery, {
-    queryKey: ['availableShifts'],
+  const { data, isLoading, error } = useQuery({
+    queryKey: AVAILABLE_SHIFTS_QUERY_KEY,
+    queryFn: async () => {
+      const listOpenShifts = httpsCallable<void, { shifts: OpenShift[] }>(functions, 'listOpenShifts')
+      const result = await listOpenShifts()
+      return result.data.shifts
+    },
     enabled,
+    staleTime: 0,
+    refetchInterval: 60_000,
+    refetchOnWindowFocus: true,
   })
 
-  const shifts = useMemo<Job[]>(() => {
-    if (!data) return []
-    return data.docs.map((docSnap) => docSnap.data())
-  }, [data])
-
   return {
-    shifts,
+    shifts: data ?? [],
     isLoading,
     error,
   }

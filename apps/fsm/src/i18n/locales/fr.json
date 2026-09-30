@@ -16,7 +16,19 @@
       "disabledOverage": "Dépasse la limite mensuelle de {{overage}} $",
       "disabledConflict": "Conflit de trajet : marge de {{buffer}} min requise avec le quart {{start}}-{{end}}",
       "durationHours": "({{count}} h)",
-      "noShifts": "Aucun quart disponible pour le moment."
+      "noShifts": "Aucun quart disponible pour le moment.",
+      "loadError": "Impossible de charger les quarts pour le moment. Vérifiez votre connexion et réessayez.",
+      "areaLabel": "Secteur",
+      "areaUnknown": "Secteur à confirmer",
+      "addressAfterClaim": "L'adresse complète s'affiche dans Mes mandats une fois le quart réclamé.",
+      "serviceTypes": {
+        "standard": "Ménage standard",
+        "deep": "Ménage en profondeur",
+        "moveout": "Ménage de déménagement",
+        "postconstruction": "Ménage après construction",
+        "airbnb": "Rotation Airbnb",
+        "commercial": "Ménage commercial"
+      }
     },
     "myJobs": {
       "title": "Mes mandats",

@@ -2,18 +2,33 @@ name: Deploy to Production
 on:
   push:
     branches: [main]
+# Never run two production deploys at once; queue instead of cancelling mid-deploy.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '20', cache: 'npm' }
+        with: { node-version: '22', cache: 'npm' }
       - run: npm ci
       - name: Security audit
         run: npm audit --audit-level=high
       - name: Unit tests (Vitest)
         run: npm run test:customer
+      - name: FSM unit tests (Vitest)
+        run: npm run test:fsm
+      - name: Install Cloud Functions dependencies
+        run: npm ci
+        working-directory: functions
+      - name: Build Cloud Functions
+        run: npm run build
+        working-directory: functions
+      - name: Cloud Functions unit tests
+        run: npm test
+        working-directory: functions
       - name: Build (prod DB)
         env:
           VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
@@ -40,6 +55,17 @@ jobs:
           else
             echo "SENTRY_AUTH_TOKEN not set — skipping source map upload"
           fi
+      # Functions deploy before hosting so new clients never call a callable that isn't live yet.
+      # Firestore rules/indexes are deliberately NOT deployed here — COMPLIANCE.md §4 requires a human.
+      - name: Deploy Cloud Functions
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          SA_FILE="$RUNNER_TEMP/firebase-sa.json"
+          trap 'rm -f "$SA_FILE"' EXIT
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$SA_FILE"
+          export GOOGLE_APPLICATION_CREDENTIALS="$SA_FILE"
+          npx -y firebase-tools@15 deploy --only functions --project freshnest-aa51e --non-interactive
       - name: Deploy Customer Portal
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
