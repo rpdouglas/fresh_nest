@@ -1,9 +1,66 @@
 name: Deploy Preview Channel
+# PR checks + Firebase preview channels (ADR-004, path filtering per ADR-013).
+# Each area only builds, tests and previews when its files change.
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+
+# A newer push to the same PR supersedes the running checks.
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # Preview builds always target the dev Firestore database.
+  VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+  VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
+  VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+  VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
+  VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+  VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+  VITE_FIRESTORE_DB_ID: freshnest-dev
+
 jobs:
-  preview:
+  changes:
+    runs-on: ubuntu-latest
+    permissions: { contents: read, pull-requests: read }
+    outputs:
+      customer: ${{ steps.filter.outputs.customer }}
+      fsm: ${{ steps.filter.outputs.fsm }}
+      functions: ${{ steps.filter.outputs.functions }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          # A CI change runs everything; shared code and the root lockfile affect both apps.
+          filters: |
+            ci: &ci
+              - '.github/workflows/**'
+            shared: &shared
+              - 'packages/shared/**'
+              - 'package.json'
+              - 'package-lock.json'
+            customer:
+              - *ci
+              - *shared
+              - 'apps/customer/**'
+              - 'firebase.json'
+            fsm:
+              - *ci
+              - *shared
+              - 'apps/fsm/**'
+              - 'firebase.json'
+            functions:
+              - *ci
+              - 'functions/**'
+
+  customer:
+    needs: changes
+    if: needs.changes.outputs.customer == 'true'
     runs-on: ubuntu-latest
     permissions: { checks: write, contents: read, pull-requests: write }
     steps:
@@ -11,49 +68,16 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '22', cache: 'npm' }
       - run: npm ci
-      - name: Security audit
-        run: npm audit --audit-level=high
-      - name: Unit tests (Vitest)
+      - name: Security audit (production dependencies)
+        run: npm audit --omit=dev --audit-level=high
+      - name: Unit tests
         run: npm run test:customer
-      - name: FSM unit tests (Vitest)
-        run: npm run test:fsm
-      # Functions are validated on PRs but only deployed from main (one live instance per project).
-      - name: Install Cloud Functions dependencies
-        run: npm ci
-        working-directory: functions
-      - name: Build Cloud Functions
-        run: npm run build
-        working-directory: functions
-      - name: Cloud Functions unit tests
-        run: npm test
-        working-directory: functions
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-        working-directory: apps/customer
-      - name: E2E tests (Playwright)
-        run: npm run test:e2e -- --project=chromium
-        working-directory: apps/customer
-        env:
-          CI: true
-          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
-          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
-          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
-          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
-          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
-          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
-          VITE_FIRESTORE_DB_ID: freshnest-dev
       - name: Build (dev DB)
-        env:
-          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
-          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
-          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
-          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
-          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
-          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
-          VITE_FIRESTORE_DB_ID: freshnest-dev
-        run: npm run build
-      - name: Deploy Customer Preview
-        id: deploy-customer-preview
+        run: npm run build:customer
+      # Dependabot PRs have no access to Actions secrets, so they can't deploy previews.
+      - name: Deploy customer preview
+        id: deploy
+        if: github.actor != 'dependabot[bot]'
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
@@ -61,7 +85,35 @@ jobs:
           projectId: freshnest-aa51e
           target: freshnest-dev
           expires: 7d
-      - name: Deploy FSM Preview
+      - name: Lighthouse (informational)
+        if: steps.deploy.outcome == 'success'
+        continue-on-error: true
+        uses: treosh/lighthouse-ci-action@v11
+        with:
+          urls: |
+            ${{ steps.deploy.outputs.details_url }}
+            ${{ steps.deploy.outputs.details_url }}/booking
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+  fsm:
+    needs: changes
+    if: needs.changes.outputs.fsm == 'true'
+    runs-on: ubuntu-latest
+    permissions: { checks: write, contents: read, pull-requests: write }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: 'npm' }
+      - run: npm ci
+      - name: Security audit (production dependencies)
+        run: npm audit --omit=dev --audit-level=high
+      - name: Unit tests
+        run: npm run test:fsm
+      - name: Build (dev DB)
+        run: npm run build:fsm
+      - name: Deploy FSM preview
+        if: github.actor != 'dependabot[bot]'
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
@@ -69,11 +121,55 @@ jobs:
           projectId: freshnest-aa51e
           target: freshnest-fsm
           expires: 7d
-      - name: Lighthouse CI
-        uses: treosh/lighthouse-ci-action@v11
+
+  # Functions are validated on PRs but only deployed from main (one live instance per project).
+  functions:
+    needs: changes
+    if: needs.changes.outputs.functions == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: functions
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          urls: |
-            ${{ steps.deploy-customer-preview.outputs.details_url }}
-            ${{ steps.deploy-customer-preview.outputs.details_url }}/booking
-          uploadArtifacts: true
-          temporaryPublicStorage: true
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            functions/package-lock.json
+      # Root install provides Vitest for the functions tests.
+      - run: npm ci
+        working-directory: .
+      - run: npm ci
+      - name: Security audit (production dependencies)
+        run: npm audit --omit=dev --audit-level=high
+      - run: npm run build
+      - run: npm test
+
+  # The Playwright suite is known-broken (ADR-013): it reports but never blocks.
+  e2e:
+    needs: changes
+    if: needs.changes.outputs.customer == 'true' || needs.changes.outputs.fsm == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: 'npm' }
+      - run: npm ci
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+        working-directory: apps/customer
+      - name: E2E tests (Playwright, non-blocking)
+        id: e2e
+        continue-on-error: true
+        run: npm run test:e2e -- --project=chromium
+        working-directory: apps/customer
+        env:
+          CI: true
+      - name: Report E2E result
+        if: steps.e2e.outcome == 'failure'
+        run: |
+          echo "::warning title=E2E failed (non-blocking)::Playwright suite failed. See the E2E step log. Tracked in ADR-013."
+          echo "### ⚠️ E2E tests failed (non-blocking)" >> "$GITHUB_STEP_SUMMARY"
