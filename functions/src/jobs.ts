@@ -1,4 +1,12 @@
 import { getFirestore, FieldValue } from 'firebase-admin/firestore'
+import {
+  estimateShiftPay,
+  earningsOverage,
+  overlapsBlockedWindow,
+  resolveBufferMinutes,
+  findTravelConflict,
+  type TravelShift,
+} from './lib/eligibility'
 
 /**
  * F03: Booking-to-Job Pipeline
@@ -199,67 +207,9 @@ export async function createJobFromBooking(
   console.log(`[createJobFromBooking] Successfully created job for booking '${bookingId}'`)
 }
 
-/**
- * F06 Helpers: Time parsing, postal code FSA extraction, and conflict checking logic.
- */
-export function timeToMinutes(timeStr: string): number {
-  try {
-    const [h, m] = timeStr.split(':').map(Number)
-    return h * 60 + m
-  } catch {
-    return 0
-  }
-}
-
-export function extractPostalPrefix(address: string): string | null {
-  if (!address) return null
-  const match = address.match(/([A-Za-z]\d[A-Za-z])/i)
-  return match ? match[1].toUpperCase() : null
-}
-
-export interface TravelShift {
-  startTime: string
-  endTime: string
-  address: string
-}
-
-export function hasTravelConflict(
-  candidate: TravelShift,
-  existing: TravelShift,
-  bufferMinutes: number
-): boolean {
-  const startC = timeToMinutes(candidate.startTime)
-  const endC = timeToMinutes(candidate.endTime)
-  const startA = timeToMinutes(existing.startTime)
-  const endA = timeToMinutes(existing.endTime)
-
-  // 1. Direct overlap check
-  if (startC < endA && endC > startA) {
-    return true
-  }
-
-  // 2. Waive buffer if they share the same postal prefix
-  const fsaC = extractPostalPrefix(candidate.address)
-  const fsaA = extractPostalPrefix(existing.address)
-  if (fsaC && fsaA && fsaC === fsaA) {
-    return false
-  }
-
-  // 3. Buffer check
-  if (endC <= startA) {
-    const gap = startA - endC
-    if (gap < bufferMinutes) {
-      return true
-    }
-  } else if (endA <= startC) {
-    const gap = startC - endA
-    if (gap < bufferMinutes) {
-      return true
-    }
-  }
-
-  return false
-}
+// F06 helpers moved to lib/eligibility.ts (HOTFIX-02) — re-exported for existing importers.
+export { timeToMinutes, extractPostalPrefix, hasTravelConflict } from './lib/eligibility'
+export type { TravelShift } from './lib/eligibility'
 
 /**
  * F05: Transactional Claim Job Logic
@@ -302,64 +252,25 @@ export async function executeClaimJob(
 
       // Calculate shift pay
       const payRate = jobData.payRateSnapshot?.amount || 0
-      // Get duration
-      let durationHours = 2 // default fallback
-      try {
-        const [startH, startM] = jobData.scheduledStartTime.split(':').map(Number)
-        const [endH, endM] = jobData.scheduledEndTime.split(':').map(Number)
-        const diff = (endH + endM / 60) - (startH + startM / 60)
-        if (diff > 0) durationHours = diff
-      } catch (err) {
-        console.warn('Error parsing times for job:', jobId, err)
-      }
-
-      const estimatedShiftPay = payRate * durationHours
+      const estimatedShiftPay = estimateShiftPay(payRate, jobData.scheduledStartTime, jobData.scheduledEndTime)
 
       // Earnings cap check
       const monthlyEarningsLimit = staffData.financials?.monthlyEarningsLimit ?? null
       const currentMonthEarnings = staffData.financials?.currentMonthEarnings ?? 0
 
-      if (monthlyEarningsLimit !== null && monthlyEarningsLimit !== undefined) {
-        const remaining = monthlyEarningsLimit - currentMonthEarnings
-        if (estimatedShiftPay > remaining) {
-          throw new Error('EARNINGS_CAP_EXCEEDED')
-        }
+      if (earningsOverage(estimatedShiftPay, monthlyEarningsLimit, currentMonthEarnings) > 0) {
+        throw new Error('EARNINGS_CAP_EXCEEDED')
       }
 
       // Blocked windows check
       const constraints = staffData.constraints || {}
       const blockedWindows = constraints.blockedWindows || []
-      const shiftStart = jobData.scheduledStartTime
-      const shiftEnd = jobData.scheduledEndTime
-      const shiftDate = jobData.scheduledDate
-      const shiftDayOfWeek = new Date(shiftDate + 'T00:00:00').getDay()
-      
-      const startS = timeToMinutes(shiftStart)
-      const endS = timeToMinutes(shiftEnd)
-
-      for (const window of blockedWindows) {
-        let isMatch = false
-        if (window.recurring) {
-          isMatch = window.dayOfWeek === shiftDayOfWeek
-        } else if (window.date) {
-          isMatch = window.date === shiftDate
-        }
-        
-        if (isMatch) {
-          const startW = timeToMinutes(window.startTime)
-          const endW = timeToMinutes(window.endTime)
-          if (startS < endW && endS > startW) {
-            throw new Error('BLOCKED_WINDOW_OVERLAP')
-          }
-        }
+      if (overlapsBlockedWindow(jobData.scheduledDate, jobData.scheduledStartTime, jobData.scheduledEndTime, blockedWindows)) {
+        throw new Error('BLOCKED_WINDOW_OVERLAP')
       }
 
       // Travel buffer check
-      const transportMode = constraints.transportMode || 'transit'
-      const defaultBuffer = transportMode === 'transit' ? 60 : 30
-      const bufferMinutes = typeof constraints.transitBufferMinutes === 'number'
-        ? constraints.transitBufferMinutes
-        : defaultBuffer
+      const bufferMinutes = resolveBufferMinutes(constraints)
 
       // Query active jobs assigned to this cleaner on the same scheduledDate
       const queryRef = db.collection('jobs')
@@ -367,9 +278,10 @@ export async function executeClaimJob(
         .where('scheduledDate', '==', jobData.scheduledDate)
 
       const querySnap = await transaction.get(queryRef)
-      const existingActiveJobs = querySnap.docs
+      const existingShifts: TravelShift[] = querySnap.docs
         .map((d) => d.data())
         .filter((j) => j.status !== 'cancelled')
+        .map((j) => ({ startTime: j.scheduledStartTime, endTime: j.scheduledEndTime, address: j.clientAddress }))
 
       const candidateShift: TravelShift = {
         startTime: jobData.scheduledStartTime,
@@ -377,15 +289,8 @@ export async function executeClaimJob(
         address: jobData.clientAddress,
       }
 
-      for (const j of existingActiveJobs) {
-        const existingShift: TravelShift = {
-          startTime: j.scheduledStartTime,
-          endTime: j.scheduledEndTime,
-          address: j.clientAddress,
-        }
-        if (hasTravelConflict(candidateShift, existingShift, bufferMinutes)) {
-          throw new Error('TRAVEL_BUFFER_EXCEEDED')
-        }
+      if (findTravelConflict(candidateShift, existingShifts, bufferMinutes)) {
+        throw new Error('TRAVEL_BUFFER_EXCEEDED')
       }
 
       // Perform updates

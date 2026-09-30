@@ -95,7 +95,7 @@ export default function LoginPage() {
         
         {/* Language Toggle */}
         <div className="flex justify-end gap-2">
-          {['en', 'fr', 'ar'].map((lang) => (
+          {['en', 'fr'].map((lang) => (
             <button
               key={lang}
               type="button"
@@ -106,7 +106,7 @@ export default function LoginPage() {
                   : 'bg-white text-charcoal border-sand hover:bg-cream'
               }`}
             >
-              {lang === 'ar' ? 'العربية' : lang.toUpperCase()}
+              {lang.toUpperCase()}
             </button>
           ))}
         </div>

@@ -7,6 +7,11 @@ import {
 import {
   doc,
   getDoc,
+  getDocs,
+  collection,
+  query,
+  where,
+  orderBy,
   setDoc,
   updateDoc,
   serverTimestamp,
@@ -49,6 +54,7 @@ const validBooking = {
   pets: false,
   address: '123 Main St, Cornwall ON',
   serviceType: 'standard',
+  preferredDate: '2026-07-15',
   leadSource: 'organic',
   status: 'pending',
   assignedTo: null,
@@ -134,10 +140,19 @@ describe('Firestore Security Rules', () => {
   })
 
   describe('Staff Collection', () => {
-    it('allows admin to manage staff profiles', async () => {
+    it('allows admin to update staff profiles', async () => {
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await setDoc(doc(context.firestore(), 'staff', 'cleaner-1'), { firstName: 'Staff', lastName: 'Member', role: 'cleaner', status: 'onboarding' })
+      })
       const adminDb = testEnv.authenticatedContext('admin-1', { role: 'admin' }).firestore()
-      const ref = doc(adminDb, 'staff', 'cleaner-1')
-      await assertSucceeds(setDoc(ref, { firstName: 'Staff', lastName: 'Member', role: 'cleaner', status: 'active' }))
+      await assertSucceeds(updateDoc(doc(adminDb, 'staff', 'cleaner-1'), { status: 'active' }))
+    })
+
+    // P3-E27-A2: staff docs are created server-side only (onStaffRegistered CF)
+    it('blocks client-side staff creation, even for admins', async () => {
+      const adminDb = testEnv.authenticatedContext('admin-1', { role: 'admin' }).firestore()
+      const ref = doc(adminDb, 'staff', 'cleaner-2')
+      await assertFails(setDoc(ref, { firstName: 'Staff', lastName: 'Member', role: 'cleaner', status: 'active' }))
     })
 
     it('allows staff to update their own preferences and constraints but not financials earnings', async () => {
@@ -146,7 +161,7 @@ describe('Firestore Security Rules', () => {
         lastName: 'ESL',
         role: 'cleaner',
         status: 'active',
-        preferences: { language: 'ar' },
+        preferences: { language: 'fr' },
         constraints: { transportMode: 'transit', transitBufferMinutes: 60, blockedWindows: [] },
         financials: { monthlyEarningsLimit: 800, currentMonthEarnings: 200, earningsHistory: [] },
       }
@@ -160,7 +175,7 @@ describe('Firestore Security Rules', () => {
 
       // Update constraints and preferences (allowed)
       await assertSucceeds(updateDoc(ref, {
-        preferences: { language: 'ar' },
+        preferences: { language: 'fr' },
         constraints: { transportMode: 'walk', transitBufferMinutes: 30, blockedWindows: [] },
       }))
 
@@ -218,6 +233,49 @@ describe('Firestore Security Rules', () => {
       const ref = doc(otherDb, 'jobs', 'job-1')
       await assertFails(getDoc(ref))
       await assertFails(updateDoc(ref, { status: 'completed' }))
+    })
+
+    // Mirrors the exact queries issued by the FSM app hooks.
+    describe('FSM query shapes', () => {
+      beforeEach(async () => {
+        await testEnv.withSecurityRulesDisabled(async (context) => {
+          const db = context.firestore()
+          await setDoc(doc(db, 'jobs', 'open-1'), { ...mockJob, status: 'unassigned', assignedTo: null })
+          await setDoc(doc(db, 'jobs', 'open-2'), { ...mockJob, status: 'unassigned', assignedTo: null })
+          await setDoc(doc(db, 'jobs', 'mine-1'), mockJob)
+        })
+      })
+
+      // apps/fsm/src/hooks/useMyAssignedShifts.ts
+      it('allows staff to list their own assigned jobs (My Jobs page)', async () => {
+        const staffDb = testEnv.authenticatedContext('mike-uid', { role: 'staff' }).firestore()
+        await assertSucceeds(getDocs(query(collection(staffDb, 'jobs'), where('assignedTo', '==', 'mike-uid'))))
+      })
+
+      it('allows admin to list unassigned jobs', async () => {
+        const adminDb = testEnv.authenticatedContext('admin-uid', { role: 'admin' }).firestore()
+        await assertSucceeds(getDocs(query(
+          collection(adminDb, 'jobs'),
+          where('status', '==', 'unassigned'),
+          orderBy('createdAt', 'desc'),
+        )))
+      })
+
+      // HOTFIX-02: by design, staff cannot query unassigned jobs directly — they hold client
+      // PII. The Shift Board reads a PII-minimised projection from the listOpenShifts callable.
+      it('blocks staff from listing unassigned jobs directly (served by listOpenShifts)', async () => {
+        const staffDb = testEnv.authenticatedContext('mike-uid', { role: 'staff' }).firestore()
+        await assertFails(getDocs(query(
+          collection(staffDb, 'jobs'),
+          where('status', '==', 'unassigned'),
+          orderBy('createdAt', 'desc'),
+        )))
+      })
+
+      it('blocks staff from reading a single unassigned job before claiming it', async () => {
+        const staffDb = testEnv.authenticatedContext('mike-uid', { role: 'staff' }).firestore()
+        await assertFails(getDoc(doc(staffDb, 'jobs', 'open-1')))
+      })
     })
   })
 

@@ -9,12 +9,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '20', cache: 'npm' }
+        with: { node-version: '22', cache: 'npm' }
       - run: npm ci
       - name: Security audit
         run: npm audit --audit-level=high
       - name: Unit tests (Vitest)
         run: npm run test:customer
+      - name: FSM unit tests (Vitest)
+        run: npm run test:fsm
+      # Functions are validated on PRs but only deployed from main (one live instance per project).
+      - name: Install Cloud Functions dependencies
+        run: npm ci
+        working-directory: functions
+      - name: Build Cloud Functions
+        run: npm run build
+        working-directory: functions
+      - name: Cloud Functions unit tests
+        run: npm test
+        working-directory: functions
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
         working-directory: apps/customer

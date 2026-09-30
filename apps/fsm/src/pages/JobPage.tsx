@@ -117,7 +117,7 @@ export const JobPage: React.FC = () => {
   const formatShiftDate = (dateStr: string): string => {
     try {
       const d = new Date(dateStr + 'T00:00:00')
-      return d.toLocaleDateString(i18n.language === 'fr' ? 'fr-CA' : i18n.language === 'ar' ? 'ar-EG' : 'en-CA', {
+      return d.toLocaleDateString(i18n.language === 'fr' ? 'fr-CA' : 'en-CA', {
         weekday: 'long',
         month: 'long',
         day: 'numeric',
@@ -334,7 +334,7 @@ export const JobPage: React.FC = () => {
             to="/jobs"
             className="min-h-[48px] flex items-center font-body font-medium text-slate-brand hover:text-slate-dark transition-colors gap-1"
           >
-            {i18n.language === 'ar' ? '→' : '←'} {t('fsm.myJobs.jobCard.backToList', { defaultValue: 'Back to My Jobs' })}
+            ← {t('fsm.myJobs.jobCard.backToList', { defaultValue: 'Back to My Jobs' })}
           </Link>
 
           {/* Connection sync status banner */}
@@ -505,8 +505,7 @@ export const JobPage: React.FC = () => {
                           </div>
                           <span className={cn(
                             'font-body text-base md:text-lg font-semibold',
-                            completed ? 'text-emerald-800 line-through' : 'text-charcoal',
-                            i18n.language === 'ar' && 'text-right'
+                            completed ? 'text-emerald-800 line-through' : 'text-charcoal'
                           )}>
                             {i18n.language === 'fr' ? task.labelFr : task.labelEn}
                           </span>

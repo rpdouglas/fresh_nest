@@ -13,6 +13,7 @@ export type {
   JobPhoto,
   ChecklistCompletion,
   Job,
+  OpenShift,
   ChecklistTask,
   ChecklistTemplate,
   PayRate,

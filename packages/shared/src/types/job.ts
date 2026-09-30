@@ -57,3 +57,27 @@ export interface Job {
   reviewSubmitted?: boolean
   createdAt: Date
 }
+
+/**
+ * HOTFIX-02: `listOpenShifts` callable response item — a PII-minimised projection of
+ * an unassigned job with eligibility evaluated server-side. Not a Firestore document.
+ * Keep in sync with OpenShiftResponse in functions/src/callable/shifts.ts.
+ */
+export interface OpenShift {
+  id: string
+  serviceType: ServiceType
+  scheduledDate: string
+  scheduledStartTime: string
+  scheduledEndTime: string
+  payRate: number
+  area: {
+    municipality: string | null
+    postalPrefix: string | null
+  }
+  eligibility: {
+    durationHours: number
+    estimatedPay: number
+    overage: number
+    travelConflict: { startTime: string; endTime: string; bufferMinutes: number } | null
+  }
+}

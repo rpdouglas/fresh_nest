@@ -3,18 +3,23 @@ import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { ShiftBoardPage } from './ShiftBoardPage'
 import { useStaffAuth } from '../hooks/useStaffAuth'
 import { useShifts } from '../hooks/useShifts'
-import { useMyAssignedShifts } from '../hooks/useMyAssignedShifts'
 import { User } from 'firebase/auth'
-import { Staff, Job } from '../types'
+import { Staff, OpenShift } from '../types'
 
 // Mock useStaffAuth hook
 vi.mock('../hooks/useStaffAuth')
 
-// Mock useShifts hook
-vi.mock('../hooks/useShifts')
+// Mock useShifts hook (keep the real query key export)
+vi.mock('../hooks/useShifts', () => ({
+  useShifts: vi.fn(),
+  AVAILABLE_SHIFTS_QUERY_KEY: ['availableShifts'],
+}))
 
-// Mock useMyAssignedShifts hook
-vi.mock('../hooks/useMyAssignedShifts')
+// Mock TanStack Query client (claim invalidates the open-shifts query)
+const mockInvalidateQueries = vi.fn()
+vi.mock('@tanstack/react-query', () => ({
+  useQueryClient: () => ({ invalidateQueries: mockInvalidateQueries }),
+}))
 
 // Mock Firebase config functions instance
 vi.mock('../lib/firebase/firebase', () => ({
@@ -56,27 +61,30 @@ describe('ShiftBoardPage Component', () => {
     },
   }
 
-  const mockShifts = [
-    {
-      id: 'job1',
-      serviceType: 'standard',
-      scheduledDate: '2026-06-20',
-      scheduledStartTime: '09:00',
-      scheduledEndTime: '11:00',
-      clientAddress: '123 Pitt St, Cornwall ON',
-      payRateSnapshot: { amount: 25 },
-      status: 'unassigned',
-    },
-    {
+  // listOpenShifts response shape — PII-minimised, eligibility evaluated server-side
+  const makeShift = (overrides: Partial<OpenShift> & { id: string }): OpenShift => ({
+    serviceType: 'standard',
+    scheduledDate: '2026-06-20',
+    scheduledStartTime: '09:00',
+    scheduledEndTime: '11:00',
+    payRate: 25,
+    area: { municipality: 'Cornwall', postalPrefix: 'K6H' },
+    eligibility: { durationHours: 2, estimatedPay: 50, overage: 0, travelConflict: null },
+    ...overrides,
+  })
+
+  const mockShifts: OpenShift[] = [
+    makeShift({ id: 'job1' }),
+    makeShift({
       id: 'job2',
       serviceType: 'deep',
       scheduledDate: '2026-06-21',
       scheduledStartTime: '13:00',
       scheduledEndTime: '16:00',
-      clientAddress: '456 Montreal Rd, Cornwall ON',
-      payRateSnapshot: { amount: 30 },
-      status: 'unassigned',
-    },
+      payRate: 30,
+      area: { municipality: 'Long Sault', postalPrefix: null },
+      eligibility: { durationHours: 3, estimatedPay: 90, overage: 0, travelConflict: null },
+    }),
   ]
 
   beforeEach(() => {
@@ -94,13 +102,7 @@ describe('ShiftBoardPage Component', () => {
     })
 
     vi.mocked(useShifts).mockReturnValue({
-      shifts: mockShifts as unknown as Job[],
-      isLoading: false,
-      error: null,
-    })
-
-    vi.mocked(useMyAssignedShifts).mockReturnValue({
-      assignedShifts: [],
+      shifts: mockShifts,
       isLoading: false,
       error: null,
     })
@@ -129,9 +131,11 @@ describe('ShiftBoardPage Component', () => {
     // ODSP tracker card should NOT be visible
     expect(screen.queryByText('fsm.profile.odsp.title')).not.toBeInTheDocument()
 
-    // Shift details check
-    expect(screen.getByText('123 Pitt St, Cornwall ON')).toBeInTheDocument()
-    expect(screen.getByText('456 Montreal Rd, Cornwall ON')).toBeInTheDocument()
+    // Service area only — no street address before claiming (HOTFIX-02)
+    expect(screen.getByText('Cornwall · K6H')).toBeInTheDocument()
+    expect(screen.getByText('Long Sault')).toBeInTheDocument()
+    expect(screen.getAllByText('fsm.shifts.addressAfterClaim')).toHaveLength(2)
+    expect(screen.getByText('fsm.shifts.serviceTypes.deep_opt_{"defaultValue":"deep"}')).toBeInTheDocument()
 
     // Estimated pay label with correct mock translation option format
     expect(
@@ -212,27 +216,20 @@ describe('ShiftBoardPage Component', () => {
     expect(gauge).toBeInTheDocument()
   })
 
-  it('disables the claim button and shows overage if shift pay exceeds remaining limit', () => {
-    const profileTightLimit = {
-      ...mockStaffProfile,
-      financials: {
-        monthlyEarningsLimit: 1000,
-        currentMonthEarnings: 920, // remaining is $80
-      },
-    }
-    vi.mocked(useStaffAuth).mockReturnValueOnce({
-      ...vi.mocked(useStaffAuth)(),
-      staffProfile: profileTightLimit as unknown as Staff,
+  it('disables the claim button and shows overage when the server reports one (P7)', () => {
+    vi.mocked(useShifts).mockReturnValue({
+      shifts: [
+        mockShifts[0],
+        { ...mockShifts[1], eligibility: { ...mockShifts[1].eligibility, overage: 10 } },
+      ],
+      isLoading: false,
+      error: null,
     })
 
     render(<ShiftBoardPage />)
 
-    // Job 1 is $50 (remaining $80) -> Claim button should be ENABLED
     const buttons = screen.getAllByRole('button', { name: 'fsm.shifts.claimBtn' })
     expect(buttons[0]).not.toBeDisabled()
-
-    // Job 2 is $90 (remaining $80) -> Exceeds limit by $10
-    // The second button should be disabled, and the warning text should show.
     expect(buttons[1]).toBeDisabled()
     expect(
       screen.getByText('⚠️ fsm.shifts.disabledOverage_opt_{"overage":10}')
@@ -250,89 +247,46 @@ describe('ShiftBoardPage Component', () => {
     })
 
     expect(mockClaimJobFn).toHaveBeenCalledWith({ jobId: 'job1' })
+    expect(mockInvalidateQueries).toHaveBeenCalledWith({ queryKey: ['availableShifts'] })
     expect(screen.getByText('fsm.shifts.claimingSuccess')).toBeInTheDocument()
   })
 
-  it('disables the claim button and shows travel conflict warning if shift violates travel buffer', () => {
-    const mockAssignedShifts = [
-      {
-        id: 'assignedJob1',
-        serviceType: 'standard',
-        scheduledDate: '2026-06-20',
-        scheduledStartTime: '10:00',
-        scheduledEndTime: '12:00',
-        clientAddress: '123 Pitt St, Cornwall ON',
-        payRateSnapshot: { amount: 25 },
-        status: 'assigned',
-      }
-    ]
-
-    vi.mocked(useMyAssignedShifts).mockReturnValue({
-      assignedShifts: mockAssignedShifts as unknown as Job[],
+  it('disables the claim button and shows travel conflict when the server reports one (P8)', () => {
+    vi.mocked(useShifts).mockReturnValue({
+      shifts: [
+        makeShift({
+          id: 'job1',
+          eligibility: {
+            durationHours: 2,
+            estimatedPay: 50,
+            overage: 0,
+            travelConflict: { startTime: '10:00', endTime: '12:00', bufferMinutes: 60 },
+          },
+        }),
+      ],
       isLoading: false,
       error: null,
     })
 
-    const transitProfile = {
-      ...mockStaffProfile,
-      constraints: {
-        transportMode: 'transit',
-        transitBufferMinutes: 60,
-      }
-    }
-
-    vi.mocked(useStaffAuth).mockReturnValueOnce({
-      ...vi.mocked(useStaffAuth)(),
-      staffProfile: transitProfile as unknown as Staff,
-    })
-
     render(<ShiftBoardPage />)
 
-    const buttons = screen.getAllByRole('button', { name: 'fsm.shifts.claimBtn' })
-    expect(buttons[0]).toBeDisabled()
+    const button = screen.getByRole('button', { name: 'fsm.shifts.claimBtn' })
+    expect(button).toBeDisabled()
     expect(
       screen.getByText('⚠️ fsm.shifts.disabledConflict_opt_{"buffer":60,"start":"10:00","end":"12:00"}')
     ).toBeInTheDocument()
   })
 
-  it('hides the shift completely if it overlaps with a blocked window', () => {
-    const blockedProfile = {
-      ...mockStaffProfile,
-      constraints: {
-        transportMode: 'transit',
-        transitBufferMinutes: 30,
-        blockedWindows: [
-          {
-            id: 'block1',
-            dayOfWeek: 6, // Saturday (2026-06-20 is Saturday)
-            startTime: '10:00',
-            endTime: '12:00',
-            recurring: true,
-            label: 'Recovery meeting',
-          },
-          {
-            id: 'block2',
-            dayOfWeek: 0, // Sunday (2026-06-21 is Sunday)
-            startTime: '08:00',
-            endTime: '10:00',
-            recurring: true,
-            label: 'Sunday morning',
-          }
-        ],
-      },
-    }
-
-    vi.mocked(useStaffAuth).mockReturnValueOnce({
-      ...vi.mocked(useStaffAuth)(),
-      staffProfile: blockedProfile as unknown as Staff,
+  it('shows a plain-language translated error when shifts fail to load (P14)', () => {
+    vi.mocked(useShifts).mockReturnValue({
+      shifts: [],
+      isLoading: false,
+      error: new Error('internal'),
     })
 
     render(<ShiftBoardPage />)
 
-    // job1 (2026-06-20 Saturday 09:00 - 11:00) overlaps with block1 (10:00 - 12:00) -> should be hidden
-    expect(screen.queryByText('123 Pitt St, Cornwall ON')).not.toBeInTheDocument()
-
-    // job2 (2026-06-21 Sunday 13:00 - 16:00) does not overlap with block2 (08:00 - 10:00) -> should be visible
-    expect(screen.getByText('456 Montreal Rd, Cornwall ON')).toBeInTheDocument()
+    expect(screen.getByText('fsm.shifts.loadError')).toBeInTheDocument()
+    expect(screen.queryByText(/internal/)).not.toBeInTheDocument()
   })
 })

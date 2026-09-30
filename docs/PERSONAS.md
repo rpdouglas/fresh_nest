@@ -1,11 +1,12 @@
 # Fresh Nest Co. — Persona Reference
 
-**Version:** 4.0 | **Updated:** 2026-06-18
-**Status:** Human-defined — AI agents READ ONLY. Do NOT modify this file.
+**Version:** 4.1 | **Updated:** 2026-09-30
+**Status:** Human-defined — AI agents READ ONLY unless the human explicitly authorises a specific change.
+**v4.1 (2026-09-30, human-authorised):** Release language scope is English + French only. P10 Arabic UI / RTL deferred; P10 is served by the icon-first UI. P7 acceptance step 6 arithmetic corrected ($5 claimable / $6 blocked at $795/$800).
 **Supersedes:** v3.0 (June 2026)
 
 > [!CAUTION]
-> This document is human-defined and immutable to AI agents. It defines the fifteen user archetypes whose needs drive every product decision across both the customer-facing website and the FSM (Field Service Management) platform. Before implementing any feature, identify which persona(s) it serves. If you cannot name one, halt and ask.
+> This document is human-defined and immutable to AI agents unless the human explicitly authorises a specific change. It defines the fifteen user archetypes whose needs drive every product decision across both the customer-facing website and the FSM (Field Service Management) platform. Before implementing any feature, identify which persona(s) it serves. If you cannot name one, halt and ask.
 
 ---
 
@@ -72,7 +73,7 @@ Version 4 upgrades three staff-side personas with richer human-centered profiles
 | P7 | Carla | ODSP Earnings Cap | Pre-claim earnings check + visual "Safe to Earn" meter |
 | P8 | Jasmine Beausoleil | Transit-Only New Cleaner | Travel time buffer enforcement between shifts |
 | P9 | Mike | Recovery Commitments | Recurring blocked-window filter on shift visibility |
-| P10 | Ahmed | ESL / Low English Literacy | Icon-first UI + Arabic language toggle |
+| P10 | Ahmed | ESL / Low English Literacy | Icon-first UI (Arabic deferred — EN/FR only this release) |
 | P11 | Brenda Côté | Lead Cleaner (FR) / Visual Verifier | Full French UI + mandatory timestamped, geo-tagged photo uploads |
 | P12 | Lauren Arsenault | Owner / Compliance | Dispatch + onboarding admin + audit trail, rate snapshots, terms version tracking |
 | P13 | Marcus Oakes | Part-Time Student / OSAP | Earnings cap display + blocked window self-management |
@@ -473,7 +474,7 @@ Carla cannot earn more than her ODSP-allowable limit in a given month (e.g., $1,
 3. She views a shift worth $45 — the claim button is active
 4. The "Safe to Earn" progress bar shows $750/$800 (94% — amber state)
 5. After claiming the $45 shift, `currentMonthEarnings` updates to $795 and the bar shows red
-6. A shift worth $10 remains claimable; a shift worth $11 or more is blocked
+6. With $5 remaining ($795/$800), a shift worth $5 remains claimable; a shift worth $6 or more is blocked
 
 ---
 
@@ -611,7 +612,9 @@ Mike's support group meetings are not preferences — they are a condition of hi
 | Primary concern | Understanding exactly what he needs to do at each job without reading paragraphs of English |
 
 #### The Hard Constraint
-Ahmed can recognize icons faster than he can decode English sentences. A text-only checklist for a deep clean is not equally accessible to him as it is to an English-literate worker. The system must communicate tasks primarily through visual means — icons, photos, and short labels — and must provide language options that include Arabic.
+Ahmed can recognize icons faster than he can decode English sentences. A text-only checklist for a deep clean is not equally accessible to him as it is to an English-literate worker. The system must communicate tasks primarily through visual means — icons, photos, and short labels.
+
+> **Release scope (v4.1, 2026-09-30):** the FSM app ships in English and French only. An Arabic UI is **deferred** — it is not a requirement for this release and must not be built without a new human decision. Ahmed is served by the icon-first UI with short English labels.
 
 **This is an accessibility requirement, not a preference. An inaccessible task interface degrades job quality and misattributes errors.**
 
@@ -629,12 +632,12 @@ Ahmed can recognize icons faster than he can decode English sentences. A text-on
 
 | Field / Requirement | Specification |
 |---|---|
-| `staff.preferences.language` | Enum: `'en' \| 'fr' \| 'ar'`. Applied globally to all FSM staff-facing UI strings. |
-| Arabic UI translations | All FSM task labels, checklist items, navigation, and status messages available in Arabic (RTL layout support required). English and French already covered by customer-facing i18n. |
+| `staff.preferences.language` | Enum: `'en' \| 'fr'`. Applied globally to all FSM staff-facing UI strings. |
+| Arabic UI translations | **Deferred (v4.1).** Not in this release: no Arabic locale, toggle or RTL layout. Revisit only with a new human decision. |
 | Icon-first task UI | All checklist task types have a mandatory icon alongside the label. Standard icon set: `Mop`, `Toilet`, `Trash`, `Key`, `Bed`, `Oven`, `Fridge`, `Window`, `Photo`, `Check`. Icons are non-decorative — they are the primary communication channel for this persona. |
 | Task confirmation | Completing a checklist item requires tapping the icon + a checkmark swipe (two-gesture confirmation). This prevents accidental completion and reinforces the visual communication pattern. |
 | Photo task fallback | If a task requires a "Before" or "After" photo (P11 Brenda requirement), the camera icon triggers the photo upload flow directly — no text navigation required. |
-| Onboarding | New staff onboarding flow uses icon-matched visual steps, not paragraph instructions. A language selection screen appears on first login. |
+| Onboarding | New staff onboarding flow uses icon-matched visual steps, not paragraph instructions. A language selection screen (English / French) appears on first login. |
 
 #### Persona Quote
 > *"Show me what to do. I'll do it right."*
@@ -642,12 +645,12 @@ Ahmed can recognize icons faster than he can decode English sentences. A text-on
 #### Acceptance Test — P10
 **Pass/Fail Gate for Phase C:**
 
-1. Ahmed's profile has `language: 'ar'`
-2. All FSM task labels, navigation items, and status messages render in Arabic on his device
-3. The checklist for a standard clean shows task icons alongside each label (Mop, Toilet, Bed, etc.)
-4. He can complete a full shift — claim, check-in, checklist, photo upload, check-out — without reading a single English word
-5. RTL layout renders correctly at 375px and 768px viewports
-6. A language selection screen appears on first login
+1. Ahmed's profile has `language: 'en'`
+2. The checklist for a standard clean shows task icons alongside each label (Mop, Toilet, Bed, etc.)
+3. He can complete a full shift — claim, check-in, checklist, photo upload, check-out — guided by icons and short labels, without reading paragraph instructions
+4. Photo tasks launch the camera directly from the camera icon — no text navigation
+5. A language selection screen (English / French) appears on first login
+6. *(Deferred — v4.1)* Arabic UI and RTL layout are out of scope for this release
 
 ---
 
@@ -1013,7 +1016,7 @@ Daniel's situation involves nuances not present in other personas. He lives on C
 | Earnings cap enforcement | ✅ | — | — | — | — | ✅ (admin) | ✅ (OSAP) | — | — |
 | Travel time buffer | — | ✅ | — | — | — | ✅ (override) | — | — | ✅ (bridge) |
 | Blocked window filter | — | — | ✅ | — | — | ✅ (override) | ✅ (self-mgmt) | ✅ (2:30pm) | — |
-| Arabic UI | — | — | — | ✅ | — | — | — | — | — |
+| Arabic UI *(deferred — v4.1)* | — | — | — | — | — | — | — | — | — |
 | French UI (FSM) | — | — | — | — | ✅ | — | — | ✅ | — |
 | Icon-first UI | — | — | — | ✅ | — | — | — | — | — |
 | Magic link onboarding | — | ✅ | — | — | — | ✅ (triggers) | ✅ | ✅ | ✅ |
