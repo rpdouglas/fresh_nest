@@ -53,8 +53,9 @@ describe('LoginPage Component', () => {
     expect(screen.getByLabelText('fsm.login.passwordLabel')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'EN' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'FR' })).toBeInTheDocument()
-    // Arabic is removed, so 'AR' button should NOT exist
-    expect(screen.queryByRole('button', { name: 'AR' })).not.toBeInTheDocument()
+    // Release scope is EN + FR only — exactly two language buttons, no Arabic in any form
+    expect(screen.queryByRole('button', { name: /^(AR|العربية|Arabic)$/i })).not.toBeInTheDocument()
+    expect(screen.getAllByRole('button').filter((b) => /^[A-Z]{2}$/.test(b.textContent ?? '')).map((b) => b.textContent)).toEqual(['EN', 'FR'])
   })
 
   it('calls changeLanguage when language toggle is clicked', () => {

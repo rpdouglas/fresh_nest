@@ -6,7 +6,7 @@ import { db } from '../../lib/firebase/firebase'
 import { useStaffAuth } from '../../hooks/useStaffAuth'
 
 export const TermsConsentOverlay: React.FC = () => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const { staffProfile } = useStaffAuth()
   const [isChecked, setIsChecked] = useState(false)
   const [ipAddress, setIpAddress] = useState('')
@@ -67,20 +67,15 @@ export const TermsConsentOverlay: React.FC = () => {
     }
   }
 
-  // Determine LTR/RTL for UI shell, but terms body text itself stays LTR
-  const isRtl = i18n.language === 'ar'
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/80 p-4 backdrop-blur-sm">
       <div
         className={cn(
-          "w-full max-w-2xl bg-white border border-sand rounded shadow-xl p-6 md:p-8 flex flex-col max-h-[90vh]",
-          isRtl ? "text-right" : "text-left"
+          "w-full max-w-2xl bg-white border border-sand rounded shadow-xl p-6 md:p-8 flex flex-col max-h-[90vh] text-left"
         )}
         role="dialog"
         aria-modal="true"
         aria-labelledby="terms-modal-title"
-        dir={isRtl ? 'rtl' : 'ltr'}
       >
         {/* Header */}
         <div className="mb-4">

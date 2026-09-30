@@ -161,7 +161,7 @@ describe('Firestore Security Rules', () => {
         lastName: 'ESL',
         role: 'cleaner',
         status: 'active',
-        preferences: { language: 'ar' },
+        preferences: { language: 'fr' },
         constraints: { transportMode: 'transit', transitBufferMinutes: 60, blockedWindows: [] },
         financials: { monthlyEarningsLimit: 800, currentMonthEarnings: 200, earningsHistory: [] },
       }
@@ -175,7 +175,7 @@ describe('Firestore Security Rules', () => {
 
       // Update constraints and preferences (allowed)
       await assertSucceeds(updateDoc(ref, {
-        preferences: { language: 'ar' },
+        preferences: { language: 'fr' },
         constraints: { transportMode: 'walk', transitBufferMinutes: 30, blockedWindows: [] },
       }))
 

@@ -58,7 +58,7 @@ The human rejected loosening `firestore.rules`, because unassigned jobs hold cli
 | `apps/fsm/src/pages/ShiftBoardPage.tsx` | Renders from the server's `eligibility`. Removes about 150 lines of duplicated helper and filter code. Shows the service area instead of the street address. Invalidates the query after a claim. Shows a translated load error. |
 | `apps/fsm/src/pages/ShiftBoardPage.test.tsx` | Rewritten for the `OpenShift` shape. Adds P7, P8, invalidation and P14 load-error cases. |
 | `apps/fsm/src/types/index.ts` | Re-exports `OpenShift`. |
-| `apps/fsm/src/i18n/locales/{en,fr,ar}.json` | New `fsm.shifts` keys: `loadError`, `areaLabel`, `areaUnknown`, `addressAfterClaim`, `serviceTypes.*`. |
+| `apps/fsm/src/i18n/locales/{en,fr}.json` | New `fsm.shifts` keys: `loadError`, `areaLabel`, `areaUnknown`, `addressAfterClaim`, `serviceTypes.*`. |
 
 ### Rules tests
 
@@ -101,7 +101,7 @@ The human rejected loosening `firestore.rules`, because unassigned jobs hold cli
 | `npm run test:rules` (Firestore emulator) | ✅ 19/19 |
 | Brand_Auditor | ✅ No new violations. One `text-xs` hint was changed to `text-base`. |
 | Data_Steward | ✅ No new Firestore fields. No new writes in production code. |
-| Linguistic_Auditor | ✅ No hardcoded strings. All new keys are present in EN/FR/AR. |
+| Linguistic_Auditor | ✅ No hardcoded strings. All new keys are present in EN/FR. |
 
 ---
 
@@ -140,7 +140,7 @@ The human rejected loosening `firestore.rules`, because unassigned jobs hold cli
 
 1. **Not live yet.** The fix ships on the next merge to `main`, where CI deploys functions and then hosting. That first CI run also validates the service-account IAM roles (updated by the human on 2026-09-30) and the Node 22 runtime.
 2. **PERSONAS.md P7 step 6 arithmetic** needs a human correction. The AI must not edit PERSONAS.md.
-3. **Arabic strings were machine-translated** (`fsm.shifts.*` in `ar.json`). They need native-speaker review before P10 Ahmed relies on them.
+3. **Arabic removed from the FSM app** (human decision 2026-09-30: EN + FR only for this release). This includes `ar.json`, the language toggles, the RTL handling, and the Arabic option in the first-login language picker. A guard test (`apps/fsm/src/i18n/i18n.test.ts`) and a CLAUDE.md rule stop it from coming back. **PERSONAS.md P10 still requires Arabic and needs a human edit.** Staff docs that already hold `preferences.language: 'ar'` fall back to English in the UI but violate the schema (`'en' | 'fr'`); a human should check production data for them.
 4. **No realtime updates on the board.** It refreshes every 60 s, on focus and after a claim. A shift claimed by someone else can stay visible briefly; `claimJob` correctly returns `JOB_ALREADY_ASSIGNED` in that case.
 5. **The claim error still shows the server's English message** (a pre-existing issue). Mapping `HttpsError` codes to translated `fsm.shifts.*` strings would finish P14/P10 plain-language support.
 6. **Preview channels read `(default)`** for shifts, the same as `claimJob` (asymmetry documented in `firestore-schema.md` §13). This isn't a regression.

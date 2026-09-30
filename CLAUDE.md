@@ -43,7 +43,11 @@ THIS IS TAILWIND v3. NOT v4.
 - Never hardcode database IDs anywhere except src/lib/firebase.ts
 
 ## Bilingual Requirements
-- Language: EN (default) + FR
+- Language: EN (default) + FR — applies to BOTH the customer app and the FSM staff app
+- **Release language scope is EN + FR ONLY (human decision 2026-09-30).**
+  Do NOT add Arabic or any other language — no locale files, toggles, RTL handling,
+  `lang`/`dir` switching, or `'ar'` values — even where docs/PERSONAS.md (P10 Ahmed) asks for it.
+  P10 is served by the icon-first UI for this release. `apps/fsm/src/i18n/i18n.test.ts` enforces this.
 - i18n library: react-i18next — config at src/i18n/index.ts
 - All UI strings: in en.json / fr.json — never hardcoded in components
 - Language toggle: in Navbar
@@ -75,7 +79,7 @@ THIS IS TAILWIND v3. NOT v4.
 | P7 | Carla | ODSP earnings protection | Pre-claim earnings check + Safe to Earn meter |
 | P8 | Jasmine Beausoleil | Mobile onboarding + transit scheduling | Travel time buffer enforcement between shifts |
 | P9 | Mike | Recovery commitments | Blocked-window visibility filter (shifts hidden, not greyed) |
-| P10 | Ahmed | ESL accessibility | Icon-first UI + Arabic language toggle |
+| P10 | Ahmed | ESL accessibility | Icon-first UI (Arabic deferred — EN/FR only this release) |
 | P11 | Brenda Côté | French-primary lead cleaner + photo proof | Full FR UI + mandatory timestamped geo-tagged photos |
 | P12 | Lauren Arsenault | Admin operations + compliance | Dispatch, onboarding, audit trail, immutable rate snapshots |
 | P13 | Marcus Oakes | Part-time student / OSAP cap | Earnings bar + self-managed blocked windows |

@@ -4,6 +4,7 @@ import { doc, updateDoc } from 'firebase/firestore'
 import { staffCollection } from '@freshnest/shared'
 import { db } from '../../lib/firebase/firebase'
 import { useStaffAuth } from '../../hooks/useStaffAuth'
+import type { StaffLanguage } from '../../types'
 
 interface LanguageSelectionOverlayProps {
   onComplete?: () => void
@@ -19,7 +20,7 @@ export const LanguageSelectionOverlay: React.FC<LanguageSelectionOverlayProps> =
 
   if (!showOverlay) return null
 
-  const handleLanguageSelect = async (lang: 'en' | 'fr' | 'ar') => {
+  const handleLanguageSelect = async (lang: StaffLanguage) => {
     if (!staffProfile) return
     setIsUpdating(true)
     try {
@@ -59,7 +60,7 @@ export const LanguageSelectionOverlay: React.FC<LanguageSelectionOverlayProps> =
             Please select your preferred language to continue.
           </p>
           <p className="font-body text-sm text-text-muted italic">
-            Veuillez sélectionner votre langue. / الرجاء اختيار اللغة.
+            Veuillez sélectionner votre langue.
           </p>
         </div>
 
@@ -80,16 +81,6 @@ export const LanguageSelectionOverlay: React.FC<LanguageSelectionOverlayProps> =
             className="w-full min-h-[48px] py-3 px-6 bg-warm-white hover:bg-cream border border-sand rounded font-body text-lg font-medium text-charcoal hover:text-slate-brand transition-colors focus:outline-none focus:ring-2 focus:ring-slate-brand"
           >
             Français
-          </button>
-
-          <button
-            type="button"
-            onClick={() => { void handleLanguageSelect('ar') }}
-            disabled={isUpdating}
-            className="w-full min-h-[48px] py-3 px-6 bg-warm-white hover:bg-cream border border-sand rounded font-body text-lg font-medium text-charcoal hover:text-slate-brand transition-colors focus:outline-none focus:ring-2 focus:ring-slate-brand"
-            dir="rtl"
-          >
-            العربية (Arabic)
           </button>
         </div>
 

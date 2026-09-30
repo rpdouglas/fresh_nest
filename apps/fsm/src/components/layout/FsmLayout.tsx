@@ -30,7 +30,7 @@ export const FsmLayout: React.FC = () => {
   }
 
   const toggleLanguage = () => {
-    const languages = ['en', 'fr', 'ar']
+    const languages = ['en', 'fr']
     const currentIndex = languages.indexOf(i18n.language)
     const nextLng = languages[(currentIndex + 1) % languages.length]
     void i18n.changeLanguage(nextLng)
@@ -97,7 +97,7 @@ export const FsmLayout: React.FC = () => {
               )}
               aria-label={t('fsm.toggleLanguage')}
             >
-              {i18n.language === 'ar' ? 'العربية' : i18n.language.toUpperCase()}
+              {i18n.language.toUpperCase()}
             </button>
 
             {/* Notifications Bell Dropdown */}
