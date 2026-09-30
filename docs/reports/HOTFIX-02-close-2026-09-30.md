@@ -111,7 +111,7 @@ The human rejected loosening `firestore.rules`, because unassigned jobs hold cli
 |---|---|---|
 | **All staff (P7–P15)** | Shift Board loads for the `staff` claim, and direct listing stays denied | ✅ **Pass.** The callable serves the board; the rules tests assert direct list and get are denied. *Needs live confirmation after the first CI deploy.* |
 | **P7 Carla** | $800 limit, $750 earned: $75 shift disabled with overage, $45 claimable | ✅ **Pass.** `earningsOverage` gives 25 and 0. FSM test renders the disabled button and the overage message. |
-| **P7 Carla, step 6** | "$10 claimable / $11 blocked" at $795 | ⚠️ **Spec inconsistency.** Only $5 remains at $795/$800. The test asserts $5 fits and $6 is blocked. See §6. |
+| **P7 Carla, step 6** | At $795/$800: $5 claimable, $6 blocked (corrected in PERSONAS.md v4.1) | ✅ **Pass.** `earningsOverage(5)` = 0 and `earningsOverage(6)` = 1. |
 | **P9 Mike** | Tuesday 18:30–20:00 hidden; Tuesday 20:30–22:00 and Wednesday 19:00–20:30 shown; window label never exposed | ✅ **Pass.** Filtered on the server. The test asserts the response contains neither the shift nor "Recovery meeting". |
 | **P8 Jasmine** | A shift inside the transit buffer of an assigned shift shows the conflict and can't be claimed | ✅ **Pass.** 60 min transit default; same-FSA waiver still applies to direct overlap; cancelled jobs ignored. FSM test disables the button with the conflict message. |
 | **P13 Marcus / P15 Daniel** | Same earnings and buffer protections | ✅ **Pass.** Same code paths as P7/P8. Cornwall Island resolves ahead of Cornwall. |
@@ -139,7 +139,7 @@ The human rejected loosening `firestore.rules`, because unassigned jobs hold cli
 ## 7. Known Limitations and Follow-Ups
 
 1. **Not live yet.** The fix ships on the next merge to `main`, where CI deploys functions and then hosting. That first CI run also validates the service-account IAM roles (updated by the human on 2026-09-30) and the Node 22 runtime.
-2. **PERSONAS.md P7 step 6 arithmetic** needs a human correction. The AI must not edit PERSONAS.md.
+2. **PERSONAS.md P7 step 6 arithmetic** was corrected in v4.1 with the human's authorisation ($5 claimable, $6 blocked at $795/$800).
 3. **Arabic removed from the FSM app** (human decision 2026-09-30: EN + FR only for this release). This includes `ar.json`, the language toggles, the RTL handling, and the Arabic option in the first-login language picker. A guard test (`apps/fsm/src/i18n/i18n.test.ts`) and a CLAUDE.md rule stop it from coming back. PERSONAS.md was bumped to v4.1 with the human's authorisation: P10's Arabic UI is marked deferred, and P10's acceptance test was rewritten for EN/FR plus the icon-first UI. Staff docs that already hold `preferences.language: 'ar'` fall back to English in the UI but violate the schema (`'en' | 'fr'`); a human should check production data for them.
 4. **No realtime updates on the board.** It refreshes every 60 s, on focus and after a claim. A shift claimed by someone else can stay visible briefly; `claimJob` correctly returns `JOB_ALREADY_ASSIGNED` in that case.
 5. **The claim error still shows the server's English message** (a pre-existing issue). Mapping `HttpsError` codes to translated `fsm.shifts.*` strings would finish P14/P10 plain-language support.

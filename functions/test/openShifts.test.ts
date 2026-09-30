@@ -38,8 +38,7 @@ describe('P7 Carla — earnings cap acceptance test', () => {
     expect(earningsOverage(estimateShiftPay(45, '09:00', '10:00'), 800, 750)).toBe(0)
   })
 
-  // PERSONAS.md P7 step 6 says "$10 claimable, $11 blocked" at $795/$800, but only $5
-  // remains at that point — flagged for human review. Asserting the arithmetic boundary.
+  // PERSONAS.md v4.1 P7 step 6
   it('after claiming $45 (current $795): exactly the $5 remaining fits, $6 is blocked', () => {
     expect(earningsOverage(5, 800, 795)).toBe(0)
     expect(earningsOverage(6, 800, 795)).toBe(1)

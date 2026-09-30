@@ -2,7 +2,7 @@
 
 **Version:** 4.1 | **Updated:** 2026-09-30
 **Status:** Human-defined — AI agents READ ONLY unless the human explicitly authorises a specific change.
-**v4.1 (2026-09-30, human-authorised):** Release language scope is English + French only. P10 Arabic UI / RTL deferred; P10 is served by the icon-first UI.
+**v4.1 (2026-09-30, human-authorised):** Release language scope is English + French only. P10 Arabic UI / RTL deferred; P10 is served by the icon-first UI. P7 acceptance step 6 arithmetic corrected ($5 claimable / $6 blocked at $795/$800).
 **Supersedes:** v3.0 (June 2026)
 
 > [!CAUTION]
@@ -474,7 +474,7 @@ Carla cannot earn more than her ODSP-allowable limit in a given month (e.g., $1,
 3. She views a shift worth $45 — the claim button is active
 4. The "Safe to Earn" progress bar shows $750/$800 (94% — amber state)
 5. After claiming the $45 shift, `currentMonthEarnings` updates to $795 and the bar shows red
-6. A shift worth $10 remains claimable; a shift worth $11 or more is blocked
+6. With $5 remaining ($795/$800), a shift worth $5 remains claimable; a shift worth $6 or more is blocked
 
 ---
 
