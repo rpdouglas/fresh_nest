@@ -3,10 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils/utils'
 import { logPhoneClicked } from '@/lib/firebase/analytics'
 import logoFooter from '@/assets/logo-footer-dark-120px.png'
+import { BUSINESS_PHONE_DISPLAY, BUSINESS_PHONE_HREF, BUSINESS_EMAIL } from '@/lib/config'
 
-const PHONE_NUMBER = '(613) 935-3555'
-const PHONE_HREF = 'tel:+16139353555'
-const EMAIL = 'hello@freshnestco.ca'
+const PHONE_NUMBER = BUSINESS_PHONE_DISPLAY
+const PHONE_HREF = BUSINESS_PHONE_HREF
+const EMAIL = BUSINESS_EMAIL
 const CURRENT_YEAR = new Date().getFullYear()
 
 export default function Footer() {

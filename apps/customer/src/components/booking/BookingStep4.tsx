@@ -1,6 +1,7 @@
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type { BookingFormData } from '@/lib/schemas/bookingSchema'
+import { BUSINESS_PHONE_HREF } from '@/lib/config'
 
 interface Props {
   submitError?: string | null
@@ -107,7 +108,7 @@ export default function BookingStep4({ submitError, stepHeaderRef }: Props) {
         <div role="alert" className="mt-4 bg-red-50 border border-red-300 rounded p-4 font-body text-base text-red-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <span>{submitError}</span>
           <a
-            href="tel:+16139353555"
+            href={BUSINESS_PHONE_HREF}
             className="inline-flex items-center justify-center font-medium border border-red-300 rounded px-4 py-2 min-h-[48px] text-red-700 hover:bg-red-100/50 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 shrink-0"
           >
             {t('phone')}
