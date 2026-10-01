@@ -7,4 +7,4 @@ export const GOOGLE_BUSINESS_PROFILE_URL = 'https://g.page/r/freshnest-review/re
 export const BUSINESS_PHONE_DISPLAY = '(613) 861-8812'
 export const BUSINESS_PHONE_HREF = 'tel:+16138618812'
 export const BUSINESS_PHONE_E164 = '+1-613-861-8812'
-export const BUSINESS_EMAIL = 'hr.freshnest@gmail.com'
+export const BUSINESS_EMAIL = 'hello@freshnestco.ca'

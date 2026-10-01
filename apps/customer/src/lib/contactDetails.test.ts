@@ -15,6 +15,6 @@ describe('business contact details', () => {
     expect(locale.phone).toBe(BUSINESS_PHONE_DISPLAY)
     expect(locale.offline.phoneNumber).toBe(BUSINESS_PHONE_DISPLAY)
     expect(locale.footer.email).toBe(BUSINESS_EMAIL)
-    expect(JSON.stringify(locale)).not.toMatch(/935-3555|hello@freshnestco\.ca/)
+    expect(JSON.stringify(locale)).not.toMatch(/935-3555|hr\.freshnest@gmail\.com/)
   })
 })

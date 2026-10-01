@@ -364,8 +364,8 @@ export function staffWelcomeHtml(firstName: string, magicLink: string, lang: 'en
     : "We are excited to have you on board! To get started, you will need to log in to the FSM portal using the button below. On your first login, you will be guided to submit your background check consent and review the platform Terms of Service."
   const btnText = isFr ? 'Se connecter pour commencer' : 'Sign in to get started'
   const callUs = isFr
-    ? "Si vous avez des questions, n'hésitez pas à contacter Lauren à <a href=\"mailto:hr.freshnest@gmail.com\" style=\"color:#5b7e8f;text-decoration:none;\">hr.freshnest@gmail.com</a> ou par téléphone au"
-    : "If you have any questions, feel free to contact Lauren at <a href=\"mailto:hr.freshnest@gmail.com\" style=\"color:#5b7e8f;text-decoration:none;\">hr.freshnest@gmail.com</a> or call us at"
+    ? "Si vous avez des questions, n'hésitez pas à contacter Lauren à <a href=\"mailto:hello@freshnestco.ca\" style=\"color:#5b7e8f;text-decoration:none;\">hello@freshnestco.ca</a> ou par téléphone au"
+    : "If you have any questions, feel free to contact Lauren at <a href=\"mailto:hello@freshnestco.ca\" style=\"color:#5b7e8f;text-decoration:none;\">hello@freshnestco.ca</a> or call us at"
   const signOff = isFr ? '— L\'équipe Fresh Nest Co.' : '— The Fresh Nest Co. Team'
   const tagline = isFr ? 'Services de nettoyage &amp; d\'organisation' : 'Cleaning &amp; Organizing Services'
 

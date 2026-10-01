@@ -444,7 +444,7 @@
     "privacy": "Politique de confidentialité",
     "hours": "Heures d'ouverture",
     "hoursValue": "Lun–Sam : 8h–18h",
-    "email": "hr.freshnest@gmail.com",
+    "email": "hello@freshnestco.ca",
     "copyright": "© {{year}} Fresh Nest Co. Tous droits réservés.",
     "bilingual": "Service disponible en anglais et en français",
     "insured": "Entièrement assuré et cautionné"
@@ -1271,7 +1271,7 @@
     },
     "apply": {
       "title": "Comment postuler",
-      "content": "Prêt(e) à rejoindre le nid ? Veuillez envoyer votre curriculum vitae et une brève description de votre disponibilité à hr.freshnest@gmail.com ou appelez-nous au (613) 861-8812.",
+      "content": "Prêt(e) à rejoindre le nid ? Veuillez envoyer votre curriculum vitae et une brève description de votre disponibilité à hello@freshnestco.ca ou appelez-nous au (613) 861-8812.",
       "btnText": "Envoyer votre CV par courriel",
       "emailSubject": "Candidature : Spécialiste du nettoyage résidentiel"
     }
