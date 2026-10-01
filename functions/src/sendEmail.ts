@@ -5,6 +5,7 @@ import {
   ownerText,
   clientSubject,
   clientHtml,
+  isQuoteRequest,
   reviewRequestSubject,
   reviewRequestHtml,
   staffWelcomeSubject,
@@ -43,7 +44,7 @@ export async function sendClientConfirmation(
   const result = await resend.emails.send({
     from:    config.fromEmail,
     to:      booking.email,
-    subject: clientSubject(lang),
+    subject: clientSubject(lang, isQuoteRequest(booking)),
     html:    clientHtml(booking, lang),
   })
   if (result.error) {

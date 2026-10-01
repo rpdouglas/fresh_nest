@@ -8,16 +8,16 @@ type FrequencyOption = 'weekly' | 'biweekly' | 'monthly'
 
 interface FrequencyCard {
   freq: FrequencyOption
-  discountPct: number
   inverted: boolean
   badgeKey: string
   bgImage: string
 }
 
+// P3-E29: recurring schedules are presented without discounts — pricing is agreed in the quote.
 const FREQUENCY_CARDS: FrequencyCard[] = [
-  { freq: 'weekly',   discountPct: 20, inverted: false, badgeKey: '', bgImage: '/images/weekly-recurring.png' },
-  { freq: 'biweekly', discountPct: 15, inverted: true,  badgeKey: 'recurring.mostPopular', bgImage: '/images/biweekly-recurring.png' },
-  { freq: 'monthly',  discountPct: 10, inverted: false, badgeKey: '', bgImage: '/images/monthly-recurring.png' },
+  { freq: 'weekly',   inverted: false, badgeKey: '', bgImage: '/images/weekly-recurring.png' },
+  { freq: 'biweekly', inverted: true,  badgeKey: 'recurring.mostPopular', bgImage: '/images/biweekly-recurring.png' },
+  { freq: 'monthly',  inverted: false, badgeKey: '', bgImage: '/images/monthly-recurring.png' },
 ]
 
 export default function RecurringCTA() {
@@ -99,17 +99,6 @@ export default function RecurringCTA() {
                       >
                         {freqLabel}
                       </h3>
-
-                      <div
-                        className={cn(
-                          'inline-flex items-center font-body font-medium text-base rounded px-3 py-1',
-                          card.inverted
-                            ? 'bg-white text-slate-dark'
-                            : 'bg-slate-pale text-slate-dark',
-                        )}
-                      >
-                        {t('recurring.discountBadge', { pct: card.discountPct })}
-                      </div>
                     </div>
 
                     <p

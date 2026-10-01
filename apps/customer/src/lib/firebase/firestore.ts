@@ -62,15 +62,14 @@ export function computeBookingEstimatedPrice(propertyType: string, serviceType: 
   return 150
 }
 
+// P3-E29: public submissions are quote requests — no price or payment is recorded;
+// pricing is agreed in the quote follow-up (admin bookings still carry an internal estimate).
 export async function submitBooking(
   data: BookingFormData,
   language: Language,
   source: LeadSource,
-  stripePaymentIntentId?: string | null,
 ): Promise<string> {
   const { marketingConsent, ...formFields } = data
-
-  const estimatedPrice = computeBookingEstimatedPrice(data.propertyType, data.serviceType, data.frequency)
 
   const docData: Record<string, unknown> = {
     ...formFields,
@@ -81,13 +80,7 @@ export async function submitBooking(
     isAirbnb:          data.serviceType === 'airbnb',
     photoConfirmation: data.serviceType === 'airbnb',
     fsmAppointmentId:  null,
-    estimatedPrice,
     createdAt:         serverTimestamp(),
-  }
-
-  if (stripePaymentIntentId) {
-    docData.stripePaymentIntentId = stripePaymentIntentId
-    docData.stripeChargeStatus = 'hold'
   }
 
   if (marketingConsent) {

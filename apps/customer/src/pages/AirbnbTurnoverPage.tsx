@@ -5,7 +5,6 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { calculateQuote } from '@/lib/utils/quotePricing'
 import { submitBooking, detectLeadSource } from '@/lib/firebase/firestore'
 import JsonLd from '@/components/seo/JsonLd'
 import { getServiceSchema } from '@/lib/utils/seo'
@@ -80,10 +79,6 @@ export default function AirbnbTurnoverPage() {
   const [submitError, setSubmitError] = useState<string | null>(null)
 
   const serviceSchema = getServiceSchema('airbnb', t)
-
-  // Pricing teaser — use 1-2bed as reference size
-  const priceResult = calculateQuote('1-2bed', 'airbnb', 'one-time')
-  const priceMin = priceResult.type === 'range' ? priceResult.min : null
 
   const {
     register,
@@ -364,20 +359,16 @@ export default function AirbnbTurnoverPage() {
             >
               {t('airbnbPage.pricing.heading')}
             </h2>
-            {priceMin !== null && (
-              <p className="font-display text-3xl text-slate-brand mb-2">
-                {t('airbnbPage.pricing.starting', { min: priceMin })}
-              </p>
-            )}
             <p className="font-body text-lg text-charcoal font-bold mb-6">
               {t('airbnbPage.pricing.volume')}
             </p>
-            <Link
-              to="/pricing"
+            {/* P3-E29: no public pricing — turnover pricing is quoted per property */}
+            <a
+              href="#inquiry-form"
               className="inline-flex items-center justify-center border border-slate-brand text-slate-brand font-body font-medium rounded px-6 py-3 min-h-[48px] hover:bg-slate-pale transition-colors duration-200"
             >
               {t('airbnbPage.pricing.cta')}
-            </Link>
+            </a>
           </motion.div>
         </div>
       </section>

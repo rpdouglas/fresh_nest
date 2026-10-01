@@ -1,77 +1,7 @@
 import { BlogPost } from '@/types'
 
 export const BLOG_POSTS: BlogPost[] = [
-  {
-    slug: 'cleaning-cost-cornwall',
-    title: {
-      en: 'How Much Does House Cleaning Cost in Cornwall, ON?',
-      fr: 'Combien Coûte le Nettoyage Résidentiel à Cornwall, ON ?'
-    },
-    description: {
-      en: 'A guide to standard house cleaning rates, deep cleans, and add-on pricing in the Cornwall region.',
-      fr: 'Un guide des tarifs de nettoyage résidentiel standard, en profondeur et des options à Cornwall.'
-    },
-    author: {
-      en: 'Lauren S.',
-      fr: 'Lauren S.'
-    },
-    publishedAt: '2026-06-10',
-    readTime: {
-      en: '4 min read',
-      fr: '4 min de lecture'
-    },
-    image: '/images/standard-hero.jpg',
-    content: {
-      en: `
-Finding reliable, professional home cleaning in Cornwall, Ontario, shouldn't be a guessing game. Understanding the typical cost of house cleaning services can help you budget correctly and choose the right option for your lifestyle.
-
-### Standard Rates in Cornwall
-
-Most cleaning services in the Eastern Ontario region charge either a flat rate based on the size of the home or an hourly rate.
-- **Flat Rates**: Typically range from **$150 to $250** for a standard 3-bedroom, 2-bathroom house.
-- **Hourly Rates**: Usually range between **$35 and $55 per hour** per cleaner.
-
-### Deep Cleaning vs. Standard Cleaning
-
-When scheduling your first appointment or seasonal resets, it helps to understand the difference:
-1. **Standard Clean**: Perfect for weekly or bi-weekly maintenance. Includes dusting, vacuuming, mopping, and wiping countertops.
-2. **Deep Clean**: Requires additional time to tackle built-up grime. Includes baseboards, inside appliances, and detailing tile grout. This typically costs **$50 to $100 more** than a standard clean.
-
-### Add-on Additions
-
-Many agencies offer custom add-ons to fit your specific home:
-- **Oven cleaning**: $30 - $45
-- **Fridge interior**: $25 - $40
-- **Window interior cleaning**: $5 per window
-
-At Fresh Nest Co., we provide transparent instant quotes so you know exactly what to expect before booking. Try our online quote tool today!
-`,
-      fr: `
-Trouver un service de nettoyage résidentiel fiable et professionnel à Cornwall, en Ontario, ne devrait pas être un mystère. Comprendre les coûts typiques des services de nettoyage peut vous aider à planifier votre budget et à choisir la formule adaptée à votre mode de vie.
-
-### Tarifs Standards à Cornwall
-
-La plupart des services de nettoyage de la région de l'Est de l'Ontario facturent soit un tarif forfaitaire basé sur la taille de la maison, soit un tarif horaire.
-- **Tarifs Forfaitaires** : Généralement situés entre **150 $ et 250 $** pour une maison standard de 3 chambres et 2 salles de bain.
-- **Tarifs Horaires** : En moyenne entre **35 $ et 55 $ de l'heure** par nettoyeur.
-
-### Nettoyage Standard vs. Nettoyage en Profondeur
-
-Lors de votre premier rendez-vous ou d'un nettoyage saisonnier, il est utile de faire la distinction :
-1. **Nettoyage Standard** : Idéal pour l'entretien hebdomadaire ou bihebdomadaire. Comprend l'époussetage, l'aspirateur, la vadrouille et le nettoyage des comptoirs.
-2. **Nettoyage en Profondeur** : Nécessite plus de temps pour éliminer la saleté accumulée. Comprend les plinthes, l'intérieur des électroménagers et le récurage des tuiles. Cela coûte généralement **50 $ à 100 $ de plus** qu'un nettoyage standard.
-
-### Suppléments Options
-
-De nombreuses agences proposent des services additionnels personnalisés :
-- **Nettoyage du four** : 30 $ - 45 $
-- **Intérieur du réfrigérateur** : 25 $ - 40 $
-- **Lavage des vitres intérieures** : 5 $ par fenêtre
-
-Chez Fresh Nest Co., nous offrons des devis instantanés et transparents afin que vous sachiez exactement à quoi vous attendre avant de réserver. Essayez notre outil en ligne dès aujourd'hui !
-`
-    }
-  },
+  // P3-E29: 'cleaning-cost-cornwall' (price guide) unpublished — no public pricing.
   {
     slug: 'move-out-checklist-cornwall',
     title: {

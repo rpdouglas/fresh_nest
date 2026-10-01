@@ -20,9 +20,9 @@
     "bilingual": "Bilingual Service"
   },
   "quote": {
-    "ariaLabel": "Instant quote calculator",
-    "sectionHeading": "Get an Instant Quote",
-    "sectionSubhead": "Transparent pricing for Cornwall and surrounding communities. No commitment required.",
+    "ariaLabel": "Request a cleaning quote",
+    "sectionHeading": "Get Your Cleaning Quote",
+    "sectionSubhead": "Tell us what you need. Every home is different, so we'll follow up with a quote for yours. No commitment required.",
     "sizeLabel": "Property Size",
     "serviceLabel": "Service Type",
     "frequencyLabel": "How Often?",
@@ -46,20 +46,18 @@
       "biweekly": "Biweekly",
       "monthly": "Monthly"
     },
-    "discountBadge": "{{pct}}% off",
-    "startingAt": "Starting at ${{price}}",
-    "typicallyRange": "Typically ${{min}}–${{max}}",
-    "bookNowCta": "Book Now",
-    "commercialTitle": "Custom Quote for Your Business",
-    "commercialBody": "Commercial cleaning rates are tailored to your space and schedule. Contact us for a free assessment.",
-    "commercialCta": "Contact Us for a Quote"
+    "commercialTitle": "A Quote Tailored to Your Business",
+    "commercialBody": "Commercial cleaning is tailored to your space and schedule. Request a quote and we'll arrange an on-site assessment.",
+    "ctaTitle": "Ready for your quote?",
+    "ctaBody": "Share a few details and we'll contact you within 24 hours with a quote for your home.",
+    "requestCta": "Request a Quote"
   },
   "services": {
     "ariaLabel": "Our cleaning services",
     "sectionHeading": "Our Services",
     "sectionSubhead": "Professional cleaning for every need — residential, rental, and commercial. Proudly serving Cornwall and surrounding communities.",
-    "bookNow": "Book Now",
-    "bookAriaLabel": "Book {{service}}",
+    "bookNow": "Request a Quote",
+    "bookAriaLabel": "Request a quote for {{service}}",
     "viewDetailsAriaLabel": "Learn more about {{service}}",
     "standard": {
       "title": "Standard Cleaning",
@@ -83,7 +81,7 @@
     },
     "commercial": {
       "title": "Commercial Cleaning",
-      "description": "Tailored cleaning programs for offices, retail, and business facilities. Flexible scheduling, volume pricing, and dedicated account management."
+      "description": "Tailored cleaning programs for offices, retail, and business facilities. Flexible scheduling and dedicated account management."
     }
   },
   "gallery": {
@@ -125,10 +123,10 @@
     }
   },
   "howItWorks": {
-    "ariaLabel": "How the booking process works",
+    "ariaLabel": "How the quote request process works",
     "sectionHeading": "How It Works",
-    "sectionSubhead": "From booking to a beautifully clean home — four simple steps.",
-    "step1Title": "Book Online",
+    "sectionSubhead": "From your request to a beautifully clean home — four simple steps.",
+    "step1Title": "Request a Quote",
     "step1Desc": "Choose your service, property size, and preferred date. No account required — takes under 3 minutes.",
     "step2Title": "We Confirm",
     "step2Desc": "You'll hear from us within 24 hours with your assigned cleaner's name and your arrival window.",
@@ -139,13 +137,12 @@
     "faqLink": "Have questions? See our FAQ"
   },
   "recurring": {
-    "ariaLabel": "Recurring cleaning plans and pricing",
-    "sectionHeading": "Save on Every Clean",
-    "sectionSubhead": "Book a recurring schedule and save up to 20% — no contracts, cancel anytime.",
+    "ariaLabel": "Recurring cleaning schedules",
+    "sectionHeading": "Recurring Cleaning, Your Way",
+    "sectionSubhead": "Weekly, every two weeks, or monthly — no contracts, cancel anytime. We'll include your schedule in your quote.",
     "mostPopular": "Most Popular",
-    "discountBadge": "{{pct}}% off",
-    "bookCta": "Book {{freq}}",
-    "bookAriaLabel": "Book {{freq}} cleaning",
+    "bookCta": "Request a {{freq}} Quote",
+    "bookAriaLabel": "Request a quote for {{freq}} cleaning",
     "tagline": {
       "weekly": "Perfect for busy households. Your home, consistently fresh, every week.",
       "biweekly": "Set it and forget it. The most popular option — fresh every two weeks.",
@@ -183,8 +180,8 @@
     "ariaLabel": "Service areas",
     "servicesHeading": "Services Available Here",
     "mapLabel": "Map of {{location}}",
-    "bookCta": "Book a Cleaning in {{location}}",
-    "bookAriaLabel": "Book a cleaning in {{location}}",
+    "bookCta": "Request a Quote in {{location}}",
+    "bookAriaLabel": "Request a cleaning quote in {{location}}",
     "overview": {
       "pageTitle": "Service Areas | Fresh Nest Co.",
       "metaDesc": "Fresh Nest Co. serves Cornwall ON, Akwesasne, Snye QC, Long Sault, and Morrisburg. Professional bilingual cleaning services.",
@@ -205,7 +202,7 @@
       "heading": "Cleaning Services in Akwesasne",
       "subhead": "We serve the full Akwesasne community — including Cornwall Island.",
       "description": "We cross the Seaway International Bridge to serve Cornwall Island and the broader Akwesasne community. Standard, deep clean, move-out, and post-construction cleans available. Please include your island address and any access instructions in your booking notes.",
-      "islandNote": "We serve Cornwall Island — we cross the bridge. Please include your island address and any access instructions in your booking notes."
+      "islandNote": "We serve Cornwall Island — we cross the bridge. Please include your island address and any access instructions in the notes of your request."
     },
     "snyeQc": {
       "pageTitle": "Professional Cleaning in Snye, QC | Fresh Nest Co.",
@@ -231,19 +228,19 @@
     }
   },
   "booking": {
-    "pageTitle": "Book a Cleaning | Fresh Nest Co.",
-    "metaDesc": "Book professional cleaning services online. Fast, bilingual booking for Cornwall, Akwesasne, Snye QC, Long Sault, and Morrisburg.",
-    "heading": "Book a Cleaning",
-    "subhead": "Four quick steps — takes about 3 minutes on your phone.",
+    "pageTitle": "Request a Cleaning Quote | Fresh Nest Co.",
+    "metaDesc": "Request a cleaning quote online. Fast, bilingual requests for Cornwall, Akwesasne, Snye QC, Long Sault, and Morrisburg.",
+    "heading": "Request a Cleaning Quote",
+    "subhead": "Four quick steps — about 3 minutes on your phone. No payment needed.",
     "progress": "Step {{current}} of {{total}}",
     "next": "Next",
     "back": "Back",
-    "submit": "Confirm Booking",
+    "submit": "Send Quote Request",
     "submitting": "Submitting…",
     "step1Title": "What type of cleaning?",
     "step2Title": "When would you like us?",
     "step3Title": "Your contact details",
-    "step4Title": "Review your booking",
+    "step4Title": "Review your request",
     "airbnbNote": "Airbnb turnovers include linen change, toiletry restocking, and damage photos. Typically completed in the 11am–3pm window.",
     "fields": {
       "serviceType": {
@@ -280,11 +277,6 @@
           "weekly": "Weekly",
           "biweekly": "Every two weeks",
           "monthly": "Monthly"
-        },
-        "discounts": {
-          "weekly": "Save 20%",
-          "biweekly": "Save 15%",
-          "monthly": "Save 10%"
         }
       },
       "preferredDate": {
@@ -346,21 +338,10 @@
       "phone": "Please enter a valid phone number (minimum 10 digits).",
       "minLength": "This field is too short.",
       "date": "Please select a date.",
-      "submit": "Something went wrong saving your booking. Please try again or call us:",
-      "payment": "Unable to initialize payment. Please try again or call us.",
-      "cardDeclined": "Your card was declined. Please check your card details and try again.",
-      "paymentUnavailable": "Payment form is loading. Please wait a moment."
-    },
-    "payment": {
-      "heading": "Payment",
-      "subtotal": "Subtotal",
-      "hst": "HST (13% ON)",
-      "total": "Total",
-      "secure": "Your payment is secured by Stripe",
-      "loading": "Preparing secure payment form…"
+      "submit": "Something went wrong sending your request. Please try again or call us:"
     },
     "review": {
-      "heading": "Review your booking",
+      "heading": "Review your request",
       "service": "Service",
       "property": "Property",
       "schedule": "Schedule",
@@ -382,7 +363,7 @@
     "heading": "Frequently Asked Questions",
     "subhead": "Quick answers about booking, services, and what to expect.",
     "ctaHeading": "Still have questions?",
-    "ctaSubhead": "We're happy to help — call us or book online.",
+    "ctaSubhead": "We're happy to help — call us or request a quote online.",
     "item1": {
       "q": "Do I need to be home during the clean?",
       "a": "No, you don't need to be home. Many of our clients provide a key or entry code. We follow your access instructions and lock up securely when we leave."
@@ -409,7 +390,7 @@
     },
     "item7": {
       "q": "Can I reschedule or cancel my booking?",
-      "a": "Yes — we ask for at least 24 hours' notice to reschedule or cancel without a fee. For same-day cancellations, a short-notice fee may apply."
+      "a": "Yes — please give us at least 24 hours' notice to reschedule or cancel."
     },
     "item8": {
       "q": "Are you insured and bonded?",
@@ -417,7 +398,7 @@
     },
     "item9": {
       "q": "What if I'm not happy with the clean?",
-      "a": "We offer a 24-hour satisfaction guarantee. If something was missed, contact us within 24 hours and we'll return to make it right at no extra charge."
+      "a": "We offer a 24-hour satisfaction guarantee. If something was missed, contact us within 24 hours and we'll return to make it right."
     },
     "item10": {
       "q": "What payment methods do you accept?",
@@ -431,10 +412,9 @@
     "home": "Home",
     "services": "Services",
     "locations": "Locations",
-    "pricing": "Pricing",
     "faq": "FAQ",
     "blog": "Blog",
-    "booking": "Book Now",
+    "booking": "Request a Quote",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "skipToContent": "Skip to main content",
@@ -469,42 +449,15 @@
     "bilingual": "Service available in English & French",
     "insured": "Fully insured & bonded"
   },
-  "pricing": {
-    "meta": {
-      "title": "Transparent Cleaning Pricing — Fresh Nest Co.",
-      "description": "Transparent, no-hidden-fee pricing for standard, deep, move-out, Airbnb, and commercial cleaning services."
-    },
-    "pageTitle": "Pricing | Fresh Nest Co.",
-    "hero": {
-      "title": "Transparent Pricing",
-      "subtitle": "No hidden fees. No quotes required. Book in minutes."
-    },
-    "services": {
-      "heading": "Service Pricing",
-      "reference": "Prices shown for a 1–2 bedroom home, one-time clean.",
-      "commercial": "Custom quote"
-    },
-    "frequency": {
-      "heading": "Save with a recurring schedule",
-      "cta": "Select your frequency in the calculator below to see your discounted price."
-    },
-    "cta": {
-      "heading": "Ready to book?",
-      "button": "Book a Clean"
-    },
-    "price": {
-      "range": "${{min}}–${{max}}"
-    }
-  },
   "lang": {
     "toggle": "FR",
     "current": "EN",
     "switchTo": "Switch to French"
   },
   "common": {
-    "bookNow": "Book Now",
+    "bookNow": "Request a Quote",
     "learnMore": "Learn More",
-    "getQuote": "Get a Free Quote",
+    "getQuote": "Get a Quote",
     "callUs": "Call Us",
     "loading": "Loading...",
     "error": "Something went wrong. Please try again.",
@@ -564,14 +517,13 @@
       "label3": "Damage photo documentation on every clean"
     },
     "pricing": {
-      "heading": "Transparent Turnover Pricing",
-      "starting": "Starting from ${{min}} per turnover",
-      "volume": "Volume pricing available for 4+ turnovers per month",
-      "cta": "See Full Pricing"
+      "heading": "Every Turnover Is Different",
+      "volume": "Tell us about your property and how many turnovers you expect each month — we'll follow up with a tailored quote.",
+      "cta": "Request a Turnover Quote"
     },
     "form": {
       "heading": "Request a Commercial Account",
-      "subhead": "Set up priority scheduling, volume pricing, and documented turnovers for your property.",
+      "subhead": "Set up priority scheduling and documented turnovers for your property. We'll follow up with a quote.",
       "firstName": "First Name",
       "lastName": "Last Name",
       "email": "Email Address",
@@ -594,15 +546,12 @@
   },
   "servicePage": {
     "backLink": "← Back to Services",
-    "bookCta": "Book This Service",
-    "bookBanner": "Ready to book your {{service}}?",
-    "bookBannerCta": "Book Now",
-    "pricingHeading": "Transparent Pricing",
-    "pricingStarting": "Starting from ${{min}} for a 1–2 bedroom home",
-    "pricingCta": "See Full Pricing",
-    "customPricingHeading": "Custom Pricing for Your Business",
-    "customPricingBody": "Commercial cleaning rates are tailored to your space, team size, and schedule. Contact us for a free on-site assessment.",
-    "customPricingCta": "Book a Consultation",
+    "bookCta": "Request a Quote",
+    "bookBanner": "Ready for a quote on your {{service}}?",
+    "bookBannerCta": "Request a Quote",
+    "customPricingHeading": "A Quote Tailored to Your Business",
+    "customPricingBody": "Commercial cleaning is tailored to your space, team size, and schedule. Request a quote and we'll arrange an on-site assessment.",
+    "customPricingCta": "Request a Quote",
     "overview": {
       "heading": "Our Cleaning Services",
       "subhead": "Professional, bilingual cleaning across Cornwall, Akwesasne, Snye QC, and surrounding communities."
@@ -611,7 +560,7 @@
       "includedHeading": "What’s Included",
       "howItWorksHeading": "How It Works",
       "trustHeading": "Why Choose Fresh Nest",
-      "step1Title": "Book Online",
+      "step1Title": "Request a Quote",
       "step1Desc": "Choose your service, date, and home size. Confirmation in under 2 minutes.",
       "step2Title": "We Clean",
       "step2Desc": "Your assigned cleaner arrives on time and works through a consistent checklist.",
@@ -699,25 +648,28 @@
         "wasteRemoval": "Waste removal and recycling",
         "flexibleScheduling": "After-hours and weekend scheduling available"
       }
-    }
+    },
+    "quoteHeading": "Every Home Is Different",
+    "quoteBody": "Size, condition, and how often you'd like us all shape the job. Tell us about your home and we'll follow up with a quote within 24 hours.",
+    "quoteCta": "Request a Quote"
   },
   "thankYou": {
     "meta": {
-      "title": "Booking Confirmed — Fresh Nest Co.",
-      "description": "Your Fresh Nest Co. cleaning booking is confirmed. Check your email for details."
+      "title": "Quote Request Received — Fresh Nest Co.",
+      "description": "We received your cleaning quote request. We'll contact you within 24 hours."
     },
-    "heading": "You're booked, {{name}}!",
-    "subhead": "Your booking is confirmed. A confirmation email is on its way to {{email}}.",
-    "genericHeading": "Your booking is confirmed!",
-    "genericSubhead": "Check your inbox for your booking confirmation details.",
-    "summaryHeading": "Booking Summary",
-    "referenceLabel": "Booking reference",
+    "heading": "Thanks, {{name}} — we've got your request!",
+    "subhead": "We'll contact you within 24 hours with your quote. A confirmation email is on its way to {{email}}.",
+    "genericHeading": "Your quote request has been received!",
+    "genericSubhead": "We'll contact you within 24 hours with your quote.",
+    "summaryHeading": "Request Summary",
+    "referenceLabel": "Request reference",
     "serviceLabel": "Service",
     "dateLabel": "Preferred date",
     "frequencyLabel": "Frequency",
     "nextHeading": "What Happens Next",
     "step1Title": "Confirmation email sent",
-    "step1Desc": "Check your inbox — your booking details are on their way.",
+    "step1Desc": "Check your inbox — confirmation of your request is on its way. We'll call or email you with your quote within 24 hours.",
     "step2Title": "We confirm your cleaner",
     "step2Desc": "We'll assign your cleaner and confirm the details within 24 hours.",
     "step3Title": "Your cleaner arrives",
@@ -1144,7 +1096,7 @@
   "blog": {
     "meta": {
       "title": "Fresh Nest Co. Blog — Cleaning & Organizing Tips",
-      "description": "Read cleaning checklists, pricing guides, and seasonal tips from Fresh Nest Co. serving Cornwall and Akwesasne."
+      "description": "Read cleaning checklists, move-out guides, and seasonal tips from Fresh Nest Co. serving Cornwall and Akwesasne."
     },
     "pageHeading": "Fresh Nest Blog",
     "pageSubhead": "Seasonal tips, move-out checklists, and professional home care advice for our local communities.",
@@ -1154,18 +1106,6 @@
     "noPosts": "No articles found.",
     "backToBlog": "← Back to Blog",
     "metaPost": "{{title}} | Fresh Nest Blog"
-  },
-  "referrals": {
-    "promoCodeLabel": "Referral Code (Optional)",
-    "promoPlaceholder": "Enter friend's code",
-    "promoValid": "Promo code valid! $20 off applied.",
-    "promoInvalid": "Invalid referral code. Please check and try again.",
-    "promoChecking": "Verifying code...",
-    "referralShareTitle": "Share the Fresh Nest Love",
-    "referralShareDesc": "Give your friends $20 off their first clean. When they book, you'll receive a $20 discount on your next service!",
-    "copyLink": "Copy Referral Link",
-    "linkCopied": "Link copied to clipboard!",
-    "referredBy": "Referred by {{name}}"
   },
   "customerPortal": {
     "login": {
@@ -1215,7 +1155,7 @@
       "cancelBtn": "Cancel Cleaning",
       "confirmCancelTitle": "Cancel this cleaning?",
       "confirmCancelDesc": "Are you sure you want to cancel your cleaning on {{date}}? This cannot be undone.",
-      "cancelSuccess": "Your cleaning has been cancelled. Your payment hold has been released.",
+      "cancelSuccess": "Your cleaning has been cancelled.",
       "changeFreqBtn": "Change Recurrence",
       "frequencyLabel": "Change recurrence frequency to:",
       "scheduledDateLabel": "Scheduled Date:",
@@ -1354,5 +1294,9 @@
     "body": "Install our app on your device for fast access to booking and scheduling, even offline.",
     "installBtn": "Install",
     "dismissBtn": "Not Now"
+  },
+  "quoteRequest": {
+    "nextStepsHeading": "What happens next",
+    "nextStepsBody": "No payment is taken now. A member of our team will contact you within 24 hours to confirm the details and give you a quote."
   }
 }

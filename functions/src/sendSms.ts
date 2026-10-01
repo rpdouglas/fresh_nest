@@ -1,5 +1,5 @@
 import twilio from 'twilio'
-import type { BookingData } from './emailTemplates'
+import { isQuoteRequest, type BookingData } from './emailTemplates'
 import { confirmationSms, reminderSms, onMyWaySms } from './smsTemplates'
 
 export interface SmsConfig {
@@ -22,7 +22,7 @@ export async function sendSmsConfirmation(booking: BookingData, config: SmsConfi
     return
   }
   const lang: 'en' | 'fr' = booking.language === 'fr' ? 'fr' : 'en'
-  const body = confirmationSms(booking.firstName, booking.serviceType, booking.preferredDate, lang)
+  const body = confirmationSms(booking.firstName, booking.serviceType, booking.preferredDate, lang, isQuoteRequest(booking))
   const client = twilio(config.accountSid, config.authToken)
   await client.messages.create({ body, from: config.fromNumber, to })
 }

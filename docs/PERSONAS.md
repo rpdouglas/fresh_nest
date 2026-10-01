@@ -1,7 +1,8 @@
 # Fresh Nest Co. — Persona Reference
 
-**Version:** 4.1 | **Updated:** 2026-09-30
+**Version:** 4.2 | **Updated:** 2026-09-30
 **Status:** Human-defined — AI agents READ ONLY unless the human explicitly authorises a specific change.
+**v4.2 (2026-09-30, human-authorised, P3-E29):** The public site shows no prices or discounts — pricing is agreed in a quote follow-up. P2 Travis is re-scoped from price visibility to speed and zero friction.
 **v4.1 (2026-09-30, human-authorised):** Release language scope is English + French only. P10 Arabic UI / RTL deferred; P10 is served by the icon-first UI. P7 acceptance step 6 arithmetic corrected ($5 claimable / $6 blocked at $795/$800).
 **Supersedes:** v3.0 (June 2026)
 
@@ -60,7 +61,7 @@ Version 4 upgrades three staff-side personas with richer human-centered profiles
 | ID | Name | Location | Primary Language | Key Need |
 |---|---|---|---|---|
 | P1 | Diane Lafleur | East Cornwall ON | French | French-language UX + consistent cleaner |
-| P2 | Travis McLeod | Long Sault ON | English | Fast mobile booking + transparent pricing |
+| P2 | Travis McLeod | Long Sault ON | English | Fast mobile quote request + fast follow-up |
 | P3 | Margaret Storey | West Cornwall ON | English | Accessibility + phone contact + trust |
 | P4 | Kahnawà:ke Baptiste | Cornwall Island, Akwesasne | English / Mohawk | Island service recognition + logistics |
 | P5 | Sophie Tremblay-Gagnon | Snye, QC | French | Cross-border service + eco products + French UX |
@@ -159,42 +160,42 @@ Diane researches 2–3 cleaning services in French on Facebook groups and Google
 
 #### Goals
 - Book a cleaning in under 3 minutes on his iPhone
-- See a real price before giving any contact information
+- Get a quote request in within 3 taps and 3 minutes, and hear back fast (v4.2: prices are given in the quote follow-up, not on the site)
 - No account creation, no friction
 - SMS confirmation he can reference on the job site
 
 #### Fears
-- Hidden prices revealed only after a consultation call
+- Hidden prices revealed only after a consultation call *(v4.2: the site is quote-first — mitigate with a clear "quote within 24 hours" promise and a fast follow-up)*
 - Booking forms that require account signup
 - Desktop-only layouts that break on mobile
 - Any friction that adds time to the booking flow
 
 #### Buying Behaviour
-Travis searches on iPhone between job sites. He wants a visible price range within the first 3 taps. If he can't see a price and complete a booking in under 5 minutes, he leaves and tries the next result. He responds to biweekly discounts and does not respond to brand storytelling.
+Travis searches on iPhone between job sites. He wants to get his request in within the first 3 taps and hear back quickly. If he can't complete a request in under 5 minutes, he leaves and tries the next result. He responds to biweekly discounts and does not respond to brand storytelling.
 
 #### Feature Requirements
 
 | Feature | Requirement |
 |---|---|
-| Instant Quote Calculator | Above the fold on homepage, mobile-optimised |
-| Price visibility | Price range displayed before any contact fields |
-| Biweekly discount | Visible and pre-selected option in calculator |
-| Form pre-population | Calculator selections flow into booking form |
+| Quote request selector | Above the fold on homepage, mobile-optimised (service, size, frequency) |
+| Price visibility | *(Removed in v4.2 — no public prices; the quote follow-up states the price)* |
+| Quote follow-up | The site states that a quote follows within 24 hours; no payment is taken online |
+| Form pre-population | Selector choices flow into the quote request form |
 | Booking form | Mobile-first, no required account creation |
 | SMS confirmation | Delivered within 30 seconds of booking submission |
 
 #### Persona Quote
-> *"If I can't see a price and book it in three minutes, I'm moving on."*
+> *"If I can't book it in three minutes, I'm moving on."*
 
 #### Acceptance Test — P2
 **Pass/Fail Gate for Phase C:**
 
 1. Travis opens the homepage on an iPhone (375px viewport)
-2. He selects 4-bed + biweekly + standard clean in the Quote Calculator — within 3 taps
-3. A price range is displayed immediately (no form submission required)
-4. He taps the CTA — the booking form opens with his calculator selections pre-filled
-5. He completes the booking without creating an account
-6. Total time from landing to booking confirmation: under 3 minutes
+2. He selects 4-bed + biweekly + standard clean in the home-page quote selector — within 3 taps
+3. The page tells him a quote will follow within 24 hours; no price and no payment are shown (v4.2)
+4. He taps "Request a Quote" — the request form opens with his selections pre-filled
+5. He completes the request without creating an account
+6. Total time from landing to request confirmation: under 3 minutes
 7. SMS confirmation received within 30 seconds
 
 ---

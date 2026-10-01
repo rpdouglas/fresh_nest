@@ -35,8 +35,9 @@ export const logBookingCompleted = (serviceType: string, totalValue?: number) =>
   logCustomEvent('booking_completed', { service_type: serviceType, value: totalValue })
 }
 
-export const logQuoteCalculated = (serviceType: string, estimatedPrice: number) => {
-  logCustomEvent('quote_calculated', { service_type: serviceType, value: estimatedPrice })
+// P3-E29: no price is shown or tracked — the home selector only starts a quote request.
+export const logQuoteRequestStarted = (serviceType: string) => {
+  logCustomEvent('quote_request_started', { service_type: serviceType })
 }
 
 export const logPhoneClicked = (location: 'navbar' | 'footer' | 'other') => {

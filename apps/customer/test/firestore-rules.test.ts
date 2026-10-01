@@ -8,6 +8,8 @@ import {
   doc,
   getDoc,
   getDocs,
+  addDoc,
+  type Firestore,
   collection,
   query,
   where,
@@ -17,6 +19,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore'
 import { readFileSync } from 'fs'
+import { bookingsCollection, reviewsCollection, type Booking, type Review } from '@freshnest/shared'
 import path from 'path'
 import { describe, it, beforeAll, afterAll, beforeEach } from 'vitest'
 
@@ -26,7 +29,7 @@ beforeAll(async () => {
   testEnv = await initializeTestEnvironment({
     projectId: 'freshnest-aa51e',
     firestore: {
-      rules: readFileSync(path.resolve(__dirname, '../../../firestore.rules'), 'utf8'),
+      rules: readFileSync(path.resolve(__dirname, '../../..', process.env['RULES_FILE'] ?? 'firestore.rules'), 'utf8'),
       host: '127.0.0.1',
       port: 8080,
     },
@@ -300,5 +303,34 @@ describe('Firestore Security Rules', () => {
       const ref = doc(adminDb, 'unregisteredCollection', 'secret')
       await assertFails(setDoc(ref, { data: 'stolen' }))
     })
+  })
+})
+
+// Regression (P3-E29 preview review): the app writes through the shared withConverter()
+// collections. Their toFirestore() used to copy serverTimestamp() into a plain map, so
+// `createdAt == request.time` failed and every public booking, admin booking and review
+// was denied. These tests write through the real converters, exactly like the app.
+describe('Writes through shared converters (serverTimestamp preserved)', () => {
+  // rules-unit-testing returns the compat type; it is the same modular instance at runtime.
+  const publicDb = () => testEnv.unauthenticatedContext().firestore() as unknown as Firestore
+
+  it('accepts a public quote request written via bookingsCollection()', async () => {
+    await assertSucceeds(addDoc(bookingsCollection(publicDb()), {
+      ...validBooking,
+      preferredDate: '2026-10-20',
+      addOns: [],
+      preferredCleaner: null,
+      notes: '',
+      fsmAppointmentId: null,
+      squareFootage: undefined, // stripped by the converter
+      createdAt: serverTimestamp(),
+    } as unknown as Booking))
+  })
+
+  it('accepts a public review written via reviewsCollection()', async () => {
+    await assertSucceeds(addDoc(reviewsCollection(publicDb()), {
+      name: 'Margaret S.', location: 'Cornwall', language: 'en', rating: 5, text: 'Wonderful',
+      approved: false, rejected: false, jobId: 'job-1', createdAt: serverTimestamp(),
+    } as unknown as Review))
   })
 })

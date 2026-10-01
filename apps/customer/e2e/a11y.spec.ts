@@ -16,13 +16,6 @@ function futureDateStr(daysAhead = 5): string {
 
 // Shared mocks for tests that reach the booking form.
 async function setupBookingMocks(page: import('@playwright/test').Page) {
-  await page.route(/createPaymentIntent/, async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({ result: { clientSecret: 'pi_test_a11y_mock_secret' } }),
-    })
-  })
   await page.route('**/firestore.googleapis.com/**', async (route, request) => {
     if (request.method() === 'POST') {
       await route.fulfill({
@@ -33,17 +26,6 @@ async function setupBookingMocks(page: import('@playwright/test').Page) {
     } else {
       await route.continue()
     }
-  })
-  await page.addInitScript(() => {
-    ;(window as unknown as Record<string, unknown>).Stripe = () => ({
-      elements: () => ({
-        create: () => ({ mount: () => {}, unmount: () => {}, on: () => {}, destroy: () => {} }),
-        submit: () => Promise.resolve({ error: null }),
-        getElement: () => null,
-      }),
-      confirmPayment: () =>
-        Promise.resolve({ error: null, paymentIntent: { status: 'requires_capture', id: 'pi_a11y_e2e' } }),
-    })
   })
 }
 
@@ -174,7 +156,7 @@ test.describe('Keyboard navigation — P3 Margaret', () => {
     const caslCheckbox = page.getByRole('checkbox', { name: /consent|agree|casl/i }).first()
     await caslCheckbox.focus()
     await page.keyboard.press('Space')
-    await page.getByRole('button', { name: /confirm booking/i }).focus()
+    await page.getByRole('button', { name: /send quote request/i }).focus()
     await page.keyboard.press('Enter')
 
     await expect(page).toHaveURL(/\/thank-you/, { timeout: 8000 })

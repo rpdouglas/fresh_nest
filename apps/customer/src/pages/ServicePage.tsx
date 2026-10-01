@@ -2,7 +2,6 @@ import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import type { ServiceConfig } from '@/lib/data/serviceData'
-import { calculateQuote } from '@/lib/utils/quotePricing'
 import JsonLd from '@/components/seo/JsonLd'
 import { getServiceSchema } from '@/lib/utils/seo'
 import SEO from '@/components/seo/SEO'
@@ -38,11 +37,9 @@ export default function ServicePage({ config }: Props) {
   const { t } = useTranslation()
   const k = `servicePage.${config.key}`
 
-  const priceResult = config.pricingKey
-    ? calculateQuote('1-2bed', config.pricingKey, 'one-time')
-    : null
-  const priceMin =
-    priceResult && priceResult.type === 'range' ? priceResult.min : null
+  const quoteHref = config.isCommercial
+    ? `/booking?serviceType=${config.key}&commercial=1`
+    : `/booking?serviceType=${config.key}`
 
   const pageTitle = t(`${k}.hero.heading`)
   const serviceSchema = getServiceSchema(config.key, t)
@@ -226,86 +223,45 @@ export default function ServicePage({ config }: Props) {
         </div>
       </section>
 
-      {/* ── 5. Pricing Teaser / Custom Pricing ────────────────────────────── */}
-      {priceMin !== null ? (
-        <section className="bg-warm-white py-12 md:py-20 px-4 md:px-6">
-          <div className="max-w-content mx-auto text-center">
-            <motion.h2
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeUp}
-              custom={0}
-              className="font-display text-4xl text-charcoal mb-4"
+      {/* ── 5. Quote invitation (P3-E29: no public pricing) ───────────────── */}
+      <section className="bg-warm-white py-12 md:py-20 px-4 md:px-6">
+        <div className="max-w-content mx-auto text-center">
+          <motion.h2
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            custom={0}
+            className="font-display text-4xl text-charcoal mb-4"
+          >
+            {t(config.isCommercial ? 'servicePage.customPricingHeading' : 'servicePage.quoteHeading')}
+          </motion.h2>
+          <motion.p
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            custom={1}
+            className="font-body text-lg text-charcoal font-bold mb-8 max-w-xl mx-auto"
+          >
+            {t(config.isCommercial ? 'servicePage.customPricingBody' : 'servicePage.quoteBody')}
+          </motion.p>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            custom={2}
+          >
+            <Link
+              to={quoteHref}
+              className="inline-flex items-center justify-center font-body font-medium text-base bg-slate-brand text-white hover:bg-slate-dark rounded px-8 min-h-[48px] transition-colors focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2"
             >
-              {t('servicePage.pricingHeading')}
-            </motion.h2>
-            <motion.p
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeUp}
-              custom={1}
-              className="font-body text-xl font-semibold text-charcoal mb-8"
-            >
-              {t('servicePage.pricingStarting', { min: priceMin })}
-            </motion.p>
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeUp}
-              custom={2}
-            >
-              <Link
-                to="/pricing"
-                className="inline-flex items-center justify-center font-body font-medium text-base border-2 border-slate-brand text-slate-brand hover:bg-slate-brand hover:text-white rounded px-8 min-h-[48px] transition-colors focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2"
-              >
-                {t('servicePage.pricingCta')}
-              </Link>
-            </motion.div>
-          </div>
-        </section>
-      ) : (
-        <section className="bg-warm-white py-12 md:py-20 px-4 md:px-6">
-          <div className="max-w-content mx-auto text-center">
-            <motion.h2
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeUp}
-              custom={0}
-              className="font-display text-4xl text-charcoal mb-4"
-            >
-              {t('servicePage.customPricingHeading')}
-            </motion.h2>
-            <motion.p
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeUp}
-              custom={1}
-              className="font-body text-lg text-charcoal font-bold mb-8 max-w-xl mx-auto"
-            >
-              {t('servicePage.customPricingBody')}
-            </motion.p>
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeUp}
-              custom={2}
-            >
-              <Link
-                to={`/booking?serviceType=${config.key}&commercial=1`}
-                className="inline-flex items-center justify-center font-body font-medium text-base bg-slate-brand text-white hover:bg-slate-dark rounded px-8 min-h-[48px] transition-colors focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2"
-              >
-                {t('servicePage.customPricingCta')}
-              </Link>
-            </motion.div>
-          </div>
-        </section>
-      )}
+              {t(config.isCommercial ? 'servicePage.customPricingCta' : 'servicePage.quoteCta')}
+            </Link>
+          </motion.div>
+        </div>
+      </section>
 
       {/* ── 6. Book CTA Banner ────────────────────────────────────────────── */}
       <section className="bg-slate-brand py-12 md:py-16 px-4 md:px-6">

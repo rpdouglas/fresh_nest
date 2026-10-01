@@ -43,7 +43,6 @@ export function getLocalBusinessSchema(t: TFunction): SchemaOrgObject {
     'logo': `${BASE_URL}/assets/logo-navbar-160px@2x-CvrLo3Hv.png`, // Matches resolved assets
     'image': `${BASE_URL}/assets/hero-CLDdwZDr.png`,
     'telephone': '+1-613-935-3555',
-    'priceRange': '$$',
     'address': {
       '@type': 'PostalAddress',
       'addressLocality': 'Cornwall',

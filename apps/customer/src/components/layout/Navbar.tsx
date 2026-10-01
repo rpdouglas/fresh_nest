@@ -33,7 +33,6 @@ export default function Navbar() {
     { to: '/', label: t('nav.home'), end: true },
     { to: '/services', label: t('nav.services'), end: false },
     { to: '/locations', label: t('nav.locations'), end: false },
-    { to: '/pricing', label: t('nav.pricing'), end: true },
     { to: '/faq', label: t('nav.faq'), end: true },
     { to: '/blog', label: t('nav.blog'), end: false },
     user

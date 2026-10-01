@@ -56,13 +56,20 @@ test('Travis can complete a full booking in under 3 minutes', async ({ page }) =
   await page.locator('#phone').fill('6135550001')
   await page.locator('#address').fill('123 Main St, Long Sault ON')
 
+  // Step 4: the Review step must appear — "Next" on step 3 must not submit (P3-E29 regression)
+  await expect(page).toHaveURL(/\/booking/)
+  await expect(page.getByRole('heading', { name: /review your request/i })).toBeVisible()
+
   // Step 4: Submit
   // Verify review table summary is present
   await expect(page.getByText('Standard Cleaning').first()).toBeVisible()
   await expect(page.getByText('Every two weeks').first()).toBeVisible()
 
-  // Click submit (Confirm Booking)
-  await page.getByRole('button', { name: /confirm booking/i }).click()
+  // P3-E29: no price or payment on the review step
+  await expect(page.getByText(/\$\s?\d/)).toHaveCount(0)
+
+  // Click submit (Send Quote Request)
+  await page.getByRole('button', { name: /send quote request/i }).click()
 
   // Wait for redirect to /thank-you or print error if it fails
   try {
@@ -73,14 +80,14 @@ test('Travis can complete a full booking in under 3 minutes', async ({ page }) =
     throw err
   }
 
-  await expect(page.getByText(/booking is confirmed/i)).toBeVisible()
+  await expect(page.getByRole('heading', { name: /we've got your request/i })).toBeVisible()
 })
 
 test('Required field validation shows errors on empty submit', async ({ page }) => {
   await page.goto('/booking')
 
-  // Click Confirm Booking directly without filling preferredDate or contact info
-  await page.getByRole('button', { name: /confirm booking/i }).click()
+  // Click the submit button directly without filling preferredDate or contact info
+  await page.getByRole('button', { name: /send quote request|next/i }).first().click()
 
   // Expect alerts/error messages to show up
   const alertLocator = page.getByRole('alert')

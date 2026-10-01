@@ -28,12 +28,16 @@ export function toDateOrNull(val: any): Date | null {
   return toDate(val)
 }
 
-// Utility to recursively strip any undefined properties
+// Utility to recursively strip any undefined properties.
+// Only plain objects and arrays are rebuilt. Class instances — Date, Timestamp, GeoPoint,
+// DocumentReference, Bytes and FieldValue sentinels such as serverTimestamp() — must reach the
+// SDK untouched: copying a sentinel into a plain object makes Firestore store it as a map
+// (e.g. createdAt != request.time, so security rules reject the write).
 export function cleanUndefined(obj: any): any {
   if (obj === null || typeof obj !== 'object') return obj
-  if (obj instanceof Date) return obj // Let Firestore serialize Dates
-  if (obj instanceof Timestamp) return obj
   if (Array.isArray(obj)) return obj.map(cleanUndefined)
+  const proto = Object.getPrototypeOf(obj)
+  if (proto !== Object.prototype && proto !== null) return obj
 
   const clean: any = {}
   for (const key of Object.keys(obj)) {

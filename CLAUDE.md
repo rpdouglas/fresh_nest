@@ -66,7 +66,7 @@ THIS IS TAILWIND v3. NOT v4.
 | ID | Name | Primary Need | Key Feature |
 |---|---|---|---|
 | P1 | Diane Lafleur | French UX + consistent cleaner | Bilingual + Trust Bar + Team |
-| P2 | Travis McLeod | Fast mobile booking + transparent price | Quote Calculator + SMS |
+| P2 | Travis McLeod | Fast mobile quote request + fast follow-up | Quote selector (3 taps, pre-fill) + SMS |
 | P3 | Margaret Storey | Accessible design + phone + trust | 48px targets + 16px text + phone in nav |
 | P4 | Kahnawà:ke Baptiste | Akwesasne recognition + island service | /locations/akwesasne + notes field |
 | P5 | Sophie Tremblay-Gagnon | French UX + eco + Snye QC service | /locations/snye-qc + FR + gallery |
@@ -99,7 +99,10 @@ These are not aspirational — they are done conditions.
 ### Rule 3 — Copy serves personas
 - Diane and Sophie receive French copy — use t() always, never hardcode strings
 - Margaret's UI: minimum 16px text, 48px touch targets, phone number visible
-- Travis's UI: price visible on landing, zero friction, no account creation
+- Travis's UI: quote request in 3 taps from landing, zero friction, no account creation
+- **No public prices or discounts (P3-E29, human decision 2026-09-30):** the customer site never shows
+  prices, price ranges, % or $ discounts, referral rewards, or payment steps — pricing is agreed in the
+  quote follow-up. `apps/customer/src/i18n/noPricing.test.ts` enforces this.
 - Kahnawà:ke's location page: "We serve Cornwall Island" explicit, not generic
 - Gallagher's service page: Airbnb host language, 11am–3pm window explicit
 
