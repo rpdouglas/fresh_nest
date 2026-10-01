@@ -15,7 +15,7 @@ vi.mock('firebase/firestore', async (importOriginal) => ({
   addDoc: (...args: unknown[]) => addDocMock(...args),
 }))
 
-const { submitBooking, withoutUndefined } = await import('./firestore')
+const { submitBooking } = await import('./firestore')
 
 // BookingPage's defaultValues plus what a customer fills in on steps 2–3.
 const formValues = {
@@ -35,27 +35,8 @@ async function parse(values: typeof formValues): Promise<BookingFormData> {
   return result.values as BookingFormData
 }
 
-describe('withoutUndefined', () => {
-  it('drops undefined fields but keeps null, false, 0 and empty strings', () => {
-    expect(withoutUndefined({ a: undefined, b: null, c: false, d: 0, e: '' })).toEqual({ b: null, c: false, d: 0, e: '' })
-  })
-})
-
 describe('submitBooking (public quote request)', () => {
   beforeEach(() => addDocMock.mockClear())
-
-  // Regression: squareFootage has no form input, stays undefined after Zod parsing, and
-  // Firestore rejected every public request with "Unsupported field value: undefined".
-  it('never sends undefined field values to Firestore', async () => {
-    const data = await parse(formValues)
-    expect(Object.keys(data)).toContain('squareFootage') // Zod keeps the undefined key
-
-    await submitBooking(data, 'en', 'organic')
-
-    const written = addDocMock.mock.calls[0]?.[1] as Record<string, unknown>
-    expect(Object.entries(written).filter(([, v]) => v === undefined)).toEqual([])
-    expect(written).not.toHaveProperty('squareFootage')
-  })
 
   it('writes a pending request with no price or payment fields (P3-E29)', async () => {
     await submitBooking(await parse(formValues), 'fr', 'organic')

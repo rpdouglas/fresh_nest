@@ -29,13 +29,6 @@ import type { QuotePropertySize, QuoteServiceType, QuoteFrequency } from '@/lib/
 
 export type LeadSource = 'organic' | 'google' | 'referral' | 'facebook' | 'direct'
 
-// Firestore rejects the whole write if any field is `undefined` ("Unsupported field value").
-// Optional form fields that were never filled (e.g. squareFootage, which has no input) arrive
-// as `undefined` after Zod parsing, so they are dropped before writing.
-export function withoutUndefined(data: Record<string, unknown>): Record<string, unknown> {
-  return Object.fromEntries(Object.entries(data).filter(([, value]) => value !== undefined))
-}
-
 export function detectLeadSource(params: URLSearchParams): LeadSource {
   const ref = (params.get('ref') ?? params.get('utm_source') ?? '').toLowerCase()
   const map: Record<string, LeadSource> = {
@@ -96,7 +89,7 @@ export async function submitBooking(
     docData.consentMethod    = 'booking-form-v2'
   }
 
-  const ref = await addDoc(bookingsCollection(db), withoutUndefined(docData) as unknown as Booking)
+  const ref = await addDoc(bookingsCollection(db), docData as unknown as Booking)
   return ref.id
 }
 
@@ -130,7 +123,7 @@ export async function createAdminBooking(
     docData.consentMethod    = 'booking-form-v2'
   }
 
-  const ref = await addDoc(bookingsCollection(db), withoutUndefined(docData) as unknown as Booking)
+  const ref = await addDoc(bookingsCollection(db), docData as unknown as Booking)
   return ref.id
 }
 
