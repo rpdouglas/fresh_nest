@@ -46,6 +46,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | **P3-E8** | `useBookings` Server-Side Filtering Fix | M | P1 | ✅ Completed 2026-06-21 |
 | **P3-E9** | Remove `window.__MOCK_*` from Production | S | P1 | ✅ Completed 2026-06-18 |
 | **HOTFIX-02** | Shift Board permission fix — `listOpenShifts` callable, `test:rules` fix, CI functions deploy, Node 22 runtime | M | P0 | ✅ Completed 2026-09-30 |
+| **P3-E30** | Business Email Setup — Zoho Mail inboxes + Resend domain/API key (app emails currently failing) | S | P0 | ⏸ Paused 2026-10-01 — waiting on human Zoho/Resend/CanSpace DNS setup; PR #26 open, do not merge yet. See [`projects/P3-E30.md`](projects/P3-E30.md) |
 
 ---
 
