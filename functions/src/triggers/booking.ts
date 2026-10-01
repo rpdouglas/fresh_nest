@@ -171,7 +171,7 @@ export const onBookingCancelled = onDocumentUpdated(
         authToken: TWILIO_AUTH_TOKEN.value(),
         fromNumber: TWILIO_PHONE_NUMBER.value(),
       }
-      const adminPhone = process.env.OWNER_PHONE || '+16139353555'
+      const adminPhone = process.env.OWNER_PHONE || '+16138618812'
       const clientName = `${after.firstName} ${after.lastName}`
       const preferredDate = after.preferredDate
       const smsBody = `Fresh Nest Co. Alert: Booking ${bookingId} for ${clientName} on ${preferredDate} has been cancelled by the customer.`

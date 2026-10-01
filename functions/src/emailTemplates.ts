@@ -222,9 +222,9 @@ export function clientHtml(b: BookingData, lang: 'en' | 'fr'): string {
             <p style="margin:0 0 8px;color:#2c3a40;font-size:16px;">${nextSteps}</p>
             <p style="margin:0 0 24px;color:#7a8f96;font-size:16px;">
               ${callUs}
-              <a href="tel:+16139353555"
+              <a href="tel:+16138618812"
                  style="color:#5b7e8f;text-decoration:none;font-weight:600;">
-                (613) 935-3555
+                (613) 861-8812
               </a>
             </p>
             <p style="margin:0;color:#7a8f96;font-size:14px;">${signOff}</p>
@@ -236,7 +236,7 @@ export function clientHtml(b: BookingData, lang: 'en' | 'fr'): string {
           <td style="padding:16px 32px;background:#f7f3ee;
                      border-top:1px solid #e8ddd0;border-radius:0 0 4px 4px;">
             <p style="margin:0;color:#7a8f96;font-size:12px;text-align:center;">
-              Fresh Nest Co. &middot; Cornwall ON &middot; (613) 935-3555
+              Fresh Nest Co. &middot; Cornwall ON &middot; (613) 861-8812
             </p>
           </td>
         </tr>
@@ -321,9 +321,9 @@ export function reviewRequestHtml(clientName: string, reviewUrl: string, lang: '
 
             <p style="margin:0 0 24px;color:#7a8f96;font-size:16px;">
               ${callUs}
-              <a href="tel:+16139353555"
+              <a href="tel:+16138618812"
                  style="color:#5b7e8f;text-decoration:none;font-weight:600;">
-                (613) 935-3555
+                (613) 861-8812
               </a>
             </p>
             <p style="margin:0;color:#7a8f96;font-size:14px;">${signOff}</p>
@@ -335,7 +335,7 @@ export function reviewRequestHtml(clientName: string, reviewUrl: string, lang: '
           <td style="padding:16px 32px;background:#f7f3ee;
                      border-top:1px solid #e8ddd0;border-radius:0 0 4px 4px;">
             <p style="margin:0;color:#7a8f96;font-size:12px;text-align:center;">
-              Fresh Nest Co. &middot; Cornwall ON &middot; (613) 935-3555
+              Fresh Nest Co. &middot; Cornwall ON &middot; (613) 861-8812
             </p>
           </td>
         </tr>
@@ -364,8 +364,8 @@ export function staffWelcomeHtml(firstName: string, magicLink: string, lang: 'en
     : "We are excited to have you on board! To get started, you will need to log in to the FSM portal using the button below. On your first login, you will be guided to submit your background check consent and review the platform Terms of Service."
   const btnText = isFr ? 'Se connecter pour commencer' : 'Sign in to get started'
   const callUs = isFr
-    ? "Si vous avez des questions, n'hésitez pas à contacter Lauren à <a href=\"mailto:hello@freshnestco.ca\" style=\"color:#5b7e8f;text-decoration:none;\">hello@freshnestco.ca</a> ou par téléphone au"
-    : "If you have any questions, feel free to contact Lauren at <a href=\"mailto:hello@freshnestco.ca\" style=\"color:#5b7e8f;text-decoration:none;\">hello@freshnestco.ca</a> or call us at"
+    ? "Si vous avez des questions, n'hésitez pas à contacter Lauren à <a href=\"mailto:hr.freshnest@gmail.com\" style=\"color:#5b7e8f;text-decoration:none;\">hr.freshnest@gmail.com</a> ou par téléphone au"
+    : "If you have any questions, feel free to contact Lauren at <a href=\"mailto:hr.freshnest@gmail.com\" style=\"color:#5b7e8f;text-decoration:none;\">hr.freshnest@gmail.com</a> or call us at"
   const signOff = isFr ? '— L\'équipe Fresh Nest Co.' : '— The Fresh Nest Co. Team'
   const tagline = isFr ? 'Services de nettoyage &amp; d\'organisation' : 'Cleaning &amp; Organizing Services'
 
@@ -422,9 +422,9 @@ export function staffWelcomeHtml(firstName: string, magicLink: string, lang: 'en
 
             <p style="margin:0 0 24px;color:#7a8f96;font-size:16px;">
               ${callUs}
-              <a href="tel:+16139353555"
+              <a href="tel:+16138618812"
                  style="color:#5b7e8f;text-decoration:none;font-weight:600;">
-                (613) 935-3555
+                (613) 861-8812
               </a>
             </p>
             <p style="margin:0;color:#7a8f96;font-size:14px;">${signOff}</p>
@@ -436,7 +436,7 @@ export function staffWelcomeHtml(firstName: string, magicLink: string, lang: 'en
           <td style="padding:16px 32px;background:#f7f3ee;
                      border-top:1px solid #e8ddd0;border-radius:0 0 4px 4px;">
             <p style="margin:0;color:#7a8f96;font-size:12px;text-align:center;">
-              Fresh Nest Co. &middot; Cornwall ON &middot; (613) 935-3555
+              Fresh Nest Co. &middot; Cornwall ON &middot; (613) 861-8812
             </p>
           </td>
         </tr>
