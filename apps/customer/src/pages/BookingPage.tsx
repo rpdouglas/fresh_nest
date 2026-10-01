@@ -185,8 +185,12 @@ export default function BookingPage() {
                   <div />
                 )}
 
+                {/* Distinct keys: without them React reuses this <button> and flips its type to
+                    "submit" during the step-3 "Next" click, which submitted the request and
+                    skipped the Review step (and CASL consent). */}
                 {currentStep < 3 ? (
                   <button
+                    key="next"
                     type="button"
                     onClick={() => { void handleNext() }}
                     className="bg-slate-brand text-white font-body font-medium text-base rounded px-8 py-3 min-h-[48px] hover:bg-slate-dark transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand"
@@ -195,6 +199,7 @@ export default function BookingPage() {
                   </button>
                 ) : (
                   <button
+                    key="submit"
                     type="submit"
                     disabled={isSubmitDisabled}
                     className="bg-slate-brand text-white font-body font-medium text-base rounded px-8 py-3 min-h-[48px] hover:bg-slate-dark transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"

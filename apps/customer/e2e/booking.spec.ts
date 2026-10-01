@@ -56,6 +56,10 @@ test('Travis can complete a full booking in under 3 minutes', async ({ page }) =
   await page.locator('#phone').fill('6135550001')
   await page.locator('#address').fill('123 Main St, Long Sault ON')
 
+  // Step 4: the Review step must appear — "Next" on step 3 must not submit (P3-E29 regression)
+  await expect(page).toHaveURL(/\/booking/)
+  await expect(page.getByRole('heading', { name: /review your request/i })).toBeVisible()
+
   // Step 4: Submit
   // Verify review table summary is present
   await expect(page.getByText('Standard Cleaning').first()).toBeVisible()
