@@ -16,6 +16,7 @@ import {
   orderBy,
   setDoc,
   updateDoc,
+  deleteDoc,
   serverTimestamp,
 } from 'firebase/firestore'
 import { readFileSync } from 'fs'
@@ -294,6 +295,60 @@ describe('Firestore Security Rules', () => {
 
       const publicDb = testEnv.unauthenticatedContext().firestore()
       await assertFails(getDoc(doc(publicDb, 'checklistTemplates', 'temp-standard')))
+    })
+  })
+
+  describe('Gallery Pairs Collection (P3-E32)', () => {
+    const pair = (published: boolean) => ({
+      serviceKey: 'deep',
+      captionEn: 'Kitchen deep clean',
+      captionFr: 'Grand nettoyage de cuisine',
+      beforePath: 'gallery/p/before-1.jpg',
+      afterPath: 'gallery/p/after-1.jpg',
+      beforeUrl: 'https://example.test/before.jpg',
+      afterUrl: 'https://example.test/after.jpg',
+      published,
+      featured: false,
+      order: 0,
+      consentConfirmed: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      createdBy: 'admin-uid',
+    })
+    const admin = () => testEnv.authenticatedContext('admin-uid', { role: 'admin' }).firestore() as unknown as Firestore
+    const visitor = () => testEnv.unauthenticatedContext().firestore() as unknown as Firestore
+    const cleaner = () => testEnv.authenticatedContext('staff-uid', { role: 'staff' }).firestore() as unknown as Firestore
+
+    beforeEach(async () => {
+      await testEnv.withSecurityRulesDisabled(async (ctx) => {
+        const db = ctx.firestore() as unknown as Firestore
+        await setDoc(doc(db, 'galleryPairs', 'live'), pair(true))
+        await setDoc(doc(db, 'galleryPairs', 'draft'), pair(false))
+      })
+    })
+
+    it('lets a visitor read a published pair and run the public query', async () => {
+      await assertSucceeds(getDoc(doc(visitor(), 'galleryPairs', 'live')))
+      await assertSucceeds(getDocs(query(collection(visitor(), 'galleryPairs'), where('published', '==', true))))
+    })
+
+    it('hides unpublished pairs from visitors', async () => {
+      await assertFails(getDoc(doc(visitor(), 'galleryPairs', 'draft')))
+      await assertFails(getDocs(collection(visitor(), 'galleryPairs')))
+    })
+
+    it('blocks visitors and staff from writing', async () => {
+      await assertFails(setDoc(doc(visitor(), 'galleryPairs', 'new'), pair(true)))
+      await assertFails(updateDoc(doc(visitor(), 'galleryPairs', 'live'), { captionEn: 'x' }))
+      await assertFails(setDoc(doc(cleaner(), 'galleryPairs', 'new'), pair(true)))
+      await assertFails(updateDoc(doc(cleaner(), 'galleryPairs', 'draft'), { published: true }))
+    })
+
+    it('lets an admin read all pairs and create, update and delete', async () => {
+      await assertSucceeds(getDocs(collection(admin(), 'galleryPairs')))
+      await assertSucceeds(setDoc(doc(admin(), 'galleryPairs', 'new'), pair(false)))
+      await assertSucceeds(updateDoc(doc(admin(), 'galleryPairs', 'new'), { published: true }))
+      await assertSucceeds(deleteDoc(doc(admin(), 'galleryPairs', 'new')))
     })
   })
 

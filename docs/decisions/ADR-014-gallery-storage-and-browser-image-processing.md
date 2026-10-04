@@ -15,7 +15,8 @@ carry the GPS coordinates of the client's home.
   the SDK is loaded on demand).
 - Photos are fitted **in the admin's browser before upload**: rotated upright, cropped to a square,
   scaled to at most 1200×1200, re-encoded as JPEG. No server-side image processing.
-- `gallery/` is publicly readable; only admins can write. Pairs are public only when `published`.
+- Only admins can read or write `gallery/` through Storage rules. Visitors load photos through the
+  download URLs saved on each pair. Pairs are listed publicly only when `published`.
 
 ## Rationale
 Browser-side fitting needs no Cloud Function and no native image library, uploads ~200 KB instead of
