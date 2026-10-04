@@ -127,12 +127,12 @@ These rules derive from persona requirements and Canadian accessibility law.
 
 ```html
 <!-- ✅ Correct — tappable tel: link -->
-<a href="tel:+16135551234" class="font-body text-base text-slate-brand">
-  (613) 555-1234
+<a href="tel:+16138618812" class="font-body text-base text-slate-brand">
+  (613) 861-8812
 </a>
 
 <!-- ❌ Incorrect — non-tappable plain text -->
-<span>(613) 555-1234</span>
+<span>(613) 861-8812</span>
 ```
 
 ### Form Accessibility (WCAG 2.1 AA)

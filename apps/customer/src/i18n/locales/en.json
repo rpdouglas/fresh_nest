@@ -407,7 +407,7 @@
   },
   "welcome": "Welcome to Fresh Nest Co.",
   "tagline": "Cleaning & Organizing Services",
-  "phone": "(613) 935-3555",
+  "phone": "(613) 861-8812",
   "nav": {
     "home": "Home",
     "services": "Services",
@@ -1271,7 +1271,7 @@
     },
     "apply": {
       "title": "How to Apply",
-      "content": "Ready to join the nest? Please send your resume and a brief description of your availability to hello@freshnestco.ca or call us at (613) 935-3555.",
+      "content": "Ready to join the nest? Please send your resume and a brief description of your availability to hello@freshnestco.ca or call us at (613) 861-8812.",
       "btnText": "Email Your Resume",
       "emailSubject": "Job Application: Residential Cleaning Specialist"
     }
@@ -1285,7 +1285,7 @@
     "subhead": "It looks like your internet connection is down right now.",
     "message": "Don't worry! You can still access some parts of the site, or call us directly to book or manage your cleaning services.",
     "callCta": "Call Us Directly",
-    "phoneNumber": "(613) 935-3555",
+    "phoneNumber": "(613) 861-8812",
     "homeLink": "Go to Homepage",
     "bookingsLink": "View My Bookings"
   },

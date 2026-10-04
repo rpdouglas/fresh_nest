@@ -8,9 +8,10 @@ import { useScrolled } from '@/hooks/useScrolled'
 import logoNavbar from '@/assets/logo-navbar-80px.png'
 import logoNavbar2x from '@/assets/logo-navbar-160px@2x.png'
 import { useCustomerAuthContext } from './CustomerAuthContext'
+import { BUSINESS_PHONE_DISPLAY, BUSINESS_PHONE_HREF } from '@/lib/config'
 
-const PHONE_NUMBER = '(613) 935-3555'
-const PHONE_HREF = 'tel:+16139353555'
+const PHONE_NUMBER = BUSINESS_PHONE_DISPLAY
+const PHONE_HREF = BUSINESS_PHONE_HREF
 
 export default function Navbar() {
   const { t, i18n } = useTranslation()

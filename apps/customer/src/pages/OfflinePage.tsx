@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import SEO from '@/components/seo/SEO'
 import { fadeUp } from '@/lib/utils/animations'
+import { BUSINESS_PHONE_HREF } from '@/lib/config'
 
 export default function OfflinePage() {
   const { t } = useTranslation()
@@ -55,7 +56,7 @@ export default function OfflinePage() {
           {/* Phone CTA block (P3 Margaret target: min-h-48, text-base/lg) */}
           <div className="mb-8 flex justify-center">
             <a
-              href="tel:+16139353555"
+              href={BUSINESS_PHONE_HREF}
               className="flex items-center justify-center gap-3 bg-slate-brand hover:bg-slate-dark text-white font-body font-medium rounded px-6 py-3 min-h-[48px] w-full text-base md:text-lg transition-colors duration-200 shadow-sm"
             >
               <svg

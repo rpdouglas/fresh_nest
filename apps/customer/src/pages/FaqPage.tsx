@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import JsonLd from '@/components/seo/JsonLd'
 import { getFaqSchema } from '@/lib/utils/seo'
 import SEO from '@/components/seo/SEO'
+import { BUSINESS_PHONE_HREF } from '@/lib/config'
 
 interface FaqItem {
   id: string
@@ -137,7 +138,7 @@ export default function FaqPage() {
           <p className="font-body text-base text-text-muted mb-8">{t('faq.ctaSubhead')}</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
-              href="tel:+16139353555"
+              href={BUSINESS_PHONE_HREF}
               className="inline-flex items-center justify-center font-body font-medium
                          text-base text-slate-brand border border-slate-brand rounded
                          px-8 min-h-[48px] hover:bg-slate-brand hover:text-white

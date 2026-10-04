@@ -88,4 +88,9 @@ describe('confirmation SMS', () => {
     expect(en).not.toMatch(PRICE)
     expect(fr).not.toMatch(PRICE)
   })
+
+  it('uses the current business phone number', () => {
+    expect(confirmationSms('Travis', 'standard', '2026-10-15', 'en', true)).toContain('(613) 861-8812')
+    expect(clientHtml(booking({ language: 'en' }), 'en')).toContain('tel:+16138618812')
+  })
 })
