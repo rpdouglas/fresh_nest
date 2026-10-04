@@ -104,23 +104,8 @@
     "nextLabel": "Next photo",
     "photoComingSoon": "Photo coming soon",
     "ctaHeading": "Ready to see these results in your home?",
-    "pairs": {
-      "kitchenDeep": {
-        "caption": "Kitchen deep clean — Cornwall, ON"
-      },
-      "airbnbTurnover": {
-        "caption": "Airbnb turnover — St. Lawrence waterfront"
-      },
-      "bathroomDeep": {
-        "caption": "Bathroom deep clean — Cornwall, ON"
-      },
-      "moveoutFull": {
-        "caption": "Full move-out clean — Long Sault, ON"
-      },
-      "postconstruction": {
-        "caption": "Post-construction clean — Cornwall, ON"
-      }
-    }
+    "empty": "New photos are on the way. Check back soon.",
+    "loading": "Loading photos…"
   },
   "howItWorks": {
     "ariaLabel": "How the quote request process works",
@@ -782,7 +767,8 @@
         "templates": "Checklist Templates",
         "payRates": "Pay Rates",
         "auditLogs": "Audit Logs",
-        "reviews": "Reviews Moderation"
+        "reviews": "Reviews Moderation",
+        "gallery": "Gallery"
       },
       "analytics": {
         "title": "Performance Analytics Dashboard",
@@ -1298,5 +1284,61 @@
   "quoteRequest": {
     "nextStepsHeading": "What happens next",
     "nextStepsBody": "No payment is taken now. A member of our team will contact you within 24 hours to confirm the details and give you a quote."
+  },
+  "galleryAdmin": {
+    "title": "Before & After Gallery",
+    "subtitle": "Add photo pairs straight from your phone. Each photo is fitted to the same square shape, and its location data is removed before it is uploaded.",
+    "hiddenNotice": "The gallery is currently hidden on the public site. You can prepare pairs now; published pairs will appear once the gallery is switched on.",
+    "addPair": "Add a pair",
+    "loadFailed": "The gallery could not be loaded. Check your connection and try again. If it keeps happening, contact your site administrator.",
+    "actionFailed": "That didn't work. Check your connection and try again.",
+    "empty": "No photo pairs yet. Choose “Add a pair” to create the first one.",
+    "form": {
+      "addTitle": "New before & after pair",
+      "editTitle": "Edit pair",
+      "service": "Service",
+      "captionEn": "Caption (English)",
+      "captionFr": "Caption (French)",
+      "captionHint": "For example: Kitchen deep clean — Cornwall, ON. Do not include the client's name or address.",
+      "beforePhoto": "Before photo",
+      "afterPhoto": "After photo",
+      "consent": "I confirm the client agreed to these photos being shown on the website.",
+      "save": "Save pair",
+      "saving": "Fitting and uploading photos…",
+      "cancel": "Cancel",
+      "errors": {
+        "required": "This field is required.",
+        "captionTooLong": "Keep the caption under 120 characters.",
+        "photosRequired": "Choose both a before photo and an after photo.",
+        "consentRequired": "Confirm the client's agreement before saving.",
+        "saveFailed": "The pair could not be saved. Check your connection and try again."
+      }
+    },
+    "picker": {
+      "choose": "Choose or take a photo",
+      "change": "Choose a different photo",
+      "position": "Slide to choose what stays in the photo",
+      "cropNote": "The shaded edges are trimmed in the grid view.",
+      "errors": {
+        "unsupported": "This file type can't be used. Choose a JPEG or PNG photo. Photos picked on a phone work best.",
+        "unreadable": "This photo couldn't be opened. Try choosing it again.",
+        "tooSmall": "This photo is too small. Choose one that is at least 600 pixels on its shorter side."
+      }
+    },
+    "card": {
+      "published": "Published",
+      "draft": "Not published",
+      "featured": "On home page",
+      "publish": "Publish",
+      "unpublish": "Unpublish",
+      "feature": "Show on home page",
+      "unfeature": "Remove from home page",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirmDelete": "Delete this pair and its photos?",
+      "confirmDeleteYes": "Yes, delete"
+    }
   }
 }

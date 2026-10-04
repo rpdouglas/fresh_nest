@@ -11,7 +11,7 @@ import {
 import type { Booking, Review } from '../types/booking'
 import type { Job, JobPhoto, ChecklistCompletion } from '../types/job'
 import type { Staff, TermsAcceptance } from '../types/staff'
-import type { ChecklistTemplate, PayRate, AuditEntry } from '../types/common'
+import type { ChecklistTemplate, PayRate, AuditEntry, GalleryPair } from '../types/common'
 
 // Helper to convert dynamic values to Date
 export function toDate(val: any): Date {
@@ -146,6 +146,14 @@ export const auditEntryConverter = createConverter<AuditEntry>((data, id) => ({
   changedAt: toDate(data.changedAt),
 } as AuditEntry))
 
+// GalleryPair Converter
+export const galleryPairConverter = createConverter<GalleryPair>((data, id) => ({
+  ...data,
+  id,
+  createdAt: toDate(data.createdAt),
+  updatedAt: toDate(data.updatedAt),
+} as GalleryPair))
+
 // Collection Factories
 export const bookingsCollection = (db: Firestore): CollectionReference<Booking> =>
   collection(db, 'bookings').withConverter(bookingConverter)
@@ -167,3 +175,6 @@ export const checklistTemplatesCollection = (db: Firestore): CollectionReference
 
 export const auditLogCollection = (db: Firestore): CollectionReference<AuditEntry> =>
   collection(db, 'auditLog').withConverter(auditEntryConverter)
+
+export const galleryPairsCollection = (db: Firestore): CollectionReference<GalleryPair> =>
+  collection(db, 'galleryPairs').withConverter(galleryPairConverter)
