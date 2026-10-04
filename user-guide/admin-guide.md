@@ -143,6 +143,38 @@ To view databases: [Firebase Console → Firestore](https://console.firebase.goo
 
 ---
 
+## Managing the Before & After Gallery
+
+The **Gallery** tab on the admin page is where photo pairs are added and managed. It works on a phone.
+
+**To add a pair**
+
+1. Open the admin page, choose the **Gallery** tab, then **Add a pair**.
+2. Pick the service and type a caption in English and in French. Do not include the client's name or address.
+3. Choose **Choose or take a photo** for the before photo, then again for the after photo.
+4. Use the slider under each photo to choose what stays in frame. The shaded edges are trimmed in the grid view.
+5. Tick the box confirming the client agreed to the photos being shown, then choose **Save pair**.
+
+Every photo is fitted to the same square shape and shrunk for fast loading. Its location data is removed
+before it leaves your phone. A new pair is saved as **Not published** so you can check it first.
+
+**On each pair you can**
+
+| Button | What it does |
+|---|---|
+| Publish / Unpublish | Shows or hides the pair on the public gallery |
+| Show on home page / Remove from home page | Adds or removes it from the home page preview |
+| Move up / Move down | Changes the order pairs appear in |
+| Edit | Change the captions or service, or replace a photo |
+| Delete | Removes the pair and its photos for good |
+
+**If a photo is refused:** it is either not a JPEG/PNG (pick it on a phone, which converts it for you),
+could not be opened, or is smaller than 600 pixels on its shorter side.
+
+Published pairs only appear to visitors once the gallery itself is switched on (see below).
+
+---
+
 ## Showing the Gallery, Team and Reviews Sections
 
 These three sections are hidden on the customer site until their content is ready (P3-E31).

@@ -104,23 +104,8 @@
     "nextLabel": "Photo suivante",
     "photoComingSoon": "Photo à venir",
     "ctaHeading": "Prêt à voir ces résultats dans votre maison ?",
-    "pairs": {
-      "kitchenDeep": {
-        "caption": "Nettoyage en profondeur de la cuisine — Cornwall, ON"
-      },
-      "airbnbTurnover": {
-        "caption": "Rotation Airbnb — bord du Saint-Laurent"
-      },
-      "bathroomDeep": {
-        "caption": "Nettoyage en profondeur de la salle de bain — Cornwall, ON"
-      },
-      "moveoutFull": {
-        "caption": "Nettoyage de déménagement complet — Long Sault, ON"
-      },
-      "postconstruction": {
-        "caption": "Nettoyage post-construction — Cornwall, ON"
-      }
-    }
+    "empty": "De nouvelles photos arrivent bientôt. Revenez nous voir.",
+    "loading": "Chargement des photos…"
   },
   "howItWorks": {
     "ariaLabel": "Comment fonctionne la demande de devis",
@@ -782,7 +767,8 @@
         "templates": "Modèles de liste de contrôle",
         "payRates": "Taux de Rémunération",
         "auditLogs": "Journaux d'audit",
-        "reviews": "Modération des avis"
+        "reviews": "Modération des avis",
+        "gallery": "Galerie"
       },
       "analytics": {
         "title": "Tableau de bord des analyses",
@@ -1298,5 +1284,61 @@
   "quoteRequest": {
     "nextStepsHeading": "La suite",
     "nextStepsBody": "Aucun paiement n'est demandé maintenant. Un membre de notre équipe vous contactera dans les 24 heures pour confirmer les détails et vous remettre un devis."
+  },
+  "galleryAdmin": {
+    "title": "Galerie avant-après",
+    "subtitle": "Ajoutez des paires de photos directement depuis votre téléphone. Chaque photo est ajustée au même format carré, et ses données de localisation sont supprimées avant le téléversement.",
+    "hiddenNotice": "La galerie est actuellement masquée sur le site public. Vous pouvez préparer des paires dès maintenant; les paires publiées apparaîtront lorsque la galerie sera activée.",
+    "addPair": "Ajouter une paire",
+    "loadFailed": "La galerie n'a pas pu être chargée. Vérifiez votre connexion et réessayez. Si le problème persiste, contactez l'administrateur du site.",
+    "actionFailed": "Cela n'a pas fonctionné. Vérifiez votre connexion et réessayez.",
+    "empty": "Aucune paire de photos pour l'instant. Choisissez « Ajouter une paire » pour créer la première.",
+    "form": {
+      "addTitle": "Nouvelle paire avant-après",
+      "editTitle": "Modifier la paire",
+      "service": "Service",
+      "captionEn": "Légende (anglais)",
+      "captionFr": "Légende (français)",
+      "captionHint": "Par exemple : Grand nettoyage de cuisine — Cornwall, ON. N'incluez pas le nom ni l'adresse du client.",
+      "beforePhoto": "Photo avant",
+      "afterPhoto": "Photo après",
+      "consent": "Je confirme que le client a accepté que ces photos soient affichées sur le site Web.",
+      "save": "Enregistrer la paire",
+      "saving": "Ajustement et téléversement des photos…",
+      "cancel": "Annuler",
+      "errors": {
+        "required": "Ce champ est obligatoire.",
+        "captionTooLong": "La légende doit compter moins de 120 caractères.",
+        "photosRequired": "Choisissez une photo avant et une photo après.",
+        "consentRequired": "Confirmez l'accord du client avant d'enregistrer.",
+        "saveFailed": "La paire n'a pas pu être enregistrée. Vérifiez votre connexion et réessayez."
+      }
+    },
+    "picker": {
+      "choose": "Choisir ou prendre une photo",
+      "change": "Choisir une autre photo",
+      "position": "Glissez pour choisir ce qui reste dans la photo",
+      "cropNote": "Les bords ombrés sont coupés dans la vue en grille.",
+      "errors": {
+        "unsupported": "Ce type de fichier ne peut pas être utilisé. Choisissez une photo JPEG ou PNG. Les photos choisies sur un téléphone fonctionnent le mieux.",
+        "unreadable": "Cette photo n'a pas pu être ouverte. Essayez de la choisir à nouveau.",
+        "tooSmall": "Cette photo est trop petite. Choisissez-en une d'au moins 600 pixels sur son côté le plus court."
+      }
+    },
+    "card": {
+      "published": "Publiée",
+      "draft": "Non publiée",
+      "featured": "Sur la page d'accueil",
+      "publish": "Publier",
+      "unpublish": "Dépublier",
+      "feature": "Afficher sur la page d'accueil",
+      "unfeature": "Retirer de la page d'accueil",
+      "moveUp": "Monter",
+      "moveDown": "Descendre",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "confirmDelete": "Supprimer cette paire et ses photos?",
+      "confirmDeleteYes": "Oui, supprimer"
+    }
   }
 }

@@ -3,14 +3,16 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils/utils'
-import { GALLERY_PAIRS } from '@/lib/data/galleryData'
+import { useGalleryPairs } from '@/hooks/useGalleryPairs'
+import { galleryCaption } from '@/lib/firebase/gallery'
 import GalleryImage from '@/components/ui/GalleryImage'
 import Lightbox from '@/components/ui/Lightbox'
 import SEO from '@/components/seo/SEO'
 import { fadeUp, stagger } from '@/lib/utils/animations'
 
 export default function Gallery() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const { data: pairs = [], isLoading } = useGalleryPairs()
   const [open, setOpen] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
   const triggerRef = useRef<HTMLButtonElement | null>(null)
@@ -27,7 +29,7 @@ export default function Gallery() {
   }
 
   const handlePrev = () => setActiveIndex(i => Math.max(0, i - 1))
-  const handleNext = () => setActiveIndex(i => Math.min(GALLERY_PAIRS.length - 1, i + 1))
+  const handleNext = () => setActiveIndex(i => Math.min(pairs.length - 1, i + 1))
 
   return (
     <main className="bg-warm-white py-12 px-4 md:py-20 md:px-6">
@@ -51,58 +53,71 @@ export default function Gallery() {
           </p>
         </motion.div>
 
-        {/* Gallery grid */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          initial="hidden"
-          animate="visible"
-          variants={stagger}
-        >
-          {GALLERY_PAIRS.map((pair, idx) => {
-            const serviceTitle = t(`services.${pair.serviceKey}.title`)
-            const beforeAlt = t('gallery.beforeAlt', { service: serviceTitle })
-            const afterAlt = t('gallery.afterAlt', { service: serviceTitle })
+        {/* Loading / empty states */}
+        {isLoading && (
+          <p role="status" className="font-body text-base text-text-muted">{t('gallery.loading')}</p>
+        )}
+        {!isLoading && pairs.length === 0 && (
+          <p className="font-body text-base text-charcoal bg-cream border border-sand rounded p-8 text-center">
+            {t('gallery.empty')}
+          </p>
+        )}
 
-            return (
-              <motion.div key={pair.id} variants={fadeUp}>
-                <button
-                  onClick={e => handleOpen(e, idx)}
-                  aria-label={t(pair.captionKey)}
-                  className={cn(
-                    'group block w-full text-left rounded',
-                    'focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2',
-                  )}
-                >
-                  <div className="grid grid-cols-2 aspect-[4/3] rounded overflow-hidden">
-                    <div className="relative">
-                      <span className="absolute top-1.5 left-1.5 z-10 bg-charcoal/70 text-white font-body text-xs px-1.5 py-0.5 rounded">
-                        {t('gallery.beforeLabel')}
-                      </span>
-                      <GalleryImage
-                        src={pair.beforeSrc}
-                        alt={beforeAlt}
-                        className="absolute inset-0"
-                      />
+        {/* Gallery grid */}
+        {pairs.length > 0 && (
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            initial="hidden"
+            animate="visible"
+            variants={stagger}
+          >
+            {pairs.map((pair, idx) => {
+              const serviceTitle = t(`services.${pair.serviceKey}.title`)
+              const beforeAlt = t('gallery.beforeAlt', { service: serviceTitle })
+              const afterAlt = t('gallery.afterAlt', { service: serviceTitle })
+              const caption = galleryCaption(pair, i18n.language)
+
+              return (
+                <motion.div key={pair.id} variants={fadeUp}>
+                  <button
+                    onClick={e => handleOpen(e, idx)}
+                    aria-label={caption}
+                    className={cn(
+                      'group block w-full text-left rounded',
+                      'focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2',
+                    )}
+                  >
+                    <div className="grid grid-cols-2 aspect-[4/3] rounded overflow-hidden">
+                      <div className="relative">
+                        <span className="absolute top-1.5 left-1.5 z-10 bg-charcoal/70 text-white font-body text-xs px-1.5 py-0.5 rounded">
+                          {t('gallery.beforeLabel')}
+                        </span>
+                        <GalleryImage
+                          src={pair.beforeUrl}
+                          alt={beforeAlt}
+                          className="absolute inset-0"
+                        />
+                      </div>
+                      <div className="relative border-l border-white/20">
+                        <span className="absolute top-1.5 left-1.5 z-10 bg-charcoal/70 text-white font-body text-xs px-1.5 py-0.5 rounded">
+                          {t('gallery.afterLabel')}
+                        </span>
+                        <GalleryImage
+                          src={pair.afterUrl}
+                          alt={afterAlt}
+                          className="absolute inset-0"
+                        />
+                      </div>
                     </div>
-                    <div className="relative border-l border-white/20">
-                      <span className="absolute top-1.5 left-1.5 z-10 bg-charcoal/70 text-white font-body text-xs px-1.5 py-0.5 rounded">
-                        {t('gallery.afterLabel')}
-                      </span>
-                      <GalleryImage
-                        src={pair.afterSrc}
-                        alt={afterAlt}
-                        className="absolute inset-0"
-                      />
-                    </div>
-                  </div>
-                  <p className="font-body text-sm text-text-muted mt-3 group-hover:text-charcoal transition-colors">
-                    {t(pair.captionKey)}
-                  </p>
-                </button>
-              </motion.div>
-            )
-          })}
-        </motion.div>
+                    <p className="font-body text-sm text-text-muted mt-3 group-hover:text-charcoal transition-colors">
+                      {caption}
+                    </p>
+                  </button>
+                </motion.div>
+              )
+            })}
+          </motion.div>
+        )}
 
         {/* Booking CTA */}
         <motion.div
@@ -130,10 +145,10 @@ export default function Gallery() {
       </div>
 
       <AnimatePresence>
-        {open && (
+        {open && pairs[activeIndex] && (
           <Lightbox
             key="lightbox"
-            pairs={GALLERY_PAIRS}
+            pairs={pairs}
             index={activeIndex}
             onClose={handleClose}
             onPrev={handlePrev}

@@ -48,6 +48,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | **HOTFIX-02** | Shift Board permission fix — `listOpenShifts` callable, `test:rules` fix, CI functions deploy, Node 22 runtime | M | P0 | ✅ Completed 2026-09-30 |
 | **P3-E30** | Business Email Setup — Zoho Mail inboxes + Resend domain/API key (app emails currently failing) | S | P0 | ⏸ Paused 2026-10-01 — waiting on human Zoho/Resend/CanSpace DNS setup; PR #26 (contact details) merged, remaining code in a follow-up PR. See [`projects/P3-E30.md`](projects/P3-E30.md) |
 | **P3-E31** | Home hero reorder (logo → serving statement → headline), hide gallery / team / reviews behind flags, FAQ payment methods fix | S | P1 | ✅ Completed 2026-10-04 — see [`reports/P3-E31-close-2026-10-04.md`](reports/P3-E31-close-2026-10-04.md) |
+| **P3-E32** | Before/after gallery managed from the admin page — phone upload, uniform photo fitting, publish/feature/reorder | M | P2 | 🔄 Code complete 2026-10-04 — Firestore and Storage rules deployed; waiting on the human's phone test on the PR preview before merge. See [`projects/P3-E32.md`](projects/P3-E32.md) |
 
 ---
 
