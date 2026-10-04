@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils/utils'
 import { logPhoneClicked } from '@/lib/firebase/analytics'
 import logoFooter from '@/assets/logo-footer-dark-120px.png'
-import { BUSINESS_PHONE_DISPLAY, BUSINESS_PHONE_HREF, BUSINESS_EMAIL } from '@/lib/config'
+import { BUSINESS_PHONE_DISPLAY, BUSINESS_PHONE_HREF, BUSINESS_EMAIL, SHOW_GALLERY, SHOW_REVIEWS } from '@/lib/config'
 
 const PHONE_NUMBER = BUSINESS_PHONE_DISPLAY
 const PHONE_HREF = BUSINESS_PHONE_HREF
@@ -32,8 +32,8 @@ export default function Footer() {
 
   const companyLinks = [
     { to: '/about', label: t('footer.aboutUs') },
-    { to: '/gallery', label: t('footer.gallery') },
-    { to: '/reviews', label: t('footer.reviews') },
+    ...(SHOW_GALLERY ? [{ to: '/gallery', label: t('footer.gallery') }] : []),
+    ...(SHOW_REVIEWS ? [{ to: '/reviews', label: t('footer.reviews') }] : []),
     { to: '/blog', label: t('nav.blog') },
     { to: '/careers', label: t('footer.careers') },
     { to: '/privacy', label: t('footer.privacy') },

@@ -1,6 +1,6 @@
 import type { TFunction } from 'i18next'
 import { STATIC_REVIEWS } from '@/lib/data/reviewsData'
-import { BUSINESS_PHONE_E164 } from '@/lib/config'
+import { BUSINESS_PHONE_E164, SHOW_REVIEWS } from '@/lib/config'
 
 // Types for JSON-LD schemas to ensure valid outputs
 export interface SchemaOrgObject {
@@ -70,13 +70,18 @@ export function getLocalBusinessSchema(t: TFunction): SchemaOrgObject {
       { '@type': 'AdministrativeArea', 'name': 'Long Sault, ON' },
       { '@type': 'AdministrativeArea', 'name': 'Morrisburg, ON' },
     ],
-    'aggregateRating': {
-      '@type': 'AggregateRating',
-      'ratingValue': 4.9,
-      'reviewCount': STATIC_REVIEWS.length,
-      'bestRating': 5,
-    },
-    'review': reviews,
+    // P3-E31: no rating or review markup while the reviews are hidden
+    ...(SHOW_REVIEWS
+      ? {
+          'aggregateRating': {
+            '@type': 'AggregateRating',
+            'ratingValue': 4.9,
+            'reviewCount': STATIC_REVIEWS.length,
+            'bestRating': 5,
+          },
+          'review': reviews,
+        }
+      : {}),
   }
 }
 

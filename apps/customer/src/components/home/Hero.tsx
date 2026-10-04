@@ -16,6 +16,25 @@ export default function Hero() {
           variants={stagger}
           className="relative z-10 flex flex-col items-center gap-6 w-full"
         >
+          {/* Hero logo first, then the serving statement, then the headline (P3-E31) */}
+          <motion.div
+            variants={fadeUp}
+            className="w-full max-w-[280px] md:max-w-[340px] my-2"
+          >
+            <img
+              src={logoHero}
+              alt="Fresh Nest Co."
+              className="w-full h-auto object-contain mx-auto"
+            />
+          </motion.div>
+
+          <motion.p
+            variants={fadeUp}
+            className="relative z-10 font-body text-xl font-bold text-charcoal max-w-xl leading-relaxed"
+          >
+            {t('hero.subhead')}
+          </motion.p>
+
           {/* Main title container with nest watermark behind it */}
           <div className="relative w-full py-4 flex items-center justify-center">
             <div className="absolute inset-0 pointer-events-none z-0 flex items-center justify-center overflow-visible">
@@ -41,26 +60,7 @@ export default function Hero() {
             </motion.h1>
           </div>
 
-          <motion.p
-            variants={fadeUp}
-            className="font-body text-xl font-bold text-charcoal max-w-xl leading-relaxed"
-          >
-            {t('hero.subhead')}
-          </motion.p>
-
-          {/* Hero logo under subtitle, above Book Now button */}
-          <motion.div
-            variants={fadeUp}
-            className="w-full max-w-[280px] md:max-w-[340px] my-2"
-          >
-            <img
-              src={logoHero}
-              alt="Fresh Nest Co."
-              className="w-full h-auto object-contain mx-auto"
-            />
-          </motion.div>
-
-          <motion.div variants={fadeUp} className="mt-2">
+          <motion.div variants={fadeUp} className="relative z-10 mt-2">
             <Link
               to="/booking"
               className="inline-flex items-center bg-slate-brand text-white font-body font-medium rounded px-8 py-4 min-h-[48px] hover:bg-slate-dark transition-colors duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2 focus:ring-offset-warm-white"

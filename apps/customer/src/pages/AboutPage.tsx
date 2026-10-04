@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import SEO from '@/components/seo/SEO'
 import MeetTheTeam from '@/components/home/MeetTheTeam'
+import { SHOW_TEAM } from '@/lib/config'
 import { fadeUp } from '@/lib/utils/animations'
 
 export default function AboutPage() {
@@ -143,7 +144,7 @@ export default function AboutPage() {
         </section>
 
         {/* Team Section */}
-        <MeetTheTeam />
+        {SHOW_TEAM && <MeetTheTeam />}
       </main>
     </>
   )
