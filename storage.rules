@@ -1,8 +1,7 @@
 rules_version = '2';
 
-// NOT YET DEPLOYED — the gallery block below awaits human approval (P3-E32).
-// Everything except the gallery block matches the rules live in the Firebase console
-// as of 2026-10-04 (released 2026-05-23): all access denied.
+// Gallery block approved by human and deployed 2026-10-04 (P3-E32).
+// Everything else is the rule that was live before it (released 2026-05-23): all access denied.
 service firebase.storage {
   match /b/{bucket}/o {
 
