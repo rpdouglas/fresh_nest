@@ -143,6 +143,23 @@ To view databases: [Firebase Console → Firestore](https://console.firebase.goo
 
 ---
 
+## Showing the Gallery, Team and Reviews Sections
+
+These three sections are hidden on the customer site until their content is ready (P3-E31).
+Each has a switch in `apps/customer/src/lib/config.ts`:
+
+| Switch | What it shows when set to `true` |
+|---|---|
+| `SHOW_GALLERY` | Before/after section on the home page, the footer Gallery link, and the `/gallery` page |
+| `SHOW_TEAM` | Meet the Team on the home page and the About page |
+| `SHOW_REVIEWS` | Reviews on the home page, the footer Reviews link, the `/reviews` page, the "4.9 / 5 Google Rating" trust bar item, and the rating shown to search engines |
+
+To show a section: change its switch from `false` to `true`, update the expected values in
+`apps/customer/src/lib/sectionFlags.test.tsx`, open a PR, and merge it (merging deploys).
+While a page is hidden, `/gallery` and `/reviews` send visitors to the home page.
+
+---
+
 ## Deploying Updates
 
 ### Automatic (Recommended)

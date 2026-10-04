@@ -9,6 +9,7 @@ import GalleryPreview from '@/components/home/GalleryPreview'
 import HowItWorks from '@/components/home/HowItWorks'
 import MeetTheTeam from '@/components/home/MeetTheTeam'
 import Reviews from '@/components/home/Reviews'
+import { SHOW_GALLERY, SHOW_TEAM, SHOW_REVIEWS } from '@/lib/config'
 
 export default function Home() {
   const { t } = useTranslation()
@@ -23,10 +24,10 @@ export default function Home() {
       <QuoteCalculator />
       <ServicesGrid />
       <RecurringCTA />
-      <GalleryPreview />
+      {SHOW_GALLERY && <GalleryPreview />}
       <HowItWorks />
-      <MeetTheTeam />
-      <Reviews />
+      {SHOW_TEAM && <MeetTheTeam />}
+      {SHOW_REVIEWS && <Reviews />}
     </>
   )
 }

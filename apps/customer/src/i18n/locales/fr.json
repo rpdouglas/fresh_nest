@@ -402,7 +402,7 @@
     },
     "item10": {
       "q": "Quels modes de paiement acceptez-vous ?",
-      "a": "Nous acceptons le virement Interac, les principales cartes de crédit et l'argent comptant. Le paiement est dû le jour du service, sauf si vous avez un forfait récurrent."
+      "a": "Nous acceptons l'argent comptant et le virement Interac. Le paiement est dû le jour du service, sauf si vous avez un forfait récurrent."
     }
   },
   "welcome": "Bienvenue chez Fresh Nest Co.",

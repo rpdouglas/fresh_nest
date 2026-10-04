@@ -402,7 +402,7 @@
     },
     "item10": {
       "q": "What payment methods do you accept?",
-      "a": "We accept Interac e-Transfer, major credit cards, and cash. Payment is due on the day of service unless you have a recurring plan."
+      "a": "We accept cash and Interac e-Transfer. Payment is due on the day of service unless you have a recurring plan."
     }
   },
   "welcome": "Welcome to Fresh Nest Co.",

@@ -8,6 +8,7 @@ import { CustomerProtectedRoute } from '@/components/layout/CustomerProtectedRou
 import { CustomerAuthProvider } from '@/components/layout/CustomerAuthContext'
 import PageLoader from '@/components/common/PageLoader'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
+import { SHOW_GALLERY, SHOW_REVIEWS } from '@/lib/config'
 
 const Home                 = lazy(() => import('@/pages/Home'))
 const Gallery              = lazy(() => import('@/pages/Gallery'))
@@ -85,11 +86,11 @@ const router = createBrowserRouter([
       // ── Marketing & info pages ──
       { path: 'pricing',      element: <Navigate to="/booking" replace /> },
       { path: 'faq',          element: <FaqPage /> },
-      { path: 'gallery',      element: <Gallery /> },
+      { path: 'gallery',      element: SHOW_GALLERY ? <Gallery /> : <Navigate to="/" replace /> },
       { path: 'booking',      element: <BookingPage /> },
       { path: 'thank-you',    element: <ThankYouPage /> },
       { path: 'about',        element: <AboutPage /> },
-      { path: 'reviews',      element: <ReviewsPage /> },
+      { path: 'reviews',      element: SHOW_REVIEWS ? <ReviewsPage /> : <Navigate to="/" replace /> },
       { path: 'leave-review', element: <LeaveReviewPage /> },
       { path: 'privacy',      element: <PrivacyPage /> },
       { path: 'careers',      element: <CareersPage /> },

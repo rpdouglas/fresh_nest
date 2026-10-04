@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { fadeUp, stagger } from '@/lib/utils/animations'
+import { SHOW_REVIEWS } from '@/lib/config'
 
 function CheckIcon() {
   return (
@@ -55,7 +56,7 @@ export default function TrustBar() {
     { key: 'background', labelKey: 'trustBar.background', icon: 'check' },
     { key: 'eco',        labelKey: 'trustBar.eco',        icon: 'check', link: '/services' },
     { key: 'guarantee',  labelKey: 'trustBar.guarantee',  icon: 'check' },
-    { key: 'rating',     labelKey: 'trustBar.rating',     icon: 'star'  },
+    ...(SHOW_REVIEWS ? [{ key: 'rating', labelKey: 'trustBar.rating', icon: 'star' } as const] : []),
     { key: 'bilingual',  labelKey: 'trustBar.bilingual',  icon: 'check' },
   ]
 
