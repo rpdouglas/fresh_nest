@@ -300,10 +300,10 @@ export const FsmLayout: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center font-body text-sm text-text-muted flex flex-col sm:flex-row items-center justify-between gap-4">
           <p>© {new Date().getFullYear()} Fresh Nest Co. {t('fsm.portal')}</p>
           <a 
-            href="tel:+16135551234" 
+            href="tel:+16138618812" 
             className="min-h-[48px] px-4 flex items-center text-base text-slate-pale hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-slate-brand rounded"
           >
-            (613) 555-1234
+            (613) 861-8812
           </a>
         </div>
       </footer>

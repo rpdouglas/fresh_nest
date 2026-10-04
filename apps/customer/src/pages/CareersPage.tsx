@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import SEO from '@/components/seo/SEO'
 import { fadeUp, stagger } from '@/lib/utils/animations'
+import { BUSINESS_EMAIL } from '@/lib/config'
 
 export default function CareersPage() {
   const { t } = useTranslation()
@@ -157,7 +158,7 @@ export default function CareersPage() {
                 {t('careersPage.apply.content')}
               </p>
               <a
-                href={`mailto:hello@freshnestco.ca?subject=${encodeURIComponent(
+                href={`mailto:${BUSINESS_EMAIL}?subject=${encodeURIComponent(
                   t('careersPage.apply.emailSubject')
                 )}`}
                 className="bg-slate-brand text-white font-body font-medium rounded px-8 py-3 min-h-[48px] inline-flex items-center hover:bg-slate-dark transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand"

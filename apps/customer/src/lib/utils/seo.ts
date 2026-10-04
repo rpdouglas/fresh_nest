@@ -1,5 +1,6 @@
 import type { TFunction } from 'i18next'
 import { STATIC_REVIEWS } from '@/lib/data/reviewsData'
+import { BUSINESS_PHONE_E164 } from '@/lib/config'
 
 // Types for JSON-LD schemas to ensure valid outputs
 export interface SchemaOrgObject {
@@ -42,7 +43,7 @@ export function getLocalBusinessSchema(t: TFunction): SchemaOrgObject {
     'url': BASE_URL,
     'logo': `${BASE_URL}/assets/logo-navbar-160px@2x-CvrLo3Hv.png`, // Matches resolved assets
     'image': `${BASE_URL}/assets/hero-CLDdwZDr.png`,
-    'telephone': '+1-613-935-3555',
+    'telephone': BUSINESS_PHONE_E164,
     'address': {
       '@type': 'PostalAddress',
       'addressLocality': 'Cornwall',
@@ -130,7 +131,7 @@ export function getServiceSchema(
       '@id': `${BASE_URL}/#organization`,
       'name': 'Fresh Nest Co.',
       'url': BASE_URL,
-      'telephone': '+1-613-935-3555',
+      'telephone': BUSINESS_PHONE_E164,
     },
     'areaServed': [
       { '@type': 'AdministrativeArea', 'name': 'Cornwall, ON' },

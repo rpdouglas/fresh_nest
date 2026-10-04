@@ -218,8 +218,8 @@ All inputs must have a visible `<label>` — never placeholder-only (WCAG 2.1 AA
 
 ```html
 <!-- In nav and footer — must be a tappable tel: link -->
-<a href="tel:+16135551234" class="font-body text-base text-slate-brand hover:text-slate-dark">
-  (613) 555-1234
+<a href="tel:+16138618812" class="font-body text-base text-slate-brand hover:text-slate-dark">
+  (613) 861-8812
 </a>
 ```
 
