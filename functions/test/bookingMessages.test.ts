@@ -5,6 +5,8 @@ import {
   ownerSubject,
   ownerText,
   isQuoteRequest,
+  isRenewal,
+  RENEWAL_CREATED_BY,
   type BookingData,
 } from '../src/emailTemplates'
 import { confirmationSms } from '../src/smsTemplates'
@@ -74,6 +76,19 @@ describe('owner notification', () => {
     const b = booking()
     expect(ownerSubject(b)).toMatch(/^New quote request/)
     expect(ownerText(b, 'abc123')).toMatch(/follow up with a quote/)
+  })
+
+  it('P12 Lauren: a recurring renewal asks for confirmation, not a quote', () => {
+    const b = booking({ createdBy: RENEWAL_CREATED_BY, referralCode: 'DIANE-AB12' })
+    expect(isRenewal(b)).toBe(true)
+    expect(isQuoteRequest(b)).toBe(false)
+    expect(ownerSubject(b)).toMatch(/^Recurring renewal/)
+    expect(ownerText(b, 'abc123')).toMatch(/confirm it in the admin panel/)
+    expect(ownerText(b, 'abc123')).not.toMatch(/quote/)
+  })
+
+  it('admin phone-in bookings are not renewals', () => {
+    expect(isRenewal(booking({ createdBy: 'lauren@freshnestco.ca' }))).toBe(false)
   })
 })
 

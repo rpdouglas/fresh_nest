@@ -24,6 +24,18 @@ export interface BookingData {
   referredBy?: string | null
   assignedTo?: string | null
   status?: string
+  createdBy?: string
+}
+
+/** `createdBy` value stamped on bookings created by the recurring-renewal cron. */
+export const RENEWAL_CREATED_BY = 'system:recurring-renewal'
+
+/**
+ * A renewal is the next visit of an already agreed recurring booking — not a new quote request.
+ * It gets no client quote-request messages and no new referral code; the owner is asked to confirm it.
+ */
+export function isRenewal(b: Pick<BookingData, 'createdBy'>): boolean {
+  return b.createdBy === RENEWAL_CREATED_BY
 }
 
 /**
@@ -31,8 +43,13 @@ export interface BookingData {
  * so client/owner messages say "request received, quote to follow". Admin phone-in bookings
  * created as 'confirmed' keep the confirmed wording.
  */
-export function isQuoteRequest(b: Pick<BookingData, 'status'>): boolean {
-  return b.status !== 'confirmed'
+export function isQuoteRequest(b: Pick<BookingData, 'status' | 'createdBy'>): boolean {
+  return b.status !== 'confirmed' && !isRenewal(b)
+}
+
+function ownerKind(b: BookingData): string {
+  if (isRenewal(b)) return 'Recurring renewal'
+  return isQuoteRequest(b) ? 'New quote request' : 'New booking'
 }
 
 function esc(value: string | null | undefined): string {
@@ -79,16 +96,17 @@ const FREQ_FR: Record<string, string> = {
 
 export function ownerSubject(b: BookingData): string {
   const svc = SERVICE_EN[b.serviceType] ?? b.serviceType
-  const kind = isQuoteRequest(b) ? 'New quote request' : 'New booking'
-  return `${kind} — ${b.firstName} ${b.lastName} · ${svc} · ${b.preferredDate}`
+  return `${ownerKind(b)} — ${b.firstName} ${b.lastName} · ${svc} · ${b.preferredDate}`
 }
 
 export function ownerText(b: BookingData, docId: string): string {
   const addOns = (b.addOns ?? []).join(', ') || '—'
   return [
-    isQuoteRequest(b)
-      ? 'New quote request received — follow up with a quote within 24 hours. Fresh Nest Co.'
-      : 'New booking received — Fresh Nest Co.',
+    isRenewal(b)
+      ? 'Recurring renewal created — confirm it in the admin panel to schedule the visit. Fresh Nest Co.'
+      : isQuoteRequest(b)
+        ? 'New quote request received — follow up with a quote within 24 hours. Fresh Nest Co.'
+        : 'New booking received — Fresh Nest Co.',
     '',
     `Name:               ${b.firstName} ${b.lastName}`,
     `Email:              ${b.email}`,

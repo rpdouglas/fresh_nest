@@ -159,6 +159,12 @@ export async function assignCleanerTransaction({
   changedByEmail: string
 }): Promise<void> {
   await runTransaction(db, async (transaction) => {
+    // Firestore transactions require every read to happen before any write.
+    const newStaffRef = cleanerId ? doc(staffCollection(db), cleanerId) : null
+    const oldStaffRef = oldCleanerId ? doc(staffCollection(db), oldCleanerId) : null
+    const newStaffSnap = newStaffRef ? await transaction.get(newStaffRef) : null
+    const oldStaffSnap = oldStaffRef ? await transaction.get(oldStaffRef) : null
+
     // 1. Booking update
     const bookingRef = doc(bookingsCollection(db), bookingId)
     transaction.update(bookingRef, { assignedTo: cleanerName })
@@ -171,31 +177,21 @@ export async function assignCleanerTransaction({
         status: cleanerId ? 'assigned' : 'unassigned',
       })
     }
- 
-    // 3. Increment new cleaner's earnings
-    if (cleanerId) {
-      const newStaffRef = doc(staffCollection(db), cleanerId)
-      const newStaffSnap = await transaction.get(newStaffRef)
-      if (newStaffSnap.exists()) {
-        const staffData = newStaffSnap.data()
-        const financials = staffData?.financials || {}
-        const current = financials.currentMonthEarnings ?? 0
+
+    // 3 + 4. Move the shift's earnings from the old cleaner to the new one
+    // (no-op when reassigned to the same cleaner).
+    const earningsOf = (snap: typeof newStaffSnap): number =>
+      snap?.exists() ? (snap.data()?.financials?.currentMonthEarnings ?? 0) : 0
+
+    if (cleanerId !== oldCleanerId) {
+      if (newStaffRef && newStaffSnap?.exists()) {
         transaction.update(newStaffRef, {
-          'financials.currentMonthEarnings': current + estimatedPay,
+          'financials.currentMonthEarnings': earningsOf(newStaffSnap) + estimatedPay,
         })
       }
-    }
- 
-    // 4. Decrement old cleaner's earnings
-    if (oldCleanerId) {
-      const oldStaffRef = doc(staffCollection(db), oldCleanerId)
-      const oldStaffSnap = await transaction.get(oldStaffRef)
-      if (oldStaffSnap.exists()) {
-        const staffData = oldStaffSnap.data()
-        const financials = staffData?.financials || {}
-        const current = financials.currentMonthEarnings ?? 0
+      if (oldStaffRef && oldStaffSnap?.exists()) {
         transaction.update(oldStaffRef, {
-          'financials.currentMonthEarnings': Math.max(0, current - estimatedPay),
+          'financials.currentMonthEarnings': Math.max(0, earningsOf(oldStaffSnap) - estimatedPay),
         })
       }
     }

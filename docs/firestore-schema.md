@@ -36,13 +36,13 @@ Stores residential, commercial, and Airbnb cleaning reservations.
 | `marketingConsent` | `boolean` | ❌ | CASL: `true` if client opted in to marketing emails. Omitted entirely (not `null`) when false. |
 | `consentTimestamp` | `Timestamp` | ❌ | CASL: Server timestamp of marketing consent. Present only when `marketingConsent === true`. |
 | `consentMethod` | `string` | ❌ | CASL: `'booking-form-v2'`. Present only when `marketingConsent === true`. |
-| `referralCode` | `string \| null` | ❌ | The deterministic referral code generated for this client (e.g., `FIRSTNAME-1234`). |
+| `referralCode` | `string \| null` | ❌ | The deterministic referral code generated for this client (e.g., `FIRSTNAME-1234`). Copied onto recurring renewals. |
 | `referredBy` | `string \| null` | ❌ | The referral code applied during booking creation to receive the discount. |
 | `stripePaymentIntentId` | `string \| null` | ❌ | Stripe PaymentIntent identifier for holding/releasing funds |
 | `stripeChargeId` | `string \| null` | ❌ | Stripe Charge identifier (populated on capture) |
 | `stripeChargeStatus` | `string \| null` | ❌ | Stripe payment status hold/captured/released |
 | `jobId` | `string \| null` | ❌ | Associated job document ID backlink once booking is confirmed |
-| `createdBy` | `string` | ❌ | Admin email that created the booking (populated for phone/walk-in bookings only) |
+| `createdBy` | `string` | ❌ | Admin email that created the booking (phone/walk-in bookings), or `'system:recurring-renewal'` for bookings created by the recurring-renewal cron. Absent on public quote requests. |
 
 ---
 
