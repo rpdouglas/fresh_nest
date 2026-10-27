@@ -32,7 +32,8 @@ async function resetScroll(page: Page) {
 
 async function openAdmin(page: Page, { acceptCookies = true, query = '' } = {}) {
   // Web fonts are blocked so screenshots don't depend on the network; layout still uses the fallbacks.
-  await page.route(/fonts\.(googleapis|gstatic)\.com/, (route) => route.abort())
+  const fontHosts = new Set(['fonts.googleapis.com', 'fonts.gstatic.com'])
+  await page.route((url) => fontHosts.has(url.hostname), (route) => route.abort())
   await page.clock.setFixedTime(FIXED_NOW)
   if (acceptCookies) {
     await page.addInitScript(() => window.localStorage.setItem('freshnest_consent', 'denied'))
