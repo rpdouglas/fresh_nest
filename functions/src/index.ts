@@ -12,6 +12,7 @@ export { claimJob } from './callable/job'
 export { listOpenShifts } from './callable/shifts'
 export { getAnalyticsKPIs } from './callable/analytics'
 export { onStaffRegistered, migrateComplianceRecords, resendWelcomeEmail } from './callable/staff'
+export { updatePolicySettings } from './callable/settings'
 
 // Domain scheduled cron re-exports
 export { onDailyReminderCheck } from './scheduled/reminders'

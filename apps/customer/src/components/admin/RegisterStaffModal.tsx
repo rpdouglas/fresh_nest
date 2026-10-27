@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
+import { DEFAULT_POLICY_SETTINGS, type PolicySettingsValues } from '@freshnest/shared'
 import { cn } from '@/lib/utils/utils'
 import { RegisterStaffInput } from './hooks/useStaff'
 import { AdminDialog } from './ui/AdminDialog'
@@ -30,12 +31,14 @@ interface RegisterStaffModalProps {
   isOpen: boolean
   onClose: () => void
   onRegister: (data: RegisterStaffInput) => Promise<void>
+  policy?: PolicySettingsValues
 }
 
 export const RegisterStaffModal: React.FC<RegisterStaffModalProps> = ({
   isOpen,
   onClose,
   onRegister,
+  policy = DEFAULT_POLICY_SETTINGS,
 }) => {
   const { t } = useTranslation()
   const [submitError, setSubmitError] = useState<string | null>(null)
@@ -44,6 +47,7 @@ export const RegisterStaffModal: React.FC<RegisterStaffModalProps> = ({
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
     reset,
   } = useForm<RegisterStaffFormValues>({
@@ -57,7 +61,7 @@ export const RegisterStaffModal: React.FC<RegisterStaffModalProps> = ({
       status: 'onboarding',
       language: 'en',
       transportMode: 'personal_vehicle',
-      transitBufferMinutes: 60,
+      transitBufferMinutes: policy.defaultVehicleBufferMinutes,
       monthlyEarningsLimit: '',
     },
   })
@@ -301,13 +305,25 @@ export const RegisterStaffModal: React.FC<RegisterStaffModalProps> = ({
 
           {/* Monthly Earnings Limit */}
           <div className="flex flex-col gap-1">
-            <label htmlFor="monthlyEarningsLimit" className="font-body text-base text-charcoal font-medium">
-              {t('admin.staff.modal.earningsLimit')}
-            </label>
+            <div className="flex items-center justify-between gap-2">
+              <label htmlFor="monthlyEarningsLimit" className="font-body text-base text-charcoal font-medium">
+                {t('admin.staff.modal.earningsLimit')}
+              </label>
+              <button
+                type="button"
+                onClick={() => setValue('monthlyEarningsLimit', String(policy.defaultOdspMonthlyLimit), { shouldValidate: true })}
+                className="font-body text-base text-slate-brand underline hover:text-slate-dark focus:outline-none focus:ring-2 focus:ring-slate-brand rounded px-1"
+              >
+                {t('admin.staff.modal.applyOdspDefault', {
+                  limit: policy.defaultOdspMonthlyLimit,
+                  defaultValue: `Apply ODSP default ($${policy.defaultOdspMonthlyLimit})`,
+                })}
+              </button>
+            </div>
             <input
               id="monthlyEarningsLimit"
               type="number"
-              placeholder="e.g. 1000"
+              placeholder={`e.g. ${policy.defaultOdspMonthlyLimit}`}
               {...register('monthlyEarningsLimit')}
               className={cn(
                 'min-h-[48px] px-4 py-2 border border-sand rounded font-body text-base text-charcoal bg-transparent',

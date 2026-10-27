@@ -770,6 +770,7 @@
         "auditLogs": "Audit Logs",
         "reviews": "Reviews Moderation",
         "gallery": "Gallery",
+        "settings": "Settings & Policies",
         "team": "Team & roles"
       },
       "analytics": {
@@ -848,6 +849,7 @@
         "transport": "Default Transportation Mode",
         "buffer": "Transit Buffer (Minutes)",
         "earningsLimit": "Monthly Earnings Limit (Optional)",
+        "applyOdspDefault": "Apply ODSP default ({{limit}} CAD)",
         "roleOption": {
           "cleaner": "Cleaner",
           "lead": "Lead Cleaner",
@@ -1167,6 +1169,154 @@
         "email": "Enter a valid email address.",
         "noAccount": "No account uses that email yet. Ask them to sign in to the site once, then try again.",
         "save": "Couldn't save the change: {{reason}}"
+      }
+    },
+    "settings": {
+      "title": "Operational Settings & Policies",
+      "subtitle": "Configure company-wide scheduling buffers, earnings thresholds, cancellation windows, and compliance rules. Every save creates an immutable version snapshot.",
+      "loading": "Loading operational settings…",
+      "versionBadge": "Version v{{version}}",
+      "defaultBadge": "Default Baseline (v0)",
+      "lastUpdated": "Updated by {{by}} on {{at}}",
+      "readOnlyBanner": "Read-only view: Managers can inspect all operational settings and version history. Only an Owner can edit and save policy changes.",
+      "reasonLabel": "Reason for policy update (optional)",
+      "reasonPlaceholder": "e.g. Increased winter travel buffer for Cornwall & Akwesasne routes",
+      "resetButton": "Reset Changes",
+      "saveButton": "Save Policy Settings",
+      "savingButton": "Saving…",
+      "saveSuccess": "Saved operational policy settings (Version v{{version}}).",
+      "saveError": "Could not save operational policy settings. Please try again.",
+      "units": {
+        "minutes": "minutes",
+        "hours": "hours",
+        "days": "days",
+        "weeks": "weeks",
+        "years": "years",
+        "meters": "meters",
+        "cad": "CAD",
+        "staff": "staff"
+      },
+      "sections": {
+        "scheduling": {
+          "title": "1. Scheduling & Travel Buffers",
+          "description": "Default travel buffers and scheduling horizon rules used across Dispatch Board, Shift Board, and job claiming."
+        },
+        "earnings": {
+          "title": "2. Staff Earnings, Time & Attendance",
+          "description": "Default ODSP earnings cap, Safe-to-Earn warning threshold, time-off notice rules, and GPS check-in tolerances."
+        },
+        "client": {
+          "title": "3. Client Policies & Fees",
+          "description": "Notice windows for client cancellations, complaint reporting window, and late cancellation or lockout fee thresholds."
+        },
+        "compliance": {
+          "title": "4. Compliance, Retention & Emergency Contacts",
+          "description": "Photo and agreement retention periods and primary/backup emergency dispatch contacts."
+        }
+      },
+      "fields": {
+        "defaultVehicleBufferMinutes": {
+          "label": "Default Vehicle Travel Buffer",
+          "help": "Minimum travel gap between shifts in different postal areas when a cleaner drives a personal vehicle."
+        },
+        "defaultTransitBufferMinutes": {
+          "label": "Default Public Transit Buffer",
+          "help": "Minimum travel gap between shifts in different postal areas when a cleaner uses public transit."
+        },
+        "baseDriveBufferMinutes": {
+          "label": "Minimum Same-Area Buffer",
+          "help": "Baseline turnover buffer between back-to-back shifts."
+        },
+        "maxHoursPerDay": {
+          "label": "Maximum Scheduled Hours per Day",
+          "help": "Daily scheduled hours ceiling per cleaner before overtime/fatigue warning."
+        },
+        "rollingScheduleWeeks": {
+          "label": "Rolling Schedule Horizon",
+          "help": "Number of weeks ahead generated for recurring bookings."
+        },
+        "scheduleFreezeDays": {
+          "label": "Schedule Freeze Window",
+          "help": "Days before a shift when recurring schedule slots lock against automatic changes."
+        },
+        "undoWindowMinutes": {
+          "label": "Shift Claim Undo Window",
+          "help": "Minutes after claiming an open shift during which a cleaner can self-unclaim without penalty."
+        },
+        "swapNoticeHours": {
+          "label": "Minimum Shift Swap Notice",
+          "help": "Hours before shift start required for a cleaner to request a peer shift swap."
+        },
+        "defaultOdspMonthlyLimit": {
+          "label": "Default ODSP Monthly Earnings Cap",
+          "help": "Pre-filled monthly net earnings cap when onboarding a staff member on ODSP."
+        },
+        "earningsCautionThreshold": {
+          "label": "Safe-to-Earn Caution Threshold",
+          "help": "Remaining monthly headroom at which the Safe-to-Earn bar switches from green to amber."
+        },
+        "vacationNoticeDays": {
+          "label": "Vacation Request Notice",
+          "help": "Minimum advance notice required for planned vacation or time-off requests."
+        },
+        "maxConcurrentOff": {
+          "label": "Maximum Concurrent Staff Off",
+          "help": "Maximum number of active cleaners permitted on approved time off on the same date."
+        },
+        "checkInGeofenceMeters": {
+          "label": "GPS Check-In Geofence Radius",
+          "help": "Allowed distance from the client address when a cleaner checks in on the mobile app."
+        },
+        "timesheetVarianceMinutes": {
+          "label": "Timesheet Variance Flag Threshold",
+          "help": "Difference between scheduled duration and actual check-in/out duration that flags a timesheet for review."
+        },
+        "standardCancelWindowHours": {
+          "label": "Standard & Airbnb Cancellation Window",
+          "help": "Minimum notice before a Standard or Airbnb clean to cancel or reschedule without a late fee."
+        },
+        "deepCancelWindowHours": {
+          "label": "Deep & Specialty Cancellation Window",
+          "help": "Minimum notice before a Deep, Move-In/Out, Post-Construction, or Commercial clean."
+        },
+        "complaintWindowHours": {
+          "label": "Service Quality Re-Clean Window",
+          "help": "Hours after job completion within which a client must report a missed item for a complimentary re-clean."
+        },
+        "lateCancellationFeeDollars": {
+          "label": "Late Cancellation Fee",
+          "help": "Flat fee applied when a client cancels inside the required notice window."
+        },
+        "lockoutFeeDollars": {
+          "label": "Client Lockout Fee",
+          "help": "Fee applied when a cleaner arrives on site and cannot gain entry within the waiting window."
+        },
+        "photoRetentionDays": {
+          "label": "Job Verification Photo Retention",
+          "help": "Days before internal job verification photos are eligible for archival cleanup."
+        },
+        "agreementRetentionYears": {
+          "label": "Signed Agreement & Tax Record Retention",
+          "help": "Years that signed subcontractor agreements and tax/compliance records are retained."
+        },
+        "emergencyPrimaryPhone": {
+          "label": "Primary Emergency Dispatch Phone",
+          "help": "Primary phone number displayed to staff for urgent on-site safety or access issues."
+        },
+        "emergencyBackupName": {
+          "label": "Backup Emergency Contact Name",
+          "help": "Name of the secondary office contact when the primary dispatch line is unavailable."
+        },
+        "emergencyBackupPhone": {
+          "label": "Backup Emergency Contact Phone",
+          "help": "Phone number for the secondary emergency contact."
+        }
+      },
+      "history": {
+        "title": "Policy Version History",
+        "subtitle": "Immutable audit trail of every policy update, who made it, when it took effect, and which fields changed.",
+        "empty": "No policy versions have been saved yet. Saving above will create Version v1.",
+        "noFieldChanges": "Baseline snapshot recorded (no field values changed from defaults)."
       }
     }
   },

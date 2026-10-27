@@ -6,6 +6,7 @@ import { doc, getDoc } from 'firebase/firestore'
 import { jobsCollection } from '@freshnest/shared'
 import { db, auth } from '@/lib/firebase/firebase'
 import { useStaff } from './hooks/useStaff'
+import { usePolicySettings } from './hooks/usePolicySettings'
 import { assignCleanerTransaction } from '@/lib/firebase/firestore'
 import { OverrideModal } from './OverrideModal'
 import { ConfirmDialog } from './ui/ConfirmDialog'
@@ -35,6 +36,7 @@ export function BookingDetailPanel({
   const { t, i18n } = useTranslation()
   const queryClient = useQueryClient()
   const { staffList } = useStaff(true)
+  const { policy } = usePolicySettings(true)
 
   const [job, setJob] = useState<Job | null>(null)
   const [jobVersion, setJobVersion] = useState(0)
@@ -136,6 +138,7 @@ export function BookingDetailPanel({
       booking: b,
       job,
       estimatedPay: estPay,
+      policy,
       t,
     })
 

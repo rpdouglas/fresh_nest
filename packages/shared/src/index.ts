@@ -10,6 +10,7 @@ export * from './types/common'
 export * from './roles'
 export * from './auth/waitForRoleClaim'
 export * from './domain/scheduling'
+export * from './domain/policy'
 
 /**
  * Utility to merge Tailwind classes using clsx and tailwind-merge.

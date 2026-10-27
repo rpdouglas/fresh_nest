@@ -155,6 +155,18 @@ The **Team & roles** tab lists everyone with office access and lets an Owner cha
 - **After any change,** the person needs to **sign out and sign in again** before the new access applies.
 - Every change is recorded in **Audit Logs**: who made it, when, and the old and new role.
 
+## Settings & Policies Tab
+
+The **Settings & Policies** tab stores company-wide operational rules in one versioned record (`settings/policy`) so you can adjust buffers, thresholds, and notice windows without waiting for a software release.
+
+- **Who can view and edit:** **Owners** can edit and save policy settings. **Managers** can open the tab and inspect all current values and the **Policy Version History** in read-only mode.
+- **Four policy sections:**
+  1. **Scheduling & Travel Buffers:** Default travel buffers for personal vehicles (`30` min) and public transit (`60` min), minimum same-area buffer (`10` min), daily scheduled hours ceiling (`10` h), rolling schedule horizon (`8` weeks), schedule freeze window (`7` days), shift-claim undo window (`15` min), and swap notice (`12` h). Changing the default vehicle or transit buffer immediately updates conflict checks on the **Dispatch Board**, **Booking Detail Panel**, **Shift Board**, and **Claim Job**.
+  2. **Staff Earnings, Time & Attendance:** Default ODSP monthly earnings cap (`$1,000` CAD, available as a one-click preset when registering new staff), Safe-to-Earn amber caution threshold (`$100` CAD, used live by the staff profile earnings gauge), vacation notice (`14` days), max concurrent staff off (`2`), GPS check-in radius (`250` m), and timesheet variance threshold (`15` min).
+  3. **Client Policies & Fees:** Standard/Airbnb cancellation window (`24` h), Deep/Specialty cancellation window (`48` h), service quality re-clean report window (`24` h), late cancellation fee, and client lockout fee.
+  4. **Compliance, Retention & Emergency Contacts:** Job verification photo retention (`90` days), signed agreement & tax record retention (`7` years), primary emergency dispatch phone (`(613) 861-8812`), and backup emergency contact name and phone.
+- **Version History & Audit Trail:** Every save increments the policy version (`v1`, `v2`, `v3`…), records an immutable snapshot and field-by-field diff in **Policy Version History** at the bottom of the tab, and writes an entry to **Audit Logs** (`policy_change`).
+
 ## Analytics & Metrics Tab
 
 The **Analytics & Metrics** tab contains two sub-tabs to segment marketing/sales performance from operations:

@@ -1,7 +1,9 @@
 import {
   collection,
   CollectionReference,
+  doc,
   DocumentData,
+  DocumentReference,
   Firestore,
   FirestoreDataConverter,
   QueryDocumentSnapshot,
@@ -12,6 +14,11 @@ import type { Booking, Review } from '../types/booking'
 import type { Job, JobPhoto, ChecklistCompletion } from '../types/job'
 import type { Staff, TermsAcceptance } from '../types/staff'
 import type { ChecklistTemplate, PayRate, AuditEntry, GalleryPair } from '../types/common'
+import {
+  normalizePolicySettings,
+  type PolicySettings,
+  type PolicyHistoryEntry,
+} from '../domain/policy'
 
 // Helper to convert dynamic values to Date
 export function toDate(val: any): Date {
@@ -178,3 +185,30 @@ export const auditLogCollection = (db: Firestore): CollectionReference<AuditEntr
 
 export const galleryPairsCollection = (db: Firestore): CollectionReference<GalleryPair> =>
   collection(db, 'galleryPairs').withConverter(galleryPairConverter)
+
+// PolicySettings Converter (P3-E36 / W0-2)
+export const policySettingsConverter = createConverter<PolicySettings>((data, id) => ({
+  ...normalizePolicySettings(data),
+  id,
+  version: typeof data.version === 'number' ? data.version : 1,
+  updatedAt: toDate(data.updatedAt),
+  updatedBy: typeof data.updatedBy === 'string' ? data.updatedBy : 'system',
+  lastChangeReason: typeof data.lastChangeReason === 'string' ? data.lastChangeReason : null,
+}))
+
+// PolicyHistoryEntry Converter (P3-E36 / W0-2)
+export const policyHistoryConverter = createConverter<PolicyHistoryEntry>((data, id) => ({
+  id,
+  version: typeof data.version === 'number' ? data.version : Number(id) || 1,
+  changedAt: toDate(data.changedAt),
+  changedBy: typeof data.changedBy === 'string' ? data.changedBy : 'system',
+  reason: typeof data.reason === 'string' ? data.reason : null,
+  changes: Array.isArray(data.changes) ? data.changes : [],
+  snapshot: normalizePolicySettings(data.snapshot),
+}))
+
+export const policySettingsDoc = (db: Firestore): DocumentReference<PolicySettings> =>
+  doc(db, 'settings', 'policy').withConverter(policySettingsConverter)
+
+export const policyHistoryCollection = (db: Firestore): CollectionReference<PolicyHistoryEntry> =>
+  collection(db, 'settings', 'policy', 'history').withConverter(policyHistoryConverter)

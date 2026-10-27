@@ -1,7 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { doc, updateDoc } from 'firebase/firestore'
-import { staffCollection, cn } from '@freshnest/shared'
+import { doc, onSnapshot, updateDoc } from 'firebase/firestore'
+import {
+  DEFAULT_POLICY_SETTINGS,
+  policySettingsDoc,
+  staffCollection,
+  cn,
+} from '@freshnest/shared'
 import { db } from '../lib/firebase/firebase'
 import { useStaffAuth } from '../hooks/useStaffAuth'
 import type { TransportMode, BlockedWindow } from '../types'
@@ -9,6 +14,30 @@ import type { TransportMode, BlockedWindow } from '../types'
 export const ProfilePage: React.FC = () => {
   const { t } = useTranslation()
   const { staffProfile } = useStaffAuth()
+  const [cautionThreshold, setCautionThreshold] = useState<number>(
+    DEFAULT_POLICY_SETTINGS.earningsCautionThreshold,
+  )
+
+  useEffect(() => {
+    if (!staffProfile || typeof onSnapshot !== 'function') return
+    try {
+      const ref = policySettingsDoc(db)
+      const unsub = onSnapshot(
+        ref,
+        (snap) => {
+          if (snap.exists()) {
+            setCautionThreshold(snap.data().earningsCautionThreshold)
+          }
+        },
+        () => {
+          // Ignore and keep DEFAULT_POLICY_SETTINGS.earningsCautionThreshold
+        },
+      )
+      return () => unsub?.()
+    } catch {
+      return undefined
+    }
+  }, [staffProfile])
 
   // Profile fields state
   const [transportMode, setTransportMode] = useState<TransportMode>(
@@ -145,12 +174,12 @@ export const ProfilePage: React.FC = () => {
 
   if (isCapConfigured && limitValue) {
     percentage = Math.min((currentEarnings / limitValue) * 100, 100)
-    // Carla (P7) cap warning rules:
-    // Amber/Caution: within $100 of limit or 75%-90%. Red: > 90% or exceeded.
+    // Carla (P7) cap warning rules (P3-E36 / W0-2: cautionThreshold comes from settings/policy):
+    // Amber/Caution: within $cautionThreshold of limit or 75%-90%. Red: > 90% or exceeded.
     const remaining = limitValue - currentEarnings
     if (percentage > 90 || remaining <= 0) {
       safetyState = 'at_limit'
-    } else if (percentage >= 75 || remaining <= 100) {
+    } else if (percentage >= 75 || remaining <= cautionThreshold) {
       safetyState = 'caution'
     } else {
       safetyState = 'safe'

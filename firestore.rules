@@ -238,6 +238,20 @@ service cloud.firestore {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
 
+    // 7. Operational Settings & Policy (P3-E36 / W0-2, human-approved 2026-10-27)
+    // All staff (owner, manager, supervisor, staff) can read live operational settings;
+    // only office (owner, manager) can read the append-only version history;
+    // all writes go through the Owner-only updatePolicySettings Cloud Function.
+    match /settings/policy {
+      allow read: if isStaff();
+      allow write: if false;
+
+      match /history/{versionId} {
+        allow read: if isOffice();
+        allow write: if false;
+      }
+    }
+
     // Default Deny-All for other collections
     match /{document=**} {
       allow read, write: if false;

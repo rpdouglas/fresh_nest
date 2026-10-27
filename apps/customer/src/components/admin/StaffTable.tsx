@@ -5,6 +5,7 @@ import type { StaffRole, StaffStatus, Staff } from '@/types'
 import { RegisterStaffModal } from './RegisterStaffModal'
 import { ExportRecordModal } from './ExportRecordModal'
 import { useStaff, RegisterStaffInput } from './hooks/useStaff'
+import { usePolicySettings } from './hooks/usePolicySettings'
 
 interface StaffTableProps {
   isAuthorized: boolean
@@ -32,6 +33,7 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
     registerStaff,
     resendWelcome,
   } = useStaff(isAuthorized)
+  const { policy } = usePolicySettings(isAuthorized)
 
   const [resendingId, setResendingId] = useState<string | null>(null)
   const [resendError, setResendError] = useState<string | null>(null)
@@ -325,6 +327,7 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onRegister={handleRegister}
+        policy={policy}
       />
 
       <ExportRecordModal

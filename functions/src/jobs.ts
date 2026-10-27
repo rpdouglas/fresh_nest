@@ -8,6 +8,7 @@ import {
   type TravelShift,
 } from './lib/eligibility'
 import { snapshotFromTemplate, EMPTY_CHECKLIST, type ChecklistSnapshot } from './lib/checklist'
+import { normalizePolicySettings } from './shared/policy'
 
 /**
  * F03: Booking-to-Job Pipeline
@@ -284,8 +285,13 @@ export async function executeClaimJob(
         throw new Error('BLOCKED_WINDOW_OVERLAP')
       }
 
-      // Travel buffer check
-      const bufferMinutes = resolveBufferMinutes(constraints)
+      // Travel buffer check (P3-E36 / W0-2: read settings/policy default travel buffers with fallback)
+      const policyRef = db.collection('settings').doc('policy')
+      const policySnap = await transaction.get(policyRef).catch(() => null)
+      const policy = normalizePolicySettings(
+        policySnap && policySnap.exists ? (policySnap.data() as Record<string, unknown>) : undefined,
+      )
+      const bufferMinutes = resolveBufferMinutes(constraints, policy)
 
       // Query active jobs assigned to this cleaner on the same scheduledDate
       const queryRef = db.collection('jobs')

@@ -151,10 +151,20 @@ export function overlapsBlockedWindow(
   return false
 }
 
-/** P8/P15: travel buffer in minutes — explicit setting, else 60 for transit and 30 otherwise. */
-export function resolveBufferMinutes(constraints: StaffConstraintsLike): number {
+export interface BufferPolicyConfig {
+  defaultVehicleBufferMinutes?: number
+  defaultTransitBufferMinutes?: number
+}
+
+/** P8/P15: travel buffer in minutes — explicit setting, else policy transit/vehicle default (60 / 30). */
+export function resolveBufferMinutes(
+  constraints: StaffConstraintsLike,
+  policy?: BufferPolicyConfig,
+): number {
   const transportMode = constraints.transportMode || 'transit'
-  const defaultBuffer = transportMode === 'transit' ? 60 : 30
+  const transitDefault = policy?.defaultTransitBufferMinutes ?? 60
+  const vehicleDefault = policy?.defaultVehicleBufferMinutes ?? 30
+  const defaultBuffer = transportMode === 'transit' ? transitDefault : vehicleDefault
   return typeof constraints.transitBufferMinutes === 'number'
     ? constraints.transitBufferMinutes
     : defaultBuffer
