@@ -389,3 +389,36 @@ describe('Writes through shared converters (serverTimestamp preserved)', () => {
     } as unknown as Review))
   })
 })
+
+describe('Staff notifications (N-2: mark as read)', () => {
+  const message = { title: 'New shift', body: 'You have a new shift', type: 'shift_assigned', jobId: 'job-1', read: false, createdAt: new Date() }
+  const msgPath = (uid: string) => `notifications/${uid}/messages/m1`
+
+  beforeEach(async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), msgPath('brenda')), message)
+    })
+  })
+
+  const staffDb = (uid: string) => testEnv.authenticatedContext(uid, { role: 'staff' }).firestore()
+
+  it('the recipient can mark their own message read', async () => {
+    await assertSucceeds(updateDoc(doc(staffDb('brenda'), msgPath('brenda')), { read: true }))
+  })
+
+  it('the recipient cannot change anything else, or mark it unread', async () => {
+    await assertFails(updateDoc(doc(staffDb('brenda'), msgPath('brenda')), { read: true, title: 'Edited' }))
+    await assertFails(updateDoc(doc(staffDb('brenda'), msgPath('brenda')), { body: 'Edited' }))
+    await assertFails(updateDoc(doc(staffDb('brenda'), msgPath('brenda')), { read: false }))
+  })
+
+  it("another staff member cannot touch someone else's messages", async () => {
+    await assertFails(updateDoc(doc(staffDb('carla'), msgPath('brenda')), { read: true }))
+    await assertFails(getDoc(doc(staffDb('carla'), msgPath('brenda'))))
+  })
+
+  it('messages still cannot be created or deleted from the app', async () => {
+    await assertFails(setDoc(doc(staffDb('brenda'), 'notifications/brenda/messages/m2'), message))
+    await assertFails(deleteDoc(doc(staffDb('brenda'), msgPath('brenda'))))
+  })
+})

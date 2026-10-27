@@ -451,7 +451,7 @@ Each item lists its requirement IDs, dependencies and exit criteria (from the sp
 | # | Item | IDs | Depends on | Exit criteria |
 |---|---|---|---|---|
 | N-1 | Storage rule for crew job photos (human approval) — ✅ **done 2026-10-27 (HOTFIX-06, PR #37; deployed and phone-tested)** | R1, CRW-S6.2 | — | A required-photo task uploads from an iPhone and an Android; photo visible in admin |
-| N-2 | Notifications mark-read rule or callable | R2 | — | Unread badge clears after opening |
+| N-2 | Notifications mark-read rule or callable — **rule + tests written (HOTFIX-07), awaiting deploy** | R2 | — | Unread badge clears after opening |
 | N-3 | Block overlap overrides on dispatch | R6, SCH-S5.2 | — | Overlap assignment cannot be saved |
 | N-4 | Decide on the Stripe callables (remove, or require auth) | R10, MP-S3.12 | Owner decision | No unauthenticated payment-intent creation |
 

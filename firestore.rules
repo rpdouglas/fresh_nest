@@ -221,7 +221,13 @@ service cloud.firestore {
     match /notifications/{staffId}/messages/{messageId} {
       allow read:   if request.auth != null && request.auth.uid == staffId;
       allow create: if false;
-      allow update, delete: if false;
+      // N-2 (PENDING HUMAN APPROVAL): the recipient may mark their own message read — only the
+      // `read` field, and only to true. Everything else about a message stays server-written.
+      allow update: if request.auth != null
+                    && request.auth.uid == staffId
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read'])
+                    && request.resource.data.read == true;
+      allow delete: if false;
     }
 
     // 6. Customers Collection
