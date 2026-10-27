@@ -1,0 +1,90 @@
+name: Deploy Security Rules
+# Manual-only deploy of Storage rules, Firestore rules and/or Firestore indexes (ADR-016).
+# Rules are never deployed automatically: COMPLIANCE.md §4 requires a human, and starting this
+# workflow (Actions → Deploy Security Rules → Run workflow) is that human step. Every run is
+# logged in the Actions history with who started it.
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'What to deploy'
+        required: true
+        type: choice
+        options:
+          - storage
+          - firestore-rules
+          - firestore-indexes
+          - all
+      confirm:
+        description: 'Type DEPLOY to confirm a production rules deploy'
+        required: true
+        type: string
+
+# Shares the production deploy queue so rules never deploy mid-way through an app deploy.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-rules:
+    runs-on: ubuntu-latest
+    # Only from main, and only when the confirmation was typed exactly.
+    if: github.ref == 'refs/heads/main' && inputs.confirm == 'DEPLOY'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: 'npm' }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '21' }
+      - run: npm ci
+
+      # The same emulator tests the PR rules job runs; a failing rule never reaches production.
+      - name: Firestore and Storage rules tests (emulator)
+        working-directory: apps/customer
+        run: npx -y firebase-tools@15 emulators:exec --only firestore,storage --project freshnest-aa51e "npx vitest run --config vitest.rules.config.ts"
+
+      - name: Deploy
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          TARGET: ${{ inputs.target }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          case "$TARGET" in
+            storage)           ONLY="storage" ;;
+            firestore-rules)   ONLY="firestore:rules" ;;
+            firestore-indexes) ONLY="firestore:indexes" ;;
+            all)               ONLY="storage,firestore:rules,firestore:indexes" ;;
+            *) echo "Unknown target: $TARGET"; exit 1 ;;
+          esac
+          SA_FILE="$RUNNER_TEMP/firebase-sa.json"
+          trap 'rm -f "$SA_FILE"' EXIT
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$SA_FILE"
+          export GOOGLE_APPLICATION_CREDENTIALS="$SA_FILE"
+          echo "Deploying --only $ONLY to freshnest-aa51e (started by $ACTOR)"
+          npx -y firebase-tools@15 deploy --only "$ONLY" --project freshnest-aa51e --non-interactive
+
+      - name: Summary
+        if: always()
+        env:
+          TARGET: ${{ inputs.target }}
+          ACTOR: ${{ github.actor }}
+          RESULT: ${{ job.status }}
+        run: |
+          {
+            echo "### Rules deploy: $TARGET"
+            echo "- Started by: $ACTOR"
+            echo "- Commit: $GITHUB_SHA"
+            echo "- Result: $RESULT"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  # A run that wasn't confirmed (or not from main) fails visibly instead of silently doing nothing.
+  refused:
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/main' || inputs.confirm != 'DEPLOY'
+    steps:
+      - run: |
+          echo "Not deployed: run from main and type DEPLOY in the confirm box."
+          exit 1

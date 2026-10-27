@@ -17,6 +17,22 @@ service firebase.storage {
                            && request.resource.contentType == 'image/jpeg'));
     }
 
+    // FSM crew job photos (checklist photo proof — P11 Brenda). PENDING HUMAN APPROVAL.
+    // Each staff member writes only into their own folder (staffId = their auth uid); files are
+    // create-only, so photo evidence can't be overwritten or deleted from a phone. Which job a
+    // photo belongs to is enforced in Firestore: only the assigned cleaner can attach it to the
+    // job document (firestore.rules jobs update). Admins read everything; staff read their own.
+    match /jobs/{jobId}/photos/{staffId}/{photoId} {
+      allow read: if request.auth != null
+                  && (request.auth.token.role == 'admin' || request.auth.uid == staffId);
+      allow create: if request.auth != null
+                    && resource == null
+                    && request.auth.uid == staffId
+                    && request.auth.token.role in ['staff', 'supervisor', 'admin']
+                    && request.resource.size < 15 * 1024 * 1024
+                    && request.resource.contentType.matches('image/.*');
+    }
+
     match /{allPaths=**} {
       allow read, write: if false;
     }

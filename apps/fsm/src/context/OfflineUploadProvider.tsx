@@ -4,6 +4,7 @@ import { jobsCollection } from '@freshnest/shared'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { db, storage } from '../lib/firebase/firebase'
 import { getQueuedPhotos, addQueuedPhoto, deleteQueuedPhoto, QueuedPhoto } from '../lib/utils/indexedDb'
+import { jobPhotoPath } from '../lib/utils/jobPhotoPath'
 import { OfflineUploadContext } from './OfflineUploadContext'
 import type { JobPhoto, ChecklistCompletion } from '../types'
 
@@ -50,10 +51,9 @@ export const OfflineUploadProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         const { id, jobId, taskId, blob, capturedAt, geoLat, geoLng, staffId } = queuedPhoto
         
-        // 1. Upload to Firebase Storage
-        const storagePath = `jobs/${jobId}/photos/${id}`
-        const storageRef = ref(storage, storagePath)
-        await uploadBytes(storageRef, blob)
+        // 1. Upload to Firebase Storage (path must match storage.rules: the uploader's own folder)
+        const storageRef = ref(storage, jobPhotoPath(jobId, staffId, id))
+        await uploadBytes(storageRef, blob, { contentType: blob.type || 'image/jpeg' })
         const downloadUrl = await getDownloadURL(storageRef)
 
         // 2. Fetch latest Job document to update arrays

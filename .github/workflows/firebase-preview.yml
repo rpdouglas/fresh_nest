@@ -64,6 +64,7 @@ jobs:
               - *ci
               - 'firestore.rules'
               - 'firestore.indexes.json'
+              - 'storage.rules'
               - 'apps/customer/test/**'
               - 'apps/customer/vitest.rules.config.ts'
 
@@ -161,7 +162,7 @@ jobs:
       - run: npm run build
       - run: npm test
 
-  # Firestore security rules tests on the emulator — only when the rules or their tests change.
+  # Firestore and Storage security rules tests on the emulator — only when the rules or their tests change.
   # (Rules are still never deployed by CI — COMPLIANCE.md §4.) E2E runs weekly in e2e.yml (ADR-014).
   rules:
     needs: changes
@@ -174,6 +175,6 @@ jobs:
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '21' }
       - run: npm ci
-      - name: Firestore rules tests (emulator)
+      - name: Firestore and Storage rules tests (emulator)
         working-directory: apps/customer
-        run: npx -y firebase-tools@15 emulators:exec --only firestore --project freshnest-aa51e "npx vitest run --config vitest.rules.config.ts"
+        run: npx -y firebase-tools@15 emulators:exec --only firestore,storage --project freshnest-aa51e "npx vitest run --config vitest.rules.config.ts"
