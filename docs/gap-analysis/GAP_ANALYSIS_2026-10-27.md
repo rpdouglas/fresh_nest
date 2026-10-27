@@ -436,7 +436,7 @@ They should be the first test file in backlog item W2-6.
 | R7 | Medium | Access codes and private notes have no restricted home; free-text `notes` go to every assigned crew member and into exports | `jobs.ts` `clientNotes: booking.notes`; `ExportRecordModal.tsx` | Add a restricted access record with the sites work; warn in the New Booking notes field meanwhile |
 | R8 | Medium | Every job is 09:00–11:00 and no screen can change it. Buffer, overlap and earnings checks all run on those placeholder times | `jobs.ts` `scheduledStartTime = '09:00'` | Add job time editing (job drawer) as the first scheduling slice |
 | R9 | Low | "monthly" recurrence = +30 days, so visits drift by weekday and date | `renewals.ts:38` | Replace with a real series (SCH-S4); interim: same day-of-month or the nth weekday |
-| R10 | Low | `createPaymentIntent` is a public callable with no auth check, contrary to "no card processor early" | `payments.ts:7-31` | Remove or disable it, or require auth (needs a decision, D/MP-S3.12) |
+| R10 | ✅ Fixed (HOTFIX-09) — was Low | `createPaymentIntent` was a public callable with no auth check, contrary to "no card processor early" | `payments.ts:7-31` | Remove or disable it, or require auth (needs a decision, D/MP-S3.12) |
 | R11 | Low | Photo URLs are long-lived download URLs readable by anyone holding them | `OfflineUploadProvider.tsx:56` | Store paths; serve through rules-checked reads or signed URLs |
 | R12 | Low | Photos carry capture GPS, beyond the check-in/out-only decision | `OfflineUploadProvider.tsx:154-168` | Confirm with the owner; drop photo geo, or record it as part of the check-in policy |
 | R13 | Low | Scheduling logic is duplicated (client and server copies), so the two can disagree | `apps/customer/src/lib/utils/scheduling.ts` vs `functions/src/lib/eligibility.ts` | Move it into one shared package (MP-S5.2) |
@@ -453,7 +453,7 @@ Each item lists its requirement IDs, dependencies and exit criteria (from the sp
 | N-1 | Storage rule for crew job photos (human approval) — ✅ **done 2026-10-27 (HOTFIX-06, PR #37; deployed and phone-tested)** | R1, CRW-S6.2 | — | A required-photo task uploads from an iPhone and an Android; photo visible in admin |
 | N-2 | Notifications mark-read rule or callable — **rule + tests written (HOTFIX-07), awaiting deploy** | R2 | — | Unread badge clears after opening |
 | N-3 | Block overlap overrides on dispatch — ✅ **done (HOTFIX-08, PR #38)** | R6, SCH-S5.2 | — | Overlap assignment cannot be saved |
-| N-4 | Decide on the Stripe callables (remove, or require auth) | R10, MP-S3.12 | Owner decision | No unauthenticated payment-intent creation |
+| N-4 | Decide on the Stripe callables (remove, or require auth) — ✅ **done: sign-in required + signed webhooks only (HOTFIX-09, PR #38)** | R10, MP-S3.12 | Owner decision | No unauthenticated payment-intent creation |
 
 ### Wave 0 — Platform and delivery
 | # | Item | IDs | Depends on | Exit criteria |
