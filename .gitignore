@@ -32,3 +32,6 @@ dist-ssr
 # Archived documents
 docs/archive/
 /docs/archive/
+
+# Bundle report from rollup-plugin-visualizer, rebuilt on every build
+apps/customer/stats.html
