@@ -37,6 +37,7 @@ export default function ThankYouPage() {
       <SEO
         title={t('thankYou.meta.title')}
         description={t('thankYou.meta.description')}
+        noindex
       />
 
       {/* Confirmation Banner */}

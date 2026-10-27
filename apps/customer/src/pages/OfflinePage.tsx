@@ -13,6 +13,7 @@ export default function OfflinePage() {
       <SEO
         title={t('offline.meta.title')}
         description={t('offline.meta.description')}
+        noindex
       />
 
       <div className="min-h-[70vh] flex items-center justify-center px-4 py-12 md:py-20 bg-warm-white">

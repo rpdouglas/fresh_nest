@@ -1298,5 +1298,42 @@
   "quoteRequest": {
     "nextStepsHeading": "What happens next",
     "nextStepsBody": "No payment is taken now. A member of our team will contact you within 24 hours to confirm the details and give you a quote."
+  },
+  "notFound": {
+    "pageTitle": "Page Not Found | Fresh Nest Co.",
+    "metaDesc": "This page doesn't exist. Find our cleaning services or request a quote.",
+    "heading": "We couldn't find that page",
+    "body": "The link may be old or mistyped. You can head back home, request a quote, or call us.",
+    "ctaHome": "Back to Home",
+    "ctaQuote": "Request a Quote"
+  },
+  "privacyPage": {
+    "metaTitle": "Privacy Policy | Fresh Nest Co.",
+    "metaDesc": "How Fresh Nest Co. collects, uses and protects your personal information under PIPEDA and Quebec Law 25.",
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: October 27, 2026",
+    "intro": "Fresh Nest Co. respects your privacy. This policy explains what personal information we collect when you request a quote or use our website, why we collect it, and the choices you have. It follows Canada's Personal Information Protection and Electronic Documents Act (PIPEDA) and Quebec's Law 25.",
+    "sections": {
+      "1": {
+        "title": "1. Information we collect",
+        "content": "When you request a quote or book a cleaning, we collect only what we need to provide the service:\n• Your name, email address, phone number and service address\n• Details about your home or business and the cleaning you need, your preferred date and any notes you add (for example, entry instructions)\n• Your preferred language (English or French)\n• Whether you chose to receive promotional emails, and when\n\nIf you sign in to your customer account, we also keep your sign-in email. If you accept analytics cookies, we collect anonymous information about how the website is used."
+      },
+      "2": {
+        "title": "2. How we use it",
+        "content": "We use your information to:\n• Contact you about your request, prepare your quote and schedule your cleaning\n• Send confirmations, reminders and service updates by email or text message, in your chosen language\n• Assign a cleaner and give them the address and instructions needed for the visit\n• Keep the business records we are required to keep\n\nWe send promotional emails only if you ticked the consent box, and you can unsubscribe at any time. We do not sell your information or use it for any other purpose."
+      },
+      "3": {
+        "title": "3. Who we share it with",
+        "content": "We share your information only with service providers that help us run the service, and only as much as each one needs:\n• Google Firebase — website hosting, our secure database and account sign-in\n• Twilio — text message delivery\n• Resend — email delivery\n• Google Analytics — anonymous website statistics, only if you accept analytics cookies\n• Sentry — technical error reports so we can fix problems on the website\n\nThese providers may store data in Canada or the United States. Each is bound by its own privacy and security commitments. We never share your information with advertisers or data brokers."
+      },
+      "4": {
+        "title": "4. How long we keep it and how we protect it",
+        "content": "We keep booking records for 7 years, as required for tax and business records, and then delete them. Access to your information is limited to authorized Fresh Nest Co. staff who sign in to protected systems. Our website stores only your language choice and your cookie preference in your browser — never your contact details."
+      },
+      "5": {
+        "title": "5. Your rights and how to contact us",
+        "content": "You can ask to see the personal information we hold about you, ask us to correct it, or withdraw your consent to promotional emails at any time. Quebec residents have these rights under Law 25, and we extend them to all our clients.\n\nTo make a request or ask a question, contact our privacy officer at hello@freshnestco.ca or (613) 861-8812. We will respond within 30 days.\n\nIf you are not satisfied with our answer, you can contact the Office of the Privacy Commissioner of Canada or, in Quebec, the Commission d'accès à l'information du Québec."
+      }
+    }
   }
 }

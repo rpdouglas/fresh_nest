@@ -163,7 +163,7 @@ export default function LeaveReviewPage() {
 
   return (
     <main className="min-h-[80vh] bg-warm-white py-12 px-4 md:py-20 md:px-6">
-      <SEO title={t('leaveReview.pageTitle')} description={t('leaveReview.metaDesc')} />
+      <SEO title={t('leaveReview.pageTitle')} description={t('leaveReview.metaDesc')} noindex />
       
       <div className="max-w-xl mx-auto bg-white border border-sand rounded p-6 md:p-8 shadow-sm">
         <AnimatePresence mode="wait">
