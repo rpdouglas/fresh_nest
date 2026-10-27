@@ -19,6 +19,6 @@ export const BUSINESS_EMAIL = 'hello@freshnestco.ca'
 // SHOW_GALLERY — home before/after section, footer link, /gallery page
 // SHOW_TEAM    — Meet the Team on the home and About pages
 // SHOW_REVIEWS — home reviews section, footer link, /reviews page, trust bar rating, rating JSON-LD
-export const SHOW_GALLERY: boolean = false
+export const SHOW_GALLERY: boolean = true
 export const SHOW_TEAM: boolean = false
 export const SHOW_REVIEWS: boolean = false

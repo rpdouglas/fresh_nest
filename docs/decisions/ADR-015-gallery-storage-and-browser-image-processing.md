@@ -1,6 +1,6 @@
 # ADR-015 — Gallery photos: Firebase Storage, fitted in the browser
-**Status:** Proposed  
-**Date:** 2026-10-04  
+**Status:** Accepted  
+**Date:** 2026-10-04 (Accepted 2026-10-27)  
 **Deciders:** Owner (human); drafted by AI agent during P3-E32
 
 ## Context

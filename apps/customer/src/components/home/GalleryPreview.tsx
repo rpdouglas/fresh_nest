@@ -11,9 +11,10 @@ export default function GalleryPreview() {
   const { t, i18n } = useTranslation()
   const { data: pairs = [] } = useGalleryPairs()
   const featured = pairs.filter(p => p.featured)
+  const homePairs = featured.length > 0 ? featured : pairs.slice(0, 3)
 
-  // Nothing to show yet (still loading, or no featured pairs): leave the section out.
-  if (featured.length === 0) return null
+  // Nothing to show yet (still loading, or no published pairs): leave the section out.
+  if (homePairs.length === 0) return null
 
   return (
     <section
@@ -43,7 +44,7 @@ export default function GalleryPreview() {
           viewport={{ once: true, margin: '-50px' }}
           variants={stagger}
         >
-          {featured.map(pair => {
+          {homePairs.map(pair => {
             const serviceTitle = t(`services.${pair.serviceKey}.title`)
             const beforeAlt = t('gallery.beforeAlt', { service: serviceTitle })
             const afterAlt = t('gallery.afterAlt', { service: serviceTitle })
