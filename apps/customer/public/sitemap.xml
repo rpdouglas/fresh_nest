@@ -2,279 +2,279 @@
 <!-- Indexable public pages, English and French (?lang=fr). Kept in step with the routes by sitemap.test.ts. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://freshnestco.ca/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/"/>
+    <loc>https://www.freshnestco.ca/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/"/>
+    <loc>https://www.freshnestco.ca/?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/services</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/services"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/services?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/services"/>
+    <loc>https://www.freshnestco.ca/services</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/services"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/services?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/services"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/services?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/services"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/services?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/services"/>
+    <loc>https://www.freshnestco.ca/services?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/services"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/services?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/services"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/services/standard-cleaning</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/services/standard-cleaning"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/services/standard-cleaning?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/services/standard-cleaning"/>
+    <loc>https://www.freshnestco.ca/services/standard-cleaning</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/services/standard-cleaning"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/services/standard-cleaning?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/services/standard-cleaning"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/services/standard-cleaning?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/services/standard-cleaning"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/services/standard-cleaning?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/services/standard-cleaning"/>
+    <loc>https://www.freshnestco.ca/services/standard-cleaning?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/services/standard-cleaning"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/services/standard-cleaning?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/services/standard-cleaning"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/services/deep-cleaning</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/services/deep-cleaning"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/services/deep-cleaning?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/services/deep-cleaning"/>
+    <loc>https://www.freshnestco.ca/services/deep-cleaning</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/services/deep-cleaning"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/services/deep-cleaning?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/services/deep-cleaning"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/services/deep-cleaning?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/services/deep-cleaning"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/services/deep-cleaning?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/services/deep-cleaning"/>
+    <loc>https://www.freshnestco.ca/services/deep-cleaning?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/services/deep-cleaning"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/services/deep-cleaning?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/services/deep-cleaning"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/services/move-out-cleaning</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/services/move-out-cleaning"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/services/move-out-cleaning?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/services/move-out-cleaning"/>
+    <loc>https://www.freshnestco.ca/services/move-out-cleaning</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/services/move-out-cleaning"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/services/move-out-cleaning?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/services/move-out-cleaning"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/services/move-out-cleaning?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/services/move-out-cleaning"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/services/move-out-cleaning?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/services/move-out-cleaning"/>
+    <loc>https://www.freshnestco.ca/services/move-out-cleaning?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/services/move-out-cleaning"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/services/move-out-cleaning?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/services/move-out-cleaning"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/services/post-construction</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/services/post-construction"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/services/post-construction?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/services/post-construction"/>
+    <loc>https://www.freshnestco.ca/services/post-construction</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/services/post-construction"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/services/post-construction?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/services/post-construction"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/services/post-construction?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/services/post-construction"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/services/post-construction?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/services/post-construction"/>
+    <loc>https://www.freshnestco.ca/services/post-construction?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/services/post-construction"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/services/post-construction?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/services/post-construction"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/services/commercial-cleaning</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/services/commercial-cleaning"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/services/commercial-cleaning?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/services/commercial-cleaning"/>
+    <loc>https://www.freshnestco.ca/services/commercial-cleaning</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/services/commercial-cleaning"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/services/commercial-cleaning?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/services/commercial-cleaning"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/services/commercial-cleaning?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/services/commercial-cleaning"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/services/commercial-cleaning?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/services/commercial-cleaning"/>
+    <loc>https://www.freshnestco.ca/services/commercial-cleaning?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/services/commercial-cleaning"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/services/commercial-cleaning?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/services/commercial-cleaning"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/services/airbnb-turnover</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/services/airbnb-turnover"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/services/airbnb-turnover?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/services/airbnb-turnover"/>
+    <loc>https://www.freshnestco.ca/services/airbnb-turnover</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/services/airbnb-turnover"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/services/airbnb-turnover?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/services/airbnb-turnover"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/services/airbnb-turnover?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/services/airbnb-turnover"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/services/airbnb-turnover?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/services/airbnb-turnover"/>
+    <loc>https://www.freshnestco.ca/services/airbnb-turnover?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/services/airbnb-turnover"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/services/airbnb-turnover?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/services/airbnb-turnover"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/locations</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/locations"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/locations?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/locations"/>
+    <loc>https://www.freshnestco.ca/locations</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/locations"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/locations?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/locations"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/locations?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/locations"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/locations?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/locations"/>
+    <loc>https://www.freshnestco.ca/locations?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/locations"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/locations?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/locations"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/locations/cornwall-on</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/locations/cornwall-on"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/locations/cornwall-on?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/locations/cornwall-on"/>
+    <loc>https://www.freshnestco.ca/locations/cornwall-on</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/locations/cornwall-on"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/locations/cornwall-on?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/locations/cornwall-on"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/locations/cornwall-on?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/locations/cornwall-on"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/locations/cornwall-on?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/locations/cornwall-on"/>
+    <loc>https://www.freshnestco.ca/locations/cornwall-on?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/locations/cornwall-on"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/locations/cornwall-on?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/locations/cornwall-on"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/locations/akwesasne</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/locations/akwesasne"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/locations/akwesasne?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/locations/akwesasne"/>
+    <loc>https://www.freshnestco.ca/locations/akwesasne</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/locations/akwesasne"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/locations/akwesasne?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/locations/akwesasne"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/locations/akwesasne?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/locations/akwesasne"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/locations/akwesasne?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/locations/akwesasne"/>
+    <loc>https://www.freshnestco.ca/locations/akwesasne?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/locations/akwesasne"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/locations/akwesasne?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/locations/akwesasne"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/locations/snye-qc</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/locations/snye-qc"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/locations/snye-qc?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/locations/snye-qc"/>
+    <loc>https://www.freshnestco.ca/locations/snye-qc</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/locations/snye-qc"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/locations/snye-qc?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/locations/snye-qc"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/locations/snye-qc?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/locations/snye-qc"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/locations/snye-qc?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/locations/snye-qc"/>
+    <loc>https://www.freshnestco.ca/locations/snye-qc?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/locations/snye-qc"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/locations/snye-qc?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/locations/snye-qc"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/locations/long-sault</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/locations/long-sault"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/locations/long-sault?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/locations/long-sault"/>
+    <loc>https://www.freshnestco.ca/locations/long-sault</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/locations/long-sault"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/locations/long-sault?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/locations/long-sault"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/locations/long-sault?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/locations/long-sault"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/locations/long-sault?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/locations/long-sault"/>
+    <loc>https://www.freshnestco.ca/locations/long-sault?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/locations/long-sault"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/locations/long-sault?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/locations/long-sault"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/locations/morrisburg</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/locations/morrisburg"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/locations/morrisburg?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/locations/morrisburg"/>
+    <loc>https://www.freshnestco.ca/locations/morrisburg</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/locations/morrisburg"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/locations/morrisburg?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/locations/morrisburg"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/locations/morrisburg?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/locations/morrisburg"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/locations/morrisburg?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/locations/morrisburg"/>
+    <loc>https://www.freshnestco.ca/locations/morrisburg?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/locations/morrisburg"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/locations/morrisburg?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/locations/morrisburg"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/booking</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/booking"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/booking?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/booking"/>
+    <loc>https://www.freshnestco.ca/booking</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/booking"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/booking?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/booking"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/booking?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/booking"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/booking?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/booking"/>
+    <loc>https://www.freshnestco.ca/booking?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/booking"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/booking?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/booking"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/faq</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/faq"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/faq?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/faq"/>
+    <loc>https://www.freshnestco.ca/faq</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/faq"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/faq?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/faq"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/faq?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/faq"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/faq?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/faq"/>
+    <loc>https://www.freshnestco.ca/faq?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/faq"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/faq?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/faq"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/about</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/about"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/about?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/about"/>
+    <loc>https://www.freshnestco.ca/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/about"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/about?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/about"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/about?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/about"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/about?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/about"/>
+    <loc>https://www.freshnestco.ca/about?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/about"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/about?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/about"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/careers</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/careers"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/careers?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/careers"/>
+    <loc>https://www.freshnestco.ca/careers</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/careers"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/careers?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/careers"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/careers?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/careers"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/careers?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/careers"/>
+    <loc>https://www.freshnestco.ca/careers?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/careers"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/careers?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/careers"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/privacy</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/privacy"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/privacy?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/privacy"/>
+    <loc>https://www.freshnestco.ca/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/privacy"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/privacy?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/privacy"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/privacy?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/privacy"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/privacy?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/privacy"/>
+    <loc>https://www.freshnestco.ca/privacy?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/privacy"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/privacy?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/privacy"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/blog</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/blog"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/blog?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/blog"/>
+    <loc>https://www.freshnestco.ca/blog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/blog"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/blog?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/blog"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/blog?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/blog"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/blog?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/blog"/>
+    <loc>https://www.freshnestco.ca/blog?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/blog"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/blog?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/blog"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/blog/move-out-checklist-cornwall</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/blog/move-out-checklist-cornwall"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/blog/move-out-checklist-cornwall?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/blog/move-out-checklist-cornwall"/>
+    <loc>https://www.freshnestco.ca/blog/move-out-checklist-cornwall</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/blog/move-out-checklist-cornwall"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/blog/move-out-checklist-cornwall?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/blog/move-out-checklist-cornwall"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/blog/move-out-checklist-cornwall?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/blog/move-out-checklist-cornwall"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/blog/move-out-checklist-cornwall?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/blog/move-out-checklist-cornwall"/>
+    <loc>https://www.freshnestco.ca/blog/move-out-checklist-cornwall?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/blog/move-out-checklist-cornwall"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/blog/move-out-checklist-cornwall?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/blog/move-out-checklist-cornwall"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/blog/commercial-cleaning-akwesasne</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/blog/commercial-cleaning-akwesasne"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/blog/commercial-cleaning-akwesasne?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/blog/commercial-cleaning-akwesasne"/>
+    <loc>https://www.freshnestco.ca/blog/commercial-cleaning-akwesasne</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/blog/commercial-cleaning-akwesasne"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/blog/commercial-cleaning-akwesasne?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/blog/commercial-cleaning-akwesasne"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/blog/commercial-cleaning-akwesasne?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/blog/commercial-cleaning-akwesasne"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/blog/commercial-cleaning-akwesasne?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/blog/commercial-cleaning-akwesasne"/>
+    <loc>https://www.freshnestco.ca/blog/commercial-cleaning-akwesasne?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/blog/commercial-cleaning-akwesasne"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/blog/commercial-cleaning-akwesasne?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/blog/commercial-cleaning-akwesasne"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/blog/eco-friendly-products</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/blog/eco-friendly-products"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/blog/eco-friendly-products?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/blog/eco-friendly-products"/>
+    <loc>https://www.freshnestco.ca/blog/eco-friendly-products</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/blog/eco-friendly-products"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/blog/eco-friendly-products?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/blog/eco-friendly-products"/>
   </url>
   <url>
-    <loc>https://freshnestco.ca/blog/eco-friendly-products?lang=fr</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://freshnestco.ca/blog/eco-friendly-products"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://freshnestco.ca/blog/eco-friendly-products?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://freshnestco.ca/blog/eco-friendly-products"/>
+    <loc>https://www.freshnestco.ca/blog/eco-friendly-products?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/blog/eco-friendly-products"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/blog/eco-friendly-products?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/blog/eco-friendly-products"/>
   </url>
 </urlset>
