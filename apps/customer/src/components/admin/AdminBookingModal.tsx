@@ -6,6 +6,8 @@ import { cn } from '@/lib/utils/utils'
 import { adminBookingSchema } from '@/lib/schemas/bookingSchema'
 import type { AdminBookingFormData } from '@/lib/schemas/bookingSchema'
 import { useStaff } from './hooks/useStaff'
+import { AdminDialog } from './ui/AdminDialog'
+import { PHONE_STICKY_ACTIONS } from './ui/dialogClasses'
 
 const ADD_ON_KEYS = ['oven', 'fridge', 'windows', 'laundry', 'petHair', 'basement'] as const
 
@@ -96,13 +98,13 @@ export const AdminBookingModal: React.FC<AdminBookingModalProps> = ({
   const sectionHeadClass = 'font-sub text-xl text-charcoal border-b border-sand pb-2 mb-4'
 
   return (
-    <div className="fixed inset-0 bg-charcoal/50 z-50 flex items-start justify-center p-4 overflow-y-auto">
-      <div
-        className="bg-white border border-sand rounded p-6 shadow-lg max-w-2xl w-full flex flex-col gap-6 my-8"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="admin-booking-modal-title"
-      >
+    <AdminDialog
+      open={isOpen}
+      onClose={onClose}
+      labelledBy="admin-booking-modal-title"
+      overlayClassName="fixed inset-0 bg-charcoal/50 z-50 flex items-start justify-center p-4 overflow-y-auto"
+      panelClassName="bg-white border border-sand rounded p-6 shadow-lg max-w-2xl w-full flex flex-col gap-6 my-8"
+    >
         <div>
           <h2 id="admin-booking-modal-title" className="font-display text-3xl text-charcoal">
             {t('admin.bookings.modal.title')}
@@ -453,7 +455,7 @@ export const AdminBookingModal: React.FC<AdminBookingModalProps> = ({
           </section>
 
           {/* ── Action Buttons ─────────────────────────────────────────── */}
-          <div className="flex justify-end items-center gap-4 border-t border-sand pt-6">
+          <div className={`flex justify-end items-center gap-4 border-t border-sand pt-6 ${PHONE_STICKY_ACTIONS}`}>
             <button
               type="button"
               onClick={onClose}
@@ -483,7 +485,6 @@ export const AdminBookingModal: React.FC<AdminBookingModalProps> = ({
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </AdminDialog>
   )
 }

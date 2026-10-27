@@ -8,6 +8,7 @@ import { db, auth } from '@/lib/firebase/firebase'
 import { useStaff } from './hooks/useStaff'
 import { assignCleanerTransaction } from '@/lib/firebase/firestore'
 import { OverrideModal } from './OverrideModal'
+import { ConfirmDialog } from './ui/ConfirmDialog'
 import { cn } from '@/lib/utils/utils'
 import type { Booking, BookingStatus, Job } from '@/types'
 import { checkCleanerSchedulingConflicts } from '@/lib/utils/scheduling'
@@ -35,6 +36,8 @@ export function BookingDetailPanel({
 
   const [job, setJob] = useState<Job | null>(null)
   const [isOverrideOpen, setIsOverrideOpen] = useState(false)
+  // P3-E33: Cancelled (cancels the job, texts the owner) and Confirmed (creates the job) ask first.
+  const [pendingStatus, setPendingStatus] = useState<'cancelled' | 'confirmed' | null>(null)
   const [pendingAssignment, setPendingAssignment] = useState<{
     cleanerId: string | null
     cleanerName: string | null
@@ -213,6 +216,7 @@ export function BookingDetailPanel({
 
   return (
     <tr>
+      {/* colSpan stays 5 of 6 columns: spanning all 6 widens the panel on desktop (P3-E33 keeps desktop unchanged) */}
       <td colSpan={5} className="p-0 border-b border-sand bg-slate-pale/30">
         <motion.div
           initial={{ height: 0, opacity: 0 }}
@@ -302,7 +306,12 @@ export function BookingDetailPanel({
                   id={`status-select-${b.id}`}
                   value={b.status}
                   onChange={(e) => {
-                    void handleStatusChange(b.id!, e.target.value as BookingStatus)
+                    const next = e.target.value as BookingStatus
+                    if (next === 'cancelled' || next === 'confirmed') {
+                      setPendingStatus(next)
+                    } else {
+                      void handleStatusChange(b.id!, next)
+                    }
                   }}
                   className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-white focus:outline-none focus:ring-2 focus:ring-slate-brand"
                 >
@@ -439,7 +448,7 @@ export function BookingDetailPanel({
                 {t('admin.dashboard.details.leadSource')}:{' '}
               </span>
               <span className="capitalize">
-                {t(`admin.leads.${b.leadSource}`) || b.leadSource}
+                {t(`admin.bookings.modal.leadSourceOptions.${b.leadSource}`, { defaultValue: b.leadSource })}
               </span>
             </p>
             {b.referredBy && (
@@ -478,6 +487,23 @@ export function BookingDetailPanel({
               )}
             </p>
           </div>
+          <ConfirmDialog
+            open={pendingStatus !== null}
+            tone={pendingStatus === 'cancelled' ? 'danger' : 'default'}
+            title={t(pendingStatus === 'cancelled' ? 'admin.confirm.cancelTitle' : 'admin.confirm.confirmTitle')}
+            body={t(pendingStatus === 'cancelled' ? 'admin.confirm.cancelBody' : 'admin.confirm.confirmBody', {
+              name: `${b.firstName} ${b.lastName}`,
+              date: b.preferredDate,
+            })}
+            confirmLabel={t(pendingStatus === 'cancelled' ? 'admin.confirm.cancelYes' : 'admin.confirm.confirmYes')}
+            cancelLabel={t('admin.confirm.keep')}
+            onConfirm={() => {
+              const next = pendingStatus
+              setPendingStatus(null)
+              if (next) void handleStatusChange(b.id!, next)
+            }}
+            onCancel={() => setPendingStatus(null)}
+          />
           <OverrideModal
             isOpen={isOverrideOpen}
             cleanerName={pendingAssignment?.cleanerName || ''}

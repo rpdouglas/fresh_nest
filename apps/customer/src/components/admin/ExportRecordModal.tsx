@@ -4,6 +4,8 @@ import { jobsCollection, auditLogCollection } from '@freshnest/shared'
 import { db, auth } from '@/lib/firebase/firebase'
 import type { Staff } from '@/types'
 import { useTranslation } from 'react-i18next'
+import { AdminDialog } from './ui/AdminDialog'
+import { PHONE_STICKY_ACTIONS } from './ui/dialogClasses'
 
 interface ExportRecordModalProps {
   isOpen: boolean
@@ -205,13 +207,13 @@ export const ExportRecordModal: React.FC<ExportRecordModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 bg-charcoal/50 z-50 flex items-center justify-center p-4 overflow-y-auto backdrop-blur-xs">
-      <div
-        className="bg-white border border-sand rounded p-6 shadow-lg max-w-md w-full flex flex-col gap-6 my-8 text-left"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="export-modal-title"
-      >
+    <AdminDialog
+      open={isOpen}
+      onClose={onClose}
+      labelledBy="export-modal-title"
+      overlayClassName="fixed inset-0 bg-charcoal/50 z-50 flex items-center justify-center p-4 overflow-y-auto backdrop-blur-xs"
+      panelClassName="bg-white border border-sand rounded p-6 shadow-lg max-w-md w-full flex flex-col gap-6 my-8 text-left"
+    >
         <div>
           <h3 id="export-modal-title" className="font-display text-3xl font-bold text-charcoal">
             {t('admin.staff.exportModal.title', { defaultValue: 'Export Staff Record' })}
@@ -277,7 +279,7 @@ export const ExportRecordModal: React.FC<ExportRecordModalProps> = ({
         </div>
 
         {/* Footer actions */}
-        <div className="flex items-center justify-end gap-3 border-t border-sand pt-4 mt-2">
+        <div className={`flex items-center justify-end gap-3 border-t border-sand pt-4 mt-2 ${PHONE_STICKY_ACTIONS}`}>
           <button
             type="button"
             onClick={onClose}
@@ -303,7 +305,6 @@ export const ExportRecordModal: React.FC<ExportRecordModalProps> = ({
             )}
           </button>
         </div>
-      </div>
-    </div>
+    </AdminDialog>
   )
 }

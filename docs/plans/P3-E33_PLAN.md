@@ -1,13 +1,13 @@
 ---
 epic: P3-E33
 title: Admin Mobile, Phase 1 — Shell, Navigation and Bug Fixes — Plan
-strategy: pending
-approved: pending
+strategy: 2
+approved: 2026-10-27
 ---
 
 # P3-E33 PLAN — Admin Mobile, Phase 1
 
-**Phase A written:** 2026-10-27 · **Status:** ⏸ Awaiting human approval
+**Phase A written:** 2026-10-27 · **Status:** ✅ Strategy 2 approved 2026-10-27 and shipped — see [close report](../reports/P3-E33-close-2026-10-27.md)
 **Spec:** [`../projects/P3-E33.md`](../projects/P3-E33.md) · **Evidence:** [`../reports/admin-mobile-review-2026-10-27.md`](../reports/admin-mobile-review-2026-10-27.md)
 
 ## Personas

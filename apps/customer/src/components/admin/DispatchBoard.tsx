@@ -672,7 +672,8 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
         </div>
 
         {/* Date Selector Navigation */}
-        <div className="flex items-center gap-3 self-start md:self-auto">
+        {/* P3-E33: wraps on phones so the controls no longer widen the page (board itself is phase 3) */}
+        <div className="flex items-center gap-3 self-start md:self-auto max-md:flex-wrap">
           <button
             onClick={handlePrevDay}
             className="min-h-[48px] px-4 border border-sand rounded font-body font-medium hover:bg-cream transition-colors duration-200"

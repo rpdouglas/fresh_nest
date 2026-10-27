@@ -802,7 +802,8 @@
           "revenue": "Revenu estimé",
           "avgValue": "Valeur moyenne de réservation",
           "share": "Part de conversion"
-        }
+        },
+        "errorTitle": "Impossible de charger les analyses"
       },
       "leads": {
         "organic": "Recherche organique",
@@ -1077,6 +1078,21 @@
           "fr": "Français"
         }
       }
+    },
+    "nav": {
+      "section": "Section"
+    },
+    "dialog": {
+      "close": "Fermer"
+    },
+    "confirm": {
+      "cancelTitle": "Annuler cette réservation ?",
+      "cancelBody": "Cela annule la réservation de {{name}} pour le {{date}}. Le travail est annulé et un texto est envoyé à l'administration.",
+      "cancelYes": "Annuler la réservation",
+      "confirmTitle": "Confirmer cette réservation ?",
+      "confirmBody": "Cela confirme la réservation de {{name}} pour le {{date}} et crée le travail pour la répartition. Aucun message n'est envoyé au client : convenez de l'heure directement avec cette personne.",
+      "confirmYes": "Confirmer la réservation",
+      "keep": "Garder la réservation"
     }
   },
   "blog": {

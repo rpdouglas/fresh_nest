@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils/utils'
+import { AdminDialog } from './ui/AdminDialog'
 
 interface OverrideModalProps {
   isOpen: boolean
@@ -38,11 +39,18 @@ export const OverrideModal: React.FC<OverrideModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/50 backdrop-blur-sm p-4">
-      <div className="bg-white border border-sand rounded shadow-lg max-w-md w-full overflow-hidden">
+    // P3-E33: overflow-y-auto so the reason box and Confirm stay reachable on short screens.
+    <AdminDialog
+      open={isOpen}
+      onClose={onCancel}
+      labelledBy="override-modal-title"
+      showPhoneClose={false}
+      overlayClassName="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/50 backdrop-blur-sm p-4 overflow-y-auto"
+      panelClassName="bg-white border border-sand rounded shadow-lg max-w-md w-full overflow-hidden"
+    >
         {/* Header */}
         <div className="px-6 py-4 border-b border-sand bg-warm-white">
-          <h3 className="font-sub text-xl text-charcoal font-bold">
+          <h3 id="override-modal-title" className="font-sub text-xl text-charcoal font-bold">
             {t('admin.override.modalTitle', { defaultValue: 'Administrator Override Required' })}
           </h3>
         </div>
@@ -112,7 +120,6 @@ export const OverrideModal: React.FC<OverrideModalProps> = ({
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </AdminDialog>
   )
 }

@@ -13,7 +13,8 @@ export default defineConfig({
   workers: 1,
   reporter: 'list',
   timeout: 60_000,
-  expect: { toHaveScreenshot: { maxDiffPixelRatio: 0 } },
+  // animations: 'disabled' finishes CSS transitions (e.g. navbar hover/shadow) before each shot.
+  expect: { toHaveScreenshot: { maxDiffPixelRatio: 0, animations: 'disabled' } },
   use: {
     baseURL: 'http://localhost:5180',
     locale: 'en-CA',

@@ -23,6 +23,7 @@ const charts = (page: Page) => page.locator('.recharts-wrapper')
 // Full-page shots draw the fixed navbar at the current scroll position, and clicking a tab scrolls
 // the tab strip, so both are reset before every screenshot.
 async function resetScroll(page: Page) {
+  await page.mouse.move(0, 0)
   await page.evaluate(() => {
     window.scrollTo(0, 0)
     for (const el of document.querySelectorAll<HTMLElement>('*')) if (el.scrollLeft) el.scrollLeft = 0

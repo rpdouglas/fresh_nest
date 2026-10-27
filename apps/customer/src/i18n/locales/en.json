@@ -802,7 +802,8 @@
           "revenue": "Estimated Revenue",
           "avgValue": "Avg Booking Value",
           "share": "Conversion Share"
-        }
+        },
+        "errorTitle": "Couldn't load analytics"
       },
       "leads": {
         "organic": "Organic Search",
@@ -1077,6 +1078,21 @@
           "fr": "French"
         }
       }
+    },
+    "nav": {
+      "section": "Section"
+    },
+    "dialog": {
+      "close": "Close"
+    },
+    "confirm": {
+      "cancelTitle": "Cancel this booking?",
+      "cancelBody": "This cancels {{name}}'s booking for {{date}}. The job is cancelled and the owner gets a text message.",
+      "cancelYes": "Cancel booking",
+      "confirmTitle": "Confirm this booking?",
+      "confirmBody": "This confirms {{name}}'s booking for {{date}} and creates the job for dispatch. No message is sent to the client, so agree the time with them directly.",
+      "confirmYes": "Confirm booking",
+      "keep": "Keep booking"
     }
   },
   "blog": {
