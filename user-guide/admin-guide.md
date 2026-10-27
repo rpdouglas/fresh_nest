@@ -1,12 +1,12 @@
 # Admin Guide — Fresh Nest Co.
 **For:** Lauren (Owner/Admin)  
-**Updated:** 2026-06-10
+**Updated:** 2026-10-27
 
 ---
 
 ## Accessing the Admin Dashboard
 
-Navigate to [lilypad-freshnest.web.app/admin](https://lilypad-freshnest.web.app/admin) and sign in with your authorized Google account. 
+Navigate to [lilypad-freshnest.web.app/admin](https://lilypad-freshnest.web.app/admin) and click the sign-in button, then choose your Google account. Only accounts with the **admin** role get in; any other account sees an "access denied" screen.
 
 The dashboard is split into seven tabs:
 1. **Bookings Management:** Track and manage operational client bookings.
@@ -16,6 +16,34 @@ The dashboard is split into seven tabs:
 5. **Pay Rate Management:** Configure and monitor hourly pay rates per role.
 6. **Audit Logs:** View administrative security override tracking (e.g., travel buffers, earnings caps, and blocked windows overrides).
 7. **Reviews Moderation:** Approve or reject submitted client reviews before they appear publicly on the website.
+
+---
+
+## Checking for New Quote Requests
+
+Every request sent from the website arrives as a **Pending Confirmation** booking. You are alerted two ways:
+
+- **Text message** to the owner's mobile, within seconds of the request:
+  `Fresh Nest Co.: New quote request — Diane Lafleur, Standard Clean, 2026-10-15, 6135550100. Ref #ABCD1234. Follow up within 24 hours.`
+  The `Ref #` matches the "Request reference" the client sees on their thank-you page, so you can find their request if they call.
+  Alerts go to **(613) 861-8812** unless an `OWNER_PHONE` environment variable is set for the Cloud Functions. That number must be able to receive texts. If it is a landline, set `OWNER_PHONE` to the owner's mobile (E.164 format, e.g. `+16135550100`).
+- **"New quote request" email** to the owner inbox, with every detail of the request.
+
+> **Email is not being delivered at the moment** (P3-E30: Resend key and domain setup pending). Until it is fixed, the **text message and the admin panel are the only places new requests appear**. Check the pending list at least once a day, ideally morning and afternoon, to keep the 24-hour promise.
+
+### Finding pending requests
+1. Sign in at `/admin` and open the **Bookings** tab.
+2. Set **Booking Status** to **Pending Confirmation**. Everything already handled drops out of the list.
+3. Set **Sort By** to **Submitted At** and **Sort Order** to **Descending**, so the newest requests are at the top. (The default sorts by the client's preferred cleaning date, which buries new requests.)
+4. Leave **Start Date / End Date** as they are. They filter on the **preferred cleaning date** (90 days back to 180 days ahead), so new requests are always included.
+5. The list loads 50 bookings at a time. Sorting only reorders what is loaded, so if **Load More** shows at the bottom, click it until it reads "No more bookings".
+6. To find one client, type their name, email, phone or address in the search box. Use the `Ref #` from the text to match the request with the **Booking ID** shown in its detail panel (the reference is the ID's first 8 characters).
+
+### Working a request
+1. Click the row to open its details: contact information, property, add-ons, notes, and the client's **language**.
+2. Call or email the client with a quote **in their language** (EN or FR) within 24 hours. No price is ever shown on the website (P3-E29), so this is where pricing is agreed.
+3. **Client accepts** → change **Status** to **Confirmed**. This creates the job for the Dispatch Board. It does **not** message the client, so agree the date and time with them directly. They get the day-before reminder text automatically.
+4. **Client declines** → change **Status** to **Cancelled**. This sends the owner a cancellation text; nothing is sent to the client.
 
 ---
 
@@ -35,6 +63,7 @@ When a client calls or walks in, you can enter their booking directly from the a
 5. **Marketing consent** — only check this box if the client explicitly opted in during the call.
 6. Click **Create Booking**. The booking appears at the top of the bookings list.
 
+> **Note:** Phone-in and walk-in bookings do **not** trigger the owner text alert, since you entered them yourself.
 > **Note:** Client email/SMS is sent **once, when a booking is created** — wording depends on the status at creation (`pending` → "quote request received", `confirmed` → "booking confirmed").
 > **Changing a booking from `pending` to `confirmed` later does not send any message to the client** (it creates the job only). After a client accepts a quote, confirm the date and time with them directly by phone or email.
 
@@ -128,7 +157,7 @@ To maximize retention and ensure cleaning consistency, a scheduled daily backgro
 2. **Next Date Window:** It projects the next occurrence (+7, +14, or +30 days). If that next date is within a 14-day window from today, it initiates renewal.
 3. **De-duplication Check:** The system verifies that no active booking already exists for that user on that specific date.
 4. **Draft Generation:** If clear, a new booking is generated with status `pending`, copying all property parameters, preferences, notes, preferred cleaners and the client's existing referral code. It is marked as a renewal (`createdBy: system:recurring-renewal`).
-5. **Owner Alert:** The owner gets a **"Recurring renewal"** email asking them to confirm the visit. The client is **not** sent a "quote request received" email or SMS, and no new referral code is created.
+5. **Owner Alert:** The owner gets a **"Recurring renewal"** text and email asking them to confirm the visit. The client is **not** sent a "quote request received" email or SMS, and no new referral code is created.
 6. **Confirm to schedule:** Set the renewal to `confirmed` in the admin panel. That creates the job for dispatch, and the client then gets the usual day-before reminder SMS.
 
 > **Reminder SMS:** the day-before reminder goes only to `confirmed` bookings. A `pending` quote request or unconfirmed renewal gets no "your cleaning is tomorrow" text.

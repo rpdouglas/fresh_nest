@@ -6,10 +6,11 @@ import {
   ownerText,
   isQuoteRequest,
   isRenewal,
+  isAdminCreated,
   RENEWAL_CREATED_BY,
   type BookingData,
 } from '../src/emailTemplates'
-import { confirmationSms } from '../src/smsTemplates'
+import { confirmationSms, ownerAlertSms } from '../src/smsTemplates'
 
 // P3-E29: public submissions are quote requests — messages must not imply a confirmed,
 // priced booking, and must never contain prices.
@@ -107,5 +108,31 @@ describe('confirmation SMS', () => {
   it('uses the current business phone number', () => {
     expect(confirmationSms('Travis', 'standard', '2026-10-15', 'en', true)).toContain('(613) 861-8812')
     expect(clientHtml(booking({ language: 'en' }), 'en')).toContain('tel:+16138618812')
+  })
+})
+
+describe('owner alert SMS (P12 Lauren — never miss a request while email is down)', () => {
+  it('a website quote request gives the client, phone and short reference — no prices', () => {
+    const sms = ownerAlertSms(booking(), 'abcd1234wxyz', false)
+    expect(sms).toMatch(/^Fresh Nest Co\.: New quote request — Diane Lafleur/)
+    expect(sms).toContain('Standard Clean')
+    expect(sms).toContain('2026-10-15')
+    expect(sms).toContain('6135550100')
+    expect(sms).toContain('Ref #ABCD1234') // matches the thank-you page reference
+    expect(sms).toMatch(/within 24 hours/)
+    expect(sms).not.toMatch(PRICE)
+  })
+
+  it('a renewal asks for confirmation instead of a quote', () => {
+    const sms = ownerAlertSms(booking(), 'abcd1234wxyz', true)
+    expect(sms).toMatch(/Recurring renewal — Diane Lafleur/)
+    expect(sms).toMatch(/Confirm it in the admin panel/)
+    expect(sms).not.toMatch(/quote/)
+  })
+
+  it('is skipped only for admin phone-in bookings', () => {
+    expect(isAdminCreated(booking())).toBe(false)
+    expect(isAdminCreated(booking({ createdBy: RENEWAL_CREATED_BY }))).toBe(false)
+    expect(isAdminCreated(booking({ createdBy: 'lauren@freshnestco.ca' }))).toBe(true)
   })
 })
