@@ -60,7 +60,7 @@ describe('P3-E31 hidden sections', () => {
 
 describe('P3-E31 hero order', () => {
   it('shows the logo, then the serving statement, then the headline, then the button', () => {
-    render(<MemoryRouter><Hero /></MemoryRouter>)
+    const { container } = render(<MemoryRouter><Hero /></MemoryRouter>)
     const logo = screen.getByAltText('Fresh Nest Co.')
     const subhead = screen.getByText('hero.subhead')
     const headline = screen.getByRole('heading', { level: 1 })
@@ -70,6 +70,7 @@ describe('P3-E31 hero order', () => {
     expect(follows(logo, subhead)).toBe(true)
     expect(follows(subhead, headline)).toBe(true)
     expect(follows(headline, button)).toBe(true)
+    expect(container.querySelector('img[src="/images/nest-watermark.jpg"]')).toBeNull()
   })
 })
 
