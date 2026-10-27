@@ -1151,6 +1151,7 @@
       "loading": "Chargement…",
       "empty": "Personne pour l'instant.",
       "you": "vous",
+      "unknownAccount": "Compte inconnu (n'existe plus)",
       "makeOwner": "Rendre propriétaire",
       "makeManager": "Rendre gestionnaire",
       "remove": "Retirer l'accès",

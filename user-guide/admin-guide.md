@@ -150,6 +150,7 @@ The **Team & roles** tab lists everyone with office access and lets an Owner cha
 - **Give access:** enter the person's email, choose **Manager** or **Owner**, then click **Give access**. If they've never signed in to the site, they're **pre-approved**: they get the role the first time they sign in with that email. If they're already signed in, they need to sign out and sign in again.
 - **Make Owner / Make Manager:** switches someone between the two roles.
 - **Remove access:** asks you to confirm, then takes away office access. Someone who is also on staff keeps the staff app.
+- **Older entries:** an entry added by hand in the early setup may be saved under an account ID. The tab shows its email instead. If that account no longer exists, it shows as **Unknown account** and you can only remove it. Changing or removing an older entry also tidies it into the normal email form.
 - **You can't change your own role.** Ask another Owner, so there is always at least one Owner.
 - **After any change,** the person needs to **sign out and sign in again** before the new access applies.
 - Every change is recorded in **Audit Logs**: who made it, when, and the old and new role.

@@ -6,7 +6,7 @@ export { onStaffUpdatedTrigger } from './triggers/staff'
 export { onUserCreated } from './triggers/auth'
 
 // Domain callable re-exports
-export { setUserRole } from './callable/auth'
+export { setUserRole, resolveOfficeEntries } from './callable/auth'
 export { createPaymentIntent, stripeWebhookHandler } from './callable/payments'
 export { claimJob } from './callable/job'
 export { listOpenShifts } from './callable/shifts'

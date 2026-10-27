@@ -99,7 +99,7 @@ Stores employee profiles, schedule constraints, financial limits, and compliance
 ---
 
 ## 5. Collection: `admins`
-Stores the office allowlist: exactly the people with Owner or Manager access (P3-E35). Doc ID is the lowercased email. Written only by the `setUserRole` Cloud Function; apps can't write it. An entry may exist before the person has an account (pre-approval); `onUserCreated` gives them the role on first sign-in. Office users can read the whole list (Team & roles); anyone else can read only their own entry.
+Stores the office allowlist: exactly the people with Owner or Manager access (P3-E35). Doc ID is the lowercased email. Written only by the `setUserRole` Cloud Function; apps can't write it. An entry may exist before the person has an account (pre-approval); `onUserCreated` gives them the role on first sign-in. Some old entries were added by hand under an account ID instead of an email: nothing reads them for access. The Team & roles tab shows their email (via the `resolveOfficeEntries` function), and `setUserRole` deletes them when it updates that account. Office users can read the whole list (Team & roles); anyone else can read only their own entry.
 
 | Field Name | Type | Required | Description / Allowed Values |
 | :--- | :--- | :--- | :--- |

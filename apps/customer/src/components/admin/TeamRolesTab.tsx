@@ -11,11 +11,18 @@ import { cn } from '@/lib/utils/utils'
 // Owners can give or take away the Owner and Manager roles (enforced in the setUserRole function).
 
 interface OfficeMember {
-  email: string
+  /** Allowlist doc ID: the email, or an account ID on old hand-made entries. */
+  id: string
+  /** null when an old entry's account can't be found. */
+  email: string | null
   role: OfficeRole
 }
 
 type SetUserRole = (data: { email: string; role: string; forceDowngrade?: boolean }) => Promise<{ data?: { pending?: boolean } }>
+type ResolveOfficeEntries = (data: { ids: string[] }) => Promise<{ data?: { emails?: Record<string, string | null> } }>
+
+const byRoleThenName = (a: OfficeMember, b: OfficeMember) =>
+  a.role === b.role ? (a.email ?? a.id).localeCompare(b.email ?? b.id) : a.role === 'owner' ? -1 : 1
 
 interface TeamRolesTabProps {
   currentEmail: string
@@ -37,16 +44,29 @@ export function TeamRolesTab({ currentEmail }: TeamRolesTabProps) {
   const [pendingRemove, setPendingRemove] = useState<OfficeMember | null>(null)
 
   const me = currentEmail.trim().toLowerCase()
+  const label = (m: OfficeMember) => m.email ?? t('admin.team.unknownAccount')
 
   const load = useCallback(async () => {
     setLoading(true)
     try {
       const snap = await getDocs(collection(db, 'admins'))
-      const list = snap.docs
-        .map((d) => ({ email: d.id, role: officeRoleOf(d.data().role ?? 'owner') }))
+      const entries = snap.docs
+        .map((d) => ({ id: d.id, email: d.id.includes('@') ? d.id : null, role: officeRoleOf(d.data().role ?? 'owner') }))
         .filter((m): m is OfficeMember => m.role !== null)
-        .sort((a, b) => (a.role === b.role ? a.email.localeCompare(b.email) : a.role === 'owner' ? -1 : 1))
-      setMembers(list)
+      // Old entries saved under an account ID: look up their email so people see who they are.
+      const legacyIds = entries.filter((m) => m.email === null).map((m) => m.id)
+      if (legacyIds.length > 0) {
+        try {
+          const res = await (httpsCallable(functions, 'resolveOfficeEntries') as unknown as ResolveOfficeEntries)({ ids: legacyIds })
+          const emails = res?.data?.emails ?? {}
+          for (const m of entries) if (m.email === null) m.email = emails[m.id] ?? null
+        } catch (err) {
+          console.error('Error looking up old office entries:', err)
+        }
+      }
+      // An old entry for someone who also has an email entry is the same person: show them once.
+      const emailIds = new Set(entries.filter((m) => m.id.includes('@')).map((m) => m.id))
+      setMembers(entries.filter((m) => m.id.includes('@') || !m.email || !emailIds.has(m.email)).sort(byRoleThenName))
     } catch (err) {
       console.error('Error loading office roles:', err)
       setMessage({ kind: 'error', text: t('admin.team.errors.load') })
@@ -95,6 +115,7 @@ export function TeamRolesTab({ currentEmail }: TeamRolesTabProps) {
   }
 
   const handleChangeRole = (member: OfficeMember) => {
+    if (!member.email) return
     const next: OfficeRole = member.role === 'owner' ? 'manager' : 'owner'
     void call(
       { email: member.email, role: next, forceDowngrade: next === 'manager' },
@@ -106,7 +127,9 @@ export function TeamRolesTab({ currentEmail }: TeamRolesTabProps) {
     const member = pendingRemove
     setPendingRemove(null)
     if (!member) return
-    await call({ email: member.email, role: 'customer', forceDowngrade: true }, () => t('admin.team.removed', { email: member.email }))
+    // An entry whose account no longer exists is removed by its ID (only the list entry changes).
+    const target = member.email ?? member.id
+    await call({ email: target, role: 'customer', forceDowngrade: true }, () => t('admin.team.removed', { email: label(member) }))
   }
 
   return (
@@ -164,19 +187,21 @@ export function TeamRolesTab({ currentEmail }: TeamRolesTabProps) {
             {members.map((member) => {
               const isMe = member.email === me
               return (
-                <li key={member.email} className="flex flex-col md:flex-row md:items-center gap-3 px-6 py-4">
+                <li key={member.id} className="flex flex-col md:flex-row md:items-center gap-3 px-6 py-4">
                   <div className="flex-1 min-w-0">
                     <p className="font-body text-base text-charcoal break-all">
-                      {member.email}
+                      {label(member)}
                       {isMe && <span className="text-text-muted"> · {t('admin.team.you')}</span>}
                     </p>
                     <p className="font-body text-base text-text-muted">{t(`admin.team.roles.${member.role}`)}</p>
                   </div>
                   {!isMe && (
                     <div className="flex gap-2 flex-wrap">
-                      <button type="button" disabled={busy} onClick={() => handleChangeRole(member)} className={secondaryButton}>
-                        {t(member.role === 'owner' ? 'admin.team.makeManager' : 'admin.team.makeOwner')}
-                      </button>
+                      {member.email && (
+                        <button type="button" disabled={busy} onClick={() => handleChangeRole(member)} className={secondaryButton}>
+                          {t(member.role === 'owner' ? 'admin.team.makeManager' : 'admin.team.makeOwner')}
+                        </button>
+                      )}
                       <button
                         type="button"
                         disabled={busy}
@@ -198,7 +223,7 @@ export function TeamRolesTab({ currentEmail }: TeamRolesTabProps) {
         open={pendingRemove !== null}
         tone="danger"
         title={t('admin.team.removeTitle')}
-        body={t('admin.team.removeBody', { email: pendingRemove?.email ?? '' })}
+        body={t('admin.team.removeBody', { email: pendingRemove ? label(pendingRemove) : '' })}
         confirmLabel={t('admin.team.remove')}
         cancelLabel={t('admin.checklist.cancel')}
         onConfirm={() => { void handleRemove() }}

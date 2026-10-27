@@ -1151,6 +1151,7 @@
       "loading": "Loading…",
       "empty": "No one is listed yet.",
       "you": "you",
+      "unknownAccount": "Unknown account (no longer exists)",
       "makeOwner": "Make Owner",
       "makeManager": "Make Manager",
       "remove": "Remove access",
