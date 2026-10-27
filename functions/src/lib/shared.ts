@@ -31,6 +31,11 @@ export const TWILIO_ACCOUNT_SID = defineSecret('TWILIO_ACCOUNT_SID')
 export const TWILIO_AUTH_TOKEN = defineSecret('TWILIO_AUTH_TOKEN')
 export const TWILIO_PHONE_NUMBER = defineSecret('TWILIO_PHONE_NUMBER')
 
+// Owner's mobile for SMS alerts (new quote requests, cancellations).
+export function ownerPhone(): string {
+  return process.env['OWNER_PHONE'] || '+16138618812'
+}
+
 // Standard Firebase services
 export const db = getFirestore()
 export const auth = getAuth()

@@ -38,6 +38,11 @@ export function isRenewal(b: Pick<BookingData, 'createdBy'>): boolean {
   return b.createdBy === RENEWAL_CREATED_BY
 }
 
+/** Phone-in / walk-in bookings entered by an admin (who already knows about them). */
+export function isAdminCreated(b: Pick<BookingData, 'createdBy'>): boolean {
+  return Boolean(b.createdBy) && !isRenewal(b)
+}
+
 /**
  * P3-E29: public submissions are quote requests (status 'pending') — no price has been agreed,
  * so client/owner messages say "request received, quote to follow". Admin phone-in bookings
