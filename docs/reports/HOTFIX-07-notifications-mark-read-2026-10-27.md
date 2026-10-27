@@ -1,6 +1,6 @@
 # HOTFIX-07 — Staff notifications could not be marked read (gap analysis N-2)
 
-**Date:** 2026-10-27 · **Found by:** FSM gap analysis ([R2](../gap-analysis/GAP_ANALYSIS_2026-10-27.md)) · **Owner approval to draft:** 2026-10-27 · **Status:** ⏸ Rule written and tested; **needs human approval + rules deploy**
+**Date:** 2026-10-27 · **Found by:** FSM gap analysis ([R2](../gap-analysis/GAP_ANALYSIS_2026-10-27.md)) · **Owner approval to draft:** 2026-10-27 · **Status:** ✅ Closed 2026-10-27 — merged (PR #38), rules deployed, owner check passed
 
 ## Personas
 All staff (P7–P15). The unread badge in the staff app never cleared. P10 Ahmed relies on icons and badges.
@@ -31,3 +31,8 @@ After merging, use either:
 - **A signed-in machine:** `npx firebase deploy --only firestore:rules --project freshnest-aa51e`
 
 **Check:** open the staff app with unread notifications, open the list (which marks them all read), and confirm the badge clears and stays cleared after a reload.
+
+## Close-out (2026-10-27)
+- **Merged:** PR #38 merged to `main` at `f5dfffd`. The app deploy (Deploy to Production #127) passed.
+- **Rules deployed:** by the owner through **Deploy Security Rules** run #2, target `firestore-rules`. The rules tests passed, then the deploy succeeded.
+- **Check:** passed. The staff app notification badge clears after opening the list.
