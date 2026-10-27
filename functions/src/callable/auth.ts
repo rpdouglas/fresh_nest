@@ -1,12 +1,14 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https'
-import { getFirestore } from 'firebase-admin/firestore'
+import { getFirestore, type Firestore } from 'firebase-admin/firestore'
 import { getAuth } from 'firebase-admin/auth'
 import { logError } from '../lib/shared'
-import { checkRoleChange, isOfficeRole, normalizeRole, requireOffice, type Role } from '../lib/roles'
+import { allowlistRole, checkPreApproval, checkRoleChange, isOfficeRole, normalizeRole, requireOffice, type Role } from '../lib/roles'
 
 // P2-E8 / P3-E35: set a user's role claim.
 // Owners and Managers may set supervisor, staff and customer; only Owners may give or take away
 // owner and manager. Nobody changes their own role. Every change is written to the audit log.
+// An Owner can pre-approve an email that has no account yet: only the allowlist changes, and
+// onUserCreated applies the role on their first sign-in.
 export const setUserRole = onCall(async (request) => {
   const db = getFirestore()
   const callerRole = await requireOffice(request.auth, db, 'change roles')
@@ -21,11 +23,12 @@ export const setUserRole = onCall(async (request) => {
   const auth = getAuth()
 
   if (!resolvedUid && targetEmail) {
+    const email = targetEmail.trim().toLowerCase()
     try {
-      const userRecord = await auth.getUserByEmail(targetEmail.trim().toLowerCase())
+      const userRecord = await auth.getUserByEmail(email)
       resolvedUid = userRecord.uid
     } catch {
-      throw new HttpsError('not-found', `User with email ${targetEmail} not found in Auth. They need to sign in once first.`)
+      return preApprove(db, caller, callerRole, email, targetRole, forceDowngrade)
     }
   }
 
@@ -90,3 +93,53 @@ export const setUserRole = onCall(async (request) => {
     throw new HttpsError('internal', 'Failed to update user custom claims.')
   }
 })
+
+type Caller = { uid: string; token: { email?: string } }
+
+async function preApprove(
+  db: Firestore,
+  caller: Caller,
+  callerRole: Role,
+  email: string,
+  targetRole: string | undefined,
+  forceDowngrade: boolean,
+) {
+  const allowRef = db.collection('admins').doc(email)
+  const allowSnap = await allowRef.get()
+  const existingRole = allowSnap.exists ? allowlistRole(allowSnap.data()) : undefined
+  const refusal = checkPreApproval({
+    callerEmail: caller.token.email?.trim().toLowerCase() ?? caller.uid,
+    callerRole,
+    targetEmail: email,
+    existingRole,
+    targetRole,
+    forceDowngrade,
+  })
+  if (refusal) throw refusal
+
+  const newRole = normalizeRole(targetRole) as Role
+  const changedBy = caller.token.email ?? caller.uid
+  try {
+    if (isOfficeRole(newRole)) {
+      await allowRef.set({ role: newRole, grantedBy: changedBy, grantedAt: new Date() }, { merge: true })
+    } else {
+      await allowRef.delete()
+    }
+    await db.collection('auditLog').add({
+      collection: 'admins',
+      documentId: email,
+      field: 'role',
+      oldValue: existingRole ?? null,
+      newValue: isOfficeRole(newRole) ? newRole : null,
+      changedBy,
+      changedAt: new Date(),
+      reason: 'pre-approved before first sign-in',
+      overrideType: 'role_change',
+    })
+  } catch (err) {
+    logError(`[setUserRole] Failed to pre-approve ${email}:`, err)
+    throw new HttpsError('internal', 'Failed to update the office allowlist.')
+  }
+  console.log(`[setUserRole] Pre-approved '${email}' as '${newRole}' (was '${existingRole ?? 'none'}').`)
+  return { success: true, pending: true, role: newRole }
+}

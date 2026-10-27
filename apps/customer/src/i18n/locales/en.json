@@ -1145,7 +1145,7 @@
         "owner": "Owner",
         "manager": "Manager"
       },
-      "addHint": "They must have signed in to the site once with this email. After a change they need to sign out and sign in again.",
+      "addHint": "If they haven't signed in to the site yet, they get this role the first time they sign in with this email. If they're already signed in, they need to sign out and sign in again.",
       "add": "Give access",
       "listHeading": "People with office access",
       "loading": "Loading…",
@@ -1157,6 +1157,7 @@
       "removeTitle": "Remove office access?",
       "removeBody": "{{email}} will no longer be able to use the admin panel. If they are also on staff, they keep the staff app.",
       "added": "{{email}} is now {{role}}.",
+      "addedPending": "{{email}} is pre-approved as {{role}}. They get access the first time they sign in with this email.",
       "changed": "{{email}} is now {{role}}.",
       "removed": "{{email}} no longer has office access.",
       "errors": {

@@ -6,7 +6,7 @@ import { visibleAdminTabs, parseAdminTab } from './adminTabs'
 // P3-E35: Owners manage who has office access.
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string, opts?: Record<string, unknown>) => (opts?.email ? `${key}:${String(opts.email)}` : key) }),
+  useTranslation: () => ({ t: (key: string, opts?: Record<string, unknown>) => (typeof opts?.email === 'string' ? `${key}:${opts.email}` : key) }),
 }))
 vi.mock('@/lib/firebase/firebase', () => ({ db: {}, functions: {} }))
 const docs = [
@@ -14,8 +14,8 @@ const docs = [
   { id: 'lauren@freshnest.ca', data: () => ({ role: 'manager' }) },
   { id: 'legacy@freshnest.ca', data: () => ({}) },
 ]
-vi.mock('firebase/firestore', () => ({ collection: vi.fn(), getDocs: vi.fn(async () => ({ docs })) }))
-const setUserRole = vi.fn(async () => ({ data: { success: true } }))
+vi.mock('firebase/firestore', () => ({ collection: vi.fn(), getDocs: vi.fn(() => Promise.resolve({ docs })) }))
+const setUserRole = vi.fn((_data: unknown) => Promise.resolve({ data: { success: true, pending: false } }))
 vi.mock('firebase/functions', () => ({ httpsCallable: vi.fn(() => setUserRole) }))
 
 beforeEach(() => vi.clearAllMocks())
@@ -60,7 +60,18 @@ describe('Team & roles tab', () => {
     await waitFor(() => expect(setUserRole).toHaveBeenCalledWith({ email: 'legacy@freshnest.ca', role: 'manager', forceDowngrade: true }))
   })
 
-  it('shows a plain message when the person has never signed in', async () => {
+  it('pre-approves an email that has no account yet, and says so', async () => {
+    setUserRole.mockResolvedValueOnce({ data: { success: true, pending: true } })
+    render(<TeamRolesTab currentEmail="ryan@freshnest.ca" />)
+    await screen.findAllByRole('listitem')
+    fireEvent.change(screen.getByLabelText('admin.team.email'), { target: { value: 'owner2@freshnest.ca' } })
+    fireEvent.change(screen.getByLabelText('admin.team.role'), { target: { value: 'owner' } })
+    fireEvent.click(screen.getByRole('button', { name: 'admin.team.add' }))
+    expect(await screen.findByRole('status')).toHaveTextContent('admin.team.addedPending:owner2@freshnest.ca')
+    expect(setUserRole).toHaveBeenCalledWith({ email: 'owner2@freshnest.ca', role: 'owner', forceDowngrade: false })
+  })
+
+  it('shows a plain message if the server still reports no account', async () => {
     setUserRole.mockRejectedValueOnce(new Error('User with email x not found in Auth.'))
     render(<TeamRolesTab currentEmail="ryan@freshnest.ca" />)
     await screen.findAllByRole('listitem')

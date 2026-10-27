@@ -147,7 +147,7 @@ Every job has a checklist: the tasks the cleaner ticks off in the staff app, wit
 
 The **Team & roles** tab lists everyone with office access and lets an Owner change it.
 
-- **Give access:** enter the person's email, choose **Manager** or **Owner**, then click **Give access**. The person must have signed in to the site once with that email first.
+- **Give access:** enter the person's email, choose **Manager** or **Owner**, then click **Give access**. If they've never signed in to the site, they're **pre-approved**: they get the role the first time they sign in with that email. If they're already signed in, they need to sign out and sign in again.
 - **Make Owner / Make Manager:** switches someone between the two roles.
 - **Remove access:** asks you to confirm, then takes away office access. Someone who is also on staff keeps the staff app.
 - **You can't change your own role.** Ask another Owner, so there is always at least one Owner.

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { allowlistRole, checkRoleChange, isOfficeRole, isOwnerRole, normalizeRole, resolveOfficeRole } from '../src/lib/roles'
+import { allowlistRole, checkPreApproval, checkRoleChange, isOfficeRole, isOwnerRole, normalizeRole, resolveOfficeRole } from '../src/lib/roles'
 
 // P3-E35: Owner and Manager. Managers can do everything except give or take away office roles.
 
@@ -63,5 +63,29 @@ describe('resolveOfficeRole', () => {
     expect(await resolveOfficeRole({ uid: 'u', token: { role: 'manager' } }, db({}))).toBe('manager')
     expect(await resolveOfficeRole({ uid: 'u', token: { role: 'customer', email: 'Lauren@X.ca' } }, db({ 'lauren@x.ca': { role: 'manager' } }))).toBe('manager')
     expect(await resolveOfficeRole({ uid: 'u', token: { role: 'staff', email: 'a@b.ca' } }, db({}))).toBeUndefined()
+  })
+})
+
+describe('checkPreApproval (no account yet)', () => {
+  const pre = (over: Partial<Parameters<typeof checkPreApproval>[0]>) =>
+    checkPreApproval({ callerEmail: 'owner@x.ca', callerRole: 'owner', targetEmail: 'new@x.ca', existingRole: undefined, targetRole: 'owner', forceDowngrade: false, ...over })
+
+  it('an Owner can pre-approve an Owner or Manager, switch them, or withdraw it', () => {
+    expect(pre({})).toBeNull()
+    expect(pre({ targetRole: 'manager' })).toBeNull()
+    expect(pre({ existingRole: 'owner', targetRole: 'manager', forceDowngrade: true })).toBeNull()
+    expect(pre({ existingRole: 'manager', targetRole: 'customer', forceDowngrade: true })).toBeNull()
+  })
+  it('a Manager cannot pre-approve anyone', () => {
+    expect(pre({ callerRole: 'manager' })?.code).toBe('permission-denied')
+    expect(pre({ callerRole: 'manager', targetRole: 'manager' })?.code).toBe('permission-denied')
+  })
+  it('staff roles still need an account first', () => {
+    expect(pre({ targetRole: 'staff' })?.code).toBe('not-found')
+    expect(pre({ callerRole: 'manager', targetRole: 'supervisor' })?.code).toBe('not-found')
+  })
+  it('nobody changes their own entry; admin is never written', () => {
+    expect(pre({ targetEmail: 'owner@x.ca', existingRole: 'owner', targetRole: 'customer', forceDowngrade: true })?.code).toBe('failed-precondition')
+    expect(pre({ targetRole: 'admin' })?.code).toBe('invalid-argument')
   })
 })

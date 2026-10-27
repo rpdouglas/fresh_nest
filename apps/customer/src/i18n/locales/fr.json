@@ -1145,7 +1145,7 @@
         "owner": "Propriétaire",
         "manager": "Gestionnaire"
       },
-      "addHint": "La personne doit s'être connectée au site une fois avec ce courriel. Après un changement, elle doit se déconnecter puis se reconnecter.",
+      "addHint": "Si la personne ne s'est jamais connectée au site, elle obtient ce rôle à sa première connexion avec ce courriel. Si elle est déjà connectée, elle doit se déconnecter puis se reconnecter.",
       "add": "Donner l'accès",
       "listHeading": "Personnes ayant accès au bureau",
       "loading": "Chargement…",
@@ -1157,6 +1157,7 @@
       "removeTitle": "Retirer l'accès au bureau?",
       "removeBody": "{{email}} ne pourra plus utiliser le panneau d'administration. Si la personne fait aussi partie du personnel, elle garde l'application du personnel.",
       "added": "{{email}} est maintenant {{role}}.",
+      "addedPending": "{{email}} est préapprouvé·e comme {{role}}. L'accès sera actif à sa première connexion avec ce courriel.",
       "changed": "{{email}} est maintenant {{role}}.",
       "removed": "{{email}} n'a plus accès au bureau.",
       "errors": {

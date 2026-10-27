@@ -99,7 +99,7 @@ describe('AdminSectionNav', () => {
 
   it('Owners also get the Team & roles section', () => {
     render(<AdminSectionNav active="bookings" onChange={vi.fn()} isOwner />)
-    const select = screen.getByLabelText('admin.nav.section') as HTMLSelectElement
+    const select = screen.getByLabelText<HTMLSelectElement>('admin.nav.section')
     expect(Array.from(select.options).map((o) => o.value)).toEqual(ADMIN_TABS.map((tab) => tab.key))
   })
 

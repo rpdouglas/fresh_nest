@@ -15,7 +15,7 @@ interface OfficeMember {
   role: OfficeRole
 }
 
-type SetUserRole = (data: { email: string; role: string; forceDowngrade?: boolean }) => Promise<unknown>
+type SetUserRole = (data: { email: string; role: string; forceDowngrade?: boolean }) => Promise<{ data?: { pending?: boolean } }>
 
 interface TeamRolesTabProps {
   currentEmail: string
@@ -61,12 +61,13 @@ export function TeamRolesTab({ currentEmail }: TeamRolesTabProps) {
     return () => clearTimeout(timer)
   }, [load])
 
-  const call = async (data: Parameters<SetUserRole>[0], okText: string) => {
+  // okText gets whether the email had no account yet (pre-approved; applied on first sign-in).
+  const call = async (data: Parameters<SetUserRole>[0], okText: (pending: boolean) => string) => {
     setBusy(true)
     setMessage(null)
     try {
-      await (httpsCallable(functions, 'setUserRole') as unknown as SetUserRole)(data)
-      setMessage({ kind: 'ok', text: okText })
+      const result = await (httpsCallable(functions, 'setUserRole') as unknown as SetUserRole)(data)
+      setMessage({ kind: 'ok', text: okText(result?.data?.pending === true) })
       await load()
       return true
     } catch (err) {
@@ -88,7 +89,7 @@ export function TeamRolesTab({ currentEmail }: TeamRolesTabProps) {
     const existing = members.find((m) => m.email === target)
     const ok = await call(
       { email: target, role, forceDowngrade: existing?.role === 'owner' && role === 'manager' },
-      t('admin.team.added', { email: target, role: t(`admin.team.roles.${role}`) }),
+      (pending) => t(pending ? 'admin.team.addedPending' : 'admin.team.added', { email: target, role: t(`admin.team.roles.${role}`) }),
     )
     if (ok) setEmail('')
   }
@@ -97,7 +98,7 @@ export function TeamRolesTab({ currentEmail }: TeamRolesTabProps) {
     const next: OfficeRole = member.role === 'owner' ? 'manager' : 'owner'
     void call(
       { email: member.email, role: next, forceDowngrade: next === 'manager' },
-      t('admin.team.changed', { email: member.email, role: t(`admin.team.roles.${next}`) }),
+      () => t('admin.team.changed', { email: member.email, role: t(`admin.team.roles.${next}`) }),
     )
   }
 
@@ -105,7 +106,7 @@ export function TeamRolesTab({ currentEmail }: TeamRolesTabProps) {
     const member = pendingRemove
     setPendingRemove(null)
     if (!member) return
-    await call({ email: member.email, role: 'customer', forceDowngrade: true }, t('admin.team.removed', { email: member.email }))
+    await call({ email: member.email, role: 'customer', forceDowngrade: true }, () => t('admin.team.removed', { email: member.email }))
   }
 
   return (

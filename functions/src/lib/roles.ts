@@ -78,6 +78,34 @@ export function checkRoleChange(change: RoleChange): HttpsError | null {
   return null
 }
 
+/**
+ * Pre-approval: the email has no account yet, so only the office allowlist can change. The role
+ * is applied by onUserCreated when they first sign in. Same rules as checkRoleChange (Owner only,
+ * nobody changes their own entry); anything that isn't an office grant or removal is not found.
+ */
+export function checkPreApproval(change: {
+  callerEmail: string
+  callerRole: Role | undefined
+  targetEmail: string
+  existingRole: unknown
+  targetRole: unknown
+  forceDowngrade: boolean
+}): HttpsError | null {
+  const refusal = checkRoleChange({
+    callerUid: change.callerEmail,
+    callerRole: change.callerRole,
+    targetUid: change.targetEmail,
+    existingRole: change.existingRole,
+    targetRole: change.targetRole,
+    forceDowngrade: change.forceDowngrade,
+  })
+  if (refusal) return refusal
+  if (!isOfficeRole(change.targetRole) && !isOfficeRole(change.existingRole)) {
+    return new HttpsError('not-found', `User with email ${change.targetEmail} not found in Auth. They need to sign in once first.`)
+  }
+  return null
+}
+
 interface AuthLike {
   uid: string
   token: { role?: unknown; email?: string }
