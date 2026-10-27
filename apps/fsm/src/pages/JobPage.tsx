@@ -20,14 +20,17 @@ export const JobPage: React.FC = () => {
   const { job, isLoading: isJobLoading, error: jobError } = useJob(id)
   const { queuePhotoUpload, pendingCount, isOnline, isSyncing } = useOfflineUploads()
 
-  // Checklist template subscription
+  // Checklist template subscription. P3-E34: jobs carry their own copy of the tasks
+  // (checklistTasks); only older jobs without one read the live saved list.
+  // undefined while the job loads; null once loaded when there is no live list to read.
+  const liveTemplateId = job ? (job.checklistTasks ? null : job.checklistTemplate || null) : undefined
   const [template, setTemplate] = useState<ChecklistTemplate | null>(null)
   const [templateLoading, setTemplateLoading] = useState(true)
-  const [prevChecklistTemplate, setPrevChecklistTemplate] = useState<string | undefined>(undefined)
+  const [prevChecklistTemplate, setPrevChecklistTemplate] = useState<string | null | undefined>(undefined)
 
-  if (job?.checklistTemplate !== prevChecklistTemplate) {
-    setPrevChecklistTemplate(job?.checklistTemplate)
-    if (job?.checklistTemplate) {
+  if (liveTemplateId !== prevChecklistTemplate) {
+    setPrevChecklistTemplate(liveTemplateId)
+    if (liveTemplateId) {
       setTemplateLoading(true)
       setTemplate(null)
     } else {
@@ -65,11 +68,11 @@ export const JobPage: React.FC = () => {
   }, [id])
 
   useEffect(() => {
-    if (!job?.checklistTemplate) {
+    if (!liveTemplateId) {
       return
     }
 
-    const templateRef = doc(checklistTemplatesCollection(db), job.checklistTemplate)
+    const templateRef = doc(checklistTemplatesCollection(db), liveTemplateId)
     const unsubscribe = onSnapshot(
       templateRef,
       (docSnap) => {
@@ -87,7 +90,7 @@ export const JobPage: React.FC = () => {
     )
 
     return () => unsubscribe()
-  }, [job?.checklistTemplate])
+  }, [liveTemplateId])
 
   if (isJobLoading || templateLoading) {
     return (
@@ -288,7 +291,7 @@ export const JobPage: React.FC = () => {
     }
   }
 
-  const tasks: ChecklistTask[] = template?.tasks || []
+  const tasks: ChecklistTask[] = job.checklistTasks ?? template?.tasks ?? []
   const completions: ChecklistCompletion[] = job.checklistCompletions || []
 
   // Check if a specific task is completed

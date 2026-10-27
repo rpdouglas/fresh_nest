@@ -7,6 +7,8 @@ import { db, auth } from '@/lib/firebase/firebase'
 import { assignCleanerTransaction } from '@/lib/firebase/firestore'
 import { useStaff } from './hooks/useStaff'
 import { OverrideModal } from './OverrideModal'
+import { ChecklistDialog } from './checklist/ChecklistDialog'
+import { useChecklistTemplates } from './hooks/useChecklistTemplates'
 import { checkCleanerSchedulingConflicts, timeToMinutes } from '@/lib/utils/scheduling'
 import type { Booking, Job } from '@/types'
 import { cn } from '@/lib/utils/utils'
@@ -94,10 +96,18 @@ const jobToMockBooking = (job: Job): Booking => {
 }
 
 // 1. Draggable Job Card Component
-const DraggableJobCard: React.FC<{ job: Job; hasConflict: boolean; conflictText?: string }> = ({
+const DraggableJobCard: React.FC<{
+  job: Job
+  hasConflict: boolean
+  conflictText?: string
+  checklist: { name: string; count: number } | null
+  onOpenChecklist: (job: Job) => void
+}> = ({
   job,
   hasConflict,
   conflictText,
+  checklist,
+  onOpenChecklist,
 }) => {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: job.id!,
@@ -174,6 +184,21 @@ const DraggableJobCard: React.FC<{ job: Job; hasConflict: boolean; conflictText?
           <span className="bg-slate-pale text-slate-dark text-[10px] px-1.5 py-0.5 rounded font-body font-medium capitalize">
             {t(`services.${job.serviceType}.title`, { defaultValue: job.serviceType })}
           </span>
+          {/* P3-E34: open the job's checklist without starting a drag */}
+          <button
+            type="button"
+            onPointerDown={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+            onClick={() => onOpenChecklist(job)}
+            aria-label={t('admin.checklist.cardLabel', {
+              client: job.clientName,
+              name: checklist?.name ?? t('admin.checklist.none'),
+              count: checklist?.count ?? 0,
+            })}
+            className="bg-white border border-sand text-slate-dark text-[10px] px-1.5 py-0.5 rounded font-body font-medium cursor-pointer hover:border-slate-brand focus:outline-none focus:ring-2 focus:ring-slate-brand"
+          >
+            📋 {checklist?.count ?? 0}
+          </button>
         </div>
       </div>
 
@@ -300,6 +325,14 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
 
   // Fetch active staff cleaners & supervisors
   const { staffList, isLoading: isStaffLoading, error: staffError } = useStaff(isAuthorized)
+  const { templates: checklistTemplates } = useChecklistTemplates(isAuthorized)
+  const [checklistJob, setChecklistJob] = useState<Job | null>(null)
+  // Jobs created before P3-E34 have no copy of their tasks; describe them by their saved list.
+  const checklistOf = (job: Job): { name: string; count: number } | null => {
+    if (job.checklistTasks) return { name: job.checklistName ?? '', count: job.checklistTasks.length }
+    const template = checklistTemplates.find((tpl) => tpl.id === job.checklistTemplate)
+    return template ? { name: template.name, count: template.tasks.length } : null
+  }
   const activeStaff = useMemo(() => {
     return staffList.filter((s) => s.status === 'active' && (s.role === 'cleaner' || s.role === 'lead'))
   }, [staffList])
@@ -748,6 +781,8 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
                         job={job}
                         hasConflict={dailyConflicts[job.id!]?.hasConflict || false}
                         conflictText={dailyConflicts[job.id!]?.text}
+                        checklist={checklistOf(job)}
+                        onOpenChecklist={setChecklistJob}
                       />
                     ))
                   )}
@@ -784,6 +819,8 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
                           job={job}
                           hasConflict={dailyConflicts[job.id!]?.hasConflict || false}
                           conflictText={dailyConflicts[job.id!]?.text}
+                          checklist={checklistOf(job)}
+                          onOpenChecklist={setChecklistJob}
                         />
                       ))}
                     </DroppableStaffColumn>
@@ -793,6 +830,16 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
             </div>
           </div>
         </DndContext>
+      )}
+
+      {checklistJob && (
+        <ChecklistDialog
+          open
+          onClose={() => setChecklistJob(null)}
+          onSaved={() => { void fetchWeeklyJobs() }}
+          job={checklistJob}
+          booking={null}
+        />
       )}
 
       {/* Override Reason Prompt modal dialog */}

@@ -9,6 +9,8 @@ import { useStaff } from './hooks/useStaff'
 import { assignCleanerTransaction } from '@/lib/firebase/firestore'
 import { OverrideModal } from './OverrideModal'
 import { ConfirmDialog } from './ui/ConfirmDialog'
+import { ChecklistDialog } from './checklist/ChecklistDialog'
+import { ChecklistSummary } from './checklist/ChecklistSummary'
 import { cn } from '@/lib/utils/utils'
 import type { Booking, BookingStatus, Job } from '@/types'
 import { checkCleanerSchedulingConflicts } from '@/lib/utils/scheduling'
@@ -35,6 +37,8 @@ export function BookingDetailPanel({
   const { staffList } = useStaff(true)
 
   const [job, setJob] = useState<Job | null>(null)
+  const [jobVersion, setJobVersion] = useState(0)
+  const [isChecklistOpen, setIsChecklistOpen] = useState(false)
   const [isOverrideOpen, setIsOverrideOpen] = useState(false)
   // P3-E33: Cancelled (cancels the job, texts the owner) and Confirmed (creates the job) ask first.
   const [pendingStatus, setPendingStatus] = useState<'cancelled' | 'confirmed' | null>(null)
@@ -59,7 +63,7 @@ export function BookingDetailPanel({
         })
         .catch((err) => console.error('Error fetching job details:', err))
     }
-  }, [b.jobId])
+  }, [b.jobId, jobVersion])
 
   // Get job duration
   const getJobDurationHours = (jobDoc: Job): number => {
@@ -396,6 +400,26 @@ export function BookingDetailPanel({
                   </div>
                 )}
               </div>
+
+              {/* P3-E34: checklist for this job (or for the job once the booking is confirmed) */}
+              <div className="flex flex-col gap-1.5 mt-1">
+                <span className="font-body text-base text-text-muted">
+                  {t('admin.checklist.heading')}
+                </span>
+                <ChecklistSummary job={b.jobId ? job : null} booking={b} />
+                <button
+                  type="button"
+                  onClick={() => setIsChecklistOpen(true)}
+                  disabled={Boolean(b.jobId) && job === null}
+                  className={cn(
+                    'min-h-[48px] px-4 py-2 border border-slate-brand text-slate-brand font-body font-medium rounded self-start',
+                    'hover:bg-slate-pale transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand',
+                    'disabled:opacity-50',
+                  )}
+                >
+                  {t('admin.checklist.change')}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -504,6 +528,18 @@ export function BookingDetailPanel({
             }}
             onCancel={() => setPendingStatus(null)}
           />
+          {isChecklistOpen && (
+            <ChecklistDialog
+              open
+              onClose={() => setIsChecklistOpen(false)}
+              onSaved={() => {
+                setJobVersion((v) => v + 1)
+                void queryClient.invalidateQueries({ queryKey: ['bookings'] })
+              }}
+              job={b.jobId ? job : null}
+              booking={b}
+            />
+          )}
           <OverrideModal
             isOpen={isOverrideOpen}
             cleanerName={pendingAssignment?.cleanerName || ''}

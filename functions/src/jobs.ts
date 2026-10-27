@@ -7,6 +7,7 @@ import {
   findTravelConflict,
   type TravelShift,
 } from './lib/eligibility'
+import { snapshotFromTemplate, EMPTY_CHECKLIST, type ChecklistSnapshot } from './lib/checklist'
 
 /**
  * F03: Booking-to-Job Pipeline
@@ -17,7 +18,8 @@ import {
  * Design decisions (per F03 planning):
  * - Resolves payRateSnapshot by querying payRates for the active 'cleaner' role rate
  * - Falls back to null/zero placeholder if no rate exists (graceful — no crash)
- * - Resolves checklistTemplate by matching serviceType; falls back to first active template
+ * - Resolves the checklist from booking.checklistTemplateId, else by serviceType, else the first
+ *   active template, and copies its tasks onto the job (P3-E34)
  * - Uses db.runTransaction() to atomically create job + write jobId back to booking
  * - Duplicate guard: query for existing job with bookingId before creating
  */
@@ -41,6 +43,7 @@ interface BookingData {
   notes?: string
   status: string
   jobId?: string
+  checklistTemplateId?: string | null
   [key: string]: unknown
 }
 
@@ -86,14 +89,26 @@ async function resolvePayRateSnapshot(db: FirebaseFirestore.Firestore): Promise<
 }
 
 /**
- * Resolves the checklist template for the given serviceType.
- * Falls back to the first active template if none matches serviceType.
+ * Resolves the checklist for a new job and copies its tasks (P3-E34).
+ * Uses the booking's chosen saved list when it still exists; otherwise matches by
+ * serviceType, then falls back to the first active template.
  */
-async function resolveChecklistTemplate(
+export async function resolveChecklist(
   db: FirebaseFirestore.Firestore,
   serviceType: string,
-): Promise<string> {
+  chosenTemplateId: string | null,
+): Promise<ChecklistSnapshot> {
   try {
+    if (chosenTemplateId) {
+      const chosen = await db.collection('checklistTemplates').doc(chosenTemplateId).get()
+      if (chosen.exists) {
+        return snapshotFromTemplate(chosen.id, chosen.data() ?? {}, 'template')
+      }
+      console.warn(
+        `[resolveChecklist] Chosen template '${chosenTemplateId}' no longer exists — matching by serviceType.`,
+      )
+    }
+
     // Primary: match by serviceType
     const matchSnap = await db
       .collection('checklistTemplates')
@@ -103,7 +118,7 @@ async function resolveChecklistTemplate(
       .get()
 
     if (!matchSnap.empty) {
-      return matchSnap.docs[0].id
+      return snapshotFromTemplate(matchSnap.docs[0].id, matchSnap.docs[0].data(), 'auto')
     }
 
     // Fallback: first active template regardless of serviceType
@@ -115,17 +130,17 @@ async function resolveChecklistTemplate(
 
     if (!fallbackSnap.empty) {
       console.log(
-        `[resolveChecklistTemplate] No template for serviceType '${serviceType}' — using fallback template '${fallbackSnap.docs[0].id}'`,
+        `[resolveChecklist] No template for serviceType '${serviceType}' — using fallback template '${fallbackSnap.docs[0].id}'`,
       )
-      return fallbackSnap.docs[0].id
+      return snapshotFromTemplate(fallbackSnap.docs[0].id, fallbackSnap.docs[0].data(), 'auto')
     }
   } catch (err) {
-    console.warn('[resolveChecklistTemplate] Could not query checklistTemplates:', err)
+    console.warn('[resolveChecklist] Could not query checklistTemplates:', err)
   }
 
-  // Ultimate fallback — empty string signals no template resolved
-  console.warn('[resolveChecklistTemplate] No checklist templates found — job created without template reference.')
-  return ''
+  // Ultimate fallback — empty checklist, no template reference
+  console.warn('[resolveChecklist] No checklist templates found — job created without a checklist.')
+  return EMPTY_CHECKLIST
 }
 
 /**
@@ -154,10 +169,10 @@ export async function createJobFromBooking(
     return
   }
 
-  // Resolve payRateSnapshot and checklistTemplate concurrently
-  const [payRateSnapshot, checklistTemplate] = await Promise.all([
+  // Resolve payRateSnapshot and checklist concurrently
+  const [payRateSnapshot, checklist] = await Promise.all([
     resolvePayRateSnapshot(db),
-    resolveChecklistTemplate(db, booking.serviceType),
+    resolveChecklist(db, booking.serviceType, booking.checklistTemplateId ?? null),
   ])
 
   const clientName = `${booking.firstName} ${booking.lastName}`.trim()
@@ -185,7 +200,7 @@ export async function createJobFromBooking(
     checkedInGeo: null,
     completedAt: null,
     payRateSnapshot,
-    checklistTemplate,
+    ...checklist,
     checklistCompletions: [],
     photos: [],
     createdAt: now,

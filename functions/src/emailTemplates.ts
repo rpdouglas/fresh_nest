@@ -25,6 +25,7 @@ export interface BookingData {
   assignedTo?: string | null
   status?: string
   createdBy?: string
+  checklistTemplateId?: string | null
 }
 
 /** `createdBy` value stamped on bookings created by the recurring-renewal cron. */

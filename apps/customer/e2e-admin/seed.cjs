@@ -95,9 +95,9 @@ async function main() {
   for (const [id, name, serviceType] of [['tpl1', 'Standard Clean', 'standard'], ['tpl2', 'Airbnb Turnover', 'airbnb']]) {
     await db.collection('checklistTemplates').doc(id).set({
       name, serviceType, active: true, tasks: [
-        { id: 't1', labelKey: 'Kitchen counters', icon: '🧽', requiresPhoto: true, photoPhase: 'after' },
-        { id: 't2', labelKey: 'Bathrooms', icon: '🚿', requiresPhoto: false, photoPhase: null },
-        { id: 't3', labelKey: 'Floors', icon: '🧹', requiresPhoto: false, photoPhase: null },
+        { id: 't1', labelEn: 'Kitchen counters', labelFr: 'Comptoirs de cuisine', icon: '🧽', requiresPhoto: true, photoPhase: 'after' },
+        { id: 't2', labelEn: 'Bathrooms', labelFr: 'Salles de bain', icon: '🚿', requiresPhoto: false, photoPhase: null },
+        { id: 't3', labelEn: 'Floors', labelFr: 'Planchers', icon: '🧹', requiresPhoto: false, photoPhase: null },
       ],
     })
   }

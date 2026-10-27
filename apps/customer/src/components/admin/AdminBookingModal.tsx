@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils/utils'
 import { adminBookingSchema } from '@/lib/schemas/bookingSchema'
 import type { AdminBookingFormData } from '@/lib/schemas/bookingSchema'
 import { useStaff } from './hooks/useStaff'
+import { useChecklistTemplates } from './hooks/useChecklistTemplates'
 import { AdminDialog } from './ui/AdminDialog'
 import { PHONE_STICKY_ACTIONS } from './ui/dialogClasses'
 
@@ -30,6 +31,8 @@ export const AdminBookingModal: React.FC<AdminBookingModalProps> = ({
 
   const { staffList } = useStaff(true)
   const activeStaff = staffList.filter((s) => s.status === 'active')
+  const { templates } = useChecklistTemplates(isOpen)
+  const activeTemplates = templates.filter((tpl) => tpl.active)
 
   const {
     register,
@@ -59,6 +62,7 @@ export const AdminBookingModal: React.FC<AdminBookingModalProps> = ({
       assignedTo:       null,
       status:           'pending',
       marketingConsent: false,
+      checklistTemplateId: '',
     },
   })
 
@@ -437,6 +441,21 @@ export const AdminBookingModal: React.FC<AdminBookingModalProps> = ({
                   )}
                 </div>
               )}
+
+              {/* P3-E34: checklist — empty means chosen by service type when the job is created */}
+              <div>
+                <label htmlFor="ab-checklist" className={labelClass}>
+                  {t('admin.checklist.newBookingLabel')}
+                </label>
+                <select id="ab-checklist" {...register('checklistTemplateId')} className={selectClass}>
+                  <option value="">{t('admin.checklist.automatic')}</option>
+                  {activeTemplates.map((tpl) => (
+                    <option key={tpl.id} value={tpl.id}>
+                      {tpl.name} ({t('admin.templates.taskCount', { count: tpl.tasks.length })})
+                    </option>
+                  ))}
+                </select>
+              </div>
 
               {/* Marketing Consent */}
               <div className="flex items-center gap-3 min-h-[48px]">

@@ -7,7 +7,7 @@ approved: 2026-10-27
 
 # P3-E34 PLAN — Task Lists on Scheduled Jobs
 
-**Phase A written:** 2026-10-27 · **Status:** ✅ Strategy 2 approved 2026-10-27 — Phase B next
+**Phase A written:** 2026-10-27 · **Status:** ✅ Strategy 2 approved and shipped 2026-10-27 — see [close report](../reports/P3-E34-close-2026-10-27.md)
 **Spec:** [`../projects/P3-E34.md`](../projects/P3-E34.md)
 
 ## Personas

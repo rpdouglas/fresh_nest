@@ -58,7 +58,7 @@ export const MyJobsPage: React.FC = () => {
   useEffect(() => {
     if (upcomingJobs.length === 0) return
     const unsubscribes = upcomingJobs.map((job) => {
-      if (!job.checklistTemplate) return () => {}
+      if (!job.checklistTemplate || job.checklistTasks) return () => {}
       const templateRef = doc(checklistTemplatesCollection(db), job.checklistTemplate)
       return onSnapshot(templateRef, () => {})
     })

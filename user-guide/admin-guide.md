@@ -68,7 +68,7 @@ When a client calls or walks in, you can enter their booking directly from the a
 3. Fill in the three sections:
    - **Service & Property** — service type, property type, bedrooms/bathrooms, pets, add-ons
    - **Schedule & Contact** — preferred date, client name/email/phone/address, frequency, notes
-   - **Admin Controls** — communication language, lead source (`Phone Call` or `Walk-In`), assign a cleaner (optional), set the initial status
+   - **Admin Controls** — communication language, lead source (`Phone Call` or `Walk-In`), assign a cleaner (optional), set the initial status, and the **Checklist** (optional — leave it on **Automatic** to use the saved list for the service type; see [Checklists on Jobs](#checklists-on-jobs))
 4. **Status options:**
    - `Pending Confirmation` — creates the booking as a **quote request**. The client immediately receives a "we received your request — we'll follow up with a quote" email/SMS (P3-E29). Use this when the price still needs to be agreed.
    - `Confirmed` — creates the booking, immediately sends a "your booking is confirmed" email/SMS to the client, and creates a job document. Use this when the price was agreed on the call. A warning banner appears if no cleaner is assigned yet.
@@ -95,6 +95,7 @@ When a client calls or walks in, you can enter their booking directly from the a
 1. Find the booking in the dashboard table.
 2. Click the booking row to expand the detail panel.
 3. Use the **Status** dropdown to update the status. Changing to **Confirmed** or **Cancelled** first shows a box naming the client and date. Click the confirm button to go ahead, or **Keep booking** to leave the status as it was.
+   *   **Checklist:** under the cleaner assignment, **Change checklist** sets the job's task list. See [Checklists on Jobs](#checklists-on-jobs).
 4. Use the **Assigned To** field to assign a cleaner by name (or click custom to type a custom name).
     *   **Constraint Intercepts:** The system automatically checks cleaner constraints (monthly earnings cap, travel buffers, and **Blocked Windows**). If a violation occurs, a modal prompts you for a mandatory override reason. Overrides are recorded in the audit logs.
     *   **Privacy Safeguard:** Blocked window labels (e.g. "Recovery meeting") remain strictly confidential and are never exposed in the override warning.
@@ -114,6 +115,29 @@ The **Visual Dispatch Board** tab provides a daily grid view where you can manag
     *   **Blocked Windows Conflict:** Flags if a cleaner has blocked out that day/time block.
 *   **Override and Audit Logging:** Any detected conflict prompts the **Administrator Override Required** modal. Confirming the assignment requires an override reason, which is automatically saved to the `auditLog` collection. Cancelling the modal returns the card to its original position.
 *   **Safe to Earn Meter:** Each column header features a color-coded bar (green/amber/red) indicating the cleaner's monthly progress towards their monthly earnings cap.
+
+---
+
+## Checklists on Jobs
+
+Every job has a checklist: the tasks the cleaner ticks off in the staff app, with photo proof where required. Saved lists are managed on the **Checklist Templates** tab. A job gets one automatically (the active saved list for its service type), and you can change it before work starts.
+
+**Where to change it**
+- **Bookings tab:** open the booking, then **Checklist → Change checklist** (under the cleaner assignment).
+- **Dispatch Board:** click the **📋** chip on a job card. The number is how many tasks the job has.
+- **New Booking dialog:** the optional **Checklist** field.
+
+**In the Checklist dialog**
+- **Saved list:** pick a list. Its tasks are shown before you save.
+- **Custom list:** build a list for this job only. Start from a blank list or a copy of a saved one, then add, remove or drag tasks into order. Every task needs an English **and** a French name, because cleaners see the list in their own language.
+  - Tick **Save as a new saved list** (and give it a name) to reuse it later. It then appears on the Checklist Templates tab.
+- **Use this list for future visits** (recurring bookings only): later visits created by the auto-renewal get the same list. A custom list must be saved as a saved list for this.
+- **Save checklist** applies it.
+
+**Good to know**
+- **The job keeps its own copy.** Editing or deactivating a saved list later does **not** change jobs that already have it. To update an upcoming job, open its checklist and pick the list again.
+- **Locked once work starts.** After the cleaner checks in or completes a task, the checklist can't be changed. The dialog says so and only shows the tasks.
+- **Before a job exists** (pending booking), the choice is stored on the booking. The job gets it when the booking is confirmed.
 
 ---
 
@@ -168,7 +192,7 @@ To maximize retention and ensure cleaning consistency, a scheduled daily backgro
 1. **Target Identification:** The function identifies bookings marked as `confirmed` or `completed` with a frequency of `weekly`, `biweekly`, or `monthly`.
 2. **Next Date Window:** It projects the next occurrence (+7, +14, or +30 days). If that next date is within a 14-day window from today, it initiates renewal.
 3. **De-duplication Check:** The system verifies that no active booking already exists for that user on that specific date.
-4. **Draft Generation:** If clear, a new booking is generated with status `pending`, copying all property parameters, preferences, notes, preferred cleaners and the client's existing referral code. It is marked as a renewal (`createdBy: system:recurring-renewal`).
+4. **Draft Generation:** If clear, a new booking is generated with status `pending`, copying all property parameters, preferences, notes, preferred cleaners, the client's existing referral code and the checklist chosen for future visits (if any). It is marked as a renewal (`createdBy: system:recurring-renewal`).
 5. **Owner Alert:** The owner gets a **"Recurring renewal"** text and email asking them to confirm the visit. The client is **not** sent a "quote request received" email or SMS, and no new referral code is created.
 6. **Confirm to schedule:** Set the renewal to `confirmed` in the admin panel. That creates the job for dispatch, and the client then gets the usual day-before reminder SMS.
 
