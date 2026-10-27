@@ -4,4 +4,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://freshnestco.ca/sitemap.xml
+Sitemap: https://www.freshnestco.ca/sitemap.xml
