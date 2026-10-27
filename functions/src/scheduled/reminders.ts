@@ -24,7 +24,8 @@ export const onDailyReminderCheck = onSchedule(
     const snapshot = await db
       .collection('bookings')
       .where('preferredDate', '==', tomorrowStr)
-      .where('status', 'in', ['pending', 'confirmed'])
+      // Only confirmed visits — a pending quote request or unconfirmed renewal is not booked yet.
+      .where('status', '==', 'confirmed')
       .get()
 
     if (snapshot.empty) {

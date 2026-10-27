@@ -49,6 +49,10 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | **P3-E30** | Business Email Setup — Zoho Mail inboxes + Resend domain/API key (app emails currently failing) | S | P0 | ⏸ Paused 2026-10-01 — waiting on human Zoho/Resend/CanSpace DNS setup; PR #26 (contact details) merged, remaining code in a follow-up PR. See [`projects/P3-E30.md`](projects/P3-E30.md) |
 | **P3-E31** | Home hero reorder (logo → serving statement → headline), hide gallery / team / reviews behind flags, FAQ payment methods fix | S | P1 | ✅ Completed 2026-10-04 — see [`reports/P3-E31-close-2026-10-04.md`](reports/P3-E31-close-2026-10-04.md) |
 | **P3-E32** | Before/after gallery managed from the admin page — phone upload, uniform photo fitting, publish/feature/reorder | M | P2 | 🔄 Code complete 2026-10-04 — Firestore and Storage rules deployed; waiting on the human's phone test on the PR preview before merge. See [`projects/P3-E32.md`](projects/P3-E32.md) |
+| **HOTFIX-03** | Quote flow fixes — renewals no longer sent as quote requests, reminders only for confirmed bookings, Dispatch Board assignment transaction | S | P0 | ✅ Completed 2026-10-26 — see [`reports/HOTFIX-03-close-2026-10-26.md`](reports/HOTFIX-03-close-2026-10-26.md) |
+| **HOTFIX-04** | Owner text alert for new quote requests and renewals (email down per P3-E30); admin guide: checking pending requests | S | P0 | ✅ Completed 2026-10-27 — see [`reports/HOTFIX-04-close-2026-10-27.md`](reports/HOTFIX-04-close-2026-10-27.md) |
+| **HOTFIX-05** | Booking emails stored lowercased so customers see their requests in the portal; renewal dedupe covers both spellings | S | P1 | ✅ Completed 2026-10-27 — see [`reports/HOTFIX-05-close-2026-10-27.md`](reports/HOTFIX-05-close-2026-10-27.md) |
+| **ADR-014** | CI gates scoped to what changed — deploy audit moved to a daily job, E2E weekly, rules tests + lint on PRs, per-workflow filters | S | P1 | ✅ Completed 2026-10-27 — see [`reports/ADR-014-ci-close-2026-10-27.md`](reports/ADR-014-ci-close-2026-10-27.md) |
 
 ---
 

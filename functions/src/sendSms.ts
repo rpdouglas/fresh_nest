@@ -1,6 +1,6 @@
 import twilio from 'twilio'
 import { isQuoteRequest, type BookingData } from './emailTemplates'
-import { confirmationSms, reminderSms, onMyWaySms } from './smsTemplates'
+import { confirmationSms, reminderSms, onMyWaySms, ownerAlertSms } from './smsTemplates'
 
 export interface SmsConfig {
   accountSid: string
@@ -25,6 +25,17 @@ export async function sendSmsConfirmation(booking: BookingData, config: SmsConfi
   const body = confirmationSms(booking.firstName, booking.serviceType, booking.preferredDate, lang, isQuoteRequest(booking))
   const client = twilio(config.accountSid, config.authToken)
   await client.messages.create({ body, from: config.fromNumber, to })
+}
+
+export async function sendOwnerAlertSms(
+  booking: BookingData,
+  docId: string,
+  renewal: boolean,
+  ownerPhone: string,
+  config: SmsConfig,
+): Promise<void> {
+  const client = twilio(config.accountSid, config.authToken)
+  await client.messages.create({ body: ownerAlertSms(booking, docId, renewal), from: config.fromNumber, to: ownerPhone })
 }
 
 export async function sendSmsReminder(

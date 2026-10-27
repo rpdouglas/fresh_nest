@@ -1,5 +1,7 @@
 name: Deploy to Production
 # Deploys only the areas that changed in the push (ADR-013).
+# No npm audit here (ADR-014): PRs audit, and security-audit.yml checks daily, so a new advisory
+# never holds back an unrelated fix.
 # Run manually (workflow_dispatch) to force a full deploy of everything.
 on:
   push:
@@ -28,10 +30,10 @@ jobs:
         id: filter
         if: github.event_name == 'push'
         with:
-          # Keep in sync with firebase-preview.yml.
+          # Keep the area paths in sync with firebase-preview.yml. A change to this workflow deploys everything.
           filters: |
             ci: &ci
-              - '.github/workflows/**'
+              - '.github/workflows/firebase-deploy.yml'
             shared: &shared
               - 'packages/shared/**'
               - 'package.json'
@@ -49,6 +51,7 @@ jobs:
             functions:
               - *ci
               - 'functions/**'
+              - 'firebase.json'
 
   # Functions deploy before hosting so new clients never call a callable that isn't live yet.
   # Firestore rules/indexes are deliberately NOT deployed here — COMPLIANCE.md §4 requires a human.
@@ -72,8 +75,6 @@ jobs:
       - run: npm ci
         working-directory: .
       - run: npm ci
-      - name: Security audit (production dependencies)
-        run: npm audit --omit=dev --audit-level=high
       - run: npm run build
       - run: npm test
       - name: Deploy Cloud Functions
@@ -97,8 +98,6 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '22', cache: 'npm' }
       - run: npm ci
-      - name: Security audit (production dependencies)
-        run: npm audit --omit=dev --audit-level=high
       - name: Unit tests
         run: npm run test:customer
       - name: Build (prod DB)
@@ -145,8 +144,6 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '22', cache: 'npm' }
       - run: npm ci
-      - name: Security audit (production dependencies)
-        run: npm audit --omit=dev --audit-level=high
       - name: Unit tests
         run: npm run test:fsm
       - name: Build (prod DB)

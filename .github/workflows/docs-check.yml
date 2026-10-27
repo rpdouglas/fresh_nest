@@ -1,12 +1,16 @@
 name: Docs Check
 on:
+  # main only: on PR branches the pull_request run already covers each push (ADR-014).
   push:
+    branches: [main]
     paths:
       - 'docs/**'
+      - 'user-guide/**'
       - '*.md'
   pull_request:
     paths:
       - 'docs/**'
+      - 'user-guide/**'
       - '*.md'
 
 jobs:
@@ -20,5 +24,5 @@ jobs:
           use-quiet-mode: 'yes'
           use-verbose-mode: 'no'
           config-file: '.mlc-config.json'
-          folder-path: 'docs'
+          folder-path: 'docs, user-guide'
           file-extension: '.md'

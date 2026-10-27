@@ -10,7 +10,7 @@ Stores residential, commercial, and Airbnb cleaning reservations.
 | :--- | :--- | :--- | :--- |
 | `firstName` | `string` | ✅ | Client first name |
 | `lastName` | `string` | ✅ | Client last name |
-| `email` | `string` | ✅ | Client email address (captures CASL compliance) |
+| `email` | `string` | ✅ | Client email address (captures CASL compliance). Stored trimmed and lowercased — the customer portal and the bookings read rule match it against the Firebase Auth email. |
 | `phone` | `string` | ✅ | Client phone number (for SMS notifications) |
 | `language` | `string` | ✅ | `'en' \| 'fr'` (drives language of confirmation communications) |
 | `propertyType` | `string` | ✅ | `'apartment' \| '1-2bed' \| '3-4bed' \| '5+bed' \| 'commercial'` |
@@ -36,13 +36,13 @@ Stores residential, commercial, and Airbnb cleaning reservations.
 | `marketingConsent` | `boolean` | ❌ | CASL: `true` if client opted in to marketing emails. Omitted entirely (not `null`) when false. |
 | `consentTimestamp` | `Timestamp` | ❌ | CASL: Server timestamp of marketing consent. Present only when `marketingConsent === true`. |
 | `consentMethod` | `string` | ❌ | CASL: `'booking-form-v2'`. Present only when `marketingConsent === true`. |
-| `referralCode` | `string \| null` | ❌ | The deterministic referral code generated for this client (e.g., `FIRSTNAME-1234`). |
+| `referralCode` | `string \| null` | ❌ | The deterministic referral code generated for this client (e.g., `FIRSTNAME-1234`). Copied onto recurring renewals. |
 | `referredBy` | `string \| null` | ❌ | The referral code applied during booking creation to receive the discount. |
 | `stripePaymentIntentId` | `string \| null` | ❌ | Stripe PaymentIntent identifier for holding/releasing funds |
 | `stripeChargeId` | `string \| null` | ❌ | Stripe Charge identifier (populated on capture) |
 | `stripeChargeStatus` | `string \| null` | ❌ | Stripe payment status hold/captured/released |
 | `jobId` | `string \| null` | ❌ | Associated job document ID backlink once booking is confirmed |
-| `createdBy` | `string` | ❌ | Admin email that created the booking (populated for phone/walk-in bookings only) |
+| `createdBy` | `string` | ❌ | Admin email that created the booking (phone/walk-in bookings), or `'system:recurring-renewal'` for bookings created by the recurring-renewal cron. Absent on public quote requests. |
 
 ---
 

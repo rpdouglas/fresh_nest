@@ -37,6 +37,23 @@ export function confirmationSms(
     : `Fresh Nest Co.: Hi ${firstName}, your ${service} is booked for ${preferredDate}! We'll confirm the time soon. Questions? (613) 861-8812`
 }
 
+/**
+ * Owner alert for a new website quote request or a recurring renewal (always EN, like the owner
+ * email). Carries the short reference the client sees on the thank-you page. No prices (P3-E29).
+ */
+export function ownerAlertSms(
+  b: { firstName: string; lastName: string; phone: string; serviceType: string; preferredDate: string },
+  docId: string,
+  renewal: boolean,
+): string {
+  const service = SMS_SERVICE_EN[b.serviceType] ?? b.serviceType
+  const ref = docId.slice(0, 8).toUpperCase()
+  const who = `${b.firstName} ${b.lastName}`.trim()
+  return renewal
+    ? `Fresh Nest Co.: Recurring renewal — ${who}, ${service}, ${b.preferredDate}. Ref #${ref}. Confirm it in the admin panel to schedule.`
+    : `Fresh Nest Co.: New quote request — ${who}, ${service}, ${b.preferredDate}, ${b.phone}. Ref #${ref}. Follow up within 24 hours.`
+}
+
 export function reminderSms(preferredDate: string, lang: 'en' | 'fr'): string {
   return lang === 'fr'
     ? `Fresh Nest Co. : Rappel — votre ménage est demain (${preferredDate}). Nous vous contacterons avec l'heure d'arrivée. (613) 861-8812`

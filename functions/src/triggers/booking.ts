@@ -9,10 +9,11 @@ import {
   TWILIO_AUTH_TOKEN,
   TWILIO_PHONE_NUMBER,
   logError,
+  ownerPhone,
 } from '../lib/shared'
 import { sendOwnerNotification, sendClientConfirmation } from '../sendEmail'
-import { sendSmsConfirmation } from '../sendSms'
-import type { BookingData } from '../emailTemplates'
+import { sendSmsConfirmation, sendOwnerAlertSms } from '../sendSms'
+import { isRenewal, isAdminCreated, type BookingData } from '../emailTemplates'
 import { createJobFromBooking } from '../jobs'
 
 // F03 / E31: Trigger when booking is created
@@ -30,7 +31,9 @@ export const onBookingCreated = onDocumentCreated(
     const docId = event.params['docId']
     const refCode = `${firstName.trim().toUpperCase()}-${docId.substring(0, 4).toUpperCase()}`
 
-    if (!booking.referralCode) {
+    const renewal = isRenewal(booking)
+
+    if (!booking.referralCode && !renewal) {
       const db = getFirestore()
       try {
         await db.collection('referrals').doc(refCode).set({
@@ -58,16 +61,27 @@ export const onBookingCreated = onDocumentCreated(
       fromNumber: TWILIO_PHONE_NUMBER.value(),
     }
 
-    const results = await Promise.allSettled([
-      sendOwnerNotification(booking, event.params['docId'], emailConfig),
-      sendClientConfirmation(booking, emailConfig),
-      sendSmsConfirmation(booking, smsConfig),
-    ])
+    // Renewals continue an agreed recurring booking — only the owner is told (to confirm it);
+    // the client is not sent another "quote request received" email/SMS.
+    // The owner also gets an SMS for website requests and renewals, so a request is never missed
+    // when email is down (P3-E30). Admin phone-in bookings skip it — the admin entered them.
+    const sends: Array<[string, Promise<void>]> = [
+      ['owner email', sendOwnerNotification(booking, docId, emailConfig)],
+    ]
+    if (!renewal) {
+      sends.push(
+        ['client email', sendClientConfirmation(booking, emailConfig)],
+        ['client SMS', sendSmsConfirmation(booking, smsConfig)],
+      )
+    }
+    if (!isAdminCreated(booking)) {
+      sends.push(['owner SMS', sendOwnerAlertSms(booking, docId, renewal, ownerPhone(), smsConfig)])
+    }
+    const results = await Promise.allSettled(sends.map(([, send]) => send))
 
-    const labels = ['owner email', 'client email', 'client SMS']
     results.forEach((result, i) => {
       if (result.status === 'rejected') {
-        logError(`[onBookingCreated] ${labels[i]} failed:`, result.reason)
+        logError(`[onBookingCreated] ${sends[i][0]} failed:`, result.reason)
       }
     })
   },
@@ -171,7 +185,7 @@ export const onBookingCancelled = onDocumentUpdated(
         authToken: TWILIO_AUTH_TOKEN.value(),
         fromNumber: TWILIO_PHONE_NUMBER.value(),
       }
-      const adminPhone = process.env.OWNER_PHONE || '+16138618812'
+      const adminPhone = ownerPhone()
       const clientName = `${after.firstName} ${after.lastName}`
       const preferredDate = after.preferredDate
       const smsBody = `Fresh Nest Co. Alert: Booking ${bookingId} for ${clientName} on ${preferredDate} has been cancelled by the customer.`

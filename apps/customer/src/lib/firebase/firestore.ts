@@ -29,6 +29,12 @@ import type { QuotePropertySize, QuoteServiceType, QuoteFrequency } from '@/lib/
 
 export type LeadSource = 'organic' | 'google' | 'referral' | 'facebook' | 'direct'
 
+// Firebase Auth lowercases account emails, and the customer portal and the bookings read rule
+// match on `email`, so bookings must store it trimmed and lowercased too.
+export function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase()
+}
+
 export function detectLeadSource(params: URLSearchParams): LeadSource {
   const ref = (params.get('ref') ?? params.get('utm_source') ?? '').toLowerCase()
   const map: Record<string, LeadSource> = {
@@ -73,6 +79,7 @@ export async function submitBooking(
 
   const docData: Record<string, unknown> = {
     ...formFields,
+    email:             normalizeEmail(data.email),
     language,
     leadSource:        source,
     status:            'pending',
@@ -108,6 +115,7 @@ export async function createAdminBooking(
 
   const docData: Record<string, unknown> = {
     ...formFields,
+    email:             normalizeEmail(data.email),
     assignedTo:        data.assignedTo ?? null,
     isAirbnb:          data.serviceType === 'airbnb',
     photoConfirmation: data.serviceType === 'airbnb',
@@ -159,6 +167,12 @@ export async function assignCleanerTransaction({
   changedByEmail: string
 }): Promise<void> {
   await runTransaction(db, async (transaction) => {
+    // Firestore transactions require every read to happen before any write.
+    const newStaffRef = cleanerId ? doc(staffCollection(db), cleanerId) : null
+    const oldStaffRef = oldCleanerId ? doc(staffCollection(db), oldCleanerId) : null
+    const newStaffSnap = newStaffRef ? await transaction.get(newStaffRef) : null
+    const oldStaffSnap = oldStaffRef ? await transaction.get(oldStaffRef) : null
+
     // 1. Booking update
     const bookingRef = doc(bookingsCollection(db), bookingId)
     transaction.update(bookingRef, { assignedTo: cleanerName })
@@ -171,31 +185,21 @@ export async function assignCleanerTransaction({
         status: cleanerId ? 'assigned' : 'unassigned',
       })
     }
- 
-    // 3. Increment new cleaner's earnings
-    if (cleanerId) {
-      const newStaffRef = doc(staffCollection(db), cleanerId)
-      const newStaffSnap = await transaction.get(newStaffRef)
-      if (newStaffSnap.exists()) {
-        const staffData = newStaffSnap.data()
-        const financials = staffData?.financials || {}
-        const current = financials.currentMonthEarnings ?? 0
+
+    // 3 + 4. Move the shift's earnings from the old cleaner to the new one
+    // (no-op when reassigned to the same cleaner).
+    const earningsOf = (snap: typeof newStaffSnap): number =>
+      snap?.exists() ? (snap.data()?.financials?.currentMonthEarnings ?? 0) : 0
+
+    if (cleanerId !== oldCleanerId) {
+      if (newStaffRef && newStaffSnap?.exists()) {
         transaction.update(newStaffRef, {
-          'financials.currentMonthEarnings': current + estimatedPay,
+          'financials.currentMonthEarnings': earningsOf(newStaffSnap) + estimatedPay,
         })
       }
-    }
- 
-    // 4. Decrement old cleaner's earnings
-    if (oldCleanerId) {
-      const oldStaffRef = doc(staffCollection(db), oldCleanerId)
-      const oldStaffSnap = await transaction.get(oldStaffRef)
-      if (oldStaffSnap.exists()) {
-        const staffData = oldStaffSnap.data()
-        const financials = staffData?.financials || {}
-        const current = financials.currentMonthEarnings ?? 0
+      if (oldStaffRef && oldStaffSnap?.exists()) {
         transaction.update(oldStaffRef, {
-          'financials.currentMonthEarnings': Math.max(0, current - estimatedPay),
+          'financials.currentMonthEarnings': Math.max(0, earningsOf(oldStaffSnap) - estimatedPay),
         })
       }
     }

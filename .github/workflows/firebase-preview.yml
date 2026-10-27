@@ -1,5 +1,5 @@
 name: Deploy Preview Channel
-# PR checks + Firebase preview channels (ADR-004, path filtering per ADR-013).
+# PR checks + Firebase preview channels (ADR-004, path filtering per ADR-013, gates per ADR-014).
 # Each area only builds, tests and previews when its files change.
 on:
   pull_request:
@@ -31,15 +31,17 @@ jobs:
       customer: ${{ steps.filter.outputs.customer }}
       fsm: ${{ steps.filter.outputs.fsm }}
       functions: ${{ steps.filter.outputs.functions }}
+      rules: ${{ steps.filter.outputs.rules }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
         id: filter
         with:
-          # A CI change runs everything; shared code and the root lockfile affect both apps.
+          # A change to this workflow runs everything; shared code and the root lockfile affect both apps.
+          # Keep the area paths in sync with firebase-deploy.yml.
           filters: |
             ci: &ci
-              - '.github/workflows/**'
+              - '.github/workflows/firebase-preview.yml'
             shared: &shared
               - 'packages/shared/**'
               - 'package.json'
@@ -57,6 +59,13 @@ jobs:
             functions:
               - *ci
               - 'functions/**'
+              - 'firebase.json'
+            rules:
+              - *ci
+              - 'firestore.rules'
+              - 'firestore.indexes.json'
+              - 'apps/customer/test/**'
+              - 'apps/customer/vitest.rules.config.ts'
 
   customer:
     needs: changes
@@ -70,6 +79,8 @@ jobs:
       - run: npm ci
       - name: Security audit (production dependencies)
         run: npm audit --omit=dev --audit-level=high
+      - name: Lint
+        run: npm --workspace=apps/customer run lint
       - name: Unit tests
         run: npm run test:customer
       - name: Build (dev DB)
@@ -108,6 +119,8 @@ jobs:
       - run: npm ci
       - name: Security audit (production dependencies)
         run: npm audit --omit=dev --audit-level=high
+      - name: Lint
+        run: npm --workspace=apps/fsm run lint
       - name: Unit tests
         run: npm run test:fsm
       - name: Build (dev DB)
@@ -148,28 +161,19 @@ jobs:
       - run: npm run build
       - run: npm test
 
-  # The Playwright suite is known-broken (ADR-013): it reports but never blocks.
-  e2e:
+  # Firestore security rules tests on the emulator — only when the rules or their tests change.
+  # (Rules are still never deployed by CI — COMPLIANCE.md §4.) E2E runs weekly in e2e.yml (ADR-014).
+  rules:
     needs: changes
-    if: needs.changes.outputs.customer == 'true' || needs.changes.outputs.fsm == 'true'
+    if: needs.changes.outputs.rules == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: '22', cache: 'npm' }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '21' }
       - run: npm ci
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+      - name: Firestore rules tests (emulator)
         working-directory: apps/customer
-      - name: E2E tests (Playwright, non-blocking)
-        id: e2e
-        continue-on-error: true
-        run: npm run test:e2e -- --project=chromium
-        working-directory: apps/customer
-        env:
-          CI: true
-      - name: Report E2E result
-        if: steps.e2e.outcome == 'failure'
-        run: |
-          echo "::warning title=E2E failed (non-blocking)::Playwright suite failed. See the E2E step log. Tracked in ADR-013."
-          echo "### ⚠️ E2E tests failed (non-blocking)" >> "$GITHUB_STEP_SUMMARY"
+        run: npx -y firebase-tools@15 emulators:exec --only firestore --project freshnest-aa51e "npx vitest run --config vitest.rules.config.ts"
