@@ -132,7 +132,7 @@ describe('Owner-only tab', () => {
   it('Managers see every tab except Team & roles; ?tab=team falls back for them', () => {
     expect(visibleAdminTabs(true).map((t) => t.key)).toContain('team')
     expect(visibleAdminTabs(false).map((t) => t.key)).not.toContain('team')
-    expect(visibleAdminTabs(false)).toHaveLength(9)
+    expect(visibleAdminTabs(false)).toHaveLength(visibleAdminTabs(true).length - 1)
     expect(parseAdminTab('team', false)).toBe('bookings')
     expect(parseAdminTab('team', true)).toBe('team')
   })

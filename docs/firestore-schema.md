@@ -259,7 +259,58 @@ Photos live in Firebase Storage under `gallery/{pairId}/`. Only documents with `
 
 ---
 
-## 14. Database Targeting Asymmetry (Cloud Functions)
+## 14. Collection: `settings` (`settings/policy` & `settings/policy/history/{version}`)
+Operational settings and policy record with append-only version history (**P3-E36 / Wave 0 W0-2**, approved 2026-10-27).
+- **Read access:** Any staff member (`owner`, `manager`, `supervisor`, `staff`) can read `settings/policy`; only office roles (`owner`, `manager`) can read `settings/policy/history/{version}`.
+- **Write access:** Client SDK writes are denied (`allow write: if false`). All updates go through the Owner-only `updatePolicySettings` callable Cloud Function, which atomically writes `settings/policy`, appends `settings/policy/history/{version}`, and writes an `auditLog` entry (`overrideType: 'policy_change'`).
+
+### Document: `settings/policy`
+
+| Field Name | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `defaultVehicleBufferMinutes` | `number` | `30` | Default travel buffer (minutes) between shifts in different FSAs when driving a personal vehicle |
+| `defaultTransitBufferMinutes` | `number` | `60` | Default travel buffer (minutes) between shifts in different FSAs when using public transit |
+| `baseDriveBufferMinutes` | `number` | `10` | Minimum baseline turnover buffer (minutes) |
+| `maxHoursPerDay` | `number` | `10` | Maximum scheduled hours per cleaner per day |
+| `rollingScheduleWeeks` | `number` | `8` | Rolling recurring schedule horizon (weeks) |
+| `scheduleFreezeDays` | `number` | `7` | Days before a shift when recurring schedule slots freeze |
+| `undoWindowMinutes` | `number` | `15` | Minutes after claiming an open shift during which a cleaner can undo |
+| `swapNoticeHours` | `number` | `12` | Minimum hours notice before shift start to request a swap |
+| `defaultOdspMonthlyLimit` | `number` | `1000` | Default monthly ODSP net earnings cap (CAD) pre-filled during staff registration |
+| `earningsCautionThreshold` | `number` | `100` | Remaining monthly headroom (CAD) at which the Safe-to-Earn bar turns amber |
+| `vacationNoticeDays` | `number` | `14` | Minimum advance notice (days) for vacation requests |
+| `maxConcurrentOff` | `number` | `2` | Maximum active cleaners allowed off on the same day |
+| `checkInGeofenceMeters` | `number` | `250` | Allowed GPS check-in radius (meters) from the site |
+| `timesheetVarianceMinutes` | `number` | `15` | Scheduled vs actual duration variance (minutes) that flags a timesheet for review |
+| `standardCancelWindowHours` | `number` | `24` | Notice window (hours) for standard and Airbnb cancellations |
+| `deepCancelWindowHours` | `number` | `48` | Notice window (hours) for deep, move-out, post-construction, and commercial cancellations |
+| `complaintWindowHours` | `number` | `24` | Window (hours) after completion for a complimentary re-clean report |
+| `lateCancellationFeeDollars` | `number` | `0` | Flat fee (CAD) for late cancellations |
+| `lockoutFeeDollars` | `number` | `0` | Flat fee (CAD) when crew cannot gain entry on site |
+| `photoRetentionDays` | `number` | `90` | Retention period (days) for internal job verification photos |
+| `agreementRetentionYears` | `number` | `7` | Retention period (years) for signed agreements and tax records |
+| `emergencyPrimaryPhone` | `string` | `"(613) 861-8812"` | Primary emergency dispatch phone number |
+| `emergencyBackupName` | `string` | `""` | Secondary emergency contact name |
+| `emergencyBackupPhone` | `string` | `""` | Secondary emergency contact phone number |
+| `version` | `number` | `1, 2, …` | Monotonically increasing integer version number |
+| `updatedAt` | `Timestamp` | — | Timestamp when this version was saved |
+| `updatedBy` | `string` | — | Lowercased email (or UID) of the Owner who saved this version |
+| `lastChangeReason` | `string \| null` | `null` | Optional reason provided when saving |
+
+### Subcollection: `settings/policy/history/{version}`
+
+| Field Name | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `version` | `number` | ✅ | Version number matching the document ID (`1`, `2`, …) |
+| `changedAt` | `Timestamp` | ✅ | Timestamp when this version was saved |
+| `changedBy` | `string` | ✅ | Lowercased email (or UID) of the Owner who saved this version |
+| `reason` | `string \| null` | ✅ | Optional reason for the policy update |
+| `changes` | `array<map>` | ✅ | Array of `{ field: string, oldValue: number \| string, newValue: number \| string }` |
+| `snapshot` | `map` | ✅ | Full `PolicySettingsValues` snapshot at this version |
+
+---
+
+## 15. Database Targeting Asymmetry (Cloud Functions)
 
 ### Scheduler Functions (`onDailyReminderCheck`)
 The daily scheduler function always targets the production `(default)` database explicitly:

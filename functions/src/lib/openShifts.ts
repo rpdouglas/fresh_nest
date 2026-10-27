@@ -8,6 +8,7 @@ import {
   extractPostalPrefix,
   type TravelShift,
   type StaffConstraintsLike,
+  type BufferPolicyConfig,
 } from './eligibility'
 
 // Service-area names matched in the free-text client address. Longest first so
@@ -56,10 +57,11 @@ export function buildOpenShifts(
   openJobs: JobRecord[],
   staffData: DocumentData,
   assignedJobs: JobRecord[],
+  policy?: BufferPolicyConfig,
 ): OpenShiftResponse[] {
   const constraints: StaffConstraintsLike = staffData.constraints || {}
   const blockedWindows = constraints.blockedWindows || []
-  const bufferMinutes = resolveBufferMinutes(constraints)
+  const bufferMinutes = resolveBufferMinutes(constraints, policy)
   const monthlyEarningsLimit = staffData.financials?.monthlyEarningsLimit ?? null
   const currentMonthEarnings = staffData.financials?.currentMonthEarnings ?? 0
 

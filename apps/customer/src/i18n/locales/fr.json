@@ -770,6 +770,7 @@
         "auditLogs": "Journaux d'audit",
         "reviews": "Modération des avis",
         "gallery": "Galerie",
+        "settings": "Paramètres et politiques",
         "team": "Équipe et rôles"
       },
       "analytics": {
@@ -848,6 +849,7 @@
         "transport": "Mode de transport par défaut",
         "buffer": "Marge de déplacement (minutes)",
         "earningsLimit": "Limite de gains mensuelle (Optionnelle)",
+        "applyOdspDefault": "Appliquer le plafond POSPH par défaut ({{limit}} CAD)",
         "roleOption": {
           "cleaner": "Nettoyeur/Nettoyeuse",
           "lead": "Chef d'équipe",
@@ -1167,6 +1169,154 @@
         "email": "Entrez une adresse courriel valide.",
         "noAccount": "Aucun compte n'utilise ce courriel. Demandez à la personne de se connecter au site une fois, puis réessayez.",
         "save": "Impossible d'enregistrer le changement : {{reason}}"
+      }
+    },
+    "settings": {
+      "title": "Paramètres opérationnels et politiques",
+      "subtitle": "Configurez les marges de déplacement, les plafonds de gains, les délais d'annulation et les règles de conformité. Chaque sauvegarde crée une version immuable.",
+      "loading": "Chargement des paramètres opérationnels…",
+      "versionBadge": "Version v{{version}}",
+      "defaultBadge": "Valeurs par défaut (v0)",
+      "lastUpdated": "Mis à jour par {{by}} le {{at}}",
+      "readOnlyBanner": "Mode lecture seule : les gestionnaires peuvent consulter tous les paramètres et l'historique des versions. Seul·e un·e propriétaire peut modifier et enregistrer les politiques.",
+      "reasonLabel": "Motif de la mise à jour (facultatif)",
+      "reasonPlaceholder": "ex. Augmentation de la marge de déplacement hivernale pour Cornwall et Akwesasne",
+      "resetButton": "Réinitialiser",
+      "saveButton": "Enregistrer les politiques",
+      "savingButton": "Enregistrement…",
+      "saveSuccess": "Paramètres opérationnels enregistrés (Version v{{version}}).",
+      "saveError": "Impossible d'enregistrer les paramètres opérationnels. Veuillez réessayer.",
+      "units": {
+        "minutes": "minutes",
+        "hours": "heures",
+        "days": "jours",
+        "weeks": "semaines",
+        "years": "ans",
+        "meters": "mètres",
+        "cad": "CAD",
+        "staff": "employé(s)"
+      },
+      "sections": {
+        "scheduling": {
+          "title": "1. Planification et marges de déplacement",
+          "description": "Marges de déplacement par défaut et règles d'horizon utilisées par le tableau de répartition et les quarts ouverts."
+        },
+        "earnings": {
+          "title": "2. Gains du personnel, temps et présence",
+          "description": "Plafond mensuel POSPH par défaut, seuil d'avertissement de gains, préavis de congé et tolérances GPS."
+        },
+        "client": {
+          "title": "3. Politiques clients et frais",
+          "description": "Délais de préavis d'annulation, délai de signalement qualité et frais d'annulation tardive ou d'accès impossible."
+        },
+        "compliance": {
+          "title": "4. Conformité, conservation et contacts d'urgence",
+          "description": "Durées de conservation des photos et contrats, ainsi que les numéros d'urgence principal et secondaire."
+        }
+      },
+      "fields": {
+        "defaultVehicleBufferMinutes": {
+          "label": "Marge de déplacement par défaut (véhicule personnel)",
+          "help": "Intervalle minimal entre deux quarts dans des secteurs postaux différents avec un véhicule personnel."
+        },
+        "defaultTransitBufferMinutes": {
+          "label": "Marge de déplacement par défaut (transport en commun)",
+          "help": "Intervalle minimal entre deux quarts dans des secteurs postaux différents en transport en commun."
+        },
+        "baseDriveBufferMinutes": {
+          "label": "Marge minimale dans le même secteur",
+          "help": "Temps minimal de transition entre deux quarts consécutifs."
+        },
+        "maxHoursPerDay": {
+          "label": "Maximum d'heures planifiées par jour",
+          "help": "Plafond quotidien d'heures planifiées par employé avant avertissement."
+        },
+        "rollingScheduleWeeks": {
+          "label": "Horizon de planification glissant",
+          "help": "Nombre de semaines générées à l'avance pour les réservations récurrentes."
+        },
+        "scheduleFreezeDays": {
+          "label": "Période de gel de l'horaire",
+          "help": "Nombre de jours avant un quart où l'horaire récurrent est verrouillé."
+        },
+        "undoWindowMinutes": {
+          "label": "Délai d'annulation après réclamation d'un quart",
+          "help": "Minutes après avoir réclamé un quart pendant lesquelles l'employé peut se retirer sans pénalité."
+        },
+        "swapNoticeHours": {
+          "label": "Préavis minimal pour échange de quart",
+          "help": "Heures avant le début du quart requises pour demander un échange entre collègues."
+        },
+        "defaultOdspMonthlyLimit": {
+          "label": "Plafond mensuel POSPH par défaut",
+          "help": "Plafond mensuel net prérempli lors de l'inscription d'un membre du personnel au POSPH."
+        },
+        "earningsCautionThreshold": {
+          "label": "Seuil d'avertissement de la jauge de gains",
+          "help": "Marge mensuelle restante sous laquelle la jauge passe du vert à l'ambre."
+        },
+        "vacationNoticeDays": {
+          "label": "Préavis de demande de congé",
+          "help": "Préavis minimal requis pour les demandes de vacances ou de congé planifié."
+        },
+        "maxConcurrentOff": {
+          "label": "Maximum d'employés en congé simultané",
+          "help": "Nombre maximal d'employés actifs autorisés en congé à la même date."
+        },
+        "checkInGeofenceMeters": {
+          "label": "Rayon GPS d'arrivée sur place",
+          "help": "Distance maximale autorisée par rapport à l'adresse du client lors du pointage mobile."
+        },
+        "timesheetVarianceMinutes": {
+          "label": "Seuil d'écart de feuille de temps",
+          "help": "Écart entre la durée prévue et la durée pointée déclenchant une vérification."
+        },
+        "standardCancelWindowHours": {
+          "label": "Délai d'annulation — Standard et Airbnb",
+          "help": "Préavis minimal avant un ménage standard ou Airbnb pour annuler sans frais."
+        },
+        "deepCancelWindowHours": {
+          "label": "Délai d'annulation — Grand ménage et spécialisé",
+          "help": "Préavis minimal avant un grand ménage, déménagement, après construction ou commercial."
+        },
+        "complaintWindowHours": {
+          "label": "Délai de garantie qualité (reprise)",
+          "help": "Heures après la fin du service pour signaler un oubli admissible à une reprise sans frais."
+        },
+        "lateCancellationFeeDollars": {
+          "label": "Frais d'annulation tardive",
+          "help": "Frais fixes appliqués lorsqu'un client annule à l'intérieur du délai de préavis."
+        },
+        "lockoutFeeDollars": {
+          "label": "Frais d'accès impossible sur place",
+          "help": "Frais appliqués lorsque l'équipe ne peut pas accéder aux lieux après le délai d'attente."
+        },
+        "photoRetentionDays": {
+          "label": "Conservation des photos de vérification",
+          "help": "Nombre de jours avant que les photos internes de vérification soient admissibles à l'archivage."
+        },
+        "agreementRetentionYears": {
+          "label": "Conservation des contrats et dossiers fiscaux",
+          "help": "Nombre d'années de conservation des ententes signées et documents de conformité."
+        },
+        "emergencyPrimaryPhone": {
+          "label": "Téléphone d'urgence principal (répartition)",
+          "help": "Numéro principal affiché au personnel en cas d'urgence ou de problème d'accès sur place."
+        },
+        "emergencyBackupName": {
+          "label": "Nom du contact d'urgence secondaire",
+          "help": "Nom de la personne-ressource secondaire lorsque la ligne principale n'est pas disponible."
+        },
+        "emergencyBackupPhone": {
+          "label": "Téléphone du contact d'urgence secondaire",
+          "help": "Numéro de téléphone de la personne-ressource secondaire."
+        }
+      },
+      "history": {
+        "title": "Historique des versions des politiques",
+        "subtitle": "Journal immuable de chaque mise à jour : auteur, date d'entrée en vigueur et valeurs modifiées.",
+        "empty": "Aucune version n'a encore été enregistrée. Le premier enregistrement créera la Version v1.",
+        "noFieldChanges": "Instantané de base enregistré (aucune modification par rapport aux valeurs par défaut)."
       }
     }
   },

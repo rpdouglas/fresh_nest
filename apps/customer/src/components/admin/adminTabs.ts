@@ -9,6 +9,8 @@ export const ADMIN_TABS = [
   { key: 'auditLogs', labelKey: 'admin.dashboard.tabs.auditLogs', fallback: 'Audit Logs' },
   { key: 'reviews', labelKey: 'admin.dashboard.tabs.reviews', fallback: 'Reviews' },
   { key: 'gallery', labelKey: 'admin.dashboard.tabs.gallery' },
+  // P3-E36 (W0-2): Operational Settings & Policy (Owners edit, Managers view read-only)
+  { key: 'settings', labelKey: 'admin.dashboard.tabs.settings' },
   // P3-E35: Owners only — who has office access (Owner / Manager)
   { key: 'team', labelKey: 'admin.dashboard.tabs.team', ownerOnly: true },
 ] as const

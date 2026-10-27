@@ -9,7 +9,8 @@ import { useStaff } from './hooks/useStaff'
 import { OverrideModal } from './OverrideModal'
 import { ChecklistDialog } from './checklist/ChecklistDialog'
 import { useChecklistTemplates } from './hooks/useChecklistTemplates'
-import { checkCleanerSchedulingConflicts, timeToMinutes } from '@/lib/utils/scheduling'
+import { usePolicySettings } from './hooks/usePolicySettings'
+import { checkCleanerSchedulingConflicts, resolveBufferMinutes, timeToMinutes } from '@/lib/utils/scheduling'
 import type { Booking, Job } from '@/types'
 import { cn } from '@/lib/utils/utils'
 
@@ -326,6 +327,7 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
   // Fetch active staff cleaners & supervisors
   const { staffList, isLoading: isStaffLoading, error: staffError } = useStaff(isAuthorized)
   const { templates: checklistTemplates } = useChecklistTemplates(isAuthorized)
+  const { policy } = usePolicySettings(isAuthorized)
   const [checklistJob, setChecklistJob] = useState<Job | null>(null)
   // Jobs created before P3-E34 have no copy of their tasks; describe them by their saved list.
   const checklistOf = (job: Job): { name: string; count: number } | null => {
@@ -491,12 +493,8 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
           if (startS < endPrev) {
             warnings.push(t('admin.override.overlapWarning', { name: `${staff.firstName} ${staff.lastName}`, start: prevJob.scheduledStartTime, end: prevJob.scheduledEndTime }))
           } else {
-            // Buffer check
-            const transportMode = staff.constraints?.transportMode || 'transit'
-            const defaultBuffer = transportMode === 'transit' ? 60 : 30
-            const bufferMinutes = typeof staff.constraints?.transitBufferMinutes === 'number'
-              ? staff.constraints.transitBufferMinutes
-              : defaultBuffer
+            // Buffer check (P3-E36 / W0-2: uses policy default buffers when staff has no explicit override)
+            const bufferMinutes = resolveBufferMinutes(staff.constraints || {}, policy)
 
             const gap = startS - endPrev
             const fsaC = extractPostalPrefix(job.clientAddress)
@@ -524,7 +522,7 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
     })
 
     return conflictsMap
-  }, [activeStaff, dailyJobs, t])
+  }, [activeStaff, dailyJobs, policy, t])
 
   // Extract postal prefix helper locally for formatting
   const extractPostalPrefix = (address: string): string | null => {
@@ -610,6 +608,7 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
       booking: mockBooking,
       job: jobToAssign,
       estimatedPay: estPay,
+      policy,
       t,
     })
 

@@ -8,6 +8,7 @@ import {
   overlapsBlockedWindow,
   resolveBufferMinutes,
   earningsOverage,
+  type BufferPolicyConfig,
 } from '@freshnest/shared'
 import { db } from '@/lib/firebase/firebase'
 import type { Booking, Job, Staff } from '@/types'
@@ -42,6 +43,7 @@ export async function checkCleanerSchedulingConflicts({
   booking,
   job,
   estimatedPay,
+  policy,
   t = (key: string, options?: Record<string, unknown>) => {
     const name = typeof options?.name === 'string' ? options.name : 'Cleaner'
     const overage = typeof options?.overage === 'number' || typeof options?.overage === 'string' ? String(options.overage) : '0'
@@ -68,6 +70,7 @@ export async function checkCleanerSchedulingConflicts({
   booking: Booking
   job: Job | null
   estimatedPay: number
+  policy?: BufferPolicyConfig
   t?: (key: string, options?: Record<string, unknown>) => string
 }): Promise<ConflictCheckResult> {
   const newCleanerName = `${selectedStaff.firstName} ${selectedStaff.lastName}`
@@ -83,7 +86,7 @@ export async function checkCleanerSchedulingConflicts({
   let overlappingShift: Job | null = null
   let isOverTravel = false
   let conflictingShift: Job | null = null
-  const bufferMinutes = resolveBufferMinutes(selectedStaff.constraints || {})
+  const bufferMinutes = resolveBufferMinutes(selectedStaff.constraints || {}, policy)
 
   const cand = {
     startTime: job?.scheduledStartTime || '09:00',

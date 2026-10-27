@@ -3,6 +3,7 @@ import { getFirestore } from 'firebase-admin/firestore'
 import { logError } from '../lib/shared'
 import { buildOpenShifts, type OpenShiftResponse } from '../lib/openShifts'
 import { isOfficeRole } from '../lib/roles'
+import { normalizePolicySettings } from '../shared/policy'
 
 const FSM_ROLES = ['staff', 'supervisor']
 
@@ -28,10 +29,11 @@ export const listOpenShifts = onCall(async (request): Promise<{ shifts: OpenShif
   const db = getFirestore('(default)')
 
   try {
-    const [openSnap, staffSnap, assignedSnap] = await Promise.all([
+    const [openSnap, staffSnap, assignedSnap, policySnap] = await Promise.all([
       db.collection('jobs').where('status', '==', 'unassigned').get(),
       db.collection('staff').doc(authContext.uid).get(),
       db.collection('jobs').where('assignedTo', '==', authContext.uid).get(),
+      db.collection('settings').doc('policy').get().catch(() => null),
     ])
 
     // Owners and Managers may browse the board without a staff profile; staff must have one.
@@ -39,10 +41,15 @@ export const listOpenShifts = onCall(async (request): Promise<{ shifts: OpenShif
       throw new HttpsError('not-found', 'Your staff profile was not found.')
     }
 
+    const policy = normalizePolicySettings(
+      policySnap && policySnap.exists ? (policySnap.data() as Record<string, unknown>) : undefined,
+    )
+
     const shifts = buildOpenShifts(
       openSnap.docs.map((d) => ({ id: d.id, data: d.data() })),
       staffSnap.data() ?? {},
       assignedSnap.docs.map((d) => ({ id: d.id, data: d.data() })),
+      policy,
     )
     return { shifts }
   } catch (err) {

@@ -22,6 +22,7 @@ import { DispatchBoard } from '@/components/admin/DispatchBoard'
 import { GalleryManagerTab } from '@/components/admin/GalleryManagerTab'
 import { AdminSectionNav } from '@/components/admin/AdminSectionNav'
 import { TeamRolesTab } from '@/components/admin/TeamRolesTab'
+import { SettingsTab } from '@/components/admin/SettingsTab'
 import { parseAdminTab, type AdminTab } from '@/components/admin/adminTabs'
 
 export default function AdminPage() {
@@ -272,6 +273,17 @@ export default function AdminPage() {
                     transition={{ duration: 0.2 }}
                   >
                     <GalleryManagerTab isAuthorized={isAuthorized} adminUid={user.uid} />
+                  </motion.div>
+                )}
+                {activeTab === 'settings' && (
+                  <motion.div
+                    key="tab-settings"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <SettingsTab isAuthorized={isAuthorized} isOwner={isOwner} />
                   </motion.div>
                 )}
                 {activeTab === 'team' && isOwner && (

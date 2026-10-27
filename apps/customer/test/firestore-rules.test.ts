@@ -469,3 +469,61 @@ describe('Office roles (P3-E35: owner and manager; the legacy admin claim is ref
     await assertSucceeds(getDoc(doc(as('customer', 'c1', 'owner@freshnest.test'), 'admins/owner@freshnest.test')))
   })
 })
+
+describe('Operational Settings & Policy (P3-E36 / W0-2)', () => {
+  const as = (role: string, uid = `${role}-uid`, email = `${role}@freshnest.test`) =>
+    testEnv.authenticatedContext(uid, { role, email }).firestore()
+
+  beforeEach(async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore()
+      await setDoc(doc(db, 'settings/policy'), {
+        defaultVehicleBufferMinutes: 30,
+        defaultTransitBufferMinutes: 60,
+        version: 1,
+        updatedBy: 'owner@freshnest.test',
+        updatedAt: new Date(),
+      })
+      await setDoc(doc(db, 'settings/policy/history/1'), {
+        version: 1,
+        changedBy: 'owner@freshnest.test',
+        changedAt: new Date(),
+        reason: 'Initial policy',
+        changes: [],
+        snapshot: { defaultVehicleBufferMinutes: 30, defaultTransitBufferMinutes: 60 },
+      })
+    })
+  })
+
+  for (const role of ['owner', 'manager', 'supervisor', 'staff']) {
+    it(`${role}: can read settings/policy`, async () => {
+      await assertSucceeds(getDoc(doc(as(role), 'settings/policy')))
+    })
+  }
+
+  for (const role of ['customer', 'admin']) {
+    it(`${role} and unauthenticated: cannot read settings/policy`, async () => {
+      await assertFails(getDoc(doc(as(role), 'settings/policy')))
+      await assertFails(getDoc(doc(testEnv.unauthenticatedContext().firestore(), 'settings/policy')))
+    })
+  }
+
+  for (const role of ['owner', 'manager']) {
+    it(`${role}: can read settings/policy/history/{version}`, async () => {
+      await assertSucceeds(getDoc(doc(as(role), 'settings/policy/history/1')))
+      await assertSucceeds(getDocs(collection(as(role), 'settings/policy/history')))
+    })
+  }
+
+  for (const role of ['supervisor', 'staff', 'customer']) {
+    it(`${role}: cannot read settings/policy/history/{version}`, async () => {
+      await assertFails(getDoc(doc(as(role), 'settings/policy/history/1')))
+    })
+  }
+
+  it('nobody can write directly to settings/policy or settings/policy/history from client SDKs', async () => {
+    await assertFails(setDoc(doc(as('owner'), 'settings/policy'), { defaultVehicleBufferMinutes: 45 }))
+    await assertFails(setDoc(doc(as('owner'), 'settings/policy/history/2'), { version: 2 }))
+  })
+})
+

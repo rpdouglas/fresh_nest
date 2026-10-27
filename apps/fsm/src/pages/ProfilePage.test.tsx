@@ -18,7 +18,8 @@ vi.mock('firebase/firestore', () => {
   }
   return {
     collection: vi.fn(() => collectionRef),
-    doc: vi.fn(() => ({ id: 'staff123' })),
+    doc: vi.fn(() => ({ id: 'staff123', withConverter: vi.fn().mockReturnThis() })),
+    onSnapshot: vi.fn(() => () => {}),
     updateDoc: vi.fn().mockResolvedValue({}),
     initializeFirestore: vi.fn(),
     persistentLocalCache: vi.fn(),
