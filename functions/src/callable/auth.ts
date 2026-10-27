@@ -71,6 +71,8 @@ export const setUserRole = onCall(async (request) => {
       } else if (isOfficeRole(existingRole)) {
         await allowRef.delete()
       }
+      // Tidy an old hand-made entry keyed by account ID; the email-keyed entry above replaces it.
+      await db.collection('admins').doc(resolvedUid).delete()
     }
 
     await db.collection('auditLog').add({
@@ -92,6 +94,30 @@ export const setUserRole = onCall(async (request) => {
     logError(`[setUserRole] Failed to set claims for user ${resolvedUid}:`, err)
     throw new HttpsError('internal', 'Failed to update user custom claims.')
   }
+})
+
+// P3-E35: the Team & roles list shows allowlist entries by email. Old entries added by hand
+// under an account ID are looked up here (apps can't read other users' emails).
+export const resolveOfficeEntries = onCall(async (request) => {
+  const db = getFirestore()
+  await requireOffice(request.auth, db, 'view the office team')
+  const ids = request.data?.ids
+  if (!Array.isArray(ids) || ids.length > 50 || !ids.every((id) => typeof id === 'string' && id.length > 0)) {
+    throw new HttpsError('invalid-argument', 'ids must be a list of up to 50 allowlist entry IDs.')
+  }
+  const auth = getAuth()
+  const emails: Record<string, string | null> = {}
+  for (const id of ids as string[]) {
+    // Only entries that are really on the allowlist, so this can't look up arbitrary accounts.
+    const entry = await db.collection('admins').doc(id).get()
+    if (!entry.exists) continue
+    try {
+      emails[id] = (await auth.getUser(id)).email?.trim().toLowerCase() ?? null
+    } catch {
+      emails[id] = null
+    }
+  }
+  return { emails }
 })
 
 type Caller = { uid: string; token: { email?: string } }

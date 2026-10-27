@@ -9,16 +9,25 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string, opts?: Record<string, unknown>) => (typeof opts?.email === 'string' ? `${key}:${opts.email}` : key) }),
 }))
 vi.mock('@/lib/firebase/firebase', () => ({ db: {}, functions: {} }))
-const docs = [
+type Doc = { id: string; data: () => Record<string, unknown> }
+const baseDocs: Doc[] = [
   { id: 'ryan@freshnest.ca', data: () => ({ role: 'owner' }) },
   { id: 'lauren@freshnest.ca', data: () => ({ role: 'manager' }) },
   { id: 'legacy@freshnest.ca', data: () => ({}) },
 ]
+let docs: Doc[] = baseDocs
 vi.mock('firebase/firestore', () => ({ collection: vi.fn(), getDocs: vi.fn(() => Promise.resolve({ docs })) }))
 const setUserRole = vi.fn((_data: unknown) => Promise.resolve({ data: { success: true, pending: false } }))
-vi.mock('firebase/functions', () => ({ httpsCallable: vi.fn(() => setUserRole) }))
+const noEmails: Record<string, string | null> = {}
+const resolveOfficeEntries = vi.fn((_data: unknown) => Promise.resolve({ data: { emails: noEmails } }))
+vi.mock('firebase/functions', () => ({
+  httpsCallable: vi.fn((_fns: unknown, name: string) => (name === 'resolveOfficeEntries' ? resolveOfficeEntries : setUserRole)),
+}))
 
-beforeEach(() => vi.clearAllMocks())
+beforeEach(() => {
+  vi.clearAllMocks()
+  docs = baseDocs
+})
 
 describe('Team & roles tab', () => {
   it('lists Owners first; legacy entries without a role count as Owners; you cannot change yourself', async () => {
@@ -78,6 +87,44 @@ describe('Team & roles tab', () => {
     fireEvent.change(screen.getByLabelText('admin.team.email'), { target: { value: 'x@y.ca' } })
     fireEvent.click(screen.getByRole('button', { name: 'admin.team.add' }))
     expect(await screen.findByRole('alert')).toHaveTextContent('admin.team.errors.noAccount')
+  })
+})
+
+describe('old entries saved under an account ID', () => {
+  it('shows the email instead of the ID, and shows someone with both entries once', async () => {
+    docs = [
+      { id: 'ryan@freshnest.ca', data: () => ({ role: 'owner' }) },
+      { id: 'UID_RYAN', data: () => ({}) },
+      { id: 'UID_SAM', data: () => ({ role: 'owner' }) },
+    ]
+    resolveOfficeEntries.mockResolvedValueOnce({ data: { emails: { UID_RYAN: 'ryan@freshnest.ca', UID_SAM: 'sam@freshnest.ca' } } })
+    render(<TeamRolesTab currentEmail="ryan@freshnest.ca" />)
+    const items = await screen.findAllByRole('listitem')
+    expect(resolveOfficeEntries).toHaveBeenCalledWith({ ids: ['UID_RYAN', 'UID_SAM'] })
+    expect(items).toHaveLength(2)
+    expect(items.map((li) => li.textContent).join(' ')).not.toContain('UID_')
+    expect(items[1]).toHaveTextContent('sam@freshnest.ca')
+    fireEvent.click(screen.getByRole('button', { name: 'admin.team.makeManager' }))
+    await waitFor(() => expect(setUserRole).toHaveBeenCalledWith({ email: 'sam@freshnest.ca', role: 'manager', forceDowngrade: true }))
+  })
+
+  it('an entry whose account is gone is labelled as unknown and can only be removed', async () => {
+    docs = [{ id: 'ryan@freshnest.ca', data: () => ({ role: 'owner' }) }, { id: 'UID_GONE', data: () => ({}) }]
+    resolveOfficeEntries.mockResolvedValueOnce({ data: { emails: { UID_GONE: null } } })
+    render(<TeamRolesTab currentEmail="ryan@freshnest.ca" />)
+    const items = await screen.findAllByRole('listitem')
+    expect(items[1]).toHaveTextContent('admin.team.unknownAccount')
+    expect(screen.queryByRole('button', { name: 'admin.team.makeManager' })).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'admin.team.remove' }))
+    const removeButtons = screen.getAllByRole('button', { name: 'admin.team.remove' })
+    fireEvent.click(removeButtons[removeButtons.length - 1])
+    await waitFor(() => expect(setUserRole).toHaveBeenCalledWith({ email: 'UID_GONE', role: 'customer', forceDowngrade: true }))
+  })
+
+  it('email-only lists never call the lookup', async () => {
+    render(<TeamRolesTab currentEmail="ryan@freshnest.ca" />)
+    await screen.findAllByRole('listitem')
+    expect(resolveOfficeEntries).not.toHaveBeenCalled()
   })
 })
 
