@@ -690,7 +690,8 @@
       "errorMessage": "Votre compte ({{email}}) n'est pas autorisé à accéder à ce portail d'administration. Si vous pensez qu'il s'agit d'une erreur, veuillez contacter le développeur ou utiliser un compte autorisé.",
       "tryAnother": "Essayer un autre compte",
       "backToHome": "Retour à l'accueil",
-      "authFailed": "Échec de l'authentification. Veuillez réessayer."
+      "authFailed": "Échec de l'authentification. Veuillez réessayer.",
+      "checkingAccess": "Configuration de votre accès…"
     },
     "dashboard": {
       "title": "Tableau de bord Admin",

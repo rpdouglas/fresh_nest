@@ -16,8 +16,9 @@ import {
   getDocs,
   onSnapshot,
 } from 'firebase/firestore'
-import { staffCollection, isStaffAppRole } from '@freshnest/shared'
-import { auth, db } from '../lib/firebase/firebase'
+import { httpsCallable } from 'firebase/functions'
+import { staffCollection, isStaffAppRole, waitForRoleClaim, isNewAccount } from '@freshnest/shared'
+import { auth, db, functions } from '../lib/firebase/firebase'
 import { Staff } from '../types'
 import { StaffAuthContext } from './StaffAuthContext'
 
@@ -30,8 +31,13 @@ export const StaffAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   useEffect(() => {
     let unsubscribeProfile: (() => void) | null = null
+    let activeController: AbortController | null = null
 
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      activeController?.abort()
+      const controller = new AbortController()
+      activeController = controller
+
       const handleAuthChange = () => {
         setLoading(true)
         setError(null)
@@ -48,8 +54,26 @@ export const StaffAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
               // Retrieve custom claims, handling test mock environments gracefully
               let userRole = 'customer'
               if (typeof currentUser.getIdTokenResult === 'function') {
-                const idTokenResult = await currentUser.getIdTokenResult(true)
-                userRole = (idTokenResult.claims.role as string) || 'customer'
+                const resolved = await waitForRoleClaim({
+                  getRole: async () => {
+                    const idTokenResult = await currentUser.getIdTokenResult(true)
+                    return idTokenResult.claims.role ?? 'customer'
+                  },
+                  accepts: isStaffAppRole,
+                  syncRole: async () => {
+                    if (!functions) return
+                    const syncFn = httpsCallable<Record<string, never>, { role?: unknown; updated?: boolean }>(
+                      functions,
+                      'syncMyRole',
+                    )
+                    const res = await syncFn({})
+                    return res.data
+                  },
+                  isNewAccount: isNewAccount(currentUser.metadata?.creationTime),
+                  signal: controller.signal,
+                })
+                if (controller.signal.aborted) return
+                userRole = (typeof resolved === 'string' && resolved) ? resolved : 'customer'
               } else {
                 // Fallback for Vitest environments
                 userRole = currentUser.email?.includes('freshnest') ? 'staff' : 'customer'
@@ -95,6 +119,7 @@ export const StaffAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 setLoading(false)
               })
             } catch (err) {
+              if (controller.signal.aborted) return
               console.error('Error setting up staff profile/claims:', err)
               setStaffProfile(null)
               setRole(null)
@@ -113,6 +138,7 @@ export const StaffAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     })
 
     return () => {
+      activeController?.abort()
       unsubscribe()
       if (unsubscribeProfile) unsubscribeProfile()
     }

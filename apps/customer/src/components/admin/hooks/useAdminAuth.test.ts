@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react'
+import { renderHook, act, waitFor } from '@testing-library/react'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { useAdminAuth } from './useAdminAuth'
 import { signInWithPopup, signOut } from 'firebase/auth'
@@ -19,6 +19,13 @@ vi.mock('react-i18next', () => ({
 // Mock Firebase config auth instance
 vi.mock('@/lib/firebase/firebase', () => ({
   auth: { currentUser: null },
+  functions: {},
+}))
+
+const mockSyncMyRole = vi.fn().mockResolvedValue({ data: { role: 'customer', updated: false } })
+
+vi.mock('firebase/functions', () => ({
+  httpsCallable: vi.fn(() => mockSyncMyRole),
 }))
 
 // Store callback to trigger manually
@@ -39,6 +46,7 @@ vi.mock('firebase/auth', () => {
 describe('useAdminAuth hook', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockSyncMyRole.mockResolvedValue({ data: { role: 'customer', updated: false } })
     authStateCallback = null
   })
 
@@ -130,6 +138,42 @@ describe('useAdminAuth hook', () => {
     })
 
     expect(signOut).toHaveBeenCalled()
+  })
+
+  it('HOTFIX-10: self-heals Lauren pre-approved Owner account via syncMyRole even when creationTime > 5 min old', async () => {
+    mockSyncMyRole.mockResolvedValueOnce({ data: { role: 'owner', updated: true } })
+    const getIdTokenResult = vi
+      .fn()
+      .mockResolvedValueOnce({ claims: { role: 'customer' } })
+      .mockResolvedValueOnce({ claims: { role: 'owner' } })
+
+    const mockUser = {
+      uid: 'lauren-uid',
+      email: 'freshnestcompany2023@gmail.com',
+      metadata: { creationTime: '2026-01-01T00:00:00Z' },
+      getIdTokenResult,
+    } as unknown as User
+
+    const { result } = renderHook(() => useAdminAuth())
+
+    act(() => {
+      if (authStateCallback) {
+        authStateCallback(mockUser)
+      }
+    })
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
+    })
+
+    expect(mockSyncMyRole).toHaveBeenCalledTimes(1)
+    expect(getIdTokenResult).toHaveBeenCalledTimes(2)
+    expect(result.current.loading).toBe(false)
+    expect(result.current.checkingAccess).toBe(false)
+    expect(result.current.isAuthorized).toBe(true)
+    expect(result.current.officeRole).toBe('owner')
+    expect(result.current.isOwner).toBe(true)
+    expect(result.current.authError).toBeNull()
   })
 
   // P3-E35: owners and managers both get the admin panel; only owners get isOwner.
