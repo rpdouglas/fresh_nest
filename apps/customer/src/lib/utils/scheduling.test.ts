@@ -6,7 +6,10 @@ import type { Booking, Job, Staff } from '@/types'
 // N-3: one person on two overlapping jobs is a blocking error, never an overridable warning.
 
 vi.mock('@/lib/firebase/firebase', () => ({ db: {} }))
-vi.mock('@freshnest/shared', () => ({ jobsCollection: vi.fn() }))
+vi.mock('@freshnest/shared', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@freshnest/shared')>()),
+  jobsCollection: vi.fn(),
+}))
 vi.mock('firebase/firestore', () => ({ query: vi.fn(), where: vi.fn(), getDocs: vi.fn() }))
 
 const staff = {

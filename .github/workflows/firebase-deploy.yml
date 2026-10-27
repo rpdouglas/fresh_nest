@@ -50,6 +50,7 @@ jobs:
               - 'firebase.json'
             functions:
               - *ci
+              - *shared
               - 'functions/**'
               - 'firebase.json'
 
