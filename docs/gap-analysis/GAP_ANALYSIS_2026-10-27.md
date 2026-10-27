@@ -427,7 +427,7 @@ They should be the first test file in backlog item W2-6.
 
 | # | Severity | Risk | Evidence | Suggested action |
 |---|---|---|---|---|
-| R1 | **High — live** | Crew photo uploads are denied. The FSM uploads to `jobs/{jobId}/photos/{id}`, but `storage.rules` allows only `gallery/**` and denies everything else | `OfflineUploadProvider.tsx:53-56`; `storage.rules:10-23` | Human-approved Storage rule: assigned staff write `jobs/{jobId}/photos/*` (JPEG, size cap); admin and assigned staff read. Needs a `firestore.get()` on the job. Then verify on a phone |
+| R1 | ✅ **Fixed 2026-10-27 (HOTFIX-06)** — was High, live | Crew photo uploads were denied. The FSM uploads to `jobs/{jobId}/photos/{id}`, but `storage.rules` allows only `gallery/**` and denies everything else | `OfflineUploadProvider.tsx:53-56`; `storage.rules:10-23` | Human-approved Storage rule: assigned staff write `jobs/{jobId}/photos/*` (JPEG, size cap); admin and assigned staff read. Needs a `firestore.get()` on the job. Then verify on a phone |
 | R2 | Medium — live | Crew "mark all as read" is denied, because `notifications/{uid}/messages` has `allow update: if false` | `useNotifications.ts:73-90`; `firestore.rules:221-225` | Rule change (owner may update `read` only), or a callable |
 | R3 | High | Schedule, assignment and checklist changes are **client writes**, contrary to MP-S5.1 and SCH-S11 | `assignCleanerTransaction`, `attachJobChecklist`, `updateBookingStatus` in `firestore.ts` | Introduce `applyScheduleChange` before building recurrence, so validation is authoritative |
 | R4 | Medium | Crew may write any `status` string and any `checkedInAt` / `completedAt` value on their job; no transition or time validation | `firestore.rules:188-193` | Move check-in and check-out to callables (CRW-S10.3), or constrain values in rules (`request.time`, allowed transitions) |
@@ -450,7 +450,7 @@ Each item lists its requirement IDs, dependencies and exit criteria (from the sp
 ### Now — live defects (before any wave work)
 | # | Item | IDs | Depends on | Exit criteria |
 |---|---|---|---|---|
-| N-1 | Storage rule for crew job photos (human approval) — **rule + tests written (HOTFIX-06), awaiting deploy** | R1, CRW-S6.2 | — | A required-photo task uploads from an iPhone and an Android; photo visible in admin |
+| N-1 | Storage rule for crew job photos (human approval) — ✅ **done 2026-10-27 (HOTFIX-06, PR #37; deployed and phone-tested)** | R1, CRW-S6.2 | — | A required-photo task uploads from an iPhone and an Android; photo visible in admin |
 | N-2 | Notifications mark-read rule or callable | R2 | — | Unread badge clears after opening |
 | N-3 | Block overlap overrides on dispatch | R6, SCH-S5.2 | — | Overlap assignment cannot be saved |
 | N-4 | Decide on the Stripe callables (remove, or require auth) | R10, MP-S3.12 | Owner decision | No unauthenticated payment-intent creation |
