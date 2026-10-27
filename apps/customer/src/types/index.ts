@@ -23,6 +23,7 @@ export type {
   PayRate,
   AuditEntry,
   Review,
+  GalleryPair,
 } from '@freshnest/shared'
 
 // Customer-app-only types

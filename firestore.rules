@@ -211,6 +211,13 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // P3-E32: before/after gallery pairs (human-approved 2026-10-04)
+    match /galleryPairs/{pairId} {
+      // Anyone can read published pairs; admins can read all
+      allow read: if resource.data.published == true || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
     match /notifications/{staffId}/messages/{messageId} {
       allow read:   if request.auth != null && request.auth.uid == staffId;
       allow create: if false;

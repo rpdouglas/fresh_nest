@@ -18,6 +18,7 @@ import { OperationsDashboard } from '@/components/admin/OperationsDashboard'
 import { AuditLogsTable } from '@/components/admin/AuditLogsTable'
 import { ReviewsModerationTab } from '@/components/admin/ReviewsModerationTab'
 import { DispatchBoard } from '@/components/admin/DispatchBoard'
+import { GalleryManagerTab } from '@/components/admin/GalleryManagerTab'
 
 export default function AdminPage() {
   const { t } = useTranslation()
@@ -25,7 +26,7 @@ export default function AdminPage() {
   const bookingsState = useBookings(isAuthorized)
   const analyticsState = useAdminAnalytics()
 
-  const [activeTab, setActiveTab] = useState<'bookings' | 'dispatch' | 'analytics' | 'staff' | 'templates' | 'payRates' | 'auditLogs' | 'reviews'>('bookings')
+  const [activeTab, setActiveTab] = useState<'bookings' | 'dispatch' | 'analytics' | 'staff' | 'templates' | 'payRates' | 'auditLogs' | 'reviews' | 'gallery'>('bookings')
   const [analyticsSubTab, setAnalyticsSubTab] = useState<'marketing' | 'operations'>('marketing')
 
   if (loading) {
@@ -211,6 +212,17 @@ export default function AdminPage() {
                 >
                   {t('admin.dashboard.tabs.reviews', 'Reviews')}
                 </button>
+                <button
+                  onClick={() => setActiveTab('gallery')}
+                  className={cn(
+                    'min-h-[48px] py-3 px-6 font-body font-medium text-base border-b-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2 shrink-0',
+                    activeTab === 'gallery'
+                      ? 'border-slate-brand text-slate-brand'
+                      : 'border-transparent text-text-muted hover:text-charcoal hover:border-sand'
+                  )}
+                >
+                  {t('admin.dashboard.tabs.gallery')}
+                </button>
               </div>
 
               <AnimatePresence mode="wait">
@@ -331,6 +343,17 @@ export default function AdminPage() {
                     transition={{ duration: 0.2 }}
                   >
                     <ReviewsModerationTab isAuthorized={isAuthorized} />
+                  </motion.div>
+                )}
+                {activeTab === 'gallery' && (
+                  <motion.div
+                    key="tab-gallery"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <GalleryManagerTab isAuthorized={isAuthorized} adminUid={user.uid} />
                   </motion.div>
                 )}
               </AnimatePresence>
