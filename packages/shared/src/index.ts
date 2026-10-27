@@ -8,6 +8,7 @@ export * from './types/staff'
 export * from './types/job'
 export * from './types/common'
 export * from './roles'
+export * from './auth/waitForRoleClaim'
 export * from './domain/scheduling'
 
 /**

@@ -690,7 +690,8 @@
       "errorMessage": "Your account ({{email}}) is not authorized to access this admin portal. If you believe this is an error, please contact the developer or use an authorized account.",
       "tryAnother": "Try Another Account",
       "backToHome": "Back to Home",
-      "authFailed": "Authentication failed. Please try again."
+      "authFailed": "Authentication failed. Please try again.",
+      "checkingAccess": "Setting up your access…"
     },
     "dashboard": {
       "title": "Admin Dashboard",
