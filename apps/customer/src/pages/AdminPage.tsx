@@ -26,7 +26,7 @@ import { parseAdminTab, type AdminTab } from '@/components/admin/adminTabs'
 
 export default function AdminPage() {
   const { t } = useTranslation()
-  const { user, loading, isAuthorized, isOwner, authError, handleSignIn, handleSignOut } = useAdminAuth()
+  const { user, loading, checkingAccess, isAuthorized, isOwner, authError, handleSignIn, handleSignOut } = useAdminAuth()
   const bookingsState = useBookings(isAuthorized)
   const analyticsState = useAdminAnalytics()
 
@@ -42,12 +42,17 @@ export default function AdminPage() {
   }
   const [analyticsSubTab, setAnalyticsSubTab] = useState<'marketing' | 'operations'>('marketing')
 
-  if (loading) {
+  if (loading || checkingAccess) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center bg-warm-white">
         <SEO title={t('admin.meta.title')} description={t('admin.meta.description')} noindex />
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 border-4 border-slate-brand border-t-transparent rounded-full animate-spin" />
+          {checkingAccess && (
+            <p className="font-body text-base text-text-muted">
+              {t('admin.login.checkingAccess')}
+            </p>
+          )}
         </div>
       </div>
     )

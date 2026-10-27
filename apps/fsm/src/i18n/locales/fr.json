@@ -100,7 +100,8 @@
       "magicLinkSent": "Un lien de connexion a été envoyé à votre adresse courriel. Veuillez vérifier votre boîte de réception.",
       "authenticating": "Connexion en cours...",
       "sendingLink": "Envoi du lien...",
-      "completingSignIn": "Finalisation de la connexion, veuillez patienter..."
+      "completingSignIn": "Finalisation de la connexion, veuillez patienter...",
+      "checkingAccess": "Configuration de votre accès…"
     },
     "profile": {
       "title": "Profil et paramètres",

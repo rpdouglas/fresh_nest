@@ -2,7 +2,7 @@ import { onCall, HttpsError } from 'firebase-functions/v2/https'
 import { getFirestore, type Firestore } from 'firebase-admin/firestore'
 import { getAuth } from 'firebase-admin/auth'
 import { logError } from '../lib/shared'
-import { allowlistRole, checkPreApproval, checkRoleChange, isOfficeRole, normalizeRole, requireOffice, type Role } from '../lib/roles'
+import { allowlistRole, checkPreApproval, checkRoleChange, isOfficeRole, normalizeRole, requireOffice, rolePriority, type Role } from '../lib/roles'
 
 // P2-E8 / P3-E35: set a user's role claim.
 // Owners and Managers may set supervisor, staff and customer; only Owners may give or take away
@@ -118,6 +118,88 @@ export const resolveOfficeEntries = onCall(async (request) => {
     }
   }
   return { emails }
+})
+
+export interface SyncRoleDirectoryReader {
+  getAdminDoc: (email: string) => Promise<{ exists: boolean; data: () => { role?: unknown } | undefined }>
+  getStaffRole: (email: string) => Promise<unknown | undefined>
+}
+
+export async function reconcileUserRole(params: {
+  email: string
+  existingRole: unknown
+  directory: SyncRoleDirectoryReader
+}): Promise<{ role: Role; updated: boolean }> {
+  const cleanEmail = params.email.trim().toLowerCase()
+  let directoryRole: Role = 'customer'
+
+  if (cleanEmail) {
+    const adminSnap = await params.directory.getAdminDoc(cleanEmail)
+    const officeRole = adminSnap.exists ? allowlistRole(adminSnap.data()) : undefined
+    if (officeRole) {
+      directoryRole = officeRole
+    } else {
+      const staffRole = await params.directory.getStaffRole(cleanEmail)
+      if (staffRole !== undefined) {
+        directoryRole = staffRole === 'supervisor' ? 'supervisor' : 'staff'
+      }
+    }
+  }
+
+  const normalizedExisting = normalizeRole(params.existingRole)
+  const targetRole: Role =
+    normalizedExisting && rolePriority(normalizedExisting) > rolePriority(directoryRole)
+      ? normalizedExisting
+      : directoryRole
+
+  const updated = params.existingRole !== targetRole
+  return { role: targetRole, updated }
+}
+
+// HOTFIX-10: Self-healing callable so any signed-in user whose email is in `admins/{email}`
+// or `staff` (such as an Owner pre-approved before first sign-in or added after their Auth
+// account already existed) can reconcile their `role` custom claim immediately without waiting
+// on the v1 `onUserCreated` trigger.
+export const syncMyRole = onCall(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError('unauthenticated', 'User must be logged in.')
+  }
+
+  const uid = request.auth.uid
+  const db = getFirestore()
+  const auth = getAuth()
+
+  try {
+    const existingRecord = await auth.getUser(uid)
+    const email = (request.auth.token.email ?? existingRecord.email ?? '').trim().toLowerCase()
+    const existingRole = existingRecord.customClaims?.role
+
+    const { role, updated } = await reconcileUserRole({
+      email,
+      existingRole,
+      directory: {
+        getAdminDoc: async (e) => {
+          const snap = await db.collection('admins').doc(e).get()
+          return { exists: snap.exists, data: () => snap.data() as { role?: unknown } | undefined }
+        },
+        getStaffRole: async (e) => {
+          const snap = await db.collection('staff').where('email', '==', e).limit(1).get()
+          return snap.empty ? undefined : snap.docs[0].data().role
+        },
+      },
+    })
+
+    if (updated) {
+      await auth.setCustomUserClaims(uid, { ...(existingRecord.customClaims ?? {}), role })
+      console.log(`[syncMyRole] Reconciled role '${role}' for UID ${uid} (${email || 'no-email'}, was '${String(existingRole ?? 'none')}').`)
+    }
+
+    return { role, updated }
+  } catch (err) {
+    if (err instanceof HttpsError) throw err
+    logError(`[syncMyRole] Failed to reconcile role for UID ${uid}:`, err)
+    throw new HttpsError('internal', 'Failed to synchronize user role.')
+  }
 })
 
 type Caller = { uid: string; token: { email?: string } }

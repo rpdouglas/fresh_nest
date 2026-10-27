@@ -35,17 +35,7 @@ export default function Hero() {
             {t('hero.subhead')}
           </motion.p>
 
-          {/* Main title container with nest watermark behind it */}
           <div className="relative w-full py-4 flex items-center justify-center">
-            <div className="absolute inset-0 pointer-events-none z-0 flex items-center justify-center overflow-visible">
-              <img
-                src="/images/nest-watermark.jpg"
-                alt=""
-                aria-hidden="true"
-                className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] object-contain mix-blend-multiply"
-                style={{ opacity: 0.25 }}
-              />
-            </div>
             <motion.h1
               variants={fadeUp}
               className="relative z-10 font-display text-5xl md:text-6xl text-charcoal leading-tight max-w-2xl text-center"

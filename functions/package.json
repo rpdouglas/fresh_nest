@@ -4,8 +4,9 @@
   "private": true,
   "main": "lib/index.js",
   "scripts": {
-    "build": "tsc",
-    "test": "vitest run --root .",
+    "sync:shared": "node scripts/sync-shared.cjs",
+    "build": "npm run sync:shared && tsc",
+    "test": "npm run sync:shared && vitest run --root .",
     "serve": "npm run build && firebase emulators:start --only functions",
     "deploy": "firebase deploy --only functions"
   },

@@ -112,8 +112,11 @@ vi.mock('firebase/storage', () => ({
   getStorage: vi.fn(),
 }))
 
+const mockSyncMyRole = vi.fn().mockResolvedValue({ data: { role: 'customer', updated: false } })
+
 vi.mock('firebase/functions', () => ({
-  getFunctions: vi.fn(),
+  getFunctions: vi.fn(() => ({})),
+  httpsCallable: vi.fn(() => mockSyncMyRole),
 }))
 
 // Mock translations
@@ -328,5 +331,54 @@ describe('useStaffAuth Hook', () => {
     })
 
     expect(mockSignOut).toHaveBeenCalled()
+  })
+
+  it('HOTFIX-10: waits for syncMyRole before rejecting a newly signed-in staff member whose first token has customer role', async () => {
+    mockGetDoc.mockReset()
+    mockSyncMyRole.mockResolvedValueOnce({ data: { role: 'staff', updated: true } })
+    mockGetDoc.mockResolvedValueOnce({
+      exists: () => true,
+      id: 'staff-new-1',
+      data: () => ({
+        firstName: 'Brenda',
+        lastName: 'Côté',
+        email: 'brenda@freshnest.ca',
+        role: 'lead',
+        status: 'active',
+      }),
+    })
+
+    const getIdTokenResult = vi
+      .fn()
+      .mockResolvedValueOnce({ claims: { role: 'customer' } })
+      .mockResolvedValueOnce({ claims: { role: 'staff' } })
+
+    const { result } = renderHook(() => useStaffAuth(), { wrapper })
+
+    act(() => {
+      if (authStateCallback) {
+        authStateCallback({
+          uid: 'staff-new-1',
+          email: 'brenda@freshnest.ca',
+          getIdTokenResult: getIdTokenResult as unknown as User['getIdTokenResult'],
+        })
+      }
+    })
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
+    })
+
+    expect(mockSyncMyRole).toHaveBeenCalledTimes(1)
+    expect(getIdTokenResult).toHaveBeenCalledTimes(2)
+    expect(mockSignOut).not.toHaveBeenCalled()
+    expect(result.current.role).toBe('staff')
+    expect(result.current.staffProfile).toEqual(
+      expect.objectContaining({
+        id: 'staff-new-1',
+        email: 'brenda@freshnest.ca',
+      }),
+    )
+    expect(result.current.error).toBeNull()
   })
 })

@@ -100,7 +100,8 @@
       "magicLinkSent": "A sign-in link has been sent to your email. Please check your inbox.",
       "authenticating": "Signing in...",
       "sendingLink": "Sending link...",
-      "completingSignIn": "Completing sign-in, please wait..."
+      "completingSignIn": "Completing sign-in, please wait...",
+      "checkingAccess": "Setting up your access…"
     },
     "profile": {
       "title": "Profile & Settings",
