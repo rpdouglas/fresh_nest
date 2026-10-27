@@ -25,3 +25,12 @@ Booking emails were saved exactly as typed. The customer portal (`CustomerBookin
 
 ## Not covered
 Bookings saved before this fix with capital letters stay invisible to those customers in the portal. Fixing them needs a one-off backfill that lowercases `bookings.email` with the Admin SDK. That is a production data change, so it needs human approval before it runs.
+
+**Backfill script (added 2026-10-27):** `functions/scripts/backfill-lowercase-booking-emails.cjs`.
+- Dry run by default, and `--database` must be given explicitly.
+- Changes only `email`. Each write is conditional on the booking not having changed since it was read.
+- Masks emails in its output. Safe to re-run.
+- Verified end to end on the Firestore emulator: dry run, then apply, then a re-run that was a no-op, with other fields untouched.
+- Unit tests: `functions/test/backfillLowercaseEmails.test.ts`.
+
+Run it on `freshnest-dev` first. Run it on `(default)` with `--apply` only with human approval.
