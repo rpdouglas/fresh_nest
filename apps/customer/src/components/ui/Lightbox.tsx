@@ -3,7 +3,8 @@ import { createPortal } from 'react-dom'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils/utils'
-import type { GalleryPair } from '@/lib/data/galleryData'
+import type { GalleryPair } from '@/types'
+import { galleryCaption } from '@/lib/firebase/gallery'
 import GalleryImage from '@/components/ui/GalleryImage'
 
 interface LightboxProps {
@@ -15,8 +16,9 @@ interface LightboxProps {
 }
 
 export default function Lightbox({ pairs, index, onClose, onPrev, onNext }: LightboxProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const pair = pairs[index]
+  const caption = galleryCaption(pair, i18n.language)
   const closeRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
@@ -54,7 +56,7 @@ export default function Lightbox({ pairs, index, onClose, onPrev, onNext }: Ligh
         transition={{ duration: 0.18 }}
         role="dialog"
         aria-modal="true"
-        aria-label={t(pair.captionKey)}
+        aria-label={caption}
         className="relative w-full max-w-4xl bg-white rounded overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
@@ -80,7 +82,7 @@ export default function Lightbox({ pairs, index, onClose, onPrev, onNext }: Ligh
               {t('gallery.beforeLabel')}
             </span>
             <GalleryImage
-              src={pair.beforeSrc}
+              src={pair.beforeUrl}
               alt={beforeAlt}
               className="absolute inset-0"
             />
@@ -90,7 +92,7 @@ export default function Lightbox({ pairs, index, onClose, onPrev, onNext }: Ligh
               {t('gallery.afterLabel')}
             </span>
             <GalleryImage
-              src={pair.afterSrc}
+              src={pair.afterUrl}
               alt={afterAlt}
               className="absolute inset-0"
             />
@@ -114,7 +116,7 @@ export default function Lightbox({ pairs, index, onClose, onPrev, onNext }: Ligh
           </button>
 
           <p className="font-body text-sm text-text-muted text-center px-4">
-            {t(pair.captionKey)}
+            {caption}
           </p>
 
           <button

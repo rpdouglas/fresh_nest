@@ -228,7 +228,30 @@ Stores cached analytics and performance reports generated server-side.
 
 ---
 
-## 13. Database Targeting Asymmetry (Cloud Functions)
+## 13. Collection: `galleryPairs`
+Before/after photo pairs for the public gallery, managed from the admin Gallery tab (P3-E32, approved by human 2026-10-04).
+Photos live in Firebase Storage under `gallery/{pairId}/`. Only documents with `published == true` are publicly readable.
+
+| Field Name | Type | Required | Description / Allowed Values |
+| :--- | :--- | :--- | :--- |
+| `serviceKey` | `string` | ✅ | `'standard' \| 'deep' \| 'moveout' \| 'postconstruction' \| 'airbnb' \| 'commercial'` |
+| `captionEn` | `string` | ✅ | English caption (max 120 characters; no client name or address) |
+| `captionFr` | `string` | ✅ | French caption (max 120 characters) |
+| `beforePath` | `string` | ✅ | Storage path, `gallery/{pairId}/before-{timestamp}.jpg` |
+| `afterPath` | `string` | ✅ | Storage path, `gallery/{pairId}/after-{timestamp}.jpg` |
+| `beforeUrl` | `string` | ✅ | Download URL of the before photo |
+| `afterUrl` | `string` | ✅ | Download URL of the after photo |
+| `published` | `boolean` | ✅ | `true` if shown on the public site. New pairs start `false` |
+| `featured` | `boolean` | ✅ | `true` if shown in the home page preview |
+| `order` | `number` | ✅ | Display position, ascending |
+| `consentConfirmed` | `boolean` | ✅ | Admin ticked "client agreed to these photos being shown on the website" |
+| `createdAt` | `Timestamp` | ✅ | When the pair was created |
+| `updatedAt` | `Timestamp` | ✅ | When the pair was last changed |
+| `createdBy` | `string` | ✅ | Auth uid of the admin who created the pair |
+
+---
+
+## 14. Database Targeting Asymmetry (Cloud Functions)
 
 ### Scheduler Functions (`onDailyReminderCheck`)
 The daily scheduler function always targets the production `(default)` database explicitly:

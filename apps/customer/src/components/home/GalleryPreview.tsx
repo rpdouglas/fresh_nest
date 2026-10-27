@@ -2,12 +2,18 @@ import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils/utils'
-import { FEATURED_PAIRS } from '@/lib/data/galleryData'
+import { useGalleryPairs } from '@/hooks/useGalleryPairs'
+import { galleryCaption } from '@/lib/firebase/gallery'
 import GalleryImage from '@/components/ui/GalleryImage'
 import { fadeUp, stagger } from '@/lib/utils/animations'
 
 export default function GalleryPreview() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const { data: pairs = [] } = useGalleryPairs()
+  const featured = pairs.filter(p => p.featured)
+
+  // Nothing to show yet (still loading, or no featured pairs): leave the section out.
+  if (featured.length === 0) return null
 
   return (
     <section
@@ -37,16 +43,17 @@ export default function GalleryPreview() {
           viewport={{ once: true, margin: '-50px' }}
           variants={stagger}
         >
-          {FEATURED_PAIRS.map(pair => {
+          {featured.map(pair => {
             const serviceTitle = t(`services.${pair.serviceKey}.title`)
             const beforeAlt = t('gallery.beforeAlt', { service: serviceTitle })
             const afterAlt = t('gallery.afterAlt', { service: serviceTitle })
+            const caption = galleryCaption(pair, i18n.language)
 
             return (
               <motion.div key={pair.id} variants={fadeUp}>
                 <Link
                   to="/gallery"
-                  aria-label={t(pair.captionKey)}
+                  aria-label={caption}
                   className={cn(
                     'group block rounded',
                     'focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2',
@@ -58,7 +65,7 @@ export default function GalleryPreview() {
                         {t('gallery.beforeLabel')}
                       </span>
                       <GalleryImage
-                        src={pair.beforeSrc}
+                        src={pair.beforeUrl}
                         alt={beforeAlt}
                         className="absolute inset-0"
                       />
@@ -68,14 +75,14 @@ export default function GalleryPreview() {
                         {t('gallery.afterLabel')}
                       </span>
                       <GalleryImage
-                        src={pair.afterSrc}
+                        src={pair.afterUrl}
                         alt={afterAlt}
                         className="absolute inset-0"
                       />
                     </div>
                   </div>
                   <p className="font-body text-sm text-text-muted mt-3 group-hover:text-charcoal transition-colors">
-                    {t(pair.captionKey)}
+                    {caption}
                   </p>
                 </Link>
               </motion.div>

@@ -42,3 +42,22 @@ export interface AuditEntry {
   reason: string | null
   overrideType: string | null
 }
+
+// P3-E32: a before/after gallery pair managed from the admin Gallery tab.
+export interface GalleryPair {
+  id?: string
+  serviceKey: ServiceType
+  captionEn: string
+  captionFr: string
+  beforePath: string
+  afterPath: string
+  beforeUrl: string
+  afterUrl: string
+  published: boolean
+  featured: boolean
+  order: number
+  consentConfirmed: boolean
+  createdAt: Date
+  updatedAt: Date
+  createdBy: string
+}
