@@ -458,7 +458,7 @@ Each item lists its requirement IDs, dependencies and exit criteria (from the sp
 ### Wave 0 — Platform and delivery
 | # | Item | IDs | Depends on | Exit criteria |
 |---|---|---|---|---|
-| W0-1 | Role model: Owner, Manager (supervisor with real permissions), Employee, Payroll; rules tests per role — 🔄 **P3-E35 code complete** (Owner/Manager; supervisor stays field; Payroll in wave 3) | MP-S2.1, CE-S5.1, D10 | ADR (amends ADR-011) | Two roles see different data (spec P1 exit) |
+| W0-1 | Role model: Owner, Manager (supervisor with real permissions), Employee, Payroll; rules tests per role — ✅ **P3-E35 shipped 2026-10-27** (PRs #40, #41; Owner/Manager; supervisor stays field; Payroll in wave 3). Cleanup PR #42 (drop legacy `admin`) open | MP-S2.1, CE-S5.1, D10 | ADR (amends ADR-011) | Two roles see different data (spec P1 exit) |
 | W0-2 | Settings and policy record with versioned history (buffer, notice, caps…) | MP-S3.17, SCH-S3.8 | W0-1 | A setting changes behaviour without a release |
 | W0-3 | Audit everywhere (status, assignment, checklist, staff, templates) with before/after | MP-S5.12, CE-S6.2 | — | Every listed change writes an audit entry |
 | W0-4 | Integer-cents and time-zone conventions (ADR) + shared `scheduling-core` package; de-duplicate eligibility logic | MP-S5.2/3/10, R5, R13 | ADR | One package imported by `apps/customer` and `functions`; tests green including Nov 1 fixtures |
@@ -470,7 +470,7 @@ Each item lists its requirement IDs, dependencies and exit criteria (from the sp
 |---|---|---|---|---|
 | W1-1 | Clients, contacts, payer (derive from bookings; keep `bookingId` as the request) | CE-S2.1–3, CE-S3.1–2, D5 | W0 | Create a client with two contacts and preferences in under 2 minutes |
 | W1-2 | Sites with geocoding (function), tz, windows, status; restricted access record; attachments with visibility | CE-S2.4–5, S2.9, CE-S6.4, R7 | W1-1 | A site without coordinates can't be booked; crew can't see office-only items |
-| W1-3 | Employees: titles list, skills, driver eligibility, start location, status incl. on leave | CE-S4.1–8 | W0-1 | Add an employee; a manager can't see pay fields |
+| W1-3 | Employees: titles list, skills, driver eligibility, start location, status incl. on leave | CE-S4.1–8 | W0-1 | Add an employee (note: owner decision 2026-10-27 — Managers **do** see pay, see P3-E35) |
 | W1-4 | Availability (four states, keeping D3 privacy) + time off with Ontario types, policy, inbox | AVL-S3, AVL-S4, CE-S4.4–5 | W1-3 | Adding availability applies at once; removing waits; approval blocks the dates |
 | W1-5 | Agreements G1–G2: records, upload signed copy, hash, notice-deadline alerts, dashboard | AGR-S1, S3, S4, S5.2, S5.4, S6 | W1-1, W1-3 | Test agreement fires the 60, 30 and 7-day alerts |
 | W1-6 | Camelo import (people and places) with review screen | MP-S8, CE-S7 E | W1-1–3 | Re-running the import creates no duplicates |
