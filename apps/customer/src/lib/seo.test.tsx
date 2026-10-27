@@ -28,7 +28,7 @@ const enPaths = locs.filter((l) => !l.endsWith('?lang=fr')).map((l) => l.slice(S
 
 // Every static route in App.tsx is either in the sitemap or deliberately left out.
 const NOT_INDEXED = new Set([
-  'pricing', 'gallery', 'reviews', 'thank-you', 'leave-review', 'offline', 'admin',
+  'pricing', 'reviews', 'thank-you', 'leave-review', 'offline', 'admin',
   'login', 'login-confirm', 'account', 'bookings', 'upcoming', 'profile', 'blog/:slug', '*', '/',
 ])
 const routes = [...appSource.matchAll(/path: '([^']+)'/g)].map((m) => m[1])

@@ -206,6 +206,18 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/about"/>
   </url>
   <url>
+    <loc>https://www.freshnestco.ca/gallery</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/gallery"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/gallery?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/gallery"/>
+  </url>
+  <url>
+    <loc>https://www.freshnestco.ca/gallery?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/gallery"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/gallery?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.freshnestco.ca/gallery"/>
+  </url>
+  <url>
     <loc>https://www.freshnestco.ca/careers</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.freshnestco.ca/careers"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.freshnestco.ca/careers?lang=fr"/>

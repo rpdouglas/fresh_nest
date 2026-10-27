@@ -29,19 +29,19 @@ vi.mock('framer-motion', () => {
 
 const t = ((key: string) => key) as unknown as TFunction
 
-// P3-E31: the gallery, team and reviews stay hidden until a human flips the flags in config.ts.
-describe('P3-E31 hidden sections', () => {
-  it('ships with the three sections switched off', () => {
-    expect(SHOW_GALLERY).toBe(false)
+// P3-E31 / P3-E32: gallery is now live (SHOW_GALLERY = true); team and reviews stay hidden until flipped.
+describe('P3-E31 / P3-E32 section flags', () => {
+  it('enables the gallery and keeps team and reviews switched off', () => {
+    expect(SHOW_GALLERY).toBe(true)
     expect(SHOW_TEAM).toBe(false)
     expect(SHOW_REVIEWS).toBe(false)
   })
 
-  it('footer has no gallery or reviews link', () => {
+  it('footer includes gallery link and hides reviews link while SHOW_REVIEWS is false', () => {
     render(<MemoryRouter><Footer /></MemoryRouter>)
     const hrefs = screen.getAllByRole('link').map((a) => a.getAttribute('href'))
     expect(hrefs).toContain('/about')
-    expect(hrefs).not.toContain('/gallery')
+    expect(hrefs).toContain('/gallery')
     expect(hrefs).not.toContain('/reviews')
   })
 
