@@ -1,5 +1,5 @@
 # ADR-017 — Owner and Manager office roles
-**Status:** Proposed
+**Status:** Accepted (2026-10-27, by the human project lead)
 **Date:** 2026-10-27
 **Deciders:** Project lead, for the owner (P12 Lauren Arsenault); drafted by Claude Code (P3-E35)
 

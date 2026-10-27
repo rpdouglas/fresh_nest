@@ -1,6 +1,6 @@
 # Fresh Nest Co. — Compliance Reference
 
-**Version:** 2.0 | **Updated:** 2026-06-06
+**Version:** 2.1 | **Updated:** 2026-10-27 (office roles: Owner and Manager, P3-E35 / ADR-017)
 **Status:** Active — Reference before writing any form, email, SMS, or Firestore operation
 
 > [!IMPORTANT]
@@ -82,7 +82,7 @@ Applies to all personal data collected from clients across all provinces.
 | **Storage location** | All client PII stored only in Firestore — never in `localStorage`, `sessionStorage`, or client-side state that persists across sessions |
 | **No third-party sharing** | Client PII is never passed to third-party analytics, advertising, or data broker services |
 | **Data retention** | Booking records retained **7 years** for tax and business record purposes |
-| **Access control** | Admin access to booking data requires Firebase Auth (enforced in Phase 5) |
+| **Access control** | Office access to booking data requires Firebase Auth and an `owner` or `manager` role claim (Phase 5; roles per ADR-017). Only an Owner can grant or revoke office access, and every role change is written to `auditLog` |
 | **Breach notification** | Any suspected data breach must be escalated to a human within 24 hours — AI agents must never attempt to resolve a breach autonomously |
 
 ### Quebec Law 25 (Bill 64) — Sophie Persona (Snye QC)
@@ -192,7 +192,8 @@ Production firestore.rules must enforce:
   - Unauthenticated users: READ bookings → denied
   - Unauthenticated users: WRITE bookings → allowed (booking creation only)
   - Unauthenticated users: READ/WRITE all other collections → denied
-  - Authenticated admin users: READ/WRITE all collections → allowed
+  - Authenticated office users (role claim owner or manager): READ/WRITE all collections → allowed
+  - The admins allowlist: no client writes; changed only by the setUserRole function (Owners only)
   - No wildcard allow: read, write rules in production
 ```
 
@@ -202,7 +203,7 @@ Production firestore.rules must enforce:
 
 ### Collections and Write Access Summary
 
-| Collection | Public Write | Admin Write | Notes |
+| Collection | Public Write | Office Write (Owner / Manager) | Notes |
 |---|---|---|---|
 | `bookings` | ✅ Yes (creation only) | ✅ Yes | Primary booking intake — unauthenticated create allowed |
 | `services` | ❌ No | ✅ Yes | Service catalogue — read-only for public |
@@ -249,7 +250,7 @@ Run before closing any Phase C ticket involving data collection, email, SMS, or 
 - [ ] No changes to `firestore.rules` without human approval
 - [ ] Database ID not hardcoded outside `src/lib/firebase.ts`
 - [ ] No wildcard allow rules deployed to production
-- [ ] Admin access to sensitive collections requires Firebase Auth
+- [ ] Office (Owner / Manager) access to sensitive collections requires Firebase Auth and an office role claim
 
 ---
 
