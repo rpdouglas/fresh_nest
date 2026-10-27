@@ -32,7 +32,7 @@ export default function AdminPage() {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center bg-warm-white">
-        <SEO title={t('admin.meta.title')} description={t('admin.meta.description')} />
+        <SEO title={t('admin.meta.title')} description={t('admin.meta.description')} noindex />
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 border-4 border-slate-brand border-t-transparent rounded-full animate-spin" />
         </div>
@@ -42,7 +42,7 @@ export default function AdminPage() {
 
   return (
     <main className="min-h-[80vh] bg-warm-white py-12 px-4 md:py-20 md:px-6">
-      <SEO title={t('admin.meta.title')} description={t('admin.meta.description')} />
+      <SEO title={t('admin.meta.title')} description={t('admin.meta.description')} noindex />
 
       <div className="max-w-content mx-auto">
         <AnimatePresence mode="wait">

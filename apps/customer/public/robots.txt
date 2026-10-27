@@ -1,0 +1,7 @@
+# Fresh Nest Co. — all crawlers, including AI answer engines, are welcome.
+# Private pages (admin, sign-in, account, thank-you) carry a noindex tag instead of a Disallow,
+# so crawlers can see it.
+User-agent: *
+Allow: /
+
+Sitemap: https://freshnestco.ca/sitemap.xml

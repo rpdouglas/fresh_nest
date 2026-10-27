@@ -1,4 +1,9 @@
 // P2-E2: Global configuration constants
+
+// Canonical public origin (human decision 2026-10-27). Canonical URLs, hreflang, JSON-LD, the
+// sitemap, robots.txt, llms.txt and the index.html defaults all use it; sitemap.test.ts checks
+// the static files agree.
+export const SITE_URL = 'https://freshnestco.ca'
 export const GOOGLE_BUSINESS_PROFILE_URL = 'https://g.page/r/freshnest-review/review'
 
 // Business contact details — the single source for the customer site (updated 2026-10-01).

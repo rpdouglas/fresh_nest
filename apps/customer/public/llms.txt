@@ -1,0 +1,33 @@
+# Fresh Nest Co.
+
+> Bilingual (English and French) residential and commercial cleaning and organizing company based in Cornwall, Ontario. Serves Cornwall ON, Akwesasne (including Cornwall Island), Snye QC, Long Sault and Morrisburg. Quotes are free and requested online or by phone; pricing is agreed in the quote follow-up, so no prices are published.
+
+- Phone: (613) 861-8812
+- Email: hello@freshnestco.ca
+- Hours: Monday to Friday, 8 am to 6 pm
+- Languages: English and French (add `?lang=fr` to any page for French)
+- Plant-based, non-toxic, pet-safe products; fully insured and bonded; 24-hour satisfaction guarantee
+- Request a quote: https://freshnestco.ca/booking (no account needed; a team member follows up within 24 hours)
+
+## Services
+
+- [Standard Cleaning](https://freshnestco.ca/services/standard-cleaning): regular, consistent home cleaning
+- [Deep Clean](https://freshnestco.ca/services/deep-cleaning): top-to-bottom reset of the areas regular cleaning misses
+- [Move-Out Cleaning](https://freshnestco.ca/services/move-out-cleaning): leave the old home spotless for the deposit inspection
+- [Post-Construction Cleaning](https://freshnestco.ca/services/post-construction): safe removal of construction dust before move-in
+- [Commercial Cleaning](https://freshnestco.ca/services/commercial-cleaning): offices, retail and business facilities
+- [Airbnb Turnover](https://freshnestco.ca/services/airbnb-turnover): same-day turnovers in the 11 am to 3 pm window, linen change, restocking and damage-documentation photos
+
+## Service areas
+
+- [Cornwall, ON](https://freshnestco.ca/locations/cornwall-on)
+- [Akwesasne and Cornwall Island](https://freshnestco.ca/locations/akwesasne)
+- [Snye, QC](https://freshnestco.ca/locations/snye-qc)
+- [Long Sault, ON](https://freshnestco.ca/locations/long-sault)
+- [Morrisburg, ON](https://freshnestco.ca/locations/morrisburg)
+
+## Help
+
+- [FAQ](https://freshnestco.ca/faq): access while you're away, eco products, same cleaner, rescheduling (24 hours' notice), insurance, guarantee, payment methods (cash or Interac e-Transfer)
+- [About](https://freshnestco.ca/about)
+- [Privacy Policy](https://freshnestco.ca/privacy)

@@ -53,6 +53,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | **HOTFIX-04** | Owner text alert for new quote requests and renewals (email down per P3-E30); admin guide: checking pending requests | S | P0 | ✅ Completed 2026-10-27 — see [`reports/HOTFIX-04-close-2026-10-27.md`](reports/HOTFIX-04-close-2026-10-27.md) |
 | **HOTFIX-05** | Booking emails stored lowercased so customers see their requests in the portal; renewal dedupe covers both spellings | S | P1 | ✅ Completed 2026-10-27 — see [`reports/HOTFIX-05-close-2026-10-27.md`](reports/HOTFIX-05-close-2026-10-27.md) |
 | **ADR-014** | CI gates scoped to what changed — deploy audit moved to a daily job, E2E weekly, rules tests + lint on PRs, per-workflow filters | S | P1 | ✅ Completed 2026-10-27 — see [`reports/ADR-014-ci-close-2026-10-27.md`](reports/ADR-014-ci-close-2026-10-27.md) |
+| **SEO-01** | SEO/AEO quick fixes — privacy policy copy, freshnestco.ca canonicals, FR self-canonicals, robots/sitemap/llms.txt, noindex + 404, JSON-LD images | S | P1 | ✅ Code complete 2026-10-27 — merge after freshnestco.ca is live; see [`reports/SEO-01-close-2026-10-27.md`](reports/SEO-01-close-2026-10-27.md) |
 
 ---
 

@@ -73,6 +73,7 @@ export default function LoginPage() {
       <SEO
         title={t('customerPortal.login.title')}
         description={t('customerPortal.login.subtitle')}
+        noindex
       />
       <main id="main-content" className="bg-cream min-h-[80vh] py-12 px-4 md:py-20 md:px-6 flex items-center justify-center">
         <motion.div

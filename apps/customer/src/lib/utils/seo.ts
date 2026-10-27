@@ -1,6 +1,6 @@
 import type { TFunction } from 'i18next'
 import { STATIC_REVIEWS } from '@/lib/data/reviewsData'
-import { BUSINESS_PHONE_E164, SHOW_REVIEWS } from '@/lib/config'
+import { BUSINESS_EMAIL, BUSINESS_PHONE_E164, SHOW_REVIEWS, SITE_URL } from '@/lib/config'
 
 // Types for JSON-LD schemas to ensure valid outputs
 export interface SchemaOrgObject {
@@ -9,7 +9,7 @@ export interface SchemaOrgObject {
   [key: string]: unknown
 }
 
-export const BASE_URL = 'https://lilypad-freshnest.web.app'
+export const BASE_URL = SITE_URL
 
 /**
  * Returns the LocalBusiness (specifically HomeAndConstructionBusiness) JSON-LD schema.
@@ -41,9 +41,12 @@ export function getLocalBusinessSchema(t: TFunction): SchemaOrgObject {
     'name': 'Fresh Nest Co.',
     'description': t('hero.subhead'),
     'url': BASE_URL,
-    'logo': `${BASE_URL}/assets/logo-navbar-160px@2x-CvrLo3Hv.png`, // Matches resolved assets
-    'image': `${BASE_URL}/assets/hero-CLDdwZDr.png`,
+    // public/ files keep stable URLs; hashed /assets/ names change on every build.
+    'logo': `${BASE_URL}/freshnest_logo.png`,
+    'image': `${BASE_URL}/images/og-image-1200x630.jpg`,
     'telephone': BUSINESS_PHONE_E164,
+    'email': BUSINESS_EMAIL,
+    'knowsLanguage': ['en', 'fr'],
     'address': {
       '@type': 'PostalAddress',
       'addressLocality': 'Cornwall',
