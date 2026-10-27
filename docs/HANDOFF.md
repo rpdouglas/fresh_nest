@@ -7,17 +7,11 @@ Read in this order: `CLAUDE.md` → this file → [`ACTIVE_CYCLE.md`](ACTIVE_CYC
 
 ---
 
-## 1. In flight
+## 1. Completed in this cycle (P3-E35 + HOTFIX-10)
 
-### PR #42 — P3-E35 cleanup: stop accepting the legacy `admin` role
-- **Branch:** `ccr-89860093-vidd5x`. Local checks were green when it was opened: rules 49/49, functions 63/63, customer 130/130, FSM 57/57, builds and lint OK. CI was running at handoff, so check it before merging.
-- **Before merging (human):**
-  - The project lead's own account most likely still carries the old `admin` claim (it was created before P3-E35).
-  - In `/admin` → **Team & roles**, Lauren clicks **Make Manager**, then **Make Owner** on that row. It takes two steps because the row already reads "Owner".
-  - Then that person signs out, signs back in, and checks that `/admin` still works.
-  - If this is missed, nothing is lost: an Owner can do the same two clicks after the merge.
-- **After merging (human):** run Actions → **Deploy Security Rules**, target `all`, type `DEPLOY`.
-- **Then close P3-E35:** mark it ✅ in `ACTIVE_CYCLE.md` and in the gap analysis (W0-1), and note PR #42 and the rules run number in [`reports/P3-E35-close-2026-10-27.md`](reports/P3-E35-close-2026-10-27.md).
+### P3-E35 & HOTFIX-10 — Office roles (`owner`, `manager`) & self-healing role sync
+- **PRs #40, #41, #42, #47:** Merged and deployed to production; security rules (`all`) deployed.
+- **Self-healing on sign-in (`syncMyRole`):** Any pre-approved Owner/Manager, staff member, or legacy `admin` account automatically reconciles its custom claim to `owner` / `manager` / `supervisor` / `staff` on sign-in via `waitForRoleClaim` + `syncMyRole`. Lauren (`freshnestcompany2023@gmail.com`) verified sign-in as Owner on 2026-10-27.
 
 ### Office roles, as now in production (P3-E35, ADR-017 accepted)
 - **Roles:**
@@ -36,7 +30,6 @@ Read in this order: `CLAUDE.md` → this file → [`ACTIVE_CYCLE.md`](ACTIVE_CYC
 
 | # | What | Where it's tracked |
 |---|---|---|
-| H1 | PR #42: the pre-merge role step, then merge, then Deploy Security Rules `all` | Above |
 | H2 | Business email (Zoho / Resend / DNS). **All app emails still fail.** The owner SMS alert covers new quote requests in the meantime | ACTIVE_CYCLE F1, P3-E30 |
 | H3 | Confirm `OWNER_PHONE` for Cloud Functions | F2 |
 | H4 | Run the backfills: `backfill-lowercase-booking-emails.cjs` (HOTFIX-05) and `backfill-job-checklists.cjs` (P3-E34). Dry run first, then `--apply` | F3, P3-E34 row |

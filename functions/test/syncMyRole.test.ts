@@ -84,7 +84,7 @@ describe('reconcileUserRole (HOTFIX-10)', () => {
     ).toEqual({ role: 'staff', updated: true })
   })
 
-  it('never downgrades a higher existing claim', async () => {
+  it('never downgrades a higher existing claim and migrates legacy admin claim to owner', async () => {
     const directory = makeDirectory({})
 
     expect(
@@ -94,6 +94,15 @@ describe('reconcileUserRole (HOTFIX-10)', () => {
         directory,
       }),
     ).toEqual({ role: 'owner', updated: false })
+
+    expect(
+      await reconcileUserRole({
+        uid: 'EPbLg8-legacy',
+        email: 'lead@freshnest.ca',
+        existingRole: 'admin',
+        directory,
+      }),
+    ).toEqual({ role: 'owner', updated: true })
   })
 
   it('leaves an ordinary customer unchanged when already customer', async () => {
