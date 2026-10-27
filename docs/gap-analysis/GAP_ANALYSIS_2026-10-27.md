@@ -538,3 +538,33 @@ Taken from the spec's open-question lists, plus decisions the audit raised.
 16. Pricing: rates for deep, move-out, post-construction and organizing; the Lead and Trainee billing; whether breaks and early minutes are unbilled (PRC-S10).
 17. Wave: can a line carry a decimal quantity, how does it round a half cent, are credit notes available, and can it send invoices in French? (PRC-S8, MP-S10.)
 18. Who receives emergency alerts, and who is the second contact? (CRW-S11.)
+
+---
+
+## 7. Owner answers (2026-10-27)
+
+Recorded from the walkthrough of section 6. These settle the questions for planning. Items marked **open** still need an answer.
+
+| # | Question | Answer | Effect on the backlog |
+|---|---|---|---|
+| 1 | Storage rule for crew job photos (R1) | **Yes, write the fix** | N-1: draft the rule and rules tests in a PR. Human approval before deploy |
+| 2 | Derive clients and sites from bookings (D5)? | **No — clean slate.** Nothing in production is real; it is all test data | No migration from bookings. W1-1/W1-2 start with empty collections. Test data can be cleared (with approval) before go-live. The P3-E34 checklist backfill is not needed on production |
+| 3 | Persona rules alongside the spec (D1–D3) | **Keep all; add the spec's** | Earnings caps stay; transport-mode buffers become drive-time adjustments; blocked windows stay private; add the 44 h OVERTIME_RISK check |
+| 4 | Shift Board model (D4) | **Keep both** | The office assigns; released jobs go to the Shift Board for eligible staff to claim; hand-offs and trades are added on top (W2-8) |
+| 5 | Stripe callables (R10) | **Keep, require sign-in** | N-4: add an auth check to `createPaymentIntent` (and keep the webhook signature check) |
+| 6 | Manager role (D10) | **Schedule, no pay** | W0-1: managers handle clients, sites, scheduling, overrides with reason and time off; no pay fields, policies or roles |
+| 7 | GCP budgets set? | **No / not sure** | W0-5: add budgets and alerts for Maps, SMS and Storage to the platform checklist |
+| 8 | Camelo data | **Enter by hand** | Drop the Camelo importer and nightly parity report (MP-S8, SCH-S10.1, W1-6, W2-9). The cutover gate's "two weeks of parity" becomes a manual side-by-side check |
+| 9 | Proposed defaults (MP-S3) | **Accept all** | Seed the settings record (W0-2) with: 10-min buffer, 8 weeks, 7-day freeze, 15-min undo, 14-day vacation notice, max 2 off, 12 h swap notice, 250 m, 90 days, 7 years |
+| 10 | Island and border travel times | **Owner will provide later** | Build the override table (W2-4) with an admin editor; routes start empty and are flagged until filled |
+| 11 | Crews travel together or separately? | **Mix of both** | Per-job "travels together" setting: drive checked per vehicle when set, else per person |
+| 12a | Client times | **Mostly windows** | Client windows are the norm (CLIENT_WINDOW); fixed times are the pinned exception. Fit it for me may shift within a window |
+| 12b | Workday window and max hours | **No fixed workday** (some evening and night contracts); **max 10 h per person per day** | No global OUTSIDE_WORKDAY rule; MAX_HOURS_DAY = 10 h as a setting; windows come from the client or site and the person's availability |
+| 13 | Separate payer | **Yes, from the start** | W1-1 includes the payer record and billing contact |
+| 14 | Contractors? | **All employees** | Agreements need employment types only; no contractor template |
+| 15 | Agreements and fees today | **Verbal, with fees.** **Open:** the cancellation window, late-cancellation fee and lockout fee amounts | Agreements catch-up (G7) covers every recurring client; fee amounts become settings once given |
+| 16 | Billing rules | **Billing starts at clock-in, even if early** (overrides the spec's proposal to clamp to the booked start). **Timesheets need approval when above or below a set threshold of minutes.** **Open:** rates for deep, move-out, post-construction and organizing; Lead and Trainee billing; whether breaks are billed | PRC-S3 per-person interval = check-in → check-out (no clamp); worked case D changes (8:50 arrival is billed). Add a timesheet variance threshold setting that holds a visit for approval (CRW-S7, PRC-S6 flags) |
+| 17 | Wave checks | **Later, at wave 4** | Not blocking |
+| 18 | Emergency alerts | **Owner first, then a named backup** (set in settings) | CRW-S9.6 escalation to a backup contact from settings |
+
+**Still open:** fee amounts (15); service and title rates, and break billing (16); the backup emergency contact's name (18); the island travel times (10).
