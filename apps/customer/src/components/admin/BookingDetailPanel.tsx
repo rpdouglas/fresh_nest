@@ -39,6 +39,8 @@ export function BookingDetailPanel({
   const [job, setJob] = useState<Job | null>(null)
   const [jobVersion, setJobVersion] = useState(0)
   const [isChecklistOpen, setIsChecklistOpen] = useState(false)
+  // N-3: a blocking scheduling problem (overlap) — shown instead of the override dialog
+  const [assignError, setAssignError] = useState<string | null>(null)
   const [isOverrideOpen, setIsOverrideOpen] = useState(false)
   // P3-E33: Cancelled (cancels the job, texts the owner) and Confirmed (creates the job) ask first.
   const [pendingStatus, setPendingStatus] = useState<'cancelled' | 'confirmed' | null>(null)
@@ -91,6 +93,7 @@ export function BookingDetailPanel({
   }
 
   const handleSelectCleaner = async (selectedVal: string) => {
+    setAssignError(null)
     if (selectedVal === 'custom') {
       await handleAssignmentChange(b.id!, 'custom')
       return
@@ -135,6 +138,11 @@ export function BookingDetailPanel({
       estimatedPay: estPay,
       t,
     })
+
+    if (conflictResult.blockingErrors.length > 0) {
+      setAssignError(conflictResult.blockingErrors.join(' '))
+      return
+    }
 
     if (conflictResult.warnings.length > 0) {
       setPendingAssignment({
@@ -334,6 +342,11 @@ export function BookingDetailPanel({
                 >
                   {t('admin.dashboard.details.assignCleaner')}
                 </label>
+                {assignError && (
+                  <p role="alert" className="font-body text-base text-red-700 bg-red-50 border border-red-200 rounded p-3">
+                    {assignError}
+                  </p>
+                )}
                 <select
                   id={`cleaner-select-${b.id}`}
                   value={getSelectedValue()}

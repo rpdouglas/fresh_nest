@@ -1,6 +1,6 @@
 # HOTFIX-06 — Crew job photos blocked by Storage rules
 
-**Date:** 2026-10-27 · **Found by:** FSM gap analysis ([R1](../gap-analysis/GAP_ANALYSIS_2026-10-27.md)) · **Owner approval to draft:** 2026-10-27 · **Status:** ⏸ Rule written and tested; **needs human approval + manual deploy**
+**Date:** 2026-10-27 · **Found by:** FSM gap analysis ([R1](../gap-analysis/GAP_ANALYSIS_2026-10-27.md)) · **Owner approval to draft:** 2026-10-27 · **Status:** ✅ Closed 2026-10-27 — merged (PR #37), Storage rule deployed, owner phone test passed
 
 ## Persona
 - **P11 Brenda Côté:** her mandatory photo proof never reached the office.
@@ -48,3 +48,8 @@ The FSM app change deploys with the merge, but uploads only succeed once the rul
 - EXIF location stripping.
 - Short-lived URLs instead of `getDownloadURL` (R11).
 - Retention cleanup.
+
+## Close-out (2026-10-27)
+- **Merged:** PR #37 merged to `main` at `5055e1d`. The FSM app deployed with it.
+- **Storage rule deployed:** by the owner through the new **Deploy Security Rules** workflow ([ADR-016](../decisions/ADR-016-manual-rules-deploy-workflow.md)), target `storage`. In run #1, the rules tests passed and then the deploy succeeded. The existing deploy service account already had the permissions it needed.
+- **Persona test (P11 Brenda / P12 Lauren):** passed. The owner completed a photo-required task on a phone, the upload queue drained, and the photo appeared on the job in admin.

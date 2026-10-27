@@ -3,8 +3,14 @@ import { getFirestore } from 'firebase-admin/firestore'
 import Stripe from 'stripe'
 import { logError } from '../lib/shared'
 
-// P3-E1: Create Stripe PaymentIntent for booking checkout
+// P3-E1: Create Stripe PaymentIntent for booking checkout.
+// N-4 (owner decision 2026-10-27: keep, require sign-in): callers must be signed in, so the
+// endpoint can't be used anonymously to create payment intents.
 export const createPaymentIntent = onCall(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError('unauthenticated', 'You must be signed in to start a payment.')
+  }
+
   const { estimatedPrice } = request.data as { estimatedPrice?: number }
 
   if (!estimatedPrice || estimatedPrice < 50 || estimatedPrice > 5000) {
@@ -40,6 +46,13 @@ export const stripeWebhookHandler = onRequest(async (req, res) => {
     return
   }
 
+  // N-4: only accept events Stripe signed. An unsigned body (no secret configured, or no
+  // signature header) could otherwise be posted by anyone to change booking payment fields.
+  if (!webhookSecret || !sig) {
+    res.status(400).send('Webhook signature required')
+    return
+  }
+
   const stripeClient = new Stripe(stripeKey)
 
   type StripeEventLike = {
@@ -48,17 +61,13 @@ export const stripeWebhookHandler = onRequest(async (req, res) => {
   }
   let event: StripeEventLike
 
-  if (webhookSecret && sig) {
-    try {
-      const rawBody = (req as unknown as { rawBody: Buffer }).rawBody
-      event = stripeClient.webhooks.constructEvent(rawBody, sig, webhookSecret) as StripeEventLike
-    } catch (err) {
-      console.error('[stripeWebhookHandler] Signature verification failed:', err)
-      res.status(400).send('Webhook signature verification failed')
-      return
-    }
-  } else {
-    event = req.body as StripeEventLike
+  try {
+    const rawBody = (req as unknown as { rawBody: Buffer }).rawBody
+    event = stripeClient.webhooks.constructEvent(rawBody, sig, webhookSecret) as StripeEventLike
+  } catch (err) {
+    console.error('[stripeWebhookHandler] Signature verification failed:', err)
+    res.status(400).send('Webhook signature verification failed')
+    return
   }
 
   const db = getFirestore()
