@@ -38,6 +38,9 @@
     },
     {
       "pattern": "^https://stlawyers\\.ca/\\?p=70719"
+    },
+    {
+      "pattern": "^https://www\\.mondaq\\.com"
     }
   ],
   "retryOn429": true,
