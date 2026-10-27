@@ -1,6 +1,7 @@
 import React from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
 import { useStaffAuth } from '../../hooks/useStaffAuth'
+import { isStaffAppRole } from '@freshnest/shared'
 
 export const ProtectedRoute: React.FC = () => {
   const { staffProfile, role, loading } = useStaffAuth()
@@ -13,7 +14,7 @@ export const ProtectedRoute: React.FC = () => {
     )
   }
 
-  if (!staffProfile || (role !== 'staff' && role !== 'supervisor' && role !== 'admin')) {
+  if (!staffProfile || !isStaffAppRole(role)) {
     return <Navigate to="/login" replace />
   }
 

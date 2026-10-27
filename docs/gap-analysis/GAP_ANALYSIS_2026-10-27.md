@@ -458,7 +458,7 @@ Each item lists its requirement IDs, dependencies and exit criteria (from the sp
 ### Wave 0 — Platform and delivery
 | # | Item | IDs | Depends on | Exit criteria |
 |---|---|---|---|---|
-| W0-1 | Role model: Owner, Manager (supervisor with real permissions), Employee, Payroll; rules tests per role | MP-S2.1, CE-S5.1, D10 | ADR (amends ADR-011) | Two roles see different data (spec P1 exit) |
+| W0-1 | Role model: Owner, Manager (supervisor with real permissions), Employee, Payroll; rules tests per role — 🔄 **P3-E35 code complete** (Owner/Manager; supervisor stays field; Payroll in wave 3) | MP-S2.1, CE-S5.1, D10 | ADR (amends ADR-011) | Two roles see different data (spec P1 exit) |
 | W0-2 | Settings and policy record with versioned history (buffer, notice, caps…) | MP-S3.17, SCH-S3.8 | W0-1 | A setting changes behaviour without a release |
 | W0-3 | Audit everywhere (status, assignment, checklist, staff, templates) with before/after | MP-S5.12, CE-S6.2 | — | Every listed change writes an audit entry |
 | W0-4 | Integer-cents and time-zone conventions (ADR) + shared `scheduling-core` package; de-duplicate eligibility logic | MP-S5.2/3/10, R5, R13 | ADR | One package imported by `apps/customer` and `functions`; tests green including Nov 1 fixtures |

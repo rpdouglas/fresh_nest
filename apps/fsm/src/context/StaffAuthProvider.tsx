@@ -16,7 +16,7 @@ import {
   getDocs,
   onSnapshot,
 } from 'firebase/firestore'
-import { staffCollection } from '@freshnest/shared'
+import { staffCollection, isStaffAppRole } from '@freshnest/shared'
 import { auth, db } from '../lib/firebase/firebase'
 import { Staff } from '../types'
 import { StaffAuthContext } from './StaffAuthContext'
@@ -57,7 +57,7 @@ export const StaffAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
               setRole(userRole)
 
               // Secure gate: block customer role users from entering the FSM app
-              if (userRole !== 'staff' && userRole !== 'supervisor' && userRole !== 'admin') {
+              if (!isStaffAppRole(userRole)) {
                 console.warn(`[StaffAuthProvider] Access denied for unauthorized role: ${userRole}`)
                 setStaffProfile(null)
                 setUser(null)

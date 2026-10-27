@@ -99,12 +99,16 @@ Stores employee profiles, schedule constraints, financial limits, and compliance
 ---
 
 ## 5. Collection: `admins`
-Stores the email allowlist for access control to administrative screens.
+Stores the office allowlist: exactly the people with Owner or Manager access (P3-E35). Doc ID is the lowercased email. Written only by the `setUserRole` Cloud Function; apps can't write it. Office users can read the whole list (Team & roles); anyone else can read only their own entry.
 
 | Field Name | Type | Required | Description / Allowed Values |
 | :--- | :--- | :--- | :--- |
-| `role` | `string` | ✅ | `'admin'` |
-| `addedAt` | `Timestamp` | ✅ | Timestamp when administrative access was granted |
+| `role` | `string` | ✅ | `'owner' \| 'manager'`. Legacy entries with `'admin'` or no role are treated as `'owner'` until the P3-E35 migration has run |
+| `grantedBy` | `string` | ❌ | Email (or uid) of the Owner who granted the role |
+| `grantedAt` | `Timestamp` | ❌ | When the role was granted |
+| `addedAt` | `Timestamp` | ❌ | Legacy: when administrative access was first granted |
+
+**Role claims (Firebase Auth custom claim `role`, P3-E35):** `owner`, `manager` (office: same data access; only Owners grant or revoke office roles), `supervisor` and `staff` (staff app), `customer` (customer portal). `admin` is the legacy name for `owner`, accepted only until the cleanup PR. Role changes are written to `auditLog` with `overrideType: 'role_change'`.
 
 ---
 

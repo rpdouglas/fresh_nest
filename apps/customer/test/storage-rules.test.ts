@@ -99,6 +99,17 @@ describe('gallery (P3-E32, unchanged)', () => {
   })
 })
 
+describe('office roles (P3-E35)', () => {
+  it('owners and managers manage the gallery and read crew photos; supervisors do not manage the gallery', async () => {
+    await seed(photo('brenda'))
+    for (const role of ['owner', 'manager']) {
+      await assertSucceeds(upload(staff(`${role}-1`, role), `gallery/pair-${role}/after.jpg`, JPEG, 'image/jpeg'))
+      await assertSucceeds(staff(`${role}-1`, role).ref(photo('brenda')).getMetadata())
+    }
+    await assertFails(upload(staff('sam', 'supervisor'), 'gallery/pair-s/after.jpg', JPEG, 'image/jpeg'))
+  })
+})
+
 describe('everything else stays closed', () => {
   it('denies reads and writes outside the matched paths', async () => {
     await assertFails(upload(staff('lauren', 'admin'), 'other/file.jpg', JPEG, 'image/jpeg'))

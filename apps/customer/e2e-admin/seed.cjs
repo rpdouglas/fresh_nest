@@ -23,7 +23,8 @@ async function main() {
   const admin = await getAuth().createUser({
     uid: 'admin-lauren', email: 'lauren@freshnest.test', password: 'password123', displayName: 'Lauren Arsenault',
   })
-  await getAuth().setCustomUserClaims(admin.uid, { role: 'admin' })
+  // P3-E35: P12 Lauren is a Manager — the same 9 tabs as an Owner, without Team & roles.
+  await getAuth().setCustomUserClaims(admin.uid, { role: 'manager' })
 
   const staff = [
     ['carla', 'Carla', 'Martin', 'cleaner', 'active', 1000, 640],

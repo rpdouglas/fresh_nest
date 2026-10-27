@@ -1,13 +1,13 @@
 ---
 epic: P3-E35
 title: Roles — Owner and Manager — Plan
-strategy: pending
-approved: pending
+strategy: 2
+approved: 2026-10-27
 ---
 
 # P3-E35 PLAN — Roles: Owner and Manager
 
-**Phase A written:** 2026-10-27 · **Status:** ⏸ Awaiting human approval
+**Phase A written:** 2026-10-27 · **Status:** ✅ Strategy 2 approved 2026-10-27 — Phase B
 **Spec:** [`../projects/P3-E35.md`](../projects/P3-E35.md)
 
 ## Personas

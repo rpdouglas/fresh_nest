@@ -3,15 +3,18 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper: Verify if the user's role claim is admin
-    function isAdmin() {
-      return request.auth != null && request.auth.token.role == 'admin';
+    // P3-E35: office roles. Owners and Managers have the same data access; only Owners can give or
+    // take away office roles, and that happens in the setUserRole function, not here.
+    // TRANSITION: the legacy 'admin' claim counts as Owner until the migration has run and the
+    // cleanup PR removes it.
+    function isOffice() {
+      return request.auth != null && request.auth.token.role in ['owner', 'manager', 'admin'];
     }
 
-    // Helper: Verify if the user's role claim is staff, supervisor, or admin
+    // Helper: staff app roles (staff, field supervisor) plus the office
     function isStaff() {
       return request.auth != null
-        && (request.auth.token.role == 'staff' || request.auth.token.role == 'supervisor' || request.auth.token.role == 'admin');
+        && request.auth.token.role in ['staff', 'supervisor', 'owner', 'manager', 'admin'];
     }
 
     // 1. Bookings Collection
@@ -71,7 +74,7 @@ service cloud.firestore {
 
       // Admin Booking Creation (phone-in / walk-in — P3-E3)
       allow create: if
-        isAdmin()
+        isOffice()
 
         // A. Required fields (adds createdBy vs. public branch)
         && request.resource.data.keys().hasAll([
@@ -118,10 +121,10 @@ service cloud.firestore {
         && (!('estimatedPrice' in request.resource.data) || request.resource.data.estimatedPrice is number);
 
       // Admin and owner read
-      allow read: if isAdmin() || (request.auth != null && request.auth.token.email == resource.data.email);
+      allow read: if isOffice() || (request.auth != null && request.auth.token.email == resource.data.email);
 
       // Admin update, or customer cancellation (only status field can change to 'cancelled')
-      allow update: if isAdmin() || (
+      allow update: if isOffice() || (
         request.auth != null 
         && request.auth.token.email == resource.data.email
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
@@ -135,7 +138,8 @@ service cloud.firestore {
     // 2. Admins Collection
     match /admins/{email} {
       // Admins can read their own whitelist document to verify authentication
-      allow read: if request.auth != null && request.auth.token.email == email;
+      // P3-E35: the office can list who has office access (Team & roles); everyone else only their own entry.
+      allow read: if isOffice() || (request.auth != null && request.auth.token.email == email);
       // No client code can modify the allowlist
       allow write: if false;
     }
@@ -143,7 +147,7 @@ service cloud.firestore {
     // 3. Reviews Collection
     match /reviews/{reviewId} {
       // Anyone can read approved reviews, and admins can read all
-      allow read: if resource.data.approved == true || isAdmin();
+      allow read: if resource.data.approved == true || isOffice();
       
       // Allow public creation with validation
       allow create: if
@@ -154,7 +158,7 @@ service cloud.firestore {
         && request.resource.data.createdAt == request.time;
         
       // Moderation changes allowed only for admins
-      allow update: if isAdmin();
+      allow update: if isOffice();
       
       // Prevent direct deletions
       allow delete: if false;
@@ -165,15 +169,15 @@ service cloud.firestore {
       // Unauthenticated reads permitted to validate promo code existence in client form
       allow read: if true;
       // Writes reserved for authenticated administrators
-      allow write: if isAdmin();
+      allow write: if isOffice();
     }
 
     // ── FSM Collections ──────────────────────────────────────────────────────────
     match /staff/{staffId} {
-      allow read:   if (request.auth != null && request.auth.uid == staffId) || isAdmin();
+      allow read:   if (request.auth != null && request.auth.uid == staffId) || isOffice();
       // P3-E27-A2: create removed — all staff docs created server-side by onStaffRegistered CF
       // (Admin SDK bypasses rules). Client-side addDoc to staff is now blocked as defence in depth.
-      allow update: if isAdmin()
+      allow update: if isOffice()
         || (request.auth != null
             && request.auth.uid == staffId
             && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['constraints', 'preferences', 'financials', 'compliance'])
@@ -183,9 +187,9 @@ service cloud.firestore {
     }
 
     match /jobs/{jobId} {
-      allow read:   if (request.auth != null && resource.data.assignedTo == request.auth.uid) || isAdmin();
-      allow create: if isAdmin();
-      allow update: if isAdmin()
+      allow read:   if (request.auth != null && resource.data.assignedTo == request.auth.uid) || isOffice();
+      allow create: if isOffice();
+      allow update: if isOffice()
         || (request.auth != null
             && resource.data.assignedTo == request.auth.uid
             && request.resource.data.diff(resource.data).affectedKeys()
@@ -195,27 +199,27 @@ service cloud.firestore {
     }
 
     match /payRates/{rateId} {
-      allow read:   if isAdmin();
-      allow create: if isAdmin();
+      allow read:   if isOffice();
+      allow create: if isOffice();
       allow update, delete: if false;
     }
 
     match /auditLog/{logId} {
-      allow read:   if isAdmin();
-      allow create: if isAdmin();
+      allow read:   if isOffice();
+      allow create: if isOffice();
       allow update, delete: if false;
     }
 
     match /checklistTemplates/{templateId} {
       allow read:  if isStaff();
-      allow write: if isAdmin();
+      allow write: if isOffice();
     }
 
     // P3-E32: before/after gallery pairs (human-approved 2026-10-04)
     match /galleryPairs/{pairId} {
       // Anyone can read published pairs; admins can read all
-      allow read: if resource.data.published == true || isAdmin();
-      allow create, update, delete: if isAdmin();
+      allow read: if resource.data.published == true || isOffice();
+      allow create, update, delete: if isOffice();
     }
 
     match /notifications/{staffId}/messages/{messageId} {

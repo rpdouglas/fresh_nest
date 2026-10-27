@@ -6,7 +6,9 @@
 
 ## Accessing the Admin Dashboard
 
-Navigate to [lilypad-freshnest.web.app/admin](https://lilypad-freshnest.web.app/admin) and click the sign-in button, then choose your Google account. Only accounts with the **admin** role get in; any other account sees an "access denied" screen.
+Navigate to [lilypad-freshnest.web.app/admin](https://lilypad-freshnest.web.app/admin) and click the sign-in button, then choose your Google account. Only **Owners** and **Managers** get in; any other account sees an "access denied" screen.
+
+**Owner and Manager (P3-E35).** Both have the same access to everything in the admin panel, including pay. The only difference: Owners also see the **Team & roles** tab and are the only ones who can give or take away the Owner and Manager roles. See [Team & Roles](#team--roles-owners-only).
 
 The dashboard is split into seven tabs:
 1. **Bookings Management:** Track and manage operational client bookings.
@@ -140,6 +142,17 @@ Every job has a checklist: the tasks the cleaner ticks off in the staff app, wit
 - **Before a job exists** (pending booking), the choice is stored on the booking. The job gets it when the booking is confirmed.
 
 ---
+
+## Team & Roles (Owners only)
+
+The **Team & roles** tab lists everyone with office access and lets an Owner change it.
+
+- **Give access:** enter the person's email, choose **Manager** or **Owner**, then click **Give access**. The person must have signed in to the site once with that email first.
+- **Make Owner / Make Manager:** switches someone between the two roles.
+- **Remove access:** asks you to confirm, then takes away office access. Someone who is also on staff keeps the staff app.
+- **You can't change your own role.** Ask another Owner, so there is always at least one Owner.
+- **After any change,** the person needs to **sign out and sign in again** before the new access applies.
+- Every change is recorded in **Audit Logs**: who made it, when, and the old and new role.
 
 ## Analytics & Metrics Tab
 

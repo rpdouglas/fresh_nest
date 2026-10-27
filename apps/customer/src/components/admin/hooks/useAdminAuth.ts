@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, type User } from 'firebase/auth'
+import { officeRoleOf, type OfficeRole } from '@freshnest/shared'
 import { auth } from '@/lib/firebase/firebase'
 
 export function useAdminAuth() {
@@ -8,6 +9,8 @@ export function useAdminAuth() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [isAuthorized, setIsAuthorized] = useState(false)
+  // P3-E35: owner or manager (both get the full admin panel; owners also manage office roles)
+  const [officeRole, setOfficeRole] = useState<OfficeRole | null>(null)
   const [authError, setAuthError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -18,7 +21,9 @@ export function useAdminAuth() {
           try {
             // Force refresh token to retrieve latest custom claims
             const idTokenResult = await currentUser.getIdTokenResult(true)
-            const authorized = idTokenResult.claims.role === 'admin'
+            const role = officeRoleOf(idTokenResult.claims.role)
+            const authorized = role !== null
+            setOfficeRole(role)
             setIsAuthorized(authorized)
 
             if (!authorized) {
@@ -28,10 +33,12 @@ export function useAdminAuth() {
             }
           } catch (err) {
             console.error('Error verifying admin custom claims:', err)
+            setOfficeRole(null)
             setIsAuthorized(false)
             setAuthError(t('admin.login.errorMessage', { email: currentUser.email }))
           }
         } else {
+          setOfficeRole(null)
           setIsAuthorized(false)
           setAuthError(null)
         }
@@ -71,6 +78,8 @@ export function useAdminAuth() {
     user,
     loading,
     isAuthorized,
+    officeRole,
+    isOwner: officeRole === 'owner',
     authError,
     handleSignIn,
     handleSignOut,

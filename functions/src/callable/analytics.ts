@@ -1,4 +1,5 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https'
+import { resolveOfficeRole } from '../lib/roles'
 import {
   getFirestore,
   Timestamp,
@@ -52,13 +53,9 @@ export const getAnalyticsKPIs = onCall(async (request) => {
   }
 
   const db = getFirestore()
-  let isAuthorized = auth.token.role === 'admin'
-  if (!isAuthorized && auth.token.email) {
-    const adminSnap = await db.collection('admins').doc(auth.token.email.trim().toLowerCase()).get()
-    isAuthorized = adminSnap.exists
-  }
+  const officeRole = await resolveOfficeRole(auth, db)
 
-  if (!isAuthorized) {
+  if (!officeRole) {
     throw new HttpsError('permission-denied', 'Unauthorized access to analytics dashboard.')
   }
 

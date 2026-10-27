@@ -131,4 +131,22 @@ describe('useAdminAuth hook', () => {
 
     expect(signOut).toHaveBeenCalled()
   })
+
+  // P3-E35: owners and managers both get the admin panel; only owners get isOwner.
+  for (const [claim, expected] of [['owner', 'owner'], ['manager', 'manager'], ['admin', 'owner'], ['supervisor', null], ['staff', null]] as const) {
+    it(`role '${claim}' → officeRole ${String(expected)}`, async () => {
+      const mockUser = {
+        email: `${claim}@test.com`,
+        getIdTokenResult: vi.fn().mockResolvedValue({ claims: { role: claim } }),
+      } as unknown as User
+      const { result } = renderHook(() => useAdminAuth())
+      await act(async () => {
+        if (authStateCallback) authStateCallback(mockUser)
+        await Promise.resolve()
+      })
+      expect(result.current.isAuthorized).toBe(expected !== null)
+      expect(result.current.officeRole).toBe(expected)
+      expect(result.current.isOwner).toBe(expected === 'owner')
+    })
+  }
 })

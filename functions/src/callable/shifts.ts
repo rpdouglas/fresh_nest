@@ -2,8 +2,9 @@ import { onCall, HttpsError } from 'firebase-functions/v2/https'
 import { getFirestore } from 'firebase-admin/firestore'
 import { logError } from '../lib/shared'
 import { buildOpenShifts, type OpenShiftResponse } from '../lib/openShifts'
+import { isOfficeRole } from '../lib/roles'
 
-const FSM_ROLES = ['staff', 'supervisor', 'admin']
+const FSM_ROLES = ['staff', 'supervisor']
 
 /**
  * HOTFIX-02: Shift Board data source for FSM staff.
@@ -18,7 +19,8 @@ export const listOpenShifts = onCall(async (request): Promise<{ shifts: OpenShif
     throw new HttpsError('unauthenticated', 'User must be logged in to view shifts.')
   }
   const role = authContext.token.role as string | undefined
-  if (!role || !FSM_ROLES.includes(role)) {
+  const isOffice = isOfficeRole(role)
+  if (!role || (!FSM_ROLES.includes(role) && !isOffice)) {
     throw new HttpsError('permission-denied', 'Only staff can view open shifts.')
   }
 
@@ -32,8 +34,8 @@ export const listOpenShifts = onCall(async (request): Promise<{ shifts: OpenShif
       db.collection('jobs').where('assignedTo', '==', authContext.uid).get(),
     ])
 
-    // Admins may browse the board without a staff profile; staff must have one.
-    if (!staffSnap.exists && role !== 'admin') {
+    // Owners and Managers may browse the board without a staff profile; staff must have one.
+    if (!staffSnap.exists && !isOffice) {
       throw new HttpsError('not-found', 'Your staff profile was not found.')
     }
 
