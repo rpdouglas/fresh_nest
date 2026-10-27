@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import firebaseConfig from '../../../../../firebase.json'
 import { GalleryPairForm } from './GalleryPairForm'
 import * as gallery from '@/lib/firebase/gallery'
 import type { GalleryPair } from '@/types'
@@ -84,5 +85,18 @@ describe('GalleryPairForm (P3-E32)', () => {
     save()
     expect(await screen.findByText('galleryAdmin.form.errors.saveFailed')).toBeInTheDocument()
     expect(onDone).not.toHaveBeenCalled()
+  })
+
+  it('allows blob: and Firebase Storage image URLs in hosting Content-Security-Policy headers', () => {
+    for (const targetName of ['freshnest-prod', 'freshnest-dev']) {
+      const target = firebaseConfig.hosting.find((h) => h.target === targetName)
+      const cspHeader = target?.headers
+        .flatMap((h) => h.headers)
+        .find((h) => h.key === 'Content-Security-Policy')?.value
+      expect(cspHeader).toBeDefined()
+      expect(cspHeader).toMatch(/img-src[^;]*\bblob:/)
+      expect(cspHeader).toMatch(/img-src[^;]*https:\/\/firebasestorage\.googleapis\.com/)
+      expect(cspHeader).toMatch(/connect-src[^;]*https:\/\/firebasestorage\.googleapis\.com/)
+    }
   })
 })
