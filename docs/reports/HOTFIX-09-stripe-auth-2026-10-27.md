@@ -1,6 +1,6 @@
 # HOTFIX-09 — Stripe endpoints usable without sign-in (gap analysis N-4)
 
-**Date:** 2026-10-27 · **Found by:** FSM gap analysis ([R10](../gap-analysis/GAP_ANALYSIS_2026-10-27.md)) · **Owner decision:** keep the Stripe functions, require sign-in (answers §7, Q5) · **Status:** ✅ Code complete (PR #38); deploys with the merge (functions)
+**Date:** 2026-10-27 · **Found by:** FSM gap analysis ([R10](../gap-analysis/GAP_ANALYSIS_2026-10-27.md)) · **Owner decision:** keep the Stripe functions, require sign-in (answers §7, Q5) · **Status:** ✅ Closed 2026-10-27 — merged (PR #38), functions deployed by Deploy to Production #127
 
 ## Persona
 P12 Lauren (owner): no unexpected Stripe activity or tampered booking payment fields. Clients pay by e-Transfer or cash for now (MP-S3), so nothing customer-facing changes.

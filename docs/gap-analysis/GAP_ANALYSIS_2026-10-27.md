@@ -428,7 +428,7 @@ They should be the first test file in backlog item W2-6.
 | # | Severity | Risk | Evidence | Suggested action |
 |---|---|---|---|---|
 | R1 | ✅ **Fixed 2026-10-27 (HOTFIX-06)** — was High, live | Crew photo uploads were denied. The FSM uploads to `jobs/{jobId}/photos/{id}`, but `storage.rules` allows only `gallery/**` and denies everything else | `OfflineUploadProvider.tsx:53-56`; `storage.rules:10-23` | Human-approved Storage rule: assigned staff write `jobs/{jobId}/photos/*` (JPEG, size cap); admin and assigned staff read. Needs a `firestore.get()` on the job. Then verify on a phone |
-| R2 | Medium — live | Crew "mark all as read" is denied, because `notifications/{uid}/messages` has `allow update: if false` | `useNotifications.ts:73-90`; `firestore.rules:221-225` | Rule change (owner may update `read` only), or a callable |
+| R2 | ✅ Fixed (HOTFIX-07) — was Medium, live | Crew "mark all as read" was denied, because `notifications/{uid}/messages` has `allow update: if false` | `useNotifications.ts:73-90`; `firestore.rules:221-225` | Rule change (owner may update `read` only), or a callable |
 | R3 | High | Schedule, assignment and checklist changes are **client writes**, contrary to MP-S5.1 and SCH-S11 | `assignCleanerTransaction`, `attachJobChecklist`, `updateBookingStatus` in `firestore.ts` | Introduce `applyScheduleChange` before building recurrence, so validation is authoritative |
 | R4 | Medium | Crew may write any `status` string and any `checkedInAt` / `completedAt` value on their job; no transition or time validation | `firestore.rules:188-193` | Move check-in and check-out to callables (CRW-S10.3), or constrain values in rules (`request.time`, allowed transitions) |
 | R5 | Medium | Money in decimal dollars (`estimatedPrice`, `PayRate.amount`); HST computed only at the Stripe boundary | `firestore.ts` `computeBookingEstimatedPrice`; `common.ts:25`; `payments.ts:20` | Adopt integer cents before any billing code (PRC-S3.2) |
@@ -451,7 +451,7 @@ Each item lists its requirement IDs, dependencies and exit criteria (from the sp
 | # | Item | IDs | Depends on | Exit criteria |
 |---|---|---|---|---|
 | N-1 | Storage rule for crew job photos (human approval) — ✅ **done 2026-10-27 (HOTFIX-06, PR #37; deployed and phone-tested)** | R1, CRW-S6.2 | — | A required-photo task uploads from an iPhone and an Android; photo visible in admin |
-| N-2 | Notifications mark-read rule or callable — **rule + tests written (HOTFIX-07), awaiting deploy** | R2 | — | Unread badge clears after opening |
+| N-2 | Notifications mark-read rule or callable — ✅ **done 2026-10-27 (HOTFIX-07, PR #38; rules deployed, badge check passed)** | R2 | — | Unread badge clears after opening |
 | N-3 | Block overlap overrides on dispatch — ✅ **done (HOTFIX-08, PR #38)** | R6, SCH-S5.2 | — | Overlap assignment cannot be saved |
 | N-4 | Decide on the Stripe callables (remove, or require auth) — ✅ **done: sign-in required + signed webhooks only (HOTFIX-09, PR #38)** | R10, MP-S3.12 | Owner decision | No unauthenticated payment-intent creation |
 
@@ -552,7 +552,7 @@ Recorded from the walkthrough of section 6. These settle the questions for plann
 | 3 | Persona rules alongside the spec (D1–D3) | **Keep all; add the spec's** | Earnings caps stay; transport-mode buffers become drive-time adjustments; blocked windows stay private; add the 44 h OVERTIME_RISK check |
 | 4 | Shift Board model (D4) | **Keep both** | The office assigns; released jobs go to the Shift Board for eligible staff to claim; hand-offs and trades are added on top (W2-8) |
 | 5 | Stripe callables (R10) | **Keep, require sign-in** | N-4: add an auth check to `createPaymentIntent` (and keep the webhook signature check) |
-| 6 | Manager role (D10) | **Schedule, no pay** | W0-1: managers handle clients, sites, scheduling, overrides with reason and time off; no pay fields, policies or roles |
+| 6 | Manager role (D10) | ~~Schedule, no pay~~ → **Superseded 2026-10-27:** Manager has the same access as Owner (including pay); only Owners grant/revoke Owner and Manager. `admin` renamed `owner`; several Owners allowed. See [P3-E35](../projects/P3-E35.md) | W0-1: managers handle clients, sites, scheduling, overrides with reason and time off; no pay fields, policies or roles |
 | 7 | GCP budgets set? | **No / not sure** | W0-5: add budgets and alerts for Maps, SMS and Storage to the platform checklist |
 | 8 | Camelo data | **Enter by hand** | Drop the Camelo importer and nightly parity report (MP-S8, SCH-S10.1, W1-6, W2-9). The cutover gate's "two weeks of parity" becomes a manual side-by-side check |
 | 9 | Proposed defaults (MP-S3) | **Accept all** | Seed the settings record (W0-2) with: 10-min buffer, 8 weeks, 7-day freeze, 15-min undo, 14-day vacation notice, max 2 off, 12 h swap notice, 250 m, 90 days, 7 years |

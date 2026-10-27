@@ -1,6 +1,6 @@
 # HOTFIX-08 — Double-booking a cleaner could be overridden (gap analysis N-3)
 
-**Date:** 2026-10-27 · **Found by:** FSM gap analysis ([R6](../gap-analysis/GAP_ANALYSIS_2026-10-27.md), SCH-S5.2 / SCH-S8.1) · **Status:** ✅ Code complete (PR #38). No rules change, so it ships with the merge
+**Date:** 2026-10-27 · **Found by:** FSM gap analysis ([R6](../gap-analysis/GAP_ANALYSIS_2026-10-27.md), SCH-S5.2 / SCH-S8.1) · **Status:** ✅ Closed 2026-10-27 — merged (PR #38), deployed by Deploy to Production #127
 
 ## Personas
 - **P12 Lauren:** dispatch.
