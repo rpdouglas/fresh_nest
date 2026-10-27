@@ -118,7 +118,7 @@
     "step3Title": "We Clean",
     "step3Desc": "Your dedicated cleaner arrives on time and follows a detailed checklist tailored to your home.",
     "step4Title": "You Relax",
-    "step4Desc": "We send a completion notice when finished. Satisfaction guaranteed — we make it right if anything's missed.",
+    "step4Desc": "We send a completion notice when finished. Backed by our 24-hour satisfaction guarantee — contact us within 24 hours if anything was missed and we'll return to make it right.",
     "faqLink": "Have questions? See our FAQ"
   },
   "recurring": {
@@ -375,19 +375,19 @@
     },
     "item7": {
       "q": "Can I reschedule or cancel my booking?",
-      "a": "Yes — please give us at least 24 hours' notice to reschedule or cancel."
+      "a": "Yes. Please give us at least 24 hours' notice for standard residential and Airbnb turnover cleanings, and at least 48 hours' notice for deep, move-out, post-construction, and commercial cleanings. Cancellations or reschedules with less notice — or visits where our team cannot access the property upon arrival (lockout) — are subject to a late cancellation or lockout fee as outlined in your quote and booking confirmation."
     },
     "item8": {
       "q": "Are you insured and bonded?",
       "a": "Yes, Fresh Nest Co. is fully insured and bonded. You can book with confidence knowing your home and belongings are protected."
     },
     "item9": {
-      "q": "What if I'm not happy with the clean?",
-      "a": "We offer a 24-hour satisfaction guarantee. If something was missed, contact us within 24 hours and we'll return to make it right."
+      "q": "What if I'm not happy with the clean, or how do I report an issue?",
+      "a": "We stand behind our work with a 24-hour satisfaction guarantee. If anything from your booked cleaning checklist was missed, please call or email us within 24 hours of your clean (photos are always helpful). We will return within 24 to 48 hours for a complimentary re-clean of the missed areas. Because homes are lived in right away, we do not offer cash refunds, and concerns reported more than 24 hours after completion are outside the guarantee."
     },
     "item10": {
       "q": "What payment methods do you accept?",
-      "a": "We accept cash and Interac e-Transfer. Payment is due on the day of service unless you have a recurring plan."
+      "a": "We accept cash and Interac e-Transfer. Payment is due on the day of service, or according to your invoice terms for recurring and commercial accounts. Overdue balances past the grace period are subject to a late payment fee as outlined in your agreement, and future scheduled visits may be paused until the account is brought up to date."
     }
   },
   "welcome": "Welcome to Fresh Nest Co.",
@@ -550,7 +550,7 @@
       "step2Title": "We Clean",
       "step2Desc": "Your assigned cleaner arrives on time and works through a consistent checklist.",
       "step3Title": "You Enjoy",
-      "step3Desc": "Arrive home to a fresh space. Message us if anything needs attention.",
+      "step3Desc": "Arrive home to a fresh space. Contact us within 24 hours if anything from your checklist needs attention and we'll return to make it right.",
       "trust1Stat": "4.9 / 5",
       "trust1Label": "Google rating from verified clients",
       "trust2Stat": "100%",
@@ -1230,7 +1230,7 @@
       "noUpcoming": "You have no upcoming cleanings scheduled.",
       "cancelBtn": "Cancel Cleaning",
       "confirmCancelTitle": "Cancel this cleaning?",
-      "confirmCancelDesc": "Are you sure you want to cancel your cleaning on {{date}}? This cannot be undone.",
+      "confirmCancelDesc": "Are you sure you want to cancel your cleaning on {{date}}? Please note we require 24 hours' notice for standard and Airbnb cleans (48 hours for deep, move-out, post-construction, and commercial); late cancellations may be subject to a fee. This cannot be undone.",
       "cancelSuccess": "Your cleaning has been cancelled.",
       "changeFreqBtn": "Change Recurrence",
       "frequencyLabel": "Change recurrence frequency to:",

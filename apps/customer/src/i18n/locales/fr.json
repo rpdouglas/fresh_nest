@@ -118,7 +118,7 @@
     "step3Title": "Nous nettoyons",
     "step3Desc": "Votre nettoyeur attitré arrive à l'heure et suit une liste de contrôle détaillée adaptée à votre maison.",
     "step4Title": "Profitez",
-    "step4Desc": "Nous vous envoyons un avis d'achèvement à la fin. Satisfaction garantie — nous corrigeons tout oubli.",
+    "step4Desc": "Nous vous envoyons un avis une fois le travail terminé. Couvert par notre garantie de satisfaction de 24 heures — contactez-nous dans les 24 heures si quelque chose a été oublié et nous reviendrons corriger la situation.",
     "faqLink": "Des questions ? Consultez notre FAQ"
   },
   "recurring": {
@@ -375,19 +375,19 @@
     },
     "item7": {
       "q": "Puis-je reporter ou annuler ma réservation ?",
-      "a": "Oui — veuillez nous donner un préavis d'au moins 24 heures pour reporter ou annuler."
+      "a": "Oui. Veuillez nous donner un préavis d'au moins 24 heures pour un nettoyage résidentiel standard ou une rotation Airbnb, et d'au moins 48 heures pour un grand ménage, un nettoyage de départ, après construction ou commercial. Toute annulation ou report avec un préavis plus court — ou toute visite où notre équipe ne peut pas accéder aux lieux à son arrivée — entraîne des frais d'annulation tardive ou d'accès impossible, tels qu'indiqués dans votre devis et votre confirmation de réservation."
     },
     "item8": {
       "q": "Êtes-vous assurés et cautionnés ?",
       "a": "Oui, Fresh Nest Co. est pleinement assurée et cautionnée. Vous pouvez réserver en toute confiance, sachant que votre domicile et vos biens sont protégés."
     },
     "item9": {
-      "q": "Que se passe-t-il si je ne suis pas satisfait du nettoyage ?",
-      "a": "Nous offrons une garantie de satisfaction de 24 heures. Si quelque chose a été oublié, contactez-nous dans les 24 heures et nous reviendrons corriger la situation."
+      "q": "Que se passe-t-il si je ne suis pas satisfait du nettoyage, ou comment signaler un problème ?",
+      "a": "Nous appuyons notre travail par une garantie de satisfaction de 24 heures. Si un élément prévu à votre liste de nettoyage a été oublié, veuillez nous appeler ou nous écrire par courriel dans les 24 heures suivant la visite (des photos sont toujours utiles). Nous reviendrons dans un délai de 24 à 48 heures pour reprendre gratuitement les zones oubliées. Comme les lieux sont habités immédiatement après notre passage, nous n'offrons pas de remboursement en argent, et les signalements reçus plus de 24 heures après la fin du service ne sont pas couverts par la garantie."
     },
     "item10": {
       "q": "Quels modes de paiement acceptez-vous ?",
-      "a": "Nous acceptons l'argent comptant et le virement Interac. Le paiement est dû le jour du service, sauf si vous avez un forfait récurrent."
+      "a": "Nous acceptons l'argent comptant et le virement Interac. Le paiement est dû le jour du service, ou selon les modalités de votre facture pour les comptes récurrents et commerciaux. Tout solde en souffrance après le délai de grâce entraîne des frais de retard tels qu'indiqués dans votre entente, et les visites suivantes peuvent être suspendues jusqu'à la régularisation du compte."
     }
   },
   "welcome": "Bienvenue chez Fresh Nest Co.",
@@ -550,7 +550,7 @@
       "step2Title": "Nous nettoyons",
       "step2Desc": "Votre préposé attitré arrive à l'heure et suit une liste de vérification cohérente.",
       "step3Title": "Vous profitez",
-      "step3Desc": "Rentrez chez vous dans un espace frais. Écrivez-nous si quelque chose doit être retouché.",
+      "step3Desc": "Rentrez dans un espace frais et propre. Contactez-nous dans les 24 heures si un élément de votre liste nécessite notre attention et nous reviendrons corriger la situation.",
       "trust1Stat": "4,9 / 5",
       "trust1Label": "Note Google de clients vérifiés",
       "trust2Stat": "100 %",
@@ -1230,7 +1230,7 @@
       "noUpcoming": "Vous n'avez aucun nettoyage prévu.",
       "cancelBtn": "Annuler le nettoyage",
       "confirmCancelTitle": "Annuler ce nettoyage ?",
-      "confirmCancelDesc": "Êtes-vous sûr de vouloir annuler votre nettoyage du {{date}} ? Cette action est irréversible.",
+      "confirmCancelDesc": "Êtes-vous sûr de vouloir annuler votre nettoyage du {{date}} ? Veuillez noter qu'un préavis de 24 heures est requis pour un nettoyage standard ou Airbnb (48 heures pour un grand ménage, départ, après construction ou commercial) ; des frais peuvent s'appliquer en cas d'annulation tardive. Cette action est irréversible.",
       "cancelSuccess": "Votre nettoyage a été annulé.",
       "changeFreqBtn": "Modifier la récurrence",
       "frequencyLabel": "Modifier la récurrence à :",
