@@ -24,6 +24,7 @@ jobs:
       customer: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.customer == 'true' }}
       fsm: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.fsm == 'true' }}
       functions: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.functions == 'true' }}
+      rules: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.rules == 'true' }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -53,9 +54,40 @@ jobs:
               - *shared
               - 'functions/**'
               - 'firebase.json'
+            rules:
+              - *ci
+              - 'firestore.rules'
+              - 'firestore.dev.rules'
+              - 'firestore.indexes.json'
+              - 'storage.rules'
+              - 'firebase.json'
+
+  # Security rules & indexes deploy after passing the Firestore + Storage emulator test suite (ADR-018).
+  rules:
+    needs: changes
+    if: needs.changes.outputs.rules == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: 'npm' }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '21' }
+      - run: npm ci
+      - name: Firestore and Storage rules tests (emulator)
+        working-directory: apps/customer
+        run: npx -y firebase-tools@15 emulators:exec --only firestore,storage --project freshnest-aa51e "npx vitest run --config vitest.rules.config.ts"
+      - name: Deploy Firestore & Storage Rules and Indexes
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          SA_FILE="$RUNNER_TEMP/firebase-sa.json"
+          trap 'rm -f "$SA_FILE"' EXIT
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$SA_FILE"
+          export GOOGLE_APPLICATION_CREDENTIALS="$SA_FILE"
+          npx -y firebase-tools@15 deploy --only storage,firestore:rules,firestore:indexes --project freshnest-aa51e --non-interactive
 
   # Functions deploy before hosting so new clients never call a callable that isn't live yet.
-  # Firestore rules/indexes are deliberately NOT deployed here — COMPLIANCE.md §4 requires a human.
   functions:
     needs: changes
     if: needs.changes.outputs.functions == 'true'
