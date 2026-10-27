@@ -12,7 +12,7 @@ import {
 } from '../lib/shared'
 import { sendOwnerNotification, sendClientConfirmation } from '../sendEmail'
 import { sendSmsConfirmation } from '../sendSms'
-import type { BookingData } from '../emailTemplates'
+import { isRenewal, type BookingData } from '../emailTemplates'
 import { createJobFromBooking } from '../jobs'
 
 // F03 / E31: Trigger when booking is created
@@ -30,7 +30,9 @@ export const onBookingCreated = onDocumentCreated(
     const docId = event.params['docId']
     const refCode = `${firstName.trim().toUpperCase()}-${docId.substring(0, 4).toUpperCase()}`
 
-    if (!booking.referralCode) {
+    const renewal = isRenewal(booking)
+
+    if (!booking.referralCode && !renewal) {
       const db = getFirestore()
       try {
         await db.collection('referrals').doc(refCode).set({
@@ -58,11 +60,16 @@ export const onBookingCreated = onDocumentCreated(
       fromNumber: TWILIO_PHONE_NUMBER.value(),
     }
 
-    const results = await Promise.allSettled([
-      sendOwnerNotification(booking, event.params['docId'], emailConfig),
-      sendClientConfirmation(booking, emailConfig),
-      sendSmsConfirmation(booking, smsConfig),
-    ])
+    // Renewals continue an agreed recurring booking — only the owner is told (to confirm it);
+    // the client is not sent another "quote request received" email/SMS.
+    const sends = renewal
+      ? [sendOwnerNotification(booking, docId, emailConfig)]
+      : [
+          sendOwnerNotification(booking, docId, emailConfig),
+          sendClientConfirmation(booking, emailConfig),
+          sendSmsConfirmation(booking, smsConfig),
+        ]
+    const results = await Promise.allSettled(sends)
 
     const labels = ['owner email', 'client email', 'client SMS']
     results.forEach((result, i) => {

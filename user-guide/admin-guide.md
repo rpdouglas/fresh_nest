@@ -127,8 +127,11 @@ To maximize retention and ensure cleaning consistency, a scheduled daily backgro
 1. **Target Identification:** The function identifies bookings marked as `confirmed` or `completed` with a frequency of `weekly`, `biweekly`, or `monthly`.
 2. **Next Date Window:** It projects the next occurrence (+7, +14, or +30 days). If that next date is within a 14-day window from today, it initiates renewal.
 3. **De-duplication Check:** The system verifies that no active booking already exists for that user on that specific date.
-4. **Draft Generation:** If clear, a new booking is generated with status `pending`, copying all property parameters, preferences, notes, and preferred cleaners.
-5. **Client Alerts:** Upon creation, bilingual emails and SMS notifications are automatically sent to notify the client of their upcoming reservation in their chosen language (`en` or `fr`).
+4. **Draft Generation:** If clear, a new booking is generated with status `pending`, copying all property parameters, preferences, notes, preferred cleaners and the client's existing referral code. It is marked as a renewal (`createdBy: system:recurring-renewal`).
+5. **Owner Alert:** The owner gets a **"Recurring renewal"** email asking them to confirm the visit. The client is **not** sent a "quote request received" email or SMS, and no new referral code is created.
+6. **Confirm to schedule:** Set the renewal to `confirmed` in the admin panel. That creates the job for dispatch, and the client then gets the usual day-before reminder SMS.
+
+> **Reminder SMS:** the day-before reminder goes only to `confirmed` bookings. A `pending` quote request or unconfirmed renewal gets no "your cleaning is tomorrow" text.
 
 ---
 

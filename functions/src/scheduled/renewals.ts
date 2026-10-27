@@ -1,6 +1,6 @@
 import { onSchedule } from 'firebase-functions/v2/scheduler'
 import { getFirestore } from 'firebase-admin/firestore'
-import type { BookingData } from '../emailTemplates'
+import { RENEWAL_CREATED_BY, type BookingData } from '../emailTemplates'
 
 export const onDailyRecurringRenewal = onSchedule(
   {
@@ -75,6 +75,10 @@ export const onDailyRecurringRenewal = onSchedule(
             assignedTo: booking.assignedTo || null,
             isAirbnb: booking.isAirbnb || false,
             photoConfirmation: booking.photoConfirmation || false,
+            // Same client, same referral code — and marked so onBookingCreated treats it as a
+            // renewal rather than a new quote request.
+            referralCode: booking.referralCode ?? null,
+            createdBy: RENEWAL_CREATED_BY,
             createdAt: new Date(),
           }
 
