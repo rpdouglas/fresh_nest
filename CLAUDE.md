@@ -22,7 +22,7 @@ Live: https://lilypad-freshnest.web.app
 - Framer Motion
 - react-i18next (bilingual EN/FR — launch requirement)
 - clsx + tailwind-merge → cn() at @/lib/utils.ts
-- Firebase: Hosting, Firestore (2 DBs), Auth (live — email/password + magic-link, custom-claims RBAC per ADR-010/ADR-011), Functions (live — callable/scheduled/triggers in functions/)
+- Firebase: Hosting, Firestore (2 DBs), Auth (live — email/password + magic-link, custom-claims RBAC per ADR-010/ADR-011, office roles Owner/Manager per ADR-017), Functions (live — callable/scheduled/triggers in functions/)
 
 ## Tailwind Rules — CRITICAL
 THIS IS TAILWIND v3. NOT v4.
@@ -150,7 +150,9 @@ These are not aspirational — they are done conditions.
 5. Run: npm run build && npm run lint
 6. If Firestore rules, indexes, or Cloud Functions were modified:
    - Build functions (npm run build in functions/)
-   - Deploy updates using `npx firebase deploy --only functions,firestore:rules,firestore:indexes`
+   - Functions and hosting deploy automatically when the PR merges to `main` (`firebase-deploy.yml`)
+   - Rules and indexes NEVER auto-deploy: the human runs Actions → **Deploy Security Rules** (ADR-016) after merge
+   - Agent sessions have no production credentials; see docs/HANDOFF.md for the current state and open items
 7. All steps pass → Phase C. Any fails → halt + write failure report + await human.
 
 ### Phase C — Ticket Close
