@@ -1,73 +1,25 @@
 import { query, where, getDocs } from 'firebase/firestore'
-import { jobsCollection } from '@freshnest/shared'
+import {
+  jobsCollection,
+  timeToMinutes,
+  extractPostalPrefix,
+  hasTravelConflict,
+  shiftsOverlap,
+  overlapsBlockedWindow,
+  resolveBufferMinutes,
+  earningsOverage,
+} from '@freshnest/shared'
 import { db } from '@/lib/firebase/firebase'
 import type { Booking, Job, Staff } from '@/types'
 
-export function timeToMinutes(timeStr: string): number {
-  try {
-    const [h, m] = timeStr.split(':').map(Number)
-    return h * 60 + m
-  } catch {
-    return 0
-  }
-}
-
-export function extractPostalPrefix(address: string): string | null {
-  if (!address) return null
-  const match = address.match(/([A-Za-z]\d[A-Za-z])/i)
-  return match ? match[1].toUpperCase() : null
-}
-
-interface TravelShift {
-  startTime: string
-  endTime: string
-  address: string
-}
-
-export function hasTravelConflict(
-  candidate: TravelShift,
-  existing: TravelShift,
-  bufferMinutes: number
-): boolean {
-  const startC = timeToMinutes(candidate.startTime)
-  const endC = timeToMinutes(candidate.endTime)
-  const startA = timeToMinutes(existing.startTime)
-  const endA = timeToMinutes(existing.endTime)
-
-  // 1. Direct overlap check
-  if (startC < endA && endC > startA) {
-    return true
-  }
-
-  // 2. Waive buffer if they share the same postal prefix
-  const fsaC = extractPostalPrefix(candidate.address)
-  const fsaA = extractPostalPrefix(existing.address)
-  if (fsaC && fsaA && fsaC === fsaA) {
-    return false
-  }
-
-  // 3. Buffer check
-  if (endC <= startA) {
-    const gap = startA - endC
-    if (gap < bufferMinutes) {
-      return true
-    }
-  } else if (endA <= startC) {
-    const gap = startC - endA
-    if (gap < bufferMinutes) {
-      return true
-    }
-  }
-
-  return false
-}
-
-/** True when two same-day shifts share any time (one person can't be in two places). */
-export function shiftsOverlap(
-  a: { startTime: string; endTime: string },
-  b: { startTime: string; endTime: string },
-): boolean {
-  return timeToMinutes(a.startTime) < timeToMinutes(b.endTime) && timeToMinutes(a.endTime) > timeToMinutes(b.startTime)
+export {
+  timeToMinutes,
+  extractPostalPrefix,
+  hasTravelConflict,
+  shiftsOverlap,
+  overlapsBlockedWindow,
+  resolveBufferMinutes,
+  earningsOverage,
 }
 
 export interface ConflictCheckResult {
@@ -91,7 +43,6 @@ export async function checkCleanerSchedulingConflicts({
   job,
   estimatedPay,
   t = (key: string, options?: Record<string, unknown>) => {
-    // Basic fallback translating standard warnings
     const name = typeof options?.name === 'string' ? options.name : 'Cleaner'
     const overage = typeof options?.overage === 'number' || typeof options?.overage === 'string' ? String(options.overage) : '0'
     const buffer = typeof options?.buffer === 'number' || typeof options?.buffer === 'string' ? String(options.buffer) : '60'
@@ -121,23 +72,18 @@ export async function checkCleanerSchedulingConflicts({
 }): Promise<ConflictCheckResult> {
   const newCleanerName = `${selectedStaff.firstName} ${selectedStaff.lastName}`
 
-  // 1. Check earnings cap
+  // 1. Check earnings cap via shared domain helper
   const limit = selectedStaff.financials?.monthlyEarningsLimit ?? null
   const current = selectedStaff.financials?.currentMonthEarnings ?? 0
-  const isOverEarnings = limit !== null && current + estimatedPay > limit
-  const overage = limit !== null && isOverEarnings ? (current + estimatedPay) - limit : 0
+  const overage = earningsOverage(estimatedPay, limit, current)
+  const isOverEarnings = overage > 0
 
-  // 2. Check overlaps (blocking) and travel buffer conflicts (overridable)
+  // 2. Check overlaps (blocking) and travel buffer conflicts (overridable) via shared domain helpers
   let isOverlap = false
   let overlappingShift: Job | null = null
   let isOverTravel = false
   let conflictingShift: Job | null = null
-  const constraints = selectedStaff.constraints || {}
-  const transportMode = constraints.transportMode || 'transit'
-  const defaultBuffer = transportMode === 'transit' ? 60 : 30
-  const bufferMinutes = typeof constraints.transitBufferMinutes === 'number'
-    ? constraints.transitBufferMinutes
-    : defaultBuffer
+  const bufferMinutes = resolveBufferMinutes(selectedStaff.constraints || {})
 
   const cand = {
     startTime: job?.scheduledStartTime || '09:00',
@@ -176,31 +122,14 @@ export async function checkCleanerSchedulingConflicts({
     console.error('Error checking cleaner travel conflicts:', err)
   }
 
-  // 3. Check blocked windows conflicts
-  let isOverBlockedWindow = false
+  // 3. Check blocked windows conflicts via shared domain helper
   const blockedWindows = selectedStaff.constraints?.blockedWindows || []
-  const shiftDate = booking.preferredDate
-  const shiftDayOfWeek = new Date(shiftDate + 'T00:00:00').getDay()
-  const startS = timeToMinutes(cand.startTime)
-  const endS = timeToMinutes(cand.endTime)
-
-  for (const window of blockedWindows) {
-    let isMatch = false
-    if (window.recurring) {
-      isMatch = window.dayOfWeek === shiftDayOfWeek
-    } else if (window.date) {
-      isMatch = window.date === shiftDate
-    }
-
-    if (isMatch) {
-      const startW = timeToMinutes(window.startTime)
-      const endW = timeToMinutes(window.endTime)
-      if (startS < endW && endS > startW) {
-        isOverBlockedWindow = true
-        break
-      }
-    }
-  }
+  const isOverBlockedWindow = overlapsBlockedWindow(
+    booking.preferredDate,
+    cand.startTime,
+    cand.endTime,
+    blockedWindows
+  )
 
   const warnings: string[] = []
   const overrideTypes: string[] = []
