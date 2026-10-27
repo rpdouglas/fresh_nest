@@ -41,6 +41,7 @@ export default function LoginConfirmPage() {
       <SEO
         title={t('customerPortal.confirm.title')}
         description={t('customerPortal.confirm.status')}
+        noindex
       />
       <main id="main-content" className="bg-cream min-h-[80vh] py-12 px-4 md:py-20 md:px-6 flex items-center justify-center">
         <motion.div

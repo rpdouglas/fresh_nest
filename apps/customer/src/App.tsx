@@ -29,6 +29,7 @@ const AboutPage            = lazy(() => import('@/pages/AboutPage'))
 const CareersPage          = lazy(() => import('@/pages/CareersPage'))
 const PrivacyPage          = lazy(() => import('@/pages/PrivacyPage'))
 const OfflinePage          = lazy(() => import('@/pages/OfflinePage'))
+const NotFoundPage         = lazy(() => import('@/pages/NotFoundPage'))
 const LoginPage            = lazy(() => import('@/pages/customer/LoginPage'))
 const LoginConfirmPage     = lazy(() => import('@/pages/customer/LoginConfirmPage'))
 const CustomerBookingsPage = lazy(() => import('@/pages/customer/CustomerBookingsPage'))
@@ -57,6 +58,7 @@ const CustomerProfilePage  = lazy(() => import('@/pages/customer/CustomerProfile
  *  /reviews                 — Reviews
  *  /privacy                 — Static privacy policy
  *  /admin                   — Admin Dashboard
+ *  *                        — Not found (noindex)
  */
 const router = createBrowserRouter([
   {
@@ -120,6 +122,9 @@ const router = createBrowserRouter([
           { path: 'profile',     element: <CustomerProfilePage /> },
         ],
       },
+
+      // ── Unknown URLs (noindex 404) ──
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ])

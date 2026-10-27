@@ -1298,5 +1298,42 @@
   "quoteRequest": {
     "nextStepsHeading": "La suite",
     "nextStepsBody": "Aucun paiement n'est demandé maintenant. Un membre de notre équipe vous contactera dans les 24 heures pour confirmer les détails et vous remettre un devis."
+  },
+  "notFound": {
+    "pageTitle": "Page introuvable | Fresh Nest Co.",
+    "metaDesc": "Cette page n'existe pas. Découvrez nos services de nettoyage ou demandez un devis.",
+    "heading": "Nous n'avons pas trouvé cette page",
+    "body": "Le lien est peut-être ancien ou mal saisi. Retournez à l'accueil, demandez un devis ou appelez-nous.",
+    "ctaHome": "Retour à l'accueil",
+    "ctaQuote": "Demander un devis"
+  },
+  "privacyPage": {
+    "metaTitle": "Politique de confidentialité | Fresh Nest Co.",
+    "metaDesc": "Comment Fresh Nest Co. recueille, utilise et protège vos renseignements personnels conformément à la LPRPDE et à la Loi 25 du Québec.",
+    "title": "Politique de confidentialité",
+    "lastUpdated": "Dernière mise à jour : 27 octobre 2026",
+    "intro": "Fresh Nest Co. respecte votre vie privée. Cette politique explique quels renseignements personnels nous recueillons lorsque vous demandez un devis ou utilisez notre site, pourquoi nous les recueillons et les choix qui s'offrent à vous. Elle respecte la Loi sur la protection des renseignements personnels et les documents électroniques (LPRPDE) et la Loi 25 du Québec.",
+    "sections": {
+      "1": {
+        "title": "1. Renseignements que nous recueillons",
+        "content": "Lorsque vous demandez un devis ou réservez un nettoyage, nous recueillons uniquement ce dont nous avons besoin pour offrir le service :\n• Votre nom, votre adresse courriel, votre numéro de téléphone et l'adresse du service\n• Des détails sur votre maison ou votre entreprise et sur le nettoyage souhaité, la date préférée et les notes que vous ajoutez (par exemple, les instructions d'accès)\n• Votre langue préférée (français ou anglais)\n• Si vous avez choisi de recevoir des courriels promotionnels, et à quel moment\n\nSi vous vous connectez à votre compte client, nous conservons aussi votre courriel de connexion. Si vous acceptez les témoins d'analyse, nous recueillons des renseignements anonymes sur l'utilisation du site."
+      },
+      "2": {
+        "title": "2. Comment nous les utilisons",
+        "content": "Nous utilisons vos renseignements pour :\n• Communiquer avec vous au sujet de votre demande, préparer votre devis et planifier votre nettoyage\n• Envoyer des confirmations, des rappels et des mises à jour par courriel ou par texto, dans la langue de votre choix\n• Assigner une préposée ou un préposé et lui transmettre l'adresse et les instructions nécessaires à la visite\n• Conserver les dossiers d'entreprise que la loi nous oblige à garder\n\nNous envoyons des courriels promotionnels seulement si vous avez coché la case de consentement, et vous pouvez vous désabonner en tout temps. Nous ne vendons pas vos renseignements et ne les utilisons à aucune autre fin."
+      },
+      "3": {
+        "title": "3. Avec qui nous les partageons",
+        "content": "Nous partageons vos renseignements uniquement avec les fournisseurs qui nous aident à offrir le service, et seulement dans la mesure nécessaire :\n• Google Firebase — hébergement du site, base de données sécurisée et connexion au compte\n• Twilio — envoi des textos\n• Resend — envoi des courriels\n• Google Analytics — statistiques anonymes du site, seulement si vous acceptez les témoins d'analyse\n• Sentry — rapports d'erreurs techniques pour corriger les problèmes du site\n\nCes fournisseurs peuvent conserver des données au Canada ou aux États-Unis. Chacun est lié par ses propres engagements de confidentialité et de sécurité. Nous ne partageons jamais vos renseignements avec des annonceurs ou des courtiers en données."
+      },
+      "4": {
+        "title": "4. Durée de conservation et protection",
+        "content": "Nous conservons les dossiers de réservation pendant 7 ans, comme l'exigent les règles fiscales et comptables, puis nous les supprimons. L'accès à vos renseignements est réservé au personnel autorisé de Fresh Nest Co., qui se connecte à des systèmes protégés. Notre site conserve dans votre navigateur uniquement votre choix de langue et votre préférence de témoins — jamais vos coordonnées."
+      },
+      "5": {
+        "title": "5. Vos droits et comment nous joindre",
+        "content": "Vous pouvez demander à consulter les renseignements personnels que nous détenons à votre sujet, demander qu'ils soient corrigés ou retirer en tout temps votre consentement aux courriels promotionnels. Les résidents du Québec ont ces droits en vertu de la Loi 25, et nous les accordons à tous nos clients.\n\nPour faire une demande ou poser une question, joignez notre responsable de la protection des renseignements personnels à hello@freshnestco.ca ou au (613) 861-8812. Nous répondrons dans un délai de 30 jours.\n\nSi vous n'êtes pas satisfait de notre réponse, vous pouvez vous adresser au Commissariat à la protection de la vie privée du Canada ou, au Québec, à la Commission d'accès à l'information du Québec."
+      }
+    }
   }
 }
