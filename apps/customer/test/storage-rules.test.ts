@@ -55,7 +55,7 @@ describe('crew job photos', () => {
 
   it('supervisors and admins can upload into their own folder too', async () => {
     await assertSucceeds(upload(staff('sam', 'supervisor'), photo('sam'), JPEG, 'image/jpeg'))
-    await assertSucceeds(upload(staff('lauren', 'admin'), photo('lauren'), JPEG, 'image/jpeg'))
+    await assertSucceeds(upload(staff('lauren', 'owner'), photo('lauren'), JPEG, 'image/jpeg'))
   })
 
   it("nobody can upload into another person's folder", async () => {
@@ -82,7 +82,7 @@ describe('crew job photos', () => {
   it('the uploader and admins can read; other staff cannot', async () => {
     await seed(photo('brenda'))
     await assertSucceeds(staff('brenda').ref(photo('brenda')).getMetadata())
-    await assertSucceeds(staff('lauren', 'admin').ref(photo('brenda')).getMetadata())
+    await assertSucceeds(staff('lauren', 'owner').ref(photo('brenda')).getMetadata())
     await assertFails(staff('carla').ref(photo('brenda')).getMetadata())
     await assertFails(testEnv.unauthenticatedContext().storage().ref(photo('brenda')).getMetadata())
   })
@@ -94,7 +94,7 @@ describe('crew job photos', () => {
 
 describe('gallery (P3-E32, unchanged)', () => {
   it('admins can upload JPEGs under 1 MB; staff cannot', async () => {
-    await assertSucceeds(upload(staff('lauren', 'admin'), 'gallery/pair1/before.jpg', JPEG, 'image/jpeg'))
+    await assertSucceeds(upload(staff('lauren', 'owner'), 'gallery/pair1/before.jpg', JPEG, 'image/jpeg'))
     await assertFails(upload(staff('brenda'), 'gallery/pair1/before.jpg', JPEG, 'image/jpeg'))
   })
 })
@@ -108,10 +108,17 @@ describe('office roles (P3-E35)', () => {
     }
     await assertFails(upload(staff('sam', 'supervisor'), 'gallery/pair-s/after.jpg', JPEG, 'image/jpeg'))
   })
+
+  it('the legacy admin claim is refused (P3-E35 cleanup)', async () => {
+    await seed(photo('brenda'))
+    await assertFails(upload(staff('old-1', 'admin'), 'gallery/pair-a/after.jpg', JPEG, 'image/jpeg'))
+    await assertFails(staff('old-1', 'admin').ref(photo('brenda')).getMetadata())
+    await assertFails(upload(staff('old-1', 'admin'), photo('old-1'), JPEG, 'image/jpeg'))
+  })
 })
 
 describe('everything else stays closed', () => {
   it('denies reads and writes outside the matched paths', async () => {
-    await assertFails(upload(staff('lauren', 'admin'), 'other/file.jpg', JPEG, 'image/jpeg'))
+    await assertFails(upload(staff('lauren', 'owner'), 'other/file.jpg', JPEG, 'image/jpeg'))
   })
 })

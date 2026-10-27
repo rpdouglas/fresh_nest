@@ -9,8 +9,8 @@
  * Dry run by default: prints what would change and writes nothing. Safe to re-run; a second
  * run finds nothing to do. Emails are masked in the output (COMPLIANCE.md: no PII in logs).
  * People must sign out and in again (or wait up to an hour) for a new claim to reach their
- * browser. Until the cleanup PR, `admin` and `owner` are both accepted, so nobody is locked out
- * between steps.
+ * browser. Since the P3-E35 cleanup, `admin` is no longer accepted: anyone still on it has no
+ * office access until this script (or an Owner in Team & roles) makes them an Owner.
  *
  * Usage (from functions/, with Application Default Credentials for freshnest-aa51e):
  *   node scripts/migrate-admin-to-owner.cjs --database=freshnest-dev            # dry run (dev allowlist)

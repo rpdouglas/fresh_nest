@@ -126,6 +126,7 @@ export interface SyncRoleDirectoryReader {
 }
 
 export async function reconcileUserRole(params: {
+  uid?: string
   email: string
   existingRole: unknown
   directory: SyncRoleDirectoryReader
@@ -135,7 +136,11 @@ export async function reconcileUserRole(params: {
 
   if (cleanEmail) {
     const adminSnap = await params.directory.getAdminDoc(cleanEmail)
-    const officeRole = adminSnap.exists ? allowlistRole(adminSnap.data()) : undefined
+    let officeRole = adminSnap.exists ? allowlistRole(adminSnap.data()) : undefined
+    if (!officeRole && params.uid) {
+      const uidSnap = await params.directory.getAdminDoc(params.uid)
+      officeRole = uidSnap.exists ? allowlistRole(uidSnap.data()) : undefined
+    }
     if (officeRole) {
       directoryRole = officeRole
     } else {
@@ -146,7 +151,9 @@ export async function reconcileUserRole(params: {
     }
   }
 
-  const normalizedExisting = normalizeRole(params.existingRole)
+  // P3-E35 cleanup: a leftover `admin` custom claim is migrated to `owner` on sign-in.
+  const normalizedExisting: Role | undefined =
+    params.existingRole === 'admin' ? 'owner' : normalizeRole(params.existingRole)
   const targetRole: Role =
     normalizedExisting && rolePriority(normalizedExisting) > rolePriority(directoryRole)
       ? normalizedExisting
@@ -175,11 +182,12 @@ export const syncMyRole = onCall(async (request) => {
     const existingRole = existingRecord.customClaims?.role
 
     const { role, updated } = await reconcileUserRole({
+      uid,
       email,
       existingRole,
       directory: {
-        getAdminDoc: async (e) => {
-          const snap = await db.collection('admins').doc(e).get()
+        getAdminDoc: async (id) => {
+          const snap = await db.collection('admins').doc(id).get()
           return { exists: snap.exists, data: () => snap.data() as { role?: unknown } | undefined }
         },
         getStaffRole: async (e) => {
@@ -191,6 +199,10 @@ export const syncMyRole = onCall(async (request) => {
 
     if (updated) {
       await auth.setCustomUserClaims(uid, { ...(existingRecord.customClaims ?? {}), role })
+      if (isOfficeRole(role) && email) {
+        await db.collection('admins').doc(email).set({ role }, { merge: true })
+        await db.collection('admins').doc(uid).delete()
+      }
       console.log(`[syncMyRole] Reconciled role '${role}' for UID ${uid} (${email || 'no-email'}, was '${String(existingRole ?? 'none')}').`)
     }
 

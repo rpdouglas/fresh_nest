@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { collection, getDocs } from 'firebase/firestore'
 import { httpsCallable } from 'firebase/functions'
-import { officeRoleOf, type OfficeRole } from '@freshnest/shared'
+import { allowlistOfficeRole, type OfficeRole } from '@freshnest/shared'
 import { db, functions } from '@/lib/firebase/firebase'
 import { ConfirmDialog } from './ui/ConfirmDialog'
 import { cn } from '@/lib/utils/utils'
@@ -51,7 +51,7 @@ export function TeamRolesTab({ currentEmail }: TeamRolesTabProps) {
     try {
       const snap = await getDocs(collection(db, 'admins'))
       const entries = snap.docs
-        .map((d) => ({ id: d.id, email: d.id.includes('@') ? d.id : null, role: officeRoleOf(d.data().role ?? 'owner') }))
+        .map((d) => ({ id: d.id, email: d.id.includes('@') ? d.id : null, role: allowlistOfficeRole(d.data().role) }))
         .filter((m): m is OfficeMember => m.role !== null)
       // Old entries saved under an account ID: look up their email so people see who they are.
       const legacyIds = entries.filter((m) => m.email === null).map((m) => m.id)

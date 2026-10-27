@@ -103,7 +103,7 @@ describe('Firestore Security Rules', () => {
         await setDoc(doc(db, 'bookings', 'booking-1'), { ...validBooking, email: 'john@example.com' })
       })
 
-      const adminDb = testEnv.authenticatedContext('admin-user', { role: 'admin' }).firestore()
+      const adminDb = testEnv.authenticatedContext('admin-user', { role: 'owner' }).firestore()
       await assertSucceeds(getDoc(doc(adminDb, 'bookings', 'booking-1')))
     })
 
@@ -148,13 +148,13 @@ describe('Firestore Security Rules', () => {
       await testEnv.withSecurityRulesDisabled(async (context) => {
         await setDoc(doc(context.firestore(), 'staff', 'cleaner-1'), { firstName: 'Staff', lastName: 'Member', role: 'cleaner', status: 'onboarding' })
       })
-      const adminDb = testEnv.authenticatedContext('admin-1', { role: 'admin' }).firestore()
+      const adminDb = testEnv.authenticatedContext('admin-1', { role: 'owner' }).firestore()
       await assertSucceeds(updateDoc(doc(adminDb, 'staff', 'cleaner-1'), { status: 'active' }))
     })
 
     // P3-E27-A2: staff docs are created server-side only (onStaffRegistered CF)
     it('blocks client-side staff creation, even for admins', async () => {
-      const adminDb = testEnv.authenticatedContext('admin-1', { role: 'admin' }).firestore()
+      const adminDb = testEnv.authenticatedContext('admin-1', { role: 'owner' }).firestore()
       const ref = doc(adminDb, 'staff', 'cleaner-2')
       await assertFails(setDoc(ref, { firstName: 'Staff', lastName: 'Member', role: 'cleaner', status: 'active' }))
     })
@@ -257,7 +257,7 @@ describe('Firestore Security Rules', () => {
       })
 
       it('allows admin to list unassigned jobs', async () => {
-        const adminDb = testEnv.authenticatedContext('admin-uid', { role: 'admin' }).firestore()
+        const adminDb = testEnv.authenticatedContext('admin-uid', { role: 'owner' }).firestore()
         await assertSucceeds(getDocs(query(
           collection(adminDb, 'jobs'),
           where('status', '==', 'unassigned'),
@@ -315,7 +315,7 @@ describe('Firestore Security Rules', () => {
       updatedAt: new Date(),
       createdBy: 'admin-uid',
     })
-    const admin = () => testEnv.authenticatedContext('admin-uid', { role: 'admin' }).firestore() as unknown as Firestore
+    const admin = () => testEnv.authenticatedContext('admin-uid', { role: 'owner' }).firestore() as unknown as Firestore
     const visitor = () => testEnv.unauthenticatedContext().firestore() as unknown as Firestore
     const cleaner = () => testEnv.authenticatedContext('staff-uid', { role: 'staff' }).firestore() as unknown as Firestore
 
@@ -354,7 +354,7 @@ describe('Firestore Security Rules', () => {
 
   describe('Default Deny-All', () => {
     it('blocks write operations to undocumented collections', async () => {
-      const adminDb = testEnv.authenticatedContext('admin-1', { role: 'admin' }).firestore()
+      const adminDb = testEnv.authenticatedContext('admin-1', { role: 'owner' }).firestore()
       const ref = doc(adminDb, 'unregisteredCollection', 'secret')
       await assertFails(setDoc(ref, { data: 'stolen' }))
     })
@@ -423,7 +423,7 @@ describe('Staff notifications (N-2: mark as read)', () => {
   })
 })
 
-describe('Office roles (P3-E35: owner and manager; legacy admin during the transition)', () => {
+describe('Office roles (P3-E35: owner and manager; the legacy admin claim is refused)', () => {
   const as = (role: string, uid = `${role}-uid`, email = `${role}@freshnest.test`) =>
     testEnv.authenticatedContext(uid, { role, email }).firestore()
 
@@ -438,7 +438,7 @@ describe('Office roles (P3-E35: owner and manager; legacy admin during the trans
     })
   })
 
-  for (const role of ['owner', 'manager', 'admin']) {
+  for (const role of ['owner', 'manager']) {
     it(`${role}: full office access — pay rates, audit log, office list, any job, staff profiles`, async () => {
       const db = as(role)
       await assertSucceeds(getDoc(doc(db, 'payRates/r1')))
@@ -450,7 +450,7 @@ describe('Office roles (P3-E35: owner and manager; legacy admin during the trans
     })
   }
 
-  for (const role of ['staff', 'supervisor', 'customer']) {
+  for (const role of ['admin', 'staff', 'supervisor', 'customer']) {
     it(`${role}: no office data`, async () => {
       const db = as(role)
       await assertFails(getDoc(doc(db, 'payRates/r1')))
