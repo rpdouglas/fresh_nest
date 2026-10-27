@@ -10,7 +10,7 @@ Stores residential, commercial, and Airbnb cleaning reservations.
 | :--- | :--- | :--- | :--- |
 | `firstName` | `string` | ✅ | Client first name |
 | `lastName` | `string` | ✅ | Client last name |
-| `email` | `string` | ✅ | Client email address (captures CASL compliance) |
+| `email` | `string` | ✅ | Client email address (captures CASL compliance). Stored trimmed and lowercased — the customer portal and the bookings read rule match it against the Firebase Auth email. |
 | `phone` | `string` | ✅ | Client phone number (for SMS notifications) |
 | `language` | `string` | ✅ | `'en' \| 'fr'` (drives language of confirmation communications) |
 | `propertyType` | `string` | ✅ | `'apartment' \| '1-2bed' \| '3-4bed' \| '5+bed' \| 'commercial'` |

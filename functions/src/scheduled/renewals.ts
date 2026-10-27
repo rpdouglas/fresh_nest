@@ -42,21 +42,29 @@ export const onDailyRecurringRenewal = onSchedule(
       const nextDateStr = nextDate.toISOString().slice(0, 10)
 
       const todayStr = today.toISOString().slice(0, 10)
+      // Older bookings may hold a mixed-case email; renewals store it lowercased like new ones.
+      const email = (booking.email ?? '').trim().toLowerCase()
       if (nextDateStr > todayStr && nextDateStr <= fourteenDaysOutStr) {
-        const existingQuery = await db
-          .collection('bookings')
-          .where('email', '==', booking.email)
-          .where('preferredDate', '==', nextDateStr)
-          .where('status', '!=', 'cancelled')
-          .get()
+        // Check both spellings so a renewal stored before emails were lowercased isn't duplicated.
+        const spellings = [...new Set([email, booking.email])]
+        const existing = await Promise.all(
+          spellings.map((value) =>
+            db
+              .collection('bookings')
+              .where('email', '==', value)
+              .where('preferredDate', '==', nextDateStr)
+              .where('status', '!=', 'cancelled')
+              .get(),
+          ),
+        )
 
-        if (existingQuery.empty) {
+        if (existing.every((snap) => snap.empty)) {
           console.log(`[onDailyRecurringRenewal] Auto-renewing booking for ${booking.email} on date ${nextDateStr}`)
 
           const newBookingData = {
             firstName: booking.firstName,
             lastName: booking.lastName,
-            email: booking.email,
+            email,
             phone: booking.phone,
             language: booking.language,
             propertyType: booking.propertyType,
