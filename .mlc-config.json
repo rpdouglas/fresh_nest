@@ -14,10 +14,43 @@
     },
     {
       "pattern": "^file://"
+    },
+    {
+      "pattern": "^https://littler\\.com/node/575571"
+    },
+    {
+      "pattern": "^https://community\\.getjobber\\.com/discussions/job\\-details\\-scheduling/scheduling\\-with\\-recurring\\-customers\\-and\\-new\\-customers\\-/2963"
+    },
+    {
+      "pattern": "^https://www\\.onespan\\.com/sites/default/files/2018\\-11/OneSpan\\-WhitePaper\\-LT\\-Electronic\\-Signatures\\-in\\-Canadian\\-Law\\.pdf"
+    },
+    {
+      "pattern": "^https://kb\\.7shifts\\.com/hc/en\\-us/articles/"
+    },
+    {
+      "pattern": "^https://help\\.workforce\\.com/en/articles/12811227\\-availability"
+    },
+    {
+      "pattern": "^https://www\\.myshyft\\.com/blog/shift\\-swapping\\-mechanisms/"
+    },
+    {
+      "pattern": "^https://www\\.canada\\.ca/en/news/archive/2006/11/privacy\\-commissioner\\-urges\\-caution\\-before\\-installing\\-gps\\-company\\-vehicles\\.html"
+    },
+    {
+      "pattern": "^https://www\\.lawnstarter\\.com/blog/\\?p=50034"
+    },
+    {
+      "pattern": "^https://get\\.zenmaid\\.com/invoicing\\-v2"
+    },
+    {
+      "pattern": "^https://us\\.fitgap\\.com/products/launch27"
     }
   ],
   "retryOn429": true,
   "retryCount": 3,
   "fallbackRetryDelay": "30s",
-  "aliveStatusCodes": [200, 206]
+  "aliveStatusCodes": [
+    200,
+    206
+  ]
 }
