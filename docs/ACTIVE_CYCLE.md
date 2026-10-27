@@ -2,6 +2,7 @@
 
 This file tracks the active cycle status of Phase 3 epics for the **Fresh Nest Co.** platform.
 Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports/freshnest-master-project-plan-v4.md)
+**Picking up work?** Start with [`HANDOFF.md`](HANDOFF.md): what's in flight, what waits on the human, what to build next (updated 2026-10-27).
 
 ---
 
@@ -119,6 +120,8 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | F12 | Privacy policy promises 7-year retention and access/correction rights — nothing enforces them yet; also add the privacy officer's name if wanted (Law 25) | Human + AI | SEO-01 | → P3-E15 |
 | F13 | Tighten the public `bookings` create rule with `keys().hasOnly([...])` | Human approval (rules) | Quote review | ⬜ Open |
 | F14 | Quote form minimum date uses UTC (after ~8 pm ET it skips a day) and isn't checked server-side; owner email lacks the short `Ref #` | AI | Quote review | ⬜ Open |
+| F15 | Re-sync `firestore.dev.rules` with production — dev still allows office staff-doc creates from the app (production blocked it in P3-E27-A2); one rules test fails against the dev file | Human approval (rules) + AI | P3-E35 | ⬜ Open |
+| F16 | Optional service account so agent sessions can run admin scripts (Firebase Authentication Admin + Cloud Datastore User; env var `FRESHNEST_SA_JSON`); rules deploys stay on the workflow | Human (GCP console) | P3-E35 rollout | ⬜ Open |
 
 ---
 
