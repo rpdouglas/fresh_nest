@@ -1,5 +1,5 @@
 # ADR-016 — Manual "Deploy Security Rules" workflow
-**Status:** Proposed
+**Status:** Accepted (2026-10-27, by the human project lead)
 **Date:** 2026-10-27
 **Deciders:** Owner (Ryan); drafted by Claude Code at the owner's request
 

@@ -7,6 +7,7 @@ export * from './types/booking'
 export * from './types/staff'
 export * from './types/job'
 export * from './types/common'
+export * from './roles'
 
 /**
  * Utility to merge Tailwind classes using clsx and tailwind-merge.

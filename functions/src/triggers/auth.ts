@@ -2,6 +2,7 @@ import * as functionsV1 from 'firebase-functions/v1'
 import { getFirestore } from 'firebase-admin/firestore'
 import { getAuth } from 'firebase-admin/auth'
 import { logError } from '../lib/shared'
+import { allowlistRole, normalizeRole, rolePriority } from '../lib/roles'
 
 // P2-E1/E8: Async Auth Trigger to set appropriate role custom claim for new signups
 export const onUserCreated = functionsV1.auth.user().onCreate(async (user) => {
@@ -16,9 +17,10 @@ export const onUserCreated = functionsV1.auth.user().onCreate(async (user) => {
     if (email) {
       // 1. Check if email exists in admins collection
       const adminSnap = await db.collection('admins').doc(email).get()
-      if (adminSnap.exists) {
-        assignedRole = 'admin'
-        console.log(`[onUserCreated] User email matches admins collection. Assigning 'admin' role.`)
+      const officeRole = adminSnap.exists ? allowlistRole(adminSnap.data()) : undefined
+      if (officeRole) {
+        assignedRole = officeRole
+        console.log(`[onUserCreated] User email matches the office allowlist. Assigning '${officeRole}' role.`)
       } else {
         // 2. Check if email exists in staff collection
         const staffQ = db.collection('staff').where('email', '==', email)
@@ -41,12 +43,11 @@ export const onUserCreated = functionsV1.auth.user().onCreate(async (user) => {
 
     // Never-downgrade guard: if the user somehow already has a higher-privilege claim
     // (e.g. account re-created after deletion, provider-linking edge case), keep it.
-    const ROLE_PRIORITY: Record<string, number> = { admin: 4, supervisor: 3, staff: 2, customer: 1 }
     const existingRecord = await auth.getUser(uid)
     const existingRole = existingRecord.customClaims?.role as string | undefined
-    if (existingRole && (ROLE_PRIORITY[existingRole] ?? 0) > (ROLE_PRIORITY[assignedRole] ?? 0)) {
+    if (existingRole && rolePriority(existingRole) > rolePriority(assignedRole)) {
       console.log(`[onUserCreated] Existing role '${existingRole}' outranks '${assignedRole}'. Preserving existing claim.`)
-      assignedRole = existingRole
+      assignedRole = normalizeRole(existingRole) ?? existingRole
     }
 
     await auth.setCustomUserClaims(uid, { role: assignedRole })

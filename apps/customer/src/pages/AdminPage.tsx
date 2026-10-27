@@ -21,17 +21,18 @@ import { ReviewsModerationTab } from '@/components/admin/ReviewsModerationTab'
 import { DispatchBoard } from '@/components/admin/DispatchBoard'
 import { GalleryManagerTab } from '@/components/admin/GalleryManagerTab'
 import { AdminSectionNav } from '@/components/admin/AdminSectionNav'
+import { TeamRolesTab } from '@/components/admin/TeamRolesTab'
 import { parseAdminTab, type AdminTab } from '@/components/admin/adminTabs'
 
 export default function AdminPage() {
   const { t } = useTranslation()
-  const { user, loading, isAuthorized, authError, handleSignIn, handleSignOut } = useAdminAuth()
+  const { user, loading, isAuthorized, isOwner, authError, handleSignIn, handleSignOut } = useAdminAuth()
   const bookingsState = useBookings(isAuthorized)
   const analyticsState = useAdminAnalytics()
 
   // P3-E33: the active section lives in the URL (?tab=) so refresh and Back keep it.
   const [searchParams, setSearchParams] = useSearchParams()
-  const activeTab = parseAdminTab(searchParams.get('tab'))
+  const activeTab = parseAdminTab(searchParams.get('tab'), isOwner)
   const setActiveTab = (tab: AdminTab) => {
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev)
@@ -135,7 +136,7 @@ export default function AdminPage() {
               </div>
 
               {/* Section navigation: tab strip at md+, section select on phones (P3-E33) */}
-              <AdminSectionNav active={activeTab} onChange={setActiveTab} />
+              <AdminSectionNav active={activeTab} onChange={setActiveTab} isOwner={isOwner} />
 
               <AnimatePresence mode="wait">
                 {activeTab === 'bookings' && (
@@ -266,6 +267,17 @@ export default function AdminPage() {
                     transition={{ duration: 0.2 }}
                   >
                     <GalleryManagerTab isAuthorized={isAuthorized} adminUid={user.uid} />
+                  </motion.div>
+                )}
+                {activeTab === 'team' && isOwner && (
+                  <motion.div
+                    key="tab-team"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <TeamRolesTab currentEmail={user.email ?? ''} />
                   </motion.div>
                 )}
               </AnimatePresence>

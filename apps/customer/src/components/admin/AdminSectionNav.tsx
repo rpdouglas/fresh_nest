@@ -1,18 +1,21 @@
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils/utils'
-import { ADMIN_TABS, parseAdminTab, type AdminTab } from './adminTabs'
+import { ADMIN_TABS, visibleAdminTabs, parseAdminTab, type AdminTab } from './adminTabs'
 
 interface AdminSectionNavProps {
   active: AdminTab
   onChange: (tab: AdminTab) => void
+  /** P3-E35: Owners also see the Team & roles tab. */
+  isOwner?: boolean
 }
 
 /**
  * P3-E33: admin section navigation.
  * md+ : the original tab strip, classes unchanged. Phones: one labelled select (any section in 2 taps).
  */
-export function AdminSectionNav({ active, onChange }: AdminSectionNavProps) {
+export function AdminSectionNav({ active, onChange, isOwner = false }: AdminSectionNavProps) {
   const { t } = useTranslation()
+  const tabs = visibleAdminTabs(isOwner)
   const label = (tab: (typeof ADMIN_TABS)[number]) =>
     'fallback' in tab ? t(tab.labelKey, tab.fallback) : t(tab.labelKey)
 
@@ -25,17 +28,17 @@ export function AdminSectionNav({ active, onChange }: AdminSectionNavProps) {
         <select
           id="admin-section"
           value={active}
-          onChange={(e) => onChange(parseAdminTab(e.target.value))}
+          onChange={(e) => onChange(parseAdminTab(e.target.value, isOwner))}
           className="w-full min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-white focus:outline-none focus:ring-2 focus:ring-slate-brand"
         >
-          {ADMIN_TABS.map((tab) => (
+          {tabs.map((tab) => (
             <option key={tab.key} value={tab.key}>{label(tab)}</option>
           ))}
         </select>
       </div>
 
       <div className="flex border-b border-sand gap-2 overflow-x-auto max-md:hidden">
-        {ADMIN_TABS.map((tab) => (
+        {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => onChange(tab.key)}

@@ -768,7 +768,8 @@
         "payRates": "Pay Rates",
         "auditLogs": "Audit Logs",
         "reviews": "Reviews Moderation",
-        "gallery": "Gallery"
+        "gallery": "Gallery",
+        "team": "Team & roles"
       },
       "analytics": {
         "title": "Performance Analytics Dashboard",
@@ -1133,6 +1134,38 @@
       "confirmBody": "This confirms {{name}}'s booking for {{date}} and creates the job for dispatch. No message is sent to the client, so agree the time with them directly.",
       "confirmYes": "Confirm booking",
       "keep": "Keep booking"
+    },
+    "team": {
+      "title": "Team & roles",
+      "subtitle": "Owners and Managers can use the whole admin panel. Only Owners can give or take away these roles.",
+      "addHeading": "Give someone office access",
+      "email": "Email address",
+      "role": "Role",
+      "roles": {
+        "owner": "Owner",
+        "manager": "Manager"
+      },
+      "addHint": "If they haven't signed in to the site yet, they get this role the first time they sign in with this email. If they're already signed in, they need to sign out and sign in again.",
+      "add": "Give access",
+      "listHeading": "People with office access",
+      "loading": "Loading…",
+      "empty": "No one is listed yet.",
+      "you": "you",
+      "makeOwner": "Make Owner",
+      "makeManager": "Make Manager",
+      "remove": "Remove access",
+      "removeTitle": "Remove office access?",
+      "removeBody": "{{email}} will no longer be able to use the admin panel. If they are also on staff, they keep the staff app.",
+      "added": "{{email}} is now {{role}}.",
+      "addedPending": "{{email}} is pre-approved as {{role}}. They get access the first time they sign in with this email.",
+      "changed": "{{email}} is now {{role}}.",
+      "removed": "{{email}} no longer has office access.",
+      "errors": {
+        "load": "Couldn't load the list. Please try again.",
+        "email": "Enter a valid email address.",
+        "noAccount": "No account uses that email yet. Ask them to sign in to the site once, then try again.",
+        "save": "Couldn't save the change: {{reason}}"
+      }
     }
   },
   "blog": {

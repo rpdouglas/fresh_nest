@@ -91,9 +91,16 @@ describe('AdminSectionNav', () => {
     const onChange = vi.fn()
     render(<AdminSectionNav active="bookings" onChange={onChange} />)
     const select = screen.getByLabelText('admin.nav.section')
-    expect(Array.from((select as HTMLSelectElement).options).map((o) => o.value)).toEqual(ADMIN_TABS.map((tab) => tab.key))
+    // P3-E35: Team & roles is Owner-only.
+    expect(Array.from((select as HTMLSelectElement).options).map((o) => o.value)).toEqual(ADMIN_TABS.filter((tab) => tab.key !== 'team').map((tab) => tab.key))
     await userEvent.selectOptions(select, 'reviews')
     expect(onChange).toHaveBeenCalledWith('reviews')
+  })
+
+  it('Owners also get the Team & roles section', () => {
+    render(<AdminSectionNav active="bookings" onChange={vi.fn()} isOwner />)
+    const select = screen.getByLabelText<HTMLSelectElement>('admin.nav.section')
+    expect(Array.from(select.options).map((o) => o.value)).toEqual(ADMIN_TABS.map((tab) => tab.key))
   })
 
   it('keeps the desktop tab strip with one button per section', async () => {

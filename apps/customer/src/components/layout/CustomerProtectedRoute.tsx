@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom'
 import { useCustomerAuthContext } from './CustomerAuthContext'
+import { isOfficeRole } from '@freshnest/shared'
 
 interface Props {
   children: React.ReactNode
@@ -22,8 +23,8 @@ export function CustomerProtectedRoute({ children }: Props) {
     return <Navigate to="/login" state={{ from: location }} replace />
   }
 
-  // Allow both customers and admin roles (for support / overrides)
-  if (role !== 'customer' && role !== 'admin') {
+  // Allow customers and the office (owner/manager — P3-E35) for support / overrides
+  if (role !== 'customer' && !isOfficeRole(role)) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] bg-warm-white px-4 text-center">
         <h2 className="font-display text-2xl font-bold text-slate-dark mb-2">Access Denied</h2>

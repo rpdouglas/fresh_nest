@@ -422,3 +422,50 @@ describe('Staff notifications (N-2: mark as read)', () => {
     await assertFails(deleteDoc(doc(staffDb('brenda'), msgPath('brenda'))))
   })
 })
+
+describe('Office roles (P3-E35: owner and manager; legacy admin during the transition)', () => {
+  const as = (role: string, uid = `${role}-uid`, email = `${role}@freshnest.test`) =>
+    testEnv.authenticatedContext(uid, { role, email }).firestore()
+
+  beforeEach(async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore()
+      await setDoc(doc(db, 'payRates/r1'), { role: 'cleaner', amount: 22, currency: 'CAD', effectiveFrom: new Date(), effectiveTo: null, createdBy: 'x', createdAt: new Date() })
+      await setDoc(doc(db, 'auditLog/a1'), { collection: 'jobs', documentId: 'j1', field: 'assignedTo', changedBy: 'x', changedAt: new Date(), reason: 'r', overrideType: 't' })
+      await setDoc(doc(db, 'admins/owner@freshnest.test'), { role: 'owner' })
+      await setDoc(doc(db, 'jobs/j1'), { assignedTo: 'brenda', status: 'assigned', bookingId: 'b1' })
+      await setDoc(doc(db, 'staff/brenda'), { firstName: 'Brenda', role: 'lead' })
+    })
+  })
+
+  for (const role of ['owner', 'manager', 'admin']) {
+    it(`${role}: full office access — pay rates, audit log, office list, any job, staff profiles`, async () => {
+      const db = as(role)
+      await assertSucceeds(getDoc(doc(db, 'payRates/r1')))
+      await assertSucceeds(getDoc(doc(db, 'auditLog/a1')))
+      await assertSucceeds(getDocs(collection(db, 'admins')))
+      await assertSucceeds(getDoc(doc(db, 'jobs/j1')))
+      await assertSucceeds(getDoc(doc(db, 'staff/brenda')))
+      await assertSucceeds(updateDoc(doc(db, 'jobs/j1'), { status: 'unassigned' }))
+    })
+  }
+
+  for (const role of ['staff', 'supervisor', 'customer']) {
+    it(`${role}: no office data`, async () => {
+      const db = as(role)
+      await assertFails(getDoc(doc(db, 'payRates/r1')))
+      await assertFails(getDoc(doc(db, 'auditLog/a1')))
+      await assertFails(getDocs(collection(db, 'admins')))
+      await assertFails(getDoc(doc(db, 'jobs/j1')))
+    })
+  }
+
+  it('nobody can write the office allowlist from an app (only the setUserRole function)', async () => {
+    await assertFails(setDoc(doc(as('owner'), 'admins/new@freshnest.test'), { role: 'manager' }))
+    await assertFails(setDoc(doc(as('manager'), 'admins/new@freshnest.test'), { role: 'owner' }))
+  })
+
+  it('a non-office user can still check their own allowlist entry', async () => {
+    await assertSucceeds(getDoc(doc(as('customer', 'c1', 'owner@freshnest.test'), 'admins/owner@freshnest.test')))
+  })
+})

@@ -1,4 +1,5 @@
 import { onCall, HttpsError } from 'firebase-functions/v2/https'
+import { requireOffice } from '../lib/roles'
 import { getFirestore, Timestamp } from 'firebase-admin/firestore'
 import { getAuth } from 'firebase-admin/auth'
 import { logger } from 'firebase-functions'
@@ -19,18 +20,8 @@ export const onStaffRegistered = onCall(
     const db = getFirestore()
     const auth = getAuth()
 
-    // Admin-only gate — same pattern as setUserRole
-    let isAuthorized = authContext.token.role === 'admin'
-    if (!isAuthorized && authContext.token.email) {
-      const adminSnap = await db
-        .collection('admins')
-        .doc(authContext.token.email.trim().toLowerCase())
-        .get()
-      if (adminSnap.exists) isAuthorized = true
-    }
-    if (!isAuthorized) {
-      throw new HttpsError('permission-denied', 'Only administrators can register staff members.')
-    }
+    // Owner/Manager gate (P3-E35)
+    await requireOffice(authContext, db, 'register staff members')
 
     // Validate required payload fields
     const data = request.data as {
@@ -166,17 +157,7 @@ export const resendWelcomeEmail = onCall(
     const auth = getAuth()
 
     // Admin-only gate
-    let isAuthorized = authContext.token.role === 'admin'
-    if (!isAuthorized && authContext.token.email) {
-      const adminSnap = await db
-        .collection('admins')
-        .doc(authContext.token.email.trim().toLowerCase())
-        .get()
-      if (adminSnap.exists) isAuthorized = true
-    }
-    if (!isAuthorized) {
-      throw new HttpsError('permission-denied', 'Only administrators can resend welcome emails.')
-    }
+    await requireOffice(authContext, db, 'resend welcome emails')
 
     const { uid } = request.data as { uid?: string }
     if (!uid?.trim()) {
@@ -235,17 +216,7 @@ export const migrateComplianceRecords = onCall(async (request) => {
 
   const db = getFirestore()
 
-  let isAuthorized = authContext.token.role === 'admin'
-  if (!isAuthorized && authContext.token.email) {
-    const adminSnap = await db
-      .collection('admins')
-      .doc(authContext.token.email.trim().toLowerCase())
-      .get()
-    if (adminSnap.exists) isAuthorized = true
-  }
-  if (!isAuthorized) {
-    throw new HttpsError('permission-denied', 'Only administrators can run this migration.')
-  }
+  await requireOffice(authContext, db, 'run this migration')
 
   const staffSnap = await db.collection('staff').get()
   let patched = 0

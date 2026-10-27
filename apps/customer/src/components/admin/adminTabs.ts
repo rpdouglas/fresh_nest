@@ -9,10 +9,17 @@ export const ADMIN_TABS = [
   { key: 'auditLogs', labelKey: 'admin.dashboard.tabs.auditLogs', fallback: 'Audit Logs' },
   { key: 'reviews', labelKey: 'admin.dashboard.tabs.reviews', fallback: 'Reviews' },
   { key: 'gallery', labelKey: 'admin.dashboard.tabs.gallery' },
+  // P3-E35: Owners only — who has office access (Owner / Manager)
+  { key: 'team', labelKey: 'admin.dashboard.tabs.team', ownerOnly: true },
 ] as const
 
 export type AdminTab = (typeof ADMIN_TABS)[number]['key']
 
-export function parseAdminTab(value: string | null): AdminTab {
-  return ADMIN_TABS.find((tab) => tab.key === value)?.key ?? 'bookings'
+/** Tabs this person can open: everyone in the office sees all tabs except the Owner-only ones. */
+export function visibleAdminTabs(isOwner: boolean) {
+  return ADMIN_TABS.filter((tab) => isOwner || !('ownerOnly' in tab))
+}
+
+export function parseAdminTab(value: string | null, isOwner = true): AdminTab {
+  return visibleAdminTabs(isOwner).find((tab) => tab.key === value)?.key ?? 'bookings'
 }

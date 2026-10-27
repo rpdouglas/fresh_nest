@@ -23,7 +23,10 @@ async function main() {
   const admin = await getAuth().createUser({
     uid: 'admin-lauren', email: 'lauren@freshnest.test', password: 'password123', displayName: 'Lauren Arsenault',
   })
-  await getAuth().setCustomUserClaims(admin.uid, { role: 'admin' })
+  // P3-E35: P12 Lauren owns the company — Owner, so she also gets the Team & roles tab.
+  await getAuth().setCustomUserClaims(admin.uid, { role: 'owner' })
+  await db.collection('admins').doc('lauren@freshnest.test').set({ role: 'owner' })
+  await db.collection('admins').doc('office@freshnest.test').set({ role: 'manager' })
 
   const staff = [
     ['carla', 'Carla', 'Martin', 'cleaner', 'active', 1000, 640],
