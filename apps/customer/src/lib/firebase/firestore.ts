@@ -29,6 +29,12 @@ import type { QuotePropertySize, QuoteServiceType, QuoteFrequency } from '@/lib/
 
 export type LeadSource = 'organic' | 'google' | 'referral' | 'facebook' | 'direct'
 
+// Firebase Auth lowercases account emails, and the customer portal and the bookings read rule
+// match on `email`, so bookings must store it trimmed and lowercased too.
+export function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase()
+}
+
 export function detectLeadSource(params: URLSearchParams): LeadSource {
   const ref = (params.get('ref') ?? params.get('utm_source') ?? '').toLowerCase()
   const map: Record<string, LeadSource> = {
@@ -73,6 +79,7 @@ export async function submitBooking(
 
   const docData: Record<string, unknown> = {
     ...formFields,
+    email:             normalizeEmail(data.email),
     language,
     leadSource:        source,
     status:            'pending',
@@ -108,6 +115,7 @@ export async function createAdminBooking(
 
   const docData: Record<string, unknown> = {
     ...formFields,
+    email:             normalizeEmail(data.email),
     assignedTo:        data.assignedTo ?? null,
     isAirbnb:          data.serviceType === 'airbnb',
     photoConfirmation: data.serviceType === 'airbnb',

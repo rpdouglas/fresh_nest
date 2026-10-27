@@ -36,7 +36,7 @@ vi.mock('firebase/firestore', async (importOriginal) => ({
   runTransaction: (_db: unknown, fn: (tx: ReturnType<typeof fakeTransaction>) => Promise<void>) => fn(fakeTransaction()),
 }))
 
-const { submitBooking, assignCleanerTransaction } = await import('./firestore')
+const { submitBooking, createAdminBooking, normalizeEmail, assignCleanerTransaction } = await import('./firestore')
 
 // BookingPage's defaultValues plus what a customer fills in on steps 2–3.
 const formValues = {
@@ -67,6 +67,11 @@ describe('submitBooking (public quote request)', () => {
     expect(written).not.toHaveProperty('estimatedPrice')
     expect(written).not.toHaveProperty('stripePaymentIntentId')
     expect(written).not.toHaveProperty('stripeChargeStatus')
+  })
+
+  it('stores the email lowercased so the customer portal and read rule can find it', async () => {
+    await submitBooking(await parse({ ...formValues, email: 'Margaret.Storey@Example.COM' }), 'en', 'organic')
+    expect(addDocMock.mock.calls[0]?.[1]).toHaveProperty('email', 'margaret.storey@example.com')
   })
 
   it('keeps a provided square footage', async () => {
@@ -104,5 +109,23 @@ describe('assignCleanerTransaction (P12 Lauren dispatch)', () => {
   it('reassigning to the same cleaner leaves earnings unchanged', async () => {
     await assignCleanerTransaction({ ...base, cleanerId: 'carla', cleanerName: 'Carla', oldCleanerId: 'carla' })
     expect(txUpdates.some((u) => u.path.startsWith('staff/'))).toBe(false)
+  })
+})
+
+describe('email normalisation', () => {
+  beforeEach(() => addDocMock.mockClear())
+
+  it('trims and lowercases', () => {
+    expect(normalizeEmail('  Diane.Lafleur@Example.CA ')).toBe('diane.lafleur@example.ca')
+  })
+
+  it('admin phone-in bookings are stored lowercased too', async () => {
+    await createAdminBooking({
+      serviceType: 'standard', propertyType: '3-4bed', bedrooms: 3, bathrooms: 2, pets: false, addOns: [],
+      frequency: 'biweekly', preferredDate: '2026-11-10', firstName: 'Diane', lastName: 'Lafleur',
+      email: 'Diane@Example.CA', phone: '6135550100', address: '12 Pitt St, Cornwall ON',
+      language: 'fr', leadSource: 'phone', assignedTo: null, status: 'pending', marketingConsent: false,
+    }, 'lauren@example.com')
+    expect(addDocMock.mock.calls[0]?.[1]).toHaveProperty('email', 'diane@example.ca')
   })
 })
