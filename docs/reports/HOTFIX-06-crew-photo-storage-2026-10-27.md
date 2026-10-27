@@ -36,10 +36,9 @@ The staff app uploads checklist photos to `jobs/{jobId}/photos/{photoId}` (`Offl
 - `apps/fsm/src/lib/utils/jobPhotoPath.test.ts`; FSM 57/57 passing, lint and build OK.
 
 ## Deploy (human)
-CI never deploys rules (COMPLIANCE.md §4). After merging:
-```
-npx firebase deploy --only storage --project freshnest-aa51e
-```
+CI never deploys rules on its own (COMPLIANCE.md §4). After merging, use either:
+- **GitHub:** Actions → **Deploy Security Rules** → Run workflow, with target `storage` and DEPLOY typed in the confirm box ([ADR-016](../decisions/ADR-016-manual-rules-deploy-workflow.md)). It re-runs the rules tests first.
+- **A signed-in machine:** `npx firebase deploy --only storage --project freshnest-aa51e`
 Then, on a phone: complete a photo-required task, confirm the pending count drops to 0, and confirm the photo shows in admin.
 
 The FSM app change deploys with the merge, but uploads only succeed once the rule is deployed. Deploy the rule right after merging.
