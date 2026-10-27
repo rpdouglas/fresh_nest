@@ -50,7 +50,8 @@ vi.mock('react-router-dom', async () => {
   }
 })
 
-// Mock i18next
+// Mock i18next (language can be switched per test)
+const i18nState = { language: 'en' }
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string, options?: Record<string, unknown>) => {
@@ -59,7 +60,7 @@ vi.mock('react-i18next', () => ({
       }
       return key
     },
-    i18n: { language: 'en' },
+    i18n: i18nState,
   }),
 }))
 
@@ -108,6 +109,7 @@ describe('JobPage Component', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    i18nState.language = 'en'
 
     vi.mocked(useStaffAuth).mockReturnValue({
       user: { uid: 'staff123' } as unknown as User,
@@ -310,6 +312,47 @@ describe('JobPage Component', () => {
         })
       )
       expect(mockNavigate).toHaveBeenCalledWith('/jobs')
+    })
+  })
+
+  // P3-E34: the job carries its own copy of the checklist.
+  describe('job checklist copy (P3-E34)', () => {
+    const snapshotJob = {
+      ...mockJob,
+      status: 'in_progress',
+      checklistTemplate: 'template1',
+      checklistName: 'Gallagher unit 4',
+      checklistSource: 'custom',
+      checklistTasks: [
+        { id: 'c1', labelEn: 'Photo of hot tub cover', labelFr: 'Photo du couvercle du spa', icon: '📸', requiresPhoto: true, photoPhase: 'after' },
+        { id: 'c2', labelEn: 'Restock coffee pods', labelFr: 'Remplir les capsules de café', icon: '🍽️', requiresPhoto: false, photoPhase: null },
+      ],
+    }
+
+    it("shows the job's own tasks and does not read the live saved list", () => {
+      vi.mocked(useJob).mockReturnValue({ job: snapshotJob as unknown as Job, isLoading: false, error: null })
+      renderWithRouter(<JobPage />)
+      expect(screen.getByText('Photo of hot tub cover')).toBeInTheDocument()
+      expect(screen.getByText('Restock coffee pods')).toBeInTheDocument()
+      expect(screen.queryByText('Deep clean fridge')).not.toBeInTheDocument()
+      expect(onSnapshot).not.toHaveBeenCalled()
+    })
+
+    it('shows French task names to a French-speaking lead (P11 Brenda) and keeps photo proof mandatory', () => {
+      i18nState.language = 'fr'
+      vi.mocked(useJob).mockReturnValue({ job: snapshotJob as unknown as Job, isLoading: false, error: null })
+      renderWithRouter(<JobPage />)
+      fireEvent.click(screen.getByText('Photo du couvercle du spa'))
+      expect(screen.getByText('Remplir les capsules de café')).toBeInTheDocument()
+      expect(screen.getByText('fsm.myJobs.jobCard.photoRequiredWarning')).toBeInTheDocument()
+      expect(screen.getByText('fsm.myJobs.jobCard.confirmDone')).toBeDisabled()
+    })
+
+    it('older jobs without a copy still read their saved list', () => {
+      vi.mocked(useJob).mockReturnValue({ job: { ...mockJob, status: 'in_progress' } as unknown as Job, isLoading: false, error: null })
+      renderWithRouter(<JobPage />)
+      expect(onSnapshot).toHaveBeenCalled()
+      expect(screen.getByText('Deep clean fridge')).toBeInTheDocument()
     })
   })
 })

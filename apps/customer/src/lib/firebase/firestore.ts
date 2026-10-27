@@ -22,7 +22,8 @@ import {
   staffCollection,
 } from '@freshnest/shared'
 import type { BookingFormData, AdminBookingFormData } from '@/lib/schemas/bookingSchema'
-import type { Language, Booking, BookingStatus, Job, ChecklistTemplate, PayRate, Review } from '@/types'
+import type { Language, Booking, BookingStatus, Job, ChecklistTemplate, ChecklistTask, ChecklistSource, PayRate, Review } from '@/types'
+import { canChangeChecklist, orderedTasks } from '@/lib/utils/checklistTasks'
 import { calculateQuote } from '@/lib/utils/quotePricing'
 import type { QuotePropertySize, QuoteServiceType, QuoteFrequency } from '@/lib/utils/quotePricing'
 
@@ -121,6 +122,7 @@ export async function createAdminBooking(
     photoConfirmation: data.serviceType === 'airbnb',
     fsmAppointmentId:  null,
     estimatedPrice,
+    checklistTemplateId: data.checklistTemplateId || null,
     createdBy:         adminEmail,
     createdAt:         serverTimestamp(),
   }
@@ -269,6 +271,44 @@ export async function deleteChecklistTemplate(templateId: string): Promise<void>
   // Soft-delete: set active to false rather than removing the document
   const docRef = doc(checklistTemplatesCollection(db), templateId)
   await updateDoc(docRef, { active: false })
+}
+
+// ── P3-E34: Job checklists ───────────────────────────────────────────────────
+
+export interface JobChecklist {
+  templateId: string
+  name: string
+  source: Exclude<ChecklistSource, 'auto'>
+  tasks: ChecklistTask[]
+}
+
+/** Thrown when a job has started (or has completed tasks), so its checklist is locked. */
+export const CHECKLIST_LOCKED = 'checklist-locked'
+
+/**
+ * Copies a checklist onto a job. Reads the job inside the transaction so a cleaner starting
+ * the job at the same moment can't end up with completions for tasks that were swapped out.
+ */
+export async function attachJobChecklist(jobId: string, checklist: JobChecklist): Promise<void> {
+  const jobRef = doc(jobsCollection(db), jobId)
+  await runTransaction(db, async (transaction) => {
+    const snap = await transaction.get(jobRef)
+    if (!snap.exists() || !canChangeChecklist(snap.data())) {
+      throw new Error(CHECKLIST_LOCKED)
+    }
+    transaction.update(jobRef, {
+      checklistTemplate: checklist.templateId,
+      checklistName: checklist.name,
+      checklistSource: checklist.source,
+      checklistTasks: orderedTasks(checklist.tasks),
+    })
+  })
+}
+
+/** The saved list future visits of this booking use; renewals copy it (null = by service type). */
+export async function setBookingChecklistTemplate(bookingId: string, templateId: string | null): Promise<void> {
+  const docRef = doc(bookingsCollection(db), bookingId)
+  await updateDoc(docRef, { checklistTemplateId: templateId })
 }
 
 // ── F04: Pay Rates ───────────────────────────────────────────────────────────

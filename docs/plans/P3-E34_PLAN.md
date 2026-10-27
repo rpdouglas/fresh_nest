@@ -1,13 +1,13 @@
 ---
 epic: P3-E34
 title: Task Lists on Scheduled Jobs — Plan
-strategy: pending
-approved: pending
+strategy: 2
+approved: 2026-10-27
 ---
 
 # P3-E34 PLAN — Task Lists on Scheduled Jobs
 
-**Phase A written:** 2026-10-27 · **Status:** ⏸ Awaiting human approval
+**Phase A written:** 2026-10-27 · **Status:** ✅ Strategy 2 approved and shipped 2026-10-27 — see [close report](../reports/P3-E34-close-2026-10-27.md)
 **Spec:** [`../projects/P3-E34.md`](../projects/P3-E34.md)
 
 ## Personas
@@ -135,6 +135,13 @@ Strategy 3's add-on composition can follow as its own epic.
 3. **Where to attach:** Dispatch Board job card **and** booking detail panel? Recommended: both. Should the New Booking dialog (phone-ins) also get a checklist choice? Recommended: yes, as an optional field.
 4. **Lead cleaner edits:** should a lead (P11) be able to add a task on site? Recommended: **no** for this release. It needs a rules change and human approval.
 5. **Backfill:** snapshot tasks onto existing open jobs (dry-run first)? Recommended: yes, scheduled jobs only.
+
+## Human decisions (2026-10-27)
+1. **Strategy 2.**
+2. **Scope:** the chosen list goes on the job, plus an optional "Use this list for future visits" (`bookings.checklistTemplateId`, carried by renewals).
+3. **Placement:** Dispatch Board job card, booking detail panel and the New Booking dialog.
+4. **Lead cleaner edits:** no. Admins only; no rules change.
+5. **Backfill:** yes, open jobs only (not `completed` or `cancelled`). Dry run by default.
 
 ## Phase B checklist (once approved)
 1. Extract the task editor from `ChecklistTemplateManager`. Run the P3-E33 desktop screenshot guard; it must be unchanged.

@@ -1,5 +1,5 @@
 # Firestore Database Schema Reference
-**Version:** 2.0 | **Updated:** 2026-06-06
+**Version:** 2.1 | **Updated:** 2026-10-27 (P3-E34 job checklists)
 
 ---
 
@@ -43,6 +43,7 @@ Stores residential, commercial, and Airbnb cleaning reservations.
 | `stripeChargeStatus` | `string \| null` | ❌ | Stripe payment status hold/captured/released |
 | `jobId` | `string \| null` | ❌ | Associated job document ID backlink once booking is confirmed |
 | `createdBy` | `string` | ❌ | Admin email that created the booking (phone/walk-in bookings), or `'system:recurring-renewal'` for bookings created by the recurring-renewal cron. Absent on public quote requests. |
+| `checklistTemplateId` | `string \| null` | ❌ | P3-E34: saved checklist (`checklistTemplates` ID) chosen by an admin for this client's visits. The job created from this booking gets that list instead of the service-type match, and the recurring-renewal cron copies the field onto each renewal. `null`/absent = chosen by service type. Admin-only (no public-form field). |
 
 ---
 
@@ -127,7 +128,10 @@ Stores assigned and unassigned cleaning jobs generated from confirmed bookings.
 | `checkedInGeo` | `map \| null` | ✅ | `{ lat: number, lng: number }` check-in geolocation coordinates |
 | `completedAt` | `Timestamp \| null` | ✅ | Completed job check-out timestamp |
 | `payRateSnapshot` | `map` | ✅ | `{ rateId: string, amount: number, currency: 'CAD', effectiveAt: string, snapshotAt: string }` |
-| `checklistTemplate` | `string` | ✅ | ChecklistTemplate document ID snapshotted at creation |
+| `checklistTemplate` | `string` | ✅ | ID of the saved list the checklist came from (`''` for a custom list or when no template exists). Kept for traceability. |
+| `checklistTasks` | `array` | ❌ | P3-E34: the job's own copy of its checklist, written at job creation and when an admin attaches a list: `Array<{ id, labelEn, labelFr, icon, requiresPhoto, photoPhase, order? }>` (same task shape as §8). Later edits to the saved list don't change it. The FSM app reads this first; jobs created before P3-E34 lack it and read the live template. Admin-written only, and only while the job is `unassigned`/`assigned`/`acknowledged` with no `checklistCompletions`. |
+| `checklistName` | `string` | ❌ | P3-E34: display name of the job's checklist (the saved list's name, or "Custom checklist") |
+| `checklistSource` | `string` | ❌ | P3-E34: `'auto'` (matched by service type) \| `'template'` (saved list chosen by an admin or on the booking) \| `'custom'` (one-off list built for this job) |
 | `checklistCompletions` | `array` | ✅ | Completed tasks details: `Array<{ taskId: string, completedAt: Timestamp, photos: JobPhoto[] }>` |
 | `photos` | `array` | ✅ | Job completion proof photos metadata: `Array<JobPhoto>` |
 | `cancelledAt` | `Timestamp \| null` | ❌ | Timestamp of job cancellation |
@@ -160,7 +164,7 @@ Stores default checklist tasks per cleaning service tier.
 | :--- | :--- | :--- | :--- |
 | `name` | `string` | ✅ | Template name |
 | `serviceType` | `string` | ✅ | Cleaning service tier mapping |
-| `tasks` | `array` | ✅ | List of tasks: `Array<{ id: string, labelKey: string, icon: string, requiresPhoto: boolean, photoPhase: 'before' \| 'after' \| null }>` |
+| `tasks` | `array` | ✅ | List of tasks: `Array<{ id: string, labelEn: string, labelFr: string, icon: string, requiresPhoto: boolean, photoPhase: 'before' \| 'after' \| null, order?: number }>` (corrected 2026-10-27 to match the code; it was documented as `labelKey`) |
 | `active` | `boolean` | ✅ | `true` if active |
 
 ---

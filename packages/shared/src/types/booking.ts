@@ -37,6 +37,8 @@ export interface Booking {
   referralCode?: string | null
   jobId?: string
   createdBy?: string
+  // P3-E34: saved checklist chosen for this client's visits; renewals carry it over.
+  checklistTemplateId?: string | null
 }
 
 export interface Review {

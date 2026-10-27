@@ -86,6 +86,8 @@ export const onDailyRecurringRenewal = onSchedule(
             // Same client, same referral code — and marked so onBookingCreated treats it as a
             // renewal rather than a new quote request.
             referralCode: booking.referralCode ?? null,
+            // P3-E34: the client's chosen checklist follows them to the next visit.
+            checklistTemplateId: booking.checklistTemplateId ?? null,
             createdBy: RENEWAL_CREATED_BY,
             createdAt: new Date(),
           }

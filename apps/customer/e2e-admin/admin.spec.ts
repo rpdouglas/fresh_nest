@@ -59,6 +59,8 @@ test.describe('desktop views are unchanged (1280px)', () => {
     await openAdmin(page)
     await page.getByText('Margaret Storey').first().click()
     await expect(page.getByText('Please ring twice — hard of hearing.')).toBeVisible()
+    // P3-E34: the checklist summary loads after the panel opens.
+    await expect(page.getByText('Standard Clean · 3 task(s)')).toBeVisible({ timeout: 20_000 })
     await resetScroll(page)
     await expect(page).toHaveScreenshot('bookings-expanded.png', { fullPage: true })
   })
@@ -128,5 +130,27 @@ test.describe('phone acceptance (P3-E33)', () => {
     await confirm.getByRole('button', { name: 'Keep booking' }).click()
     await expect(confirm).toBeHidden()
     await expect(status).toHaveValue('pending')
+  })
+
+  // P3-E34 (P12 Lauren): attach a saved list to a job from the booking panel on a phone.
+  // Uses Kahnawà:ke's job so the desktop screenshots (Margaret's row) are not affected.
+  test('a saved checklist can be attached to a job from the booking panel', async ({ page }) => {
+    await openAdmin(page)
+    await page.getByText('Kahnawà:ke Baptiste').first().click()
+    const panelButton = page.getByRole('button', { name: 'Change checklist' })
+    await expect(panelButton).toBeEnabled({ timeout: 20_000 })
+    await panelButton.click()
+    const dialog = page.getByRole('dialog', { name: 'Checklist' })
+    await expect(dialog).toBeVisible()
+    await dialog.getByLabel('Saved list').selectOption({ label: 'Airbnb Turnover (3 task(s))' })
+    await expect(dialog.getByText('Kitchen counters')).toBeVisible()
+    // The sticky Save is reachable without scrolling the sheet.
+    await expect(dialog.getByRole('button', { name: 'Save checklist' })).toBeInViewport()
+    await dialog.getByRole('button', { name: 'Save checklist' }).click()
+    await expect(dialog).toBeHidden()
+    await expect(page.getByText('Airbnb Turnover · 3 task(s)')).toBeVisible({ timeout: 20_000 })
+    await page.reload()
+    await page.getByText('Kahnawà:ke Baptiste').first().click()
+    await expect(page.getByText('Airbnb Turnover · 3 task(s)')).toBeVisible({ timeout: 20_000 })
   })
 })

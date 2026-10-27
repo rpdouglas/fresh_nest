@@ -63,6 +63,8 @@ export const adminBookingSchema = z.object({
   assignedTo:       z.string().nullable().optional(),
   status:           z.enum(['pending', 'confirmed']),
   marketingConsent: z.boolean(),
+  // P3-E34: optional saved checklist; empty = chosen by service type when the job is created.
+  checklistTemplateId: z.string().nullable().optional(),
 })
 
 export type AdminBookingFormData = z.infer<typeof adminBookingSchema>

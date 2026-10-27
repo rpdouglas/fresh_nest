@@ -1,4 +1,5 @@
 import type { ServiceType } from './booking'
+import type { ChecklistTask } from './common'
 
 export type JobStatus =
   | 'unassigned' | 'assigned' | 'acknowledged'
@@ -26,6 +27,9 @@ export interface JobPhoto {
   staffId?: string
 }
 
+/** P3-E34: how a job's checklist was chosen. */
+export type ChecklistSource = 'auto' | 'template' | 'custom'
+
 export interface ChecklistCompletion {
   taskId: string
   completedAt: Date
@@ -50,6 +54,11 @@ export interface Job {
   completedAt: Date | null
   payRateSnapshot: PayRateSnapshot
   checklistTemplate: string
+  // P3-E34: tasks copied onto the job when its list is attached, so later template edits
+  // don't change it. Older jobs only have checklistTemplate and read the live template.
+  checklistTasks?: ChecklistTask[]
+  checklistName?: string
+  checklistSource?: ChecklistSource
   checklistCompletions: ChecklistCompletion[]
   photos: JobPhoto[]
   reviewRequestScheduledFor?: Date | null

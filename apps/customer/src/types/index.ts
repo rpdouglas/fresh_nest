@@ -17,6 +17,7 @@ export type {
   PayRateSnapshot,
   JobPhoto,
   ChecklistCompletion,
+  ChecklistSource,
   Job,
   ChecklistTask,
   ChecklistTemplate,
