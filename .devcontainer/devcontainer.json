@@ -7,6 +7,18 @@
   },
   "postCreateCommand": "bash .devcontainer/post-create.sh",
   "customizations": {
+    "codespaces": {
+      "repositories": {
+        "rpdouglas/fresh_nest": {
+          "permissions": {
+            "actions": "write",
+            "contents": "write",
+            "pull_requests": "write",
+            "workflows": "write"
+          }
+        }
+      }
+    },
     "vscode": {
       "extensions": [
         "anthropic.claude-code",
