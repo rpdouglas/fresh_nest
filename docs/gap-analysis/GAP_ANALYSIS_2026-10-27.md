@@ -432,7 +432,7 @@ They should be the first test file in backlog item W2-6.
 | R3 | High | Schedule, assignment and checklist changes are **client writes**, contrary to MP-S5.1 and SCH-S11 | `assignCleanerTransaction`, `attachJobChecklist`, `updateBookingStatus` in `firestore.ts` | Introduce `applyScheduleChange` before building recurrence, so validation is authoritative |
 | R4 | Medium | Crew may write any `status` string and any `checkedInAt` / `completedAt` value on their job; no transition or time validation | `firestore.rules:188-193` | Move check-in and check-out to callables (CRW-S10.3), or constrain values in rules (`request.time`, allowed transitions) |
 | R5 | Medium | Money in decimal dollars (`estimatedPrice`, `PayRate.amount`); HST computed only at the Stripe boundary | `firestore.ts` `computeBookingEstimatedPrice`; `common.ts:25`; `payments.ts:20` | Adopt integer cents before any billing code (PRC-S3.2) |
-| R6 | Medium | Admins can override an **overlap** (one person in two places), which the spec says is never overridable | `DispatchBoard.tsx` ~l.492 (`overlapWarning` added to warnings) | Make overlap a blocking error in the dispatch flow |
+| R6 | ✅ Fixed (HOTFIX-08) — was Medium | Admins could override an **overlap** (one person in two places), which the spec says is never overridable | `DispatchBoard.tsx` ~l.492 (`overlapWarning` added to warnings) | Make overlap a blocking error in the dispatch flow |
 | R7 | Medium | Access codes and private notes have no restricted home; free-text `notes` go to every assigned crew member and into exports | `jobs.ts` `clientNotes: booking.notes`; `ExportRecordModal.tsx` | Add a restricted access record with the sites work; warn in the New Booking notes field meanwhile |
 | R8 | Medium | Every job is 09:00–11:00 and no screen can change it. Buffer, overlap and earnings checks all run on those placeholder times | `jobs.ts` `scheduledStartTime = '09:00'` | Add job time editing (job drawer) as the first scheduling slice |
 | R9 | Low | "monthly" recurrence = +30 days, so visits drift by weekday and date | `renewals.ts:38` | Replace with a real series (SCH-S4); interim: same day-of-month or the nth weekday |
@@ -452,7 +452,7 @@ Each item lists its requirement IDs, dependencies and exit criteria (from the sp
 |---|---|---|---|---|
 | N-1 | Storage rule for crew job photos (human approval) — ✅ **done 2026-10-27 (HOTFIX-06, PR #37; deployed and phone-tested)** | R1, CRW-S6.2 | — | A required-photo task uploads from an iPhone and an Android; photo visible in admin |
 | N-2 | Notifications mark-read rule or callable — **rule + tests written (HOTFIX-07), awaiting deploy** | R2 | — | Unread badge clears after opening |
-| N-3 | Block overlap overrides on dispatch | R6, SCH-S5.2 | — | Overlap assignment cannot be saved |
+| N-3 | Block overlap overrides on dispatch — ✅ **done (HOTFIX-08, PR #38)** | R6, SCH-S5.2 | — | Overlap assignment cannot be saved |
 | N-4 | Decide on the Stripe callables (remove, or require auth) | R10, MP-S3.12 | Owner decision | No unauthenticated payment-intent creation |
 
 ### Wave 0 — Platform and delivery

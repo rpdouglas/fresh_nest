@@ -538,6 +538,9 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
     id: 'unassigned',
   })
 
+  // N-3: a blocking scheduling problem (overlap) — shown instead of the override dialog
+  const [assignError, setAssignError] = useState<string | null>(null)
+
   // Override Modal States
   const [isOverrideOpen, setIsOverrideOpen] = useState(false)
   const [pendingAssignment, setPendingAssignment] = useState<{
@@ -560,6 +563,7 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
 
     const jobToAssign = jobs.find((j) => j.id === jobId)
     if (!jobToAssign) return
+    setAssignError(null)
 
     const currentlyAssignedCleanerId = jobToAssign.assignedTo
 
@@ -608,6 +612,11 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
       estimatedPay: estPay,
       t,
     })
+
+    if (conflictResult.blockingErrors.length > 0) {
+      setAssignError(conflictResult.blockingErrors.join(' '))
+      return
+    }
 
     if (conflictResult.warnings.length > 0) {
       // Trigger Override Dialog
@@ -738,6 +747,20 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
           </button>
         </div>
       </div>
+
+      {assignError && (
+        <div role="alert" className="flex items-start justify-between gap-3 p-4 bg-red-50 border border-red-200 text-red-800 rounded font-body text-base">
+          <span>{assignError}</span>
+          <button
+            type="button"
+            onClick={() => setAssignError(null)}
+            className="min-h-[48px] min-w-[48px] px-3 shrink-0 rounded hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-400"
+            aria-label={t('admin.dialog.close')}
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {isLoading && weeklyJobs.length === 0 ? (
         <div className="flex items-center justify-center p-12 bg-white border border-sand rounded">

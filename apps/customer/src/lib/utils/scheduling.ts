@@ -62,7 +62,20 @@ export function hasTravelConflict(
   return false
 }
 
+/** True when two same-day shifts share any time (one person can't be in two places). */
+export function shiftsOverlap(
+  a: { startTime: string; endTime: string },
+  b: { startTime: string; endTime: string },
+): boolean {
+  return timeToMinutes(a.startTime) < timeToMinutes(b.endTime) && timeToMinutes(a.endTime) > timeToMinutes(b.startTime)
+}
+
 export interface ConflictCheckResult {
+  /** N-3: the cleaner already has a shift at this time. Never overridable. */
+  isOverlap: boolean
+  overlappingShift: Job | null
+  /** Problems that block the assignment outright (no override offered). */
+  blockingErrors: string[]
   isOverEarnings: boolean
   isOverTravel: boolean
   isOverBlockedWindow: boolean
@@ -91,6 +104,9 @@ export async function checkCleanerSchedulingConflicts({
     if (key.includes('travelWarning')) {
       return `${name} needs ${buffer}m travel buffer with shift ${start}-${end}`
     }
+    if (key.includes('overlapBlocked')) {
+      return `${name} is already booked ${start}-${end}`
+    }
     if (key.includes('blockedWindowWarning')) {
       return `${name} has a blocked window that overlaps with this shift`
     }
@@ -111,7 +127,9 @@ export async function checkCleanerSchedulingConflicts({
   const isOverEarnings = limit !== null && current + estimatedPay > limit
   const overage = limit !== null && isOverEarnings ? (current + estimatedPay) - limit : 0
 
-  // 2. Check travel buffer conflicts
+  // 2. Check overlaps (blocking) and travel buffer conflicts (overridable)
+  let isOverlap = false
+  let overlappingShift: Job | null = null
   let isOverTravel = false
   let conflictingShift: Job | null = null
   const constraints = selectedStaff.constraints || {}
@@ -144,10 +162,14 @@ export async function checkCleanerSchedulingConflicts({
         endTime: exJob.scheduledEndTime,
         address: exJob.clientAddress,
       }
-      if (hasTravelConflict(cand, ex, bufferMinutes)) {
+      if (shiftsOverlap(cand, ex)) {
+        isOverlap = true
+        overlappingShift = exJob
+        break
+      }
+      if (!isOverTravel && hasTravelConflict(cand, ex, bufferMinutes)) {
         isOverTravel = true
         conflictingShift = exJob
-        break
       }
     }
   } catch (err) {
@@ -182,6 +204,17 @@ export async function checkCleanerSchedulingConflicts({
 
   const warnings: string[] = []
   const overrideTypes: string[] = []
+  const blockingErrors: string[] = []
+
+  if (isOverlap && overlappingShift) {
+    blockingErrors.push(
+      t('admin.override.overlapBlocked', {
+        name: newCleanerName,
+        start: overlappingShift.scheduledStartTime,
+        end: overlappingShift.scheduledEndTime,
+      })
+    )
+  }
 
   if (isOverEarnings) {
     warnings.push(
@@ -215,6 +248,9 @@ export async function checkCleanerSchedulingConflicts({
   }
 
   return {
+    isOverlap,
+    overlappingShift,
+    blockingErrors,
     isOverEarnings,
     isOverTravel,
     isOverBlockedWindow,

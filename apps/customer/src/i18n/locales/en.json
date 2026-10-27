@@ -980,6 +980,7 @@
       "travelWarning": "{{name}} needs {{buffer}}m travel buffer with shift {{start}}-{{end}}",
       "blockedWindowWarning": "{{name}} has a blocked window that overlaps with this shift",
       "overlapWarning": "{{name}} has an overlapping shift ({{start}} - {{end}})",
+      "overlapBlocked": "{{name}} is already booked from {{start}} to {{end}}. One person can't be on two jobs at the same time, so this can't be overridden — pick someone else or change a job's time.",
       "reasonLabel": "Override Reason",
       "reasonPlaceholder": "e.g. Urgent replacement requested by client",
       "reasonRequired": "Override reason is required.",
