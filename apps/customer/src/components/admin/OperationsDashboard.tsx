@@ -56,7 +56,8 @@ export const OperationsDashboard: React.FC<OperationsDashboardProps> = ({ isAuth
   }
 
   const formatDuration = (val: number) => {
-    return `${val.toFixed(1)} ${t('admin.operations.hours', { defaultValue: 'hrs', val })}`
+    // `admin.operations.hours` is "{{val}} hrs" — it already includes the number.
+    return t('admin.operations.hours', { val: val.toFixed(1), defaultValue: '{{val}} hrs' })
   }
 
   // 1. Data for Fulfillment Status Pie Chart

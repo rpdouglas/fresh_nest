@@ -19,6 +19,18 @@ The dashboard is split into seven tabs:
 
 ---
 
+## Using the Admin Panel on a Phone
+
+The admin panel works in a phone browser (P3-E33). On screens narrower than a tablet:
+
+- **Section switcher:** the tab strip is replaced by a **Section** dropdown at the top of the page. It stays visible as you scroll. Tap it and pick any section.
+- **Links to a section:** the address bar shows the section you are on, e.g. `/admin?tab=dispatch`. Refreshing, going back, or bookmarking keeps you on that section. On a computer the tabs work the same way.
+- **No website footer or cookie banner** on admin pages on a phone. On a computer they still show as before.
+- **Dialogs** (New Booking, Register Staff, Export, Override) fill the screen. **Cancel / Save** stay pinned to the bottom, and **✕** at the top closes them. On a computer with a keyboard, **Esc** closes any dialog.
+- Wide tables (bookings, staff, audit logs) still scroll sideways inside their card. Phone-friendly card lists come in a later update.
+
+---
+
 ## Checking for New Quote Requests
 
 Every request sent from the website arrives as a **Pending Confirmation** booking. You are alerted two ways:
@@ -42,8 +54,8 @@ Every request sent from the website arrives as a **Pending Confirmation** bookin
 ### Working a request
 1. Click the row to open its details: contact information, property, add-ons, notes, and the client's **language**.
 2. Call or email the client with a quote **in their language** (EN or FR) within 24 hours. No price is ever shown on the website (P3-E29), so this is where pricing is agreed.
-3. **Client accepts** → change **Status** to **Confirmed**. This creates the job for the Dispatch Board. It does **not** message the client, so agree the date and time with them directly. They get the day-before reminder text automatically.
-4. **Client declines** → change **Status** to **Cancelled**. This sends the owner a cancellation text; nothing is sent to the client.
+3. **Client accepts** → change **Status** to **Confirmed**, then click **Confirm booking** in the box that asks you to check. This creates the job for the Dispatch Board. It does **not** message the client, so agree the date and time with them directly. They get the day-before reminder text automatically.
+4. **Client declines** → change **Status** to **Cancelled**, then click **Cancel booking** in the box that asks you to check. This sends the owner a cancellation text; nothing is sent to the client.
 
 ---
 
@@ -82,7 +94,7 @@ When a client calls or walks in, you can enter their booking directly from the a
 ### Updating a Booking
 1. Find the booking in the dashboard table.
 2. Click the booking row to expand the detail panel.
-3. Use the **Status** dropdown to update the status.
+3. Use the **Status** dropdown to update the status. Changing to **Confirmed** or **Cancelled** first shows a box naming the client and date. Click the confirm button to go ahead, or **Keep booking** to leave the status as it was.
 4. Use the **Assigned To** field to assign a cleaner by name (or click custom to type a custom name).
     *   **Constraint Intercepts:** The system automatically checks cleaner constraints (monthly earnings cap, travel buffers, and **Blocked Windows**). If a violation occurs, a modal prompts you for a mandatory override reason. Overrides are recorded in the audit logs.
     *   **Privacy Safeguard:** Blocked window labels (e.g. "Recovery meeting") remain strictly confidential and are never exposed in the override warning.

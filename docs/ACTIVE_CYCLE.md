@@ -48,12 +48,13 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | **HOTFIX-02** | Shift Board permission fix — `listOpenShifts` callable, `test:rules` fix, CI functions deploy, Node 22 runtime | M | P0 | ✅ Completed 2026-09-30 |
 | **P3-E30** | Business Email Setup — Zoho Mail inboxes + Resend domain/API key (app emails currently failing) | S | P0 | ⏸ Paused 2026-10-01 — waiting on human Zoho/Resend/CanSpace DNS setup; PR #26 (contact details) merged, remaining code in a follow-up PR. See [`projects/P3-E30.md`](projects/P3-E30.md) |
 | **P3-E31** | Home hero reorder (logo → serving statement → headline), hide gallery / team / reviews behind flags, FAQ payment methods fix | S | P1 | ✅ Completed 2026-10-04 — see [`reports/P3-E31-close-2026-10-04.md`](reports/P3-E31-close-2026-10-04.md) |
-| **P3-E32** | Before/after gallery managed from the admin page — phone upload, uniform photo fitting, publish/feature/reorder | M | P2 | 🔄 Code complete 2026-10-04 — Firestore and Storage rules deployed; waiting on the human's phone test on the PR preview before merge. See [`projects/P3-E32.md`](projects/P3-E32.md) |
+| **P3-E32** | Before/after gallery managed from the admin page — phone upload, uniform photo fitting, publish/feature/reorder | M | P2 | 🔄 Merged and deployed 2026-10-27 (PR #28) — admin Gallery tab live; public gallery still hidden (`SHOW_GALLERY = false`). Remaining: human phone test, accept [ADR-015](decisions/ADR-015-gallery-storage-and-browser-image-processing.md), close report, then flip `SHOW_GALLERY` when real photos are in. See [`projects/P3-E32.md`](projects/P3-E32.md) |
 | **HOTFIX-03** | Quote flow fixes — renewals no longer sent as quote requests, reminders only for confirmed bookings, Dispatch Board assignment transaction | S | P0 | ✅ Completed 2026-10-26 — see [`reports/HOTFIX-03-close-2026-10-26.md`](reports/HOTFIX-03-close-2026-10-26.md) |
 | **HOTFIX-04** | Owner text alert for new quote requests and renewals (email down per P3-E30); admin guide: checking pending requests | S | P0 | ✅ Completed 2026-10-27 — see [`reports/HOTFIX-04-close-2026-10-27.md`](reports/HOTFIX-04-close-2026-10-27.md) |
-| **HOTFIX-05** | Booking emails stored lowercased so customers see their requests in the portal; renewal dedupe covers both spellings | S | P1 | ✅ Completed 2026-10-27 — see [`reports/HOTFIX-05-close-2026-10-27.md`](reports/HOTFIX-05-close-2026-10-27.md) |
+| **HOTFIX-05** | Booking emails stored lowercased so customers see their requests in the portal; renewal dedupe covers both spellings | S | P1 | ✅ Completed 2026-10-27 (backfill script for older bookings merged in PR #34, not yet run — see follow-ups) — see [`reports/HOTFIX-05-close-2026-10-27.md`](reports/HOTFIX-05-close-2026-10-27.md) |
 | **ADR-014** | CI gates scoped to what changed — deploy audit moved to a daily job, E2E weekly, rules tests + lint on PRs, per-workflow filters | S | P1 | ✅ Completed 2026-10-27 — see [`reports/ADR-014-ci-close-2026-10-27.md`](reports/ADR-014-ci-close-2026-10-27.md) |
-| **SEO-01** | SEO/AEO quick fixes — privacy policy copy, freshnestco.ca canonicals, FR self-canonicals, robots/sitemap/llms.txt, noindex + 404, JSON-LD images | S | P1 | ✅ Code complete 2026-10-27 — merge after freshnestco.ca is live; see [`reports/SEO-01-close-2026-10-27.md`](reports/SEO-01-close-2026-10-27.md) |
+| **SEO-01** | SEO/AEO quick fixes — privacy policy copy, `www.freshnestco.ca` canonicals, FR self-canonicals, robots/sitemap/llms.txt, noindex + 404, JSON-LD images | S | P1 | ✅ Completed 2026-10-27 (PRs #33, #34) — live on `www.freshnestco.ca`; see [`reports/SEO-01-close-2026-10-27.md`](reports/SEO-01-close-2026-10-27.md) |
+| **P3-E33** | Admin mobile, phase 1 — phone shell (no footer/cookie banner), section switcher + `?tab=`, accessible dialogs with sticky actions, cancel/confirm confirmation, admin copy/markup bug fixes; desktop unchanged | S–M | P1 | ✅ Complete 2026-10-27 (Strategy 2): [`reports/P3-E33-close-2026-10-27.md`](reports/P3-E33-close-2026-10-27.md) · review: [`reports/admin-mobile-review-2026-10-27.md`](reports/admin-mobile-review-2026-10-27.md) |
 
 ---
 
@@ -68,7 +69,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | **P3-E13** | Google Business Profile Booking Integration | M | P3 | ⬜ Not Started |
 | **P3-E14** | Admin Calendar View | L | P3 | ⬜ Not Started |
 | **P3-E15** | Data Retention & PIPEDA Right-to-Erasure | M | P2 | ⬜ Not Started |
-| **P3-E16** | Dynamic Pricing Engine & Conversion Optimisation | L | P3 | ⬜ Not Started |
+| **P3-E16** | Dynamic Pricing Engine & Conversion Optimisation | L | P3 | ⬜ Not Started — *re-scope or drop: P3-E29 removed public pricing; at most an internal estimate tool* |
 | **P3-E17** | Multi-Tenancy Schema Flag & ADR | S | P3 | ⬜ Not Started |
 | **P3-E26** | Quote-First Booking System | XL | P2 | ⬜ Not Started — *public site already quote-first via P3-E29* |
 | **P3-E29** | Remove Public Pricing & Discounts (quote follow-up) | M | P1 | ✅ Completed 2026-09-30 |
@@ -86,10 +87,32 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | **P3-E19** | Cloud Functions Domain Split | M | P2 | ✅ Completed 2026-06-22 |
 | **P3-E20** | Firebase App Check | S | P1 | ✅ Completed 2026-06-18 |
 | **P3-E21** | Firestore `withConverter()` Adoption | M | P2 | ✅ Completed 2026-06-22 |
-| **P3-E22** | Pricing Web Worker | M | P2 | ⬜ Not Started |
+| **P3-E22** | Pricing Web Worker | M | P2 | ⬜ Not Started — *depends on the P3-E16 decision (P3-E29: no public pricing)* |
 | **P3-E23** | React 19 `useSuspenseQuery` & Suspense Boundaries | M | P3 | ⬜ Not Started |
 | **P3-E24** | VitePress Documentation Site | M | P3 | ⬜ Not Started |
 | **P3-E25** | Storybook for `packages/ui` Primitives | M | P3 | ⬜ Not Started |
+
+---
+
+## Open Follow-Ups (from the 2026-10-27 reviews)
+*Small items found while fixing the quote flow, CI and SEO. Not epics; pick up as hotfixes or fold into the epic named.*
+
+| # | Follow-up | Owner | Source | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| F1 | Finish business email setup — **all app emails still fail**; the owner SMS alert (HOTFIX-04) covers new quote requests meanwhile | Human (Zoho / Resend / DNS) | P3-E30 | ⏸ Waiting on human |
+| F2 | Confirm `OWNER_PHONE` — owner alerts go to (613) 861-8812 unless `OWNER_PHONE` is set for Cloud Functions; that number must receive SMS | Human | HOTFIX-04 | ⬜ Open |
+| F3 | Run the email backfill: `functions/scripts/backfill-lowercase-booking-emails.cjs` — dry run on `freshnest-dev`, then `(default)`; `--apply` on production needs human approval | Human + AI | HOTFIX-05 | ⬜ Open |
+| F4 | Run **E2E (weekly)** and **Security Audit (daily)** once by hand (Actions → Run workflow) to confirm the new workflows | Human | ADR-014 | ⬜ Open |
+| F5 | Repair the Playwright suite (15/31 failing per ADR-013), then a new ADR to make E2E a PR gate again | AI | ADR-013 / ADR-014 | ⬜ Open |
+| F6 | Pre-render public pages at build time so non-JS crawlers (AI answer engines, social previews) get real content — needs an ADR + Phase A | AI | SEO-01 | ⬜ Open |
+| F7 | Review-request emails link to `lilypad-freshnest.web.app` — move to `https://www.freshnestco.ca` (`functions/src/scheduled/reviews.ts`) | AI | SEO-01 | ⬜ Open |
+| F8 | Optional: redirect `lilypad-freshnest.web.app` to `www.freshnestco.ca` in Firebase Hosting (canonicals already point to www) | Human (console) | SEO-01 | ⬜ Open |
+| F9 | Confirm App Check is **enforced** for Firestore — the public quote form sends an SMS to any number entered (SMS-pumping risk); add a server-side rate limit if not | Human (console) + AI | Quote review | ⬜ Open |
+| F10 | Referral codes are created for every quote request (active, never sent) — rethink when P3-E10 starts | AI | Quote review | → P3-E10 |
+| F11 | Record quoted price, quote sent/accepted — no field holds them today | AI | Quote review | → P3-E26 |
+| F12 | Privacy policy promises 7-year retention and access/correction rights — nothing enforces them yet; also add the privacy officer's name if wanted (Law 25) | Human + AI | SEO-01 | → P3-E15 |
+| F13 | Tighten the public `bookings` create rule with `keys().hasOnly([...])` | Human approval (rules) | Quote review | ⬜ Open |
+| F14 | Quote form minimum date uses UTC (after ~8 pm ET it skips a day) and isn't checked server-side; owner email lacks the short `Ref #` | AI | Quote review | ⬜ Open |
 
 ---
 
@@ -100,9 +123,9 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | Sprint 1 | 1–2 | ✅ P3-E7 (P0 bug fix), P3-E18 (shared types), P3-E20 (App Check), P3-E5 (CI/CD) |
 | Sprint 2 | 2–5 | ✅ P3-E1 (Stripe — XL), P3-E9 (remove mocks), P3-E4 (observability) |
 | Sprint 3 | 5–7 | ✅ P3-E3 (admin booking), P3-E8 (server-side filters), P3-E2 (code splitting) |
-| Sprint 4 | 7–9 | ✅ P3-E6 (accessibility), P3-E15 (PIPEDA erasure), P3-E17 (multi-tenancy flag) |
-| Sprint 5 | 9–11 | **P3-E27-A1** (P0 PIPEDA), **P3-E27-A2** (P0 race condition), P3-E19 (functions split), P3-E21 (converters) |
-| Sprint 6 | 11–14 | P3-E27-B1 (welcome email), P3-E27-B2 (background check consent), P3-E22 (pricing worker), P3-E17 (schema flag) |
+| Sprint 4 | 7–9 | ✅ P3-E6 (accessibility) · ⬜ P3-E15 (PIPEDA erasure) and P3-E17 (multi-tenancy flag) not started (corrected 2026-10-27: no code or close report) |
+| Sprint 5 | 9–11 | ✅ **P3-E27-A1** (P0 PIPEDA), **P3-E27-A2** (P0 race condition), P3-E19 (functions split), P3-E21 (converters) |
+| Sprint 6 | 11–14 | ✅ P3-E27-B1 (welcome email) · P3-E27-B2 (background check consent), P3-E22 (pricing worker), P3-E17 (schema flag) |
 | Sprint 7 | 14–18 | P3-E27-C1 (consent sequence), P3-E27-C2 (employee profile), P3-E27-D1 (staff panel) |
 | Sprint 8 | 18–22 | P3-E27-C3 (training/WHMIS), P3-E27-D2 (probation), P3-E27-D3 (offboarding), P3-E10 (referral loop), P3-E15 (PIPEDA erasure) |
 | Sprint 9 | 22–27 | P3-E26 (quote-first — XL), P3-E28 Stage 1 (suggestion engine) |

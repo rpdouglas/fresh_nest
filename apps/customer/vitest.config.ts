@@ -9,7 +9,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     globals: true,
-    exclude: [...configDefaults.exclude, 'e2e/**', 'test/**'],
+    exclude: [...configDefaults.exclude, 'e2e/**', 'e2e-admin/**', 'test/**'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],

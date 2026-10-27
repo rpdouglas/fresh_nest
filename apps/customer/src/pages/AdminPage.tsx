@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils/utils'
@@ -19,6 +20,8 @@ import { AuditLogsTable } from '@/components/admin/AuditLogsTable'
 import { ReviewsModerationTab } from '@/components/admin/ReviewsModerationTab'
 import { DispatchBoard } from '@/components/admin/DispatchBoard'
 import { GalleryManagerTab } from '@/components/admin/GalleryManagerTab'
+import { AdminSectionNav } from '@/components/admin/AdminSectionNav'
+import { parseAdminTab, type AdminTab } from '@/components/admin/adminTabs'
 
 export default function AdminPage() {
   const { t } = useTranslation()
@@ -26,7 +29,16 @@ export default function AdminPage() {
   const bookingsState = useBookings(isAuthorized)
   const analyticsState = useAdminAnalytics()
 
-  const [activeTab, setActiveTab] = useState<'bookings' | 'dispatch' | 'analytics' | 'staff' | 'templates' | 'payRates' | 'auditLogs' | 'reviews' | 'gallery'>('bookings')
+  // P3-E33: the active section lives in the URL (?tab=) so refresh and Back keep it.
+  const [searchParams, setSearchParams] = useSearchParams()
+  const activeTab = parseAdminTab(searchParams.get('tab'))
+  const setActiveTab = (tab: AdminTab) => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev)
+      next.set('tab', tab)
+      return next
+    })
+  }
   const [analyticsSubTab, setAnalyticsSubTab] = useState<'marketing' | 'operations'>('marketing')
 
   if (loading) {
@@ -41,7 +53,7 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="min-h-[80vh] bg-warm-white py-12 px-4 md:py-20 md:px-6">
+    <div className="min-h-[80vh] bg-warm-white py-12 px-4 md:py-20 md:px-6 max-md:py-4">
       <SEO title={t('admin.meta.title')} description={t('admin.meta.description')} noindex />
 
       <div className="max-w-content mx-auto">
@@ -71,20 +83,20 @@ export default function AdminPage() {
               animate="visible"
               exit="hidden"
               variants={fadeUp}
-              className="w-full flex flex-col gap-8"
+              className="w-full flex flex-col gap-8 max-md:gap-4"
             >
               {/* Header and User profile */}
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-sand pb-6">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-sand pb-6 max-md:gap-3 max-md:pb-4">
                 <div>
-                  <h1 className="font-display text-5xl text-charcoal">
+                  <h1 className="font-display text-5xl text-charcoal max-md:text-3xl">
                     {t('admin.dashboard.title')}
                   </h1>
-                  <p className="font-body text-base text-text-muted mt-1">
+                  <p className="font-body text-base text-text-muted mt-1 max-md:hidden">
                     {t('admin.dashboard.welcome', { name: user.displayName || user.email })}
                   </p>
                 </div>
 
-                <div className="flex items-center gap-4 bg-white border border-sand rounded p-3 self-start md:self-auto">
+                <div className="flex items-center gap-4 bg-white border border-sand rounded p-3 self-start md:self-auto max-md:self-stretch max-md:gap-3 max-md:p-2">
                   {user.photoURL ? (
                     <img
                       src={user.photoURL}
@@ -100,11 +112,11 @@ export default function AdminPage() {
                     </div>
                   )}
 
-                  <div className="text-left">
+                  <div className="text-left max-md:flex-1 max-md:min-w-0">
                     <p className="font-body text-base font-medium text-charcoal leading-none">
                       {user.displayName || t('admin.dashboard.fallbackName')}
                     </p>
-                    <p className="font-body text-sm text-text-muted mt-1">
+                    <p className="font-body text-sm text-text-muted mt-1 max-md:hidden">
                       {user.email}
                     </p>
                   </div>
@@ -122,108 +134,8 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Tab Selector */}
-              <div className="flex border-b border-sand gap-2 overflow-x-auto">
-                <button
-                  onClick={() => setActiveTab('bookings')}
-                  className={cn(
-                    'min-h-[48px] py-3 px-6 font-body font-medium text-base border-b-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2 shrink-0',
-                    activeTab === 'bookings'
-                      ? 'border-slate-brand text-slate-brand'
-                      : 'border-transparent text-text-muted hover:text-charcoal hover:border-sand'
-                  )}
-                >
-                  {t('admin.dashboard.tabs.bookings')}
-                </button>
-                <button
-                  onClick={() => setActiveTab('dispatch')}
-                  className={cn(
-                    'min-h-[48px] py-3 px-6 font-body font-medium text-base border-b-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2 shrink-0',
-                    activeTab === 'dispatch'
-                      ? 'border-slate-brand text-slate-brand'
-                      : 'border-transparent text-text-muted hover:text-charcoal hover:border-sand'
-                  )}
-                >
-                  {t('admin.dashboard.tabs.dispatch', 'Dispatch Board')}
-                </button>
-                <button
-                  onClick={() => setActiveTab('analytics')}
-                  className={cn(
-                    'min-h-[48px] py-3 px-6 font-body font-medium text-base border-b-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2 shrink-0',
-                    activeTab === 'analytics'
-                      ? 'border-slate-brand text-slate-brand'
-                      : 'border-transparent text-text-muted hover:text-charcoal hover:border-sand'
-                  )}
-                >
-                  {t('admin.dashboard.tabs.analytics')}
-                </button>
-                <button
-                  onClick={() => setActiveTab('staff')}
-                  className={cn(
-                    'min-h-[48px] py-3 px-6 font-body font-medium text-base border-b-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2 shrink-0',
-                    activeTab === 'staff'
-                      ? 'border-slate-brand text-slate-brand'
-                      : 'border-transparent text-text-muted hover:text-charcoal hover:border-sand'
-                  )}
-                >
-                  {t('admin.dashboard.tabs.staff')}
-                </button>
-                <button
-                  onClick={() => setActiveTab('templates')}
-                  className={cn(
-                    'min-h-[48px] py-3 px-6 font-body font-medium text-base border-b-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2 shrink-0',
-                    activeTab === 'templates'
-                      ? 'border-slate-brand text-slate-brand'
-                      : 'border-transparent text-text-muted hover:text-charcoal hover:border-sand'
-                  )}
-                >
-                  {t('admin.dashboard.tabs.templates')}
-                </button>
-                <button
-                  onClick={() => setActiveTab('payRates')}
-                  className={cn(
-                    'min-h-[48px] py-3 px-6 font-body font-medium text-base border-b-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2 shrink-0',
-                    activeTab === 'payRates'
-                      ? 'border-slate-brand text-slate-brand'
-                      : 'border-transparent text-text-muted hover:text-charcoal hover:border-sand'
-                  )}
-                >
-                  {t('admin.dashboard.tabs.payRates')}
-                </button>
-                <button
-                  onClick={() => setActiveTab('auditLogs')}
-                  className={cn(
-                    'min-h-[48px] py-3 px-6 font-body font-medium text-base border-b-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2 shrink-0',
-                    activeTab === 'auditLogs'
-                      ? 'border-slate-brand text-slate-brand'
-                      : 'border-transparent text-text-muted hover:text-charcoal hover:border-sand'
-                  )}
-                >
-                  {t('admin.dashboard.tabs.auditLogs', 'Audit Logs')}
-                </button>
-                <button
-                  onClick={() => setActiveTab('reviews')}
-                  className={cn(
-                    'min-h-[48px] py-3 px-6 font-body font-medium text-base border-b-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2 shrink-0',
-                    activeTab === 'reviews'
-                      ? 'border-slate-brand text-slate-brand'
-                      : 'border-transparent text-text-muted hover:text-charcoal hover:border-sand'
-                  )}
-                >
-                  {t('admin.dashboard.tabs.reviews', 'Reviews')}
-                </button>
-                <button
-                  onClick={() => setActiveTab('gallery')}
-                  className={cn(
-                    'min-h-[48px] py-3 px-6 font-body font-medium text-base border-b-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2 shrink-0',
-                    activeTab === 'gallery'
-                      ? 'border-slate-brand text-slate-brand'
-                      : 'border-transparent text-text-muted hover:text-charcoal hover:border-sand'
-                  )}
-                >
-                  {t('admin.dashboard.tabs.gallery')}
-                </button>
-              </div>
+              {/* Section navigation: tab strip at md+, section select on phones (P3-E33) */}
+              <AdminSectionNav active={activeTab} onChange={setActiveTab} />
 
               <AnimatePresence mode="wait">
                 {activeTab === 'bookings' && (
@@ -361,6 +273,6 @@ export default function AdminPage() {
           )}
         </AnimatePresence>
       </div>
-    </main>
+    </div>
   )
 }

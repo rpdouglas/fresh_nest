@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils/utils'
@@ -333,7 +333,7 @@ export function BookingsTable({
                 const serviceKey = b.serviceType
 
                 return (
-                  <tr key={b.id} className="contents">
+                  <Fragment key={b.id}>
                     {/* Main table row */}
                     <tr
                       onClick={() => setExpandedRowId(isExpanded ? null : (b.id ?? null))}
@@ -398,7 +398,7 @@ export function BookingsTable({
                         />
                       )}
                     </AnimatePresence>
-                  </tr>
+                  </Fragment>
                 )
               })
             )}

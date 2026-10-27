@@ -5,6 +5,8 @@ import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils/utils'
 import { RegisterStaffInput } from './hooks/useStaff'
+import { AdminDialog } from './ui/AdminDialog'
+import { PHONE_STICKY_ACTIONS } from './ui/dialogClasses'
 
 const registerStaffSchema = z.object({
   firstName: z.string().min(1, { message: 'First name is required' }),
@@ -92,14 +94,15 @@ export const RegisterStaffModal: React.FC<RegisterStaffModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 bg-charcoal/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
-      <div 
-        className="bg-white border border-sand rounded p-6 shadow-lg max-w-2xl w-full flex flex-col gap-6 my-8"
-        role="dialog"
-        aria-modal="true"
-      >
+    <AdminDialog
+      open={isOpen}
+      onClose={onClose}
+      labelledBy="register-staff-modal-title"
+      overlayClassName="fixed inset-0 bg-charcoal/50 z-50 flex items-center justify-center p-4 overflow-y-auto"
+      panelClassName="bg-white border border-sand rounded p-6 shadow-lg max-w-2xl w-full flex flex-col gap-6 my-8"
+    >
         <div>
-          <h2 className="font-display text-3xl text-charcoal">
+          <h2 id="register-staff-modal-title" className="font-display text-3xl text-charcoal">
             {t('admin.staff.modal.title')}
           </h2>
           <p className="font-body text-base text-text-muted mt-1">
@@ -320,7 +323,7 @@ export const RegisterStaffModal: React.FC<RegisterStaffModalProps> = ({
           </div>
 
           {/* Buttons */}
-          <div className="flex justify-end items-center gap-4 mt-4 border-t border-sand pt-6">
+          <div className={`flex justify-end items-center gap-4 mt-4 border-t border-sand pt-6 ${PHONE_STICKY_ACTIONS}`}>
             <button
               type="button"
               onClick={onClose}
@@ -350,7 +353,6 @@ export const RegisterStaffModal: React.FC<RegisterStaffModalProps> = ({
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </AdminDialog>
   )
 }

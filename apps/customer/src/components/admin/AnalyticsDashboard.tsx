@@ -77,7 +77,7 @@ export function AnalyticsDashboard({
   if (error) {
     return (
       <div className="bg-red-50 border border-red-200 text-red-800 rounded p-6 font-body text-base">
-        <h3 className="font-sub font-bold text-lg mb-2">{t('admin.login.errorTitle', 'Error')}</h3>
+        <h3 className="font-sub font-bold text-lg mb-2">{t('admin.dashboard.analytics.errorTitle')}</h3>
         <p>{error}</p>
       </div>
     )

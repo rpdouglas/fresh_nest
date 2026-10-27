@@ -40,9 +40,21 @@ export default function Layout() {
       >
         <Outlet />
       </main>
-      <Footer />
-      <CookieBanner />
-      <InstallPrompt />
+      {location.pathname.startsWith('/admin') ? (
+        // P3-E33: the admin panel on phones drops the public footer, cookie banner and install
+        // prompt (they covered admin screens and dialogs). md+ is unchanged.
+        <div className="max-md:hidden">
+          <Footer />
+          <CookieBanner />
+          <InstallPrompt />
+        </div>
+      ) : (
+        <>
+          <Footer />
+          <CookieBanner />
+          <InstallPrompt />
+        </>
+      )}
       <ScrollRestoration />
     </div>
   )
