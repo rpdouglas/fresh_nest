@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:rules": "firebase emulators:exec --only firestore \"vitest run --config vitest.rules.config.ts\"",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:admin-visual": "bash e2e-admin/run.sh"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
