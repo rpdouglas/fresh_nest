@@ -89,11 +89,11 @@ describe('useAdminAuth hook', () => {
     expect(result.current.authError).toBe('Unauthorized: hacker@test.com')
   })
 
-  it('should authorize and clear errors when user logs in with admin role claims', async () => {
+  it('should authorize and clear errors when user logs in with owner role claims', async () => {
     const mockUser = {
       email: 'owner@freshnest.ca',
       getIdTokenResult: vi.fn().mockResolvedValue({
-        claims: { role: 'admin' },
+        claims: { role: 'owner' },
       }),
     } as unknown as User
 
@@ -133,7 +133,7 @@ describe('useAdminAuth hook', () => {
   })
 
   // P3-E35: owners and managers both get the admin panel; only owners get isOwner.
-  for (const [claim, expected] of [['owner', 'owner'], ['manager', 'manager'], ['admin', 'owner'], ['supervisor', null], ['staff', null]] as const) {
+  for (const [claim, expected] of [['owner', 'owner'], ['manager', 'manager'], ['admin', null], ['supervisor', null], ['staff', null]] as const) {
     it(`role '${claim}' → officeRole ${String(expected)}`, async () => {
       const mockUser = {
         email: `${claim}@test.com`,

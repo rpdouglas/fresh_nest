@@ -108,7 +108,7 @@ Stores the office allowlist: exactly the people with Owner or Manager access (P3
 | `grantedAt` | `Timestamp` | ❌ | When the role was granted |
 | `addedAt` | `Timestamp` | ❌ | Legacy: when administrative access was first granted |
 
-**Role claims (Firebase Auth custom claim `role`, P3-E35):** `owner`, `manager` (office: same data access; only Owners grant or revoke office roles), `supervisor` and `staff` (staff app), `customer` (customer portal). `admin` is the legacy name for `owner`, accepted only until the cleanup PR. Role changes are written to `auditLog` with `overrideType: 'role_change'`.
+**Role claims (Firebase Auth custom claim `role`, P3-E35):** `owner`, `manager` (office: same data access; only Owners grant or revoke office roles), `supervisor` and `staff` (staff app), `customer` (customer portal). The legacy `admin` claim is no longer accepted (P3-E35 cleanup); an Owner can turn a leftover `admin` account into an Owner from Team & roles. Old office-list entries with no `role` or `role: 'admin'` still read as Owner. Role changes are written to `auditLog` with `overrideType: 'role_change'`.
 
 ---
 

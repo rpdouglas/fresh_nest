@@ -8,17 +8,16 @@ import { HttpsError } from 'firebase-functions/v2/https'
  * - supervisor, staff — the staff app
  * - customer — the customer portal
  *
- * TRANSITION (P3-E35 strategy 2): the legacy `admin` claim is treated as `owner` until the
- * migration script has run and the cleanup PR removes it. New grants never write `admin`.
+ * The legacy `admin` claim is no longer accepted (P3-E35 cleanup). Old office-list entries with
+ * no role or `admin` still read as Owner (allowlistRole); that is data, not a claim.
  */
 export type Role = 'owner' | 'manager' | 'supervisor' | 'staff' | 'customer'
 
 export const ASSIGNABLE_ROLES: readonly Role[] = ['owner', 'manager', 'supervisor', 'staff', 'customer']
 export const OFFICE_ROLES: readonly Role[] = ['owner', 'manager']
 
-/** Maps the legacy `admin` claim to `owner`; anything unknown becomes undefined. */
+/** The role if it is one we know; anything else (including the legacy `admin`) is undefined. */
 export function normalizeRole(role: unknown): Role | undefined {
-  if (role === 'admin') return 'owner'
   return ASSIGNABLE_ROLES.includes(role as Role) ? (role as Role) : undefined
 }
 
@@ -32,10 +31,10 @@ export const rolePriority = (role: unknown): number => {
   return r ? ROLE_PRIORITY[r] : 0
 }
 
-/** The office role stored on an `admins/{email}` allowlist doc (legacy docs without a role are owners). */
+/** The office role stored on an `admins/{email}` allowlist doc (old hand-made docs with no role or `admin` are owners). */
 export function allowlistRole(doc: { role?: unknown } | undefined): Role | undefined {
   if (!doc) return undefined
-  const r = normalizeRole(doc.role ?? 'owner')
+  const r = normalizeRole(doc.role === undefined || doc.role === null || doc.role === 'admin' ? 'owner' : doc.role)
   return r && isOfficeRole(r) ? r : undefined
 }
 
@@ -59,7 +58,7 @@ export function checkRoleChange(change: RoleChange): HttpsError | null {
   if (!isOfficeRole(change.callerRole)) {
     return new HttpsError('permission-denied', 'Only an Owner or Manager can change roles.')
   }
-  if (!target || change.targetRole === 'admin') {
+  if (!target) {
     return new HttpsError('invalid-argument', `Valid role is required (${ASSIGNABLE_ROLES.join(', ')}).`)
   }
   if (change.targetUid === change.callerUid) {

@@ -5,16 +5,15 @@ service cloud.firestore {
 
     // P3-E35: office roles. Owners and Managers have the same data access; only Owners can give or
     // take away office roles, and that happens in the setUserRole function, not here.
-    // TRANSITION: the legacy 'admin' claim counts as Owner until the migration has run and the
-    // cleanup PR removes it.
+    // The legacy 'admin' claim is no longer accepted (P3-E35 cleanup).
     function isOffice() {
-      return request.auth != null && request.auth.token.role in ['owner', 'manager', 'admin'];
+      return request.auth != null && request.auth.token.role in ['owner', 'manager'];
     }
 
     // Helper: staff app roles (staff, field supervisor) plus the office
     function isStaff() {
       return request.auth != null
-        && request.auth.token.role in ['staff', 'supervisor', 'owner', 'manager', 'admin'];
+        && request.auth.token.role in ['staff', 'supervisor', 'owner', 'manager'];
     }
 
     // 1. Bookings Collection

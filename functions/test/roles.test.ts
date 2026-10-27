@@ -7,18 +7,19 @@ const change = (over: Partial<Parameters<typeof checkRoleChange>[0]>) =>
   checkRoleChange({ callerUid: 'me', callerRole: 'owner', targetUid: 'them', existingRole: 'customer', targetRole: 'staff', forceDowngrade: false, ...over })
 
 describe('role names', () => {
-  it('treats the legacy admin claim as owner during the transition', () => {
-    expect(normalizeRole('admin')).toBe('owner')
-    expect(isOwnerRole('admin')).toBe(true)
-    expect(isOfficeRole('admin')).toBe(true)
+  it('the legacy admin claim is no longer accepted (P3-E35 cleanup)', () => {
+    expect(normalizeRole('admin')).toBeUndefined()
+    expect(isOwnerRole('admin')).toBe(false)
+    expect(isOfficeRole('admin')).toBe(false)
   })
   it('office = owner or manager; staff roles are not office', () => {
     expect(isOfficeRole('manager')).toBe(true)
     expect(isOwnerRole('manager')).toBe(false)
     for (const r of ['supervisor', 'staff', 'customer', undefined, 'root']) expect(isOfficeRole(r)).toBe(false)
   })
-  it('allowlist docs without a role are legacy owners; unknown roles are ignored', () => {
+  it('old allowlist docs (no role, or admin) read as owners; unknown roles are ignored', () => {
     expect(allowlistRole({})).toBe('owner')
+    expect(allowlistRole({ role: 'admin' })).toBe('owner')
     expect(allowlistRole({ role: 'manager' })).toBe('manager')
     expect(allowlistRole({ role: 'staff' })).toBeUndefined()
     expect(allowlistRole(undefined)).toBeUndefined()
@@ -38,7 +39,7 @@ describe('checkRoleChange', () => {
   })
   it('a Manager cannot remove another Manager or an Owner', () => {
     expect(change({ callerRole: 'manager', existingRole: 'manager', targetRole: 'customer', forceDowngrade: true })?.code).toBe('permission-denied')
-    expect(change({ callerRole: 'manager', existingRole: 'admin', targetRole: 'staff', forceDowngrade: true })?.code).toBe('permission-denied')
+    expect(change({ callerRole: 'manager', existingRole: 'owner', targetRole: 'staff', forceDowngrade: true })?.code).toBe('permission-denied')
   })
   it('an Owner can remove a Manager or another Owner (explicit downgrade)', () => {
     expect(change({ existingRole: 'manager', targetRole: 'customer', forceDowngrade: true })).toBeNull()
@@ -47,6 +48,10 @@ describe('checkRoleChange', () => {
   })
   it('nobody can change their own role (so there is always an Owner left)', () => {
     expect(change({ targetUid: 'me', existingRole: 'owner', targetRole: 'customer', forceDowngrade: true })?.code).toBe('failed-precondition')
+  })
+  it('a leftover admin account can be made an Owner by an Owner, but cannot change roles itself', () => {
+    expect(change({ existingRole: 'admin', targetRole: 'owner' })).toBeNull()
+    expect(change({ callerRole: normalizeRole('admin') })?.code).toBe('permission-denied')
   })
   it('staff and customers cannot change roles; admin is never written', () => {
     expect(change({ callerRole: undefined })?.code).toBe('permission-denied')
