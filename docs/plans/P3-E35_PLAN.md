@@ -13,7 +13,7 @@ approved: 2026-10-27
 ## Personas
 | Persona | Impact |
 |---|---|
-| **P12 Lauren (primary)** | Gets her own **Manager** login with the full admin panel, instead of sharing the owner's access |
+| **P12 Lauren (primary)** | Owns the company: gets the **Owner** role, the full admin panel and the Team & roles tab to hand Manager access to future office staff |
 | **Owner** | Controls who has office access, from the app |
 | **P7–P15** | No change. Staff and supervisor access is unchanged |
 

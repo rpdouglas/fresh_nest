@@ -1,5 +1,5 @@
 # Admin Guide — Fresh Nest Co.
-**For:** Lauren (Owner/Admin)  
+**For:** Lauren (Owner) and Managers  
 **Updated:** 2026-10-27
 
 ---

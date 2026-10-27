@@ -14,6 +14,8 @@ const TABS = [
   { key: 'auditLogs', label: 'Audit Logs', ready: 'travel buffer waived' },
   { key: 'reviews', label: 'Reviews Moderation', ready: 'Lovely team, everything sparkling.' },
   { key: 'gallery', label: 'Gallery', ready: 'Grand ménage de cuisine — Cornwall (Ont.)' },
+  // P3-E35: Owner-only; Lauren is the Owner.
+  { key: 'team', label: 'Team & roles', ready: 'office@freshnest.test' },
 ] as const
 
 // Recharts animates on a timer that never finishes under the fixed clock; charts are masked so

@@ -1,12 +1,12 @@
 # ADR-017 — Owner and Manager office roles
 **Status:** Proposed
 **Date:** 2026-10-27
-**Deciders:** Owner (Ryan); drafted by Claude Code (P3-E35)
+**Deciders:** Project lead, for the owner (P12 Lauren Arsenault); drafted by Claude Code (P3-E35)
 
 ## Context
 [ADR-011](ADR-011-rbac-custom-claims.md) defined the role claims `admin`, `supervisor`, `staff` and `customer`.
 - Its `supervisor` was described as an office role without financial data, but that was never built. In practice `supervisor` is given to **field** supervisors and opens only the staff app.
-- The owner wants a second office person (P12 Lauren) with full access, and wants to control who has office access. The FSM master spec uses Owner and Manager.
+- The owner (P12 Lauren) wants to give future office staff full access while keeping control of who has office access. The FSM master spec uses Owner and Manager.
 
 ## Decision
 These change ADR-011's taxonomy. ADR-011 itself stays as written; this ADR supersedes its role list.
