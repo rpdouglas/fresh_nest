@@ -10,7 +10,6 @@ import {
   runTransaction,
   where,
   getDoc,
-  deleteField,
 } from 'firebase/firestore'
 import { db, auth } from '@/lib/firebase/firebase'
 import {
@@ -204,8 +203,6 @@ export async function assignCleanerTransaction({
 
     // 3 + 4. Move the shift's earnings from the old cleaner to the new one
     // (no-op when reassigned to the same cleaner).
-    // P3-E38: cents; the converter reads totals saved in dollars as cents, and the dollar
-    // field is removed as soon as a total is rewritten.
     const earningsOf = (snap: typeof newStaffSnap): number =>
       snap?.exists() ? (snap.data()?.financials?.currentMonthEarningsCents ?? 0) : 0
 
@@ -213,14 +210,12 @@ export async function assignCleanerTransaction({
       if (newStaffRef && newStaffSnap?.exists()) {
         transaction.update(newStaffRef, {
           'financials.currentMonthEarningsCents': earningsOf(newStaffSnap) + estimatedPayCents,
-          'financials.currentMonthEarnings': deleteField(),
           lastChange: stamp(),
         })
       }
       if (oldStaffRef && oldStaffSnap?.exists()) {
         transaction.update(oldStaffRef, {
           'financials.currentMonthEarningsCents': Math.max(0, earningsOf(oldStaffSnap) - estimatedPayCents),
-          'financials.currentMonthEarnings': deleteField(),
           lastChange: stamp(),
         })
       }

@@ -1,6 +1,6 @@
 # Handoff — where things stand
 
-**Updated:** 2026-10-28 · **`main`:** `a7e42c3` (after PR #55)
+**Updated:** 2026-10-28 · **`main`:** `259a5ae` (after PR #58/#59)
 **For:** whoever picks up next, a person or an AI agent (Claude Code, Antigravity / Gemini CLI). `GEMINI.md` is a link to `CLAUDE.md`, so both agents read the same rules.
 
 Read in this order: `CLAUDE.md` → this file → [`ACTIVE_CYCLE.md`](ACTIVE_CYCLE.md) → [`gap-analysis/GAP_ANALYSIS_2026-10-27.md`](gap-analysis/GAP_ANALYSIS_2026-10-27.md) (sections 5–7) → the spec and plan for the epic you pick up.
@@ -18,6 +18,7 @@ Read in this order: `CLAUDE.md` → this file → [`ACTIVE_CYCLE.md`](ACTIVE_CYC
 | Architecture | Customer bundle chunking, smaller PWA precache; shared scheduling/eligibility code in `packages/shared/src/domain/` synced into `functions/src/shared/` (`functions/scripts/sync-shared.cjs`) | #46 |
 | P3-E37 PR 2 | History on bookings, Dispatch and staff; Audit Logs filters | #53 |
 | F5 + HOTFIX-11 | E2E suite green on the emulators (29/29) and back on PRs as a non-required trial (ADR-019, Accepted); FSM staff sign-in fixed (was always denied); footer contrast fixed | #54, #55 |
+| P3-E38 (W0-4) | Money and time conventions (ADR-020, Accepted): `America/Toronto` calendar dates & scheduled Functions, shared `time.ts` / `money.ts`, all stored money fields converted to integer `…Cents` (`F22` migrated & stripped on dev + prod, `F23` legacy dollar fields removed) | #57, #58 + F23 |
 | Customer policies | Late fee, lockout and 24 h complaint wording in the FAQ and touchpoints (no amounts shown — P3-E29) | #44 |
 
 ### P3-E35 & HOTFIX-10 — Office roles (`owner`, `manager`) & self-healing role sync
@@ -33,7 +34,7 @@ Read in this order: `CLAUDE.md` → this file → [`ACTIVE_CYCLE.md`](ACTIVE_CYC
 - **People:** Lauren (`freshnestcompany2023@gmail.com`) owns the company and was added as Owner on 2026-10-27.
 - **Granting access:** Team & roles can pre-approve an email that has never signed in; the role is applied on that person's first sign-in.
 - **Old entry:** a hand-made office-list entry keyed by account ID (`EPbLg8…`) exists. Since PR #41 the tab shows its email. Changing or removing that person tidies the entry away.
-- **Migration script:** `functions/scripts/migrate-admin-to-owner.cjs` was **not run** (no credentials in agent sessions). Team & roles does the same job one account at a time.
+- **Migration script:** `functions/scripts/migrate-admin-to-owner.cjs` was verified on 2026-10-28 (`0` legacy `admin` claims or allowlist entries remaining).
 
 ---
 
@@ -43,21 +44,18 @@ Read in this order: `CLAUDE.md` → this file → [`ACTIVE_CYCLE.md`](ACTIVE_CYC
 |---|---|---|
 | H2 | Business email (Zoho / Resend / DNS). **All app emails still fail.** The owner SMS alert covers new quote requests in the meantime | ACTIVE_CYCLE F1, P3-E30 |
 | H3 | Confirm `OWNER_PHONE` for Cloud Functions | F2 |
-| H4 | Run the backfills: `backfill-lowercase-booking-emails.cjs` (HOTFIX-05) and `backfill-job-checklists.cjs` (P3-E34). Dry run first, then `--apply` | F3, P3-E34 row |
 | H6 | Owner answers still open: **rates** for deep, move-out, post-construction and organizing; Lead/Trainee billing; whether breaks are billed; **island travel times**. Late-cancellation and lockout **fee amounts** and the **backup emergency contact** can now be entered by an Owner in Admin → Settings & Policies (fees default to $0) | Gap analysis §7, P3-E36 |
-| H7 | Optional: a dedicated service account so agent sessions can run admin scripts (roles: Firebase Authentication Admin + Cloud Datastore User; key stored as env var `FRESHNEST_SA_JSON` in the cloud environment settings). Rules deploy through CI on merge either way (ADR-018) | F16 |
 | H8 | Re-sync `firestore.dev.rules` with production. The dev rules still let the office create staff docs from the app; production blocked that in P3-E27-A2. Needs human approval (rules) | F15 |
 
 ---
 
 ## 3. What to build next (owner-approved order)
 
-All four "Now" defects (N-1 to N-4) are fixed and deployed; W0-1 (roles) and W0-2 (settings) are done. Remaining wave 0, per gap analysis §5:
+All four "Now" defects (N-1 to N-4) are fixed and deployed; W0-1 (roles), W0-2 (settings), W0-3 (audit everywhere, P3-E37 PR 1 & PR 2), and W0-4 (money and time conventions, P3-E38) are done. Remaining wave 0, per gap analysis §5:
 
-1. **W0-3 Audit everywhere** — P3-E37: PR 1 (#52, triggers, `lastChange` stamps, audit-log lock) merged and deployed 2026-10-28; PR 2 (#53, History sections + Audit Logs filters) merged; PR 3 (stamp required, F18) ~2 weeks after PR 1; report `reports/P3-E37-close-2026-10-28.md`; see `projects/P3-E37.md`: status, assignment, checklist, staff and template changes, each with before/after values. Role and policy changes are already audited (`role_change`, `policy_change`).
-2. **W0-5** Scheduled Firestore export and a restore drill; budget alerts. Do before real data replaces the test data.
-3. **W0-4** (partly done in #46: shared scheduling module): still needs the ADR for integer cents and time zones, and the Nov 1 DST fixtures. Note the new fee settings are whole dollars (`lateCancellationFeeDollars`) — reconcile with the cents decision.
-4. **W0-6** Server-checked schedule write path (`applyScheduleChange` with `rev`). Depends on W0-4.
+1. **W0-5** Scheduled Firestore export and a restore drill; budget alerts. Do before real data replaces the test data.
+2. **W0-6** Server-checked schedule write path (`applyScheduleChange` with `rev`). Unblocked now that W0-4 is complete.
+3. **W0-3 PR 3 (`F18`)** Make the `lastChange` stamp required on app saves (~2 weeks after P3-E37 PR 1).
 
 Then wave 1 (clients, sites, employees, availability, agreements, Camelo import). The older Phase 3 backlog (P3-E27 onboarding B2/C/D, P3-E10, P3-E15…) still sits in `ACTIVE_CYCLE.md`; suggestion pending owner decision: fold P3-E27's remaining parts into W1-3.
 

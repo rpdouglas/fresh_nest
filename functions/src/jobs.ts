@@ -327,7 +327,6 @@ export async function executeClaimJob(
       const newEarningsCents = currentMonthEarningsCents + shiftPayCents
       transaction.update(staffRef, {
         'financials.currentMonthEarningsCents': newEarningsCents,
-        'financials.currentMonthEarnings': FieldValue.delete(), // pre-P3-E38 dollars
       })
 
       return { success: true, newEarningsCents }
@@ -365,7 +364,6 @@ export async function rollOverAllStaffEarnings(now: Date = new Date()): Promise<
     batch.update(docSnap.ref, {
       'financials.currentMonthEarningsCents': 0,
       'financials.earningsHistory': newHistory,
-      'financials.currentMonthEarnings': FieldValue.delete(), // pre-P3-E38 dollars
     })
     rolloverCount++
   })

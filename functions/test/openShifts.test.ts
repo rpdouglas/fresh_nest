@@ -25,7 +25,7 @@ const job = (id: string, overrides: Record<string, unknown> = {}): JobRecord => 
     status: 'unassigned',
     assignedTo: null,
     checkedInGeo: null,
-    payRateSnapshot: { rateId: 'rate-1', amount: 25, currency: 'CAD' },
+    payRateSnapshot: { rateId: 'rate-1', amountCents: 2500, currency: 'CAD' },
     createdAt: { toMillis: () => 0 },
     ...overrides,
   },
@@ -52,8 +52,8 @@ describe('P7 Carla — earnings cap acceptance test (integer cents, P3-E38)', ()
     expect(earningsOverageCents(1_000_000, null, 75000)).toBe(0)
   })
 
-  it('reads a staff record saved in dollars before the migration', () => {
-    const [shift] = buildOpenShifts([job('j1')], { financials: { monthlyEarningsLimit: 800, currentMonthEarnings: 790 } }, [])
+  it('computes overageCents on the shift board from staff financials in cents', () => {
+    const [shift] = buildOpenShifts([job('j1')], { financials: { monthlyEarningsLimitCents: 80000, currentMonthEarningsCents: 79000 } }, [])
     expect(shift.eligibility.overageCents).toBe(4000) // $50 shift, $10 left
   })
 })

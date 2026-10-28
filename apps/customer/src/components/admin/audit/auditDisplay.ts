@@ -1,5 +1,5 @@
 import type { TFunction } from 'i18next'
-import { formatCents } from '@freshnest/shared'
+import { calendarDateOf, formatCents } from '@freshnest/shared'
 import type { AuditEntry } from '@/types'
 
 // P3-E37: how audit entries read in the admin panel (History sections and the Audit Logs tab).
@@ -75,9 +75,8 @@ export function formatAuditValue(value: unknown, t: TFunction, language: string,
   }
 }
 
-/** Local calendar day as YYYY-MM-DD, to compare with <input type="date"> values. */
-export const dayOf = (d: Date) =>
-  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+/** Toronto calendar day as YYYY-MM-DD (ADR-020), to compare with <input type="date"> values. */
+export const dayOf = (d: Date) => calendarDateOf(d)
 
 export function matchesSearch(log: AuditEntry, query: string): boolean {
   const q = query.toLowerCase().trim()

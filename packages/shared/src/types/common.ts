@@ -29,8 +29,6 @@ export interface PayRate {
   role: StaffRole
   /** P3-E38: hourly rate in integer cents (ADR-020). */
   amountCents: number
-  /** @deprecated dollars, before P3-E38 — read through amountCentsOf(); removed after migration. */
-  amount?: number
   currency: 'CAD'
   effectiveFrom: Date
   effectiveTo: Date | null

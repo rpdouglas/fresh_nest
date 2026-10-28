@@ -103,8 +103,6 @@ describe('assignCleanerTransaction (P12 Lauren dispatch)', () => {
     expect(txUpdates.find((u) => u.path === 'jobs/j1')?.data).toMatchObject({ assignedTo: 'brenda', status: 'assigned' })
     expect(txUpdates.find((u) => u.path === 'staff/brenda')?.data).toMatchObject({ 'financials.currentMonthEarningsCents': 16000 })
     expect(txUpdates.find((u) => u.path === 'staff/carla')?.data).toMatchObject({ 'financials.currentMonthEarningsCents': 34000 })
-    // the pre-P3-E38 dollar total is removed when the total is rewritten
-    expect(txUpdates.find((u) => u.path === 'staff/carla')?.data).toHaveProperty(['financials.currentMonthEarnings'])
   })
 
   it('unassigning returns the job to the pool and never takes earnings below zero', async () => {

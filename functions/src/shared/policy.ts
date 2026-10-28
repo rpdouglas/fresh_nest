@@ -6,8 +6,6 @@
  * (synced into `functions/src/shared/policy.ts` via `functions/scripts/sync-shared.cjs`).
  */
 
-import { toCents } from './money'
-
 export interface PolicySettingsValues {
   // 1. Scheduling & Travel Buffers
   defaultVehicleBufferMinutes: number
@@ -139,14 +137,6 @@ export const POLICY_MONEY_KEYS: readonly NumericPolicyKey[] = [
   'lockoutFeeCents',
 ]
 
-/** Dollar keys saved before P3-E38 → their cents key. Read by normalizePolicySettings. */
-const LEGACY_DOLLAR_KEYS: Readonly<Record<string, NumericPolicyKey>> = {
-  defaultOdspMonthlyLimit: 'defaultOdspMonthlyLimitCents',
-  earningsCautionThreshold: 'earningsCautionThresholdCents',
-  lateCancellationFeeDollars: 'lateCancellationFeeCents',
-  lockoutFeeDollars: 'lockoutFeeCents',
-}
-
 export const POLICY_SETTING_KEYS: readonly (keyof PolicySettingsValues)[] = [
   'defaultVehicleBufferMinutes',
   'defaultTransitBufferMinutes',
@@ -182,10 +172,6 @@ export function normalizePolicySettings(
     return { ...DEFAULT_POLICY_SETTINGS }
   }
   const result: PolicySettingsValues = { ...DEFAULT_POLICY_SETTINGS }
-  for (const [legacy, key] of Object.entries(LEGACY_DOLLAR_KEYS)) {
-    const val = (raw as Record<string, unknown>)[legacy]
-    if (typeof val === 'number' && Number.isFinite(val)) result[key] = toCents(val)
-  }
   for (const key of Object.keys(POLICY_NUMERIC_BOUNDS) as Array<keyof typeof POLICY_NUMERIC_BOUNDS>) {
     const val = raw[key]
     if (typeof val === 'number' && Number.isFinite(val)) {

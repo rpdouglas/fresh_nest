@@ -23,10 +23,12 @@
  * Safe to re-run.
  *
  * Usage (from functions/, with Application Default Credentials for freshnest-aa51e):
- *   node scripts/migrate-money-to-cents.cjs --database=freshnest-dev            # dry run, dev
- *   node scripts/migrate-money-to-cents.cjs --database=freshnest-dev --apply    # write, dev
- *   node scripts/migrate-money-to-cents.cjs --database='(default)'              # dry run, PRODUCTION
- *   node scripts/migrate-money-to-cents.cjs --database='(default)' --apply      # write, PRODUCTION
+ *   node scripts/migrate-money-to-cents.cjs --database=freshnest-dev                          # dry run, dev
+ *   node scripts/migrate-money-to-cents.cjs --database=freshnest-dev --apply                  # write, dev
+ *   node scripts/migrate-money-to-cents.cjs --database='(default)'                            # dry run, PRODUCTION
+ *   node scripts/migrate-money-to-cents.cjs --database='(default)' --apply                    # write, PRODUCTION
+ *   node scripts/migrate-money-to-cents.cjs --database='(default)' --strip-legacy             # dry run strip, PRODUCTION
+ *   node scripts/migrate-money-to-cents.cjs --database='(default)' --strip-legacy --apply     # strip dollar keys, PRODUCTION
  *
  * Running against production with --apply is a live data change: get human approval first.
  */
@@ -97,10 +99,60 @@ function planDocument(kind, data) {
   return Object.keys(update).length ? update : null
 }
 
+/**
+ * F23 clean-up: fields to delete from a document once its `…Cents` fields are present.
+ * Never strips a dollar field unless its `…Cents` counterpart is already set on the document.
+ * @param {'bookings'|'payRates'|'jobs'|'staff'|'policy'} kind
+ * @param {Record<string, any>} data
+ * @param {unknown} deleteSentinel — e.g. FieldValue.delete()
+ */
+function planStripDocument(kind, data, deleteSentinel) {
+  const update = {}
+  if (kind === 'bookings') {
+    if ('estimatedPrice' in data && isNum(data.estimatedPriceCents)) {
+      update.estimatedPrice = deleteSentinel
+    }
+  } else if (kind === 'payRates') {
+    if ('amount' in data && isNum(data.amountCents)) {
+      update.amount = deleteSentinel
+    }
+  } else if (kind === 'jobs') {
+    const snap = data.payRateSnapshot || {}
+    if ('amount' in snap && isNum(snap.amountCents)) {
+      update['payRateSnapshot.amount'] = deleteSentinel
+    }
+  } else if (kind === 'staff') {
+    const f = data.financials || {}
+    const hasLimitCents = 'monthlyEarningsLimitCents' in f && (f.monthlyEarningsLimitCents === null || isNum(f.monthlyEarningsLimitCents))
+    if ('monthlyEarningsLimit' in f && hasLimitCents) {
+      update['financials.monthlyEarningsLimit'] = deleteSentinel
+    }
+    if ('currentMonthEarnings' in f && isNum(f.currentMonthEarningsCents)) {
+      update['financials.currentMonthEarnings'] = deleteSentinel
+    }
+    const history = Array.isArray(f.earningsHistory) ? f.earningsHistory : []
+    if (history.some((h) => h && 'total' in h && isNum(h.totalCents))) {
+      update['financials.earningsHistory'] = history.map((h) => {
+        if (!h || !('total' in h) || !isNum(h.totalCents)) return h
+        const { total: _removed, ...rest } = h
+        return rest
+      })
+    }
+  } else if (kind === 'policy') {
+    for (const [dollarKey, centsKey] of Object.entries(POLICY_KEYS)) {
+      if (dollarKey in data && isNum(data[centsKey])) {
+        update[dollarKey] = deleteSentinel
+      }
+    }
+  }
+  return Object.keys(update).length ? update : null
+}
+
 function parseArgs(argv) {
-  const args = { apply: false, database: null }
+  const args = { apply: false, stripLegacy: false, database: null }
   for (const arg of argv) {
     if (arg === '--apply') args.apply = true
+    else if (arg === '--strip-legacy') args.stripLegacy = true
     else if (arg.startsWith('--database=')) args.database = arg.slice('--database='.length)
     else throw new Error(`Unknown argument: ${arg}`)
   }
@@ -111,14 +163,15 @@ function parseArgs(argv) {
 }
 
 async function main() {
-  const { apply, database } = parseArgs(process.argv.slice(2))
+  const { apply, stripLegacy, database } = parseArgs(process.argv.slice(2))
   const { initializeApp } = require('firebase-admin/app')
   const { getFirestore, FieldValue } = require('firebase-admin/firestore')
 
   initializeApp({ projectId: PROJECT_ID })
   const db = getFirestore(database)
   const target = `${PROJECT_ID} / ${database}${process.env.FIRESTORE_EMULATOR_HOST ? ` (emulator ${process.env.FIRESTORE_EMULATOR_HOST})` : ''}`
-  console.log(`${apply ? 'APPLY' : 'DRY RUN'} — money fields to cents in ${target}`)
+  const actionLabel = stripLegacy ? 'strip legacy dollar fields' : 'money fields to cents'
+  console.log(`${apply ? 'APPLY' : 'DRY RUN'} — ${actionLabel} in ${target}`)
 
   const sources = [
     ['bookings', (await db.collection('bookings').get()).docs],
@@ -131,16 +184,25 @@ async function main() {
   let planned = 0
   let written = 0
   let conflicts = 0
+  const verb = stripLegacy ? 'to strip' : 'to convert'
   for (const [kind, docs] of sources) {
-    const plans = docs.map((d) => ({ doc: d, update: planDocument(kind, d.data()) })).filter((p) => p.update)
+    const plans = docs
+      .map((d) => ({
+        doc: d,
+        update: stripLegacy
+          ? planStripDocument(kind, d.data(), FieldValue.delete())
+          : planDocument(kind, d.data()),
+      }))
+      .filter((p) => p.update)
     planned += plans.length
-    console.log(`  ${kind}: ${docs.length} scanned, ${plans.length} to convert`)
+    console.log(`  ${kind}: ${docs.length} scanned, ${plans.length} ${verb}`)
     if (!apply) continue
     // Audited records carry the change stamp (P3-E37). settings/policy is versioned and audited by
     // updatePolicySettings instead; the amounts are unchanged, so no new policy version is made.
+    const reason = stripLegacy ? 'P3-E38 F23: remove legacy dollar fields' : 'P3-E38: money in integer cents'
     const stamp = kind === 'policy'
       ? {}
-      : { lastChange: { by: ACTOR, at: FieldValue.serverTimestamp(), source: 'system', reason: 'P3-E38: money in integer cents' } }
+      : { lastChange: { by: ACTOR, at: FieldValue.serverTimestamp(), source: 'system', reason } }
     const results = await Promise.allSettled(plans.map(({ doc, update }) =>
       doc.ref.update({ ...update, ...stamp }, { lastUpdateTime: doc.updateTime })))
     results.forEach((r, i) => {
@@ -153,14 +215,14 @@ async function main() {
   }
 
   if (!apply) {
-    console.log(planned ? `${planned} document(s) to convert. Nothing written. Re-run with --apply.` : 'Nothing to do.')
+    console.log(planned ? `${planned} document(s) ${verb}. Nothing written. Re-run with --apply.` : 'Nothing to do.')
     return
   }
-  console.log(`Converted ${written} document(s). ${conflicts ? `${conflicts} not updated (changed during the run, re-run to retry).` : ''}`)
+  console.log(`${stripLegacy ? 'Stripped' : 'Converted'} ${written} document(s). ${conflicts ? `${conflicts} not updated (changed during the run, re-run to retry).` : ''}`)
   if (conflicts) process.exitCode = 1
 }
 
-module.exports = { toCents, planDocument, parseArgs }
+module.exports = { toCents, planDocument, planStripDocument, parseArgs }
 
 if (require.main === module) {
   main().catch((err) => {

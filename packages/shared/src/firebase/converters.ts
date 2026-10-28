@@ -19,7 +19,7 @@ import {
   type PolicySettings,
   type PolicyHistoryEntry,
 } from '../domain/policy'
-import { amountCentsOf, centsOrLegacy, normalizeFinancials } from '../domain/money'
+import { amountCentsOf, normalizeFinancials } from '../domain/money'
 
 // Helper to convert dynamic values to Date
 export function toDate(val: any): Date {
@@ -73,8 +73,10 @@ function createConverter<T extends { id?: string }>(
 
 // Booking Converter
 export const bookingConverter = createConverter<Booking>((data, id) => {
-  // P3-E38: dollar estimates saved before the migration read as cents
-  const estimatedPriceCents = centsOrLegacy(data.estimatedPriceCents, data.estimatedPrice)
+  const estimatedPriceCents =
+    typeof data.estimatedPriceCents === 'number' && Number.isFinite(data.estimatedPriceCents)
+      ? Math.round(data.estimatedPriceCents)
+      : null
   return {
     ...data,
     id,

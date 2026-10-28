@@ -22,8 +22,6 @@ export interface Booking {
   squareFootage?: number
   /** P3-E38: internal estimate in integer cents — never shown on the public site (P3-E29). */
   estimatedPriceCents?: number
-  /** @deprecated dollars, before P3-E38 — removed after migration. */
-  estimatedPrice?: number
   frequency: Frequency
   pets: boolean
   address: string

@@ -155,7 +155,7 @@ service cloud.firestore {
         || (request.auth != null
             && request.auth.uid == staffId
             && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['constraints', 'preferences', 'financials', 'compliance', 'lastChange'])
-            && (!request.resource.data.financials.diff(resource.data.financials).affectedKeys().hasAny(['currentMonthEarningsCents', 'currentMonthEarnings', 'earningsHistory']))
+            && (!request.resource.data.financials.diff(resource.data.financials).affectedKeys().hasAny(['currentMonthEarningsCents', 'earningsHistory']))
            ));
       allow delete: if false;
     }

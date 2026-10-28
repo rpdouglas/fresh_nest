@@ -1360,17 +1360,9 @@
           "label": "Minimum Shift Swap Notice",
           "help": "Hours before shift start required for a cleaner to request a peer shift swap."
         },
-        "defaultOdspMonthlyLimit": {
-          "label": "Default ODSP Monthly Earnings Cap",
-          "help": "Pre-filled monthly net earnings cap when onboarding a staff member on ODSP."
-        },
         "defaultOdspMonthlyLimitCents": {
           "label": "Default ODSP Monthly Earnings Cap",
           "help": "Pre-filled monthly net earnings cap when onboarding a staff member on ODSP."
-        },
-        "earningsCautionThreshold": {
-          "label": "Safe-to-Earn Caution Threshold",
-          "help": "Remaining monthly headroom at which the Safe-to-Earn bar switches from green to amber."
         },
         "earningsCautionThresholdCents": {
           "label": "Safe-to-Earn Caution Threshold",
@@ -1404,17 +1396,9 @@
           "label": "Service Quality Re-Clean Window",
           "help": "Hours after job completion within which a client must report a missed item for a complimentary re-clean."
         },
-        "lateCancellationFeeDollars": {
-          "label": "Late Cancellation Fee",
-          "help": "Flat fee applied when a client cancels inside the required notice window."
-        },
         "lateCancellationFeeCents": {
           "label": "Late Cancellation Fee",
           "help": "Flat fee applied when a client cancels inside the required notice window."
-        },
-        "lockoutFeeDollars": {
-          "label": "Client Lockout Fee",
-          "help": "Fee applied when a cleaner arrives on site and cannot gain entry within the waiting window."
         },
         "lockoutFeeCents": {
           "label": "Client Lockout Fee",
