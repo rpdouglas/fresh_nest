@@ -23,7 +23,7 @@ Stores residential, commercial, and Airbnb cleaning reservations.
 | `address` | `string` | ✅ | Full street address |
 | `serviceType` | `string` | ✅ | `'standard' \| 'deep' \| 'moveout' \| 'postconstruction' \| 'airbnb' \| 'commercial'` |
 | `addOns` | `string[]` | ❌ | List of extras: `['oven', 'fridge', 'windows', 'laundry', 'petHair', 'basement']` |
-| `preferredDate` | `string` | ✅ | Date in ISO format `YYYY-MM-DD` |
+| `preferredDate` | `string` | ✅ | Calendar date `YYYY-MM-DD` in Toronto time (ADR-020) |
 | `preferredCleaner` | `string \| null` | ❌ | Name of requested staff cleaner (loyalty feature) |
 | `notes` | `string` | ❌ | Island access instructions, gate entry codes, special directives |
 | `leadSource` | `string` | ✅ | `'organic' \| 'google' \| 'referral' \| 'facebook' \| 'direct' \| 'phone' \| 'walk-in'` |
@@ -123,7 +123,7 @@ Stores assigned and unassigned cleaning jobs generated from confirmed bookings.
 | `clientPhone` | `string` | ✅ | Customer contact number |
 | `clientNotes` | `string` | ❌ | Cleaner-visible client notes or gate instructions |
 | `serviceType` | `string` | ✅ | Service tier matches booking |
-| `scheduledDate` | `string` | ✅ | Date in `YYYY-MM-DD` |
+| `scheduledDate` | `string` | ✅ | Calendar date `YYYY-MM-DD` in Toronto time (ADR-020); `scheduledStartTime`/`EndTime` are wall times on that date |
 | `scheduledStartTime` | `string` | ✅ | Start time in `HH:MM` |
 | `scheduledEndTime` | `string` | ✅ | End time in `HH:MM` |
 | `status` | `string` | ✅ | `'unassigned' \| 'assigned' \| 'acknowledged' \| 'in_progress' \| 'completed' \| 'cancelled' \| 'disputed'` |
@@ -338,4 +338,10 @@ const db = getFirestore('(default)')
 ```
 *   **Dev/Preview Bookings Isolation**: Bookings written to `freshnest-dev` will never trigger SMS reminders. This is by design to prevent automated tests or manual dev bookings from triggering real SMS charges or sending messages to real customers.
 
+---
 
+## 16. Dates, Times and Money (ADR-020, P3-E38)
+- **Calendar dates and wall times are local to `America/Toronto`.** This covers `preferredDate`, `scheduledDate`, `scheduledStartTime` and `scheduledEndTime`, and also `earningsHistory[].month` (`YYYY-MM`, the Toronto month). Compute them with the `packages/shared/src/domain/time.ts` helpers, never from `toISOString()`, which gives the UTC date.
+- **Instants** (`createdAt`, `checkedInAt`, `completedAt`, `changedAt`, …) are Firestore Timestamps, which are UTC.
+- **Scheduled Functions** run on `America/Toronto` time: reminders at 09:00, the earnings rollover at 00:00 on the 1st, renewals at 02:00.
+- **Money:** the convention for new fields is integer cents in fields named `…Cents`, with tax in a separate `taxCents`. Existing dollar fields move to cents in P3-E38 PR 2.

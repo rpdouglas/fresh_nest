@@ -7,19 +7,19 @@ import {
   logError,
 } from '../lib/shared'
 import { sendSmsReminder } from '../sendSms'
+import { addDays, BUSINESS_TZ, todayInZone } from '../shared/time'
 
 export const onDailyReminderCheck = onSchedule(
   {
-    schedule: '0 13 * * *',
-    timeZone: 'UTC',
+    // P14 Sylvie: 09:00 Toronto time all year (13:00 UTC drifted to 08:00 after the clock change).
+    schedule: '0 9 * * *',
+    timeZone: BUSINESS_TZ,
     secrets: [TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER],
   },
   async () => {
     const db = getFirestore('(default)')
 
-    const tomorrow = new Date()
-    tomorrow.setUTCDate(tomorrow.getUTCDate() + 1)
-    const tomorrowStr = tomorrow.toISOString().slice(0, 10)
+    const tomorrowStr = addDays(todayInZone(), 1)
 
     const snapshot = await db
       .collection('bookings')

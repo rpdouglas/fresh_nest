@@ -11,6 +11,7 @@ import { ChecklistDialog } from './checklist/ChecklistDialog'
 import { useChecklistTemplates } from './hooks/useChecklistTemplates'
 import { usePolicySettings } from './hooks/usePolicySettings'
 import { checkCleanerSchedulingConflicts, resolveBufferMinutes, timeToMinutes } from '@/lib/utils/scheduling'
+import { addDays, dayOfWeek, getShiftDurationHours, startOfWeek, todayInZone } from '@freshnest/shared'
 import type { Booking, Job } from '@/types'
 import { cn } from '@/lib/utils/utils'
 import { HistoryDialog } from './audit/HistoryDialog'
@@ -37,38 +38,14 @@ const getEarningsColorClass = (current: number, limit: number) => {
   return 'text-green-700'
 }
 
-// Convert YYYY-MM-DD date string to Date object
-const parseDateString = (dateStr: string) => {
-  const [year, month, day] = dateStr.split('-').map(Number)
-  return new Date(year, month - 1, day)
-}
-
-// Calculate the Mon-Sun bounds for a given date
+// Mon–Sun bounds of the week containing a date (P3-E38: calendar dates, Toronto time)
 const getWeekBounds = (dateStr: string) => {
-  const date = parseDateString(dateStr)
-  const day = date.getDay()
-  // Adjust so Monday is day 1, Sunday is day 7 (or 0)
-  const diff = date.getDate() - day + (day === 0 ? -6 : 1)
-  const monday = new Date(date.setDate(diff))
-  const sunday = new Date(monday)
-  sunday.setDate(monday.getDate() + 6)
-  return {
-    start: monday.toISOString().split('T')[0],
-    end: sunday.toISOString().split('T')[0],
-  }
+  const start = startOfWeek(dateStr)
+  return { start, end: addDays(start, 6) }
 }
 
-// Helper to calculate job duration in hours
-const getJobDurationHours = (job: Job): number => {
-  try {
-    const [startH, startM] = job.scheduledStartTime.split(':').map(Number)
-    const [endH, endM] = job.scheduledEndTime.split(':').map(Number)
-    const diff = (endH + endM / 60) - (startH + startM / 60)
-    return diff > 0 ? diff : 2
-  } catch {
-    return 2
-  }
-}
+const getJobDurationHours = (job: Job): number =>
+  getShiftDurationHours(job.scheduledStartTime, job.scheduledEndTime)
 
 // Helper to translate a Job to a mock Booking for conflict checking
 const jobToMockBooking = (job: Job): Booking => {
@@ -328,9 +305,8 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
   const queryClient = useTanstackQueryClient()
 
   // Selected Date State
-  const [selectedDate, setSelectedDate] = useState<string>(() => {
-    return new Date().toISOString().split('T')[0]
-  })
+  // Today in Toronto — the UTC date would jump to tomorrow after ~8 pm (P3-E38)
+  const [selectedDate, setSelectedDate] = useState<string>(() => todayInZone())
 
   // Collapsible sidebar for unassigned jobs
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
@@ -478,7 +454,7 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
 
         // 2. Blocked Window check
         const blockedWindows = staff.constraints?.blockedWindows || []
-        const shiftDayOfWeek = new Date(job.scheduledDate + 'T00:00:00').getDay()
+        const shiftDayOfWeek = dayOfWeek(job.scheduledDate)
         const startS = timeToMinutes(job.scheduledStartTime)
         const endS = timeToMinutes(job.scheduledEndTime)
 
@@ -700,16 +676,12 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
   // Navigation helpers for dates
   const handlePrevDay = () => {
     setLocalAssignments({})
-    const d = parseDateString(selectedDate)
-    d.setDate(d.getDate() - 1)
-    setSelectedDate(d.toISOString().split('T')[0])
+    setSelectedDate(addDays(selectedDate, -1))
   }
 
   const handleNextDay = () => {
     setLocalAssignments({})
-    const d = parseDateString(selectedDate)
-    d.setDate(d.getDate() + 1)
-    setSelectedDate(d.toISOString().split('T')[0])
+    setSelectedDate(addDays(selectedDate, 1))
   }
 
   const isLoading = isStaffLoading || isJobsLoading

@@ -2,18 +2,17 @@ import { onSchedule } from 'firebase-functions/v2/scheduler'
 import { getFirestore } from 'firebase-admin/firestore'
 import { RENEWAL_CREATED_BY, type BookingData } from '../emailTemplates'
 import { serverStamp } from '../lib/audit'
+import { addDays, BUSINESS_TZ, todayInZone } from '../shared/time'
 
 export const onDailyRecurringRenewal = onSchedule(
   {
-    schedule: '0 2 * * *', // Run at 2 AM every day
-    timeZone: 'UTC',
+    schedule: '0 2 * * *', // 2 AM Toronto time every day
+    timeZone: BUSINESS_TZ,
   },
   async () => {
     const db = getFirestore('(default)')
-    const today = new Date()
-    const fourteenDaysOut = new Date()
-    fourteenDaysOut.setUTCDate(fourteenDaysOut.getUTCDate() + 14)
-    const fourteenDaysOutStr = fourteenDaysOut.toISOString().slice(0, 10)
+    const todayStr = todayInZone()
+    const fourteenDaysOutStr = addDays(todayStr, 14)
 
     console.log(`[onDailyRecurringRenewal] Running check for date threshold: ${fourteenDaysOutStr}`)
 
@@ -33,16 +32,11 @@ export const onDailyRecurringRenewal = onSchedule(
       const preferredDateStr = booking.preferredDate
       if (!preferredDateStr) continue
 
-      const preferredDate = new Date(preferredDateStr + 'T00:00:00Z')
       let daysToAdd = 7
       if (booking.frequency === 'biweekly') daysToAdd = 14
       if (booking.frequency === 'monthly') daysToAdd = 30
 
-      const nextDate = new Date(preferredDate.getTime())
-      nextDate.setUTCDate(nextDate.getUTCDate() + daysToAdd)
-      const nextDateStr = nextDate.toISOString().slice(0, 10)
-
-      const todayStr = today.toISOString().slice(0, 10)
+      const nextDateStr = addDays(preferredDateStr, daysToAdd)
       // Older bookings may hold a mixed-case email; renewals store it lowercased like new ones.
       const email = (booking.email ?? '').trim().toLowerCase()
       if (nextDateStr > todayStr && nextDateStr <= fourteenDaysOutStr) {

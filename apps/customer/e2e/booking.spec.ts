@@ -66,3 +66,12 @@ test('Required field validation shows errors on empty submit', async ({ page }) 
   await expect(page.locator('#preferredDate')).toHaveAttribute('aria-invalid', 'true')
   await expect(page.getByRole('heading', { name: /when would you like us/i })).toBeVisible()
 })
+
+// F14 / P3-E38: at 20:30 in Toronto it is already the next day in UTC. The earliest date the
+// quote form offers must still be tomorrow in Toronto, not the day after.
+test('after 8 pm the earliest quote date is still tomorrow (Toronto time)', async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2026-10-29T00:30:00Z')) // Oct 28, 20:30 EDT
+  await page.goto('/booking')
+  await page.getByRole('button', { name: /next/i }).click()
+  await expect(page.locator('#preferredDate')).toHaveAttribute('min', '2026-10-29')
+})

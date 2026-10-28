@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
+import { addDays, todayInZone } from '@freshnest/shared'
 
 const submitBookingMock = vi.fn((..._args: unknown[]) => Promise.resolve('booking-123'))
 
@@ -24,7 +25,7 @@ async function fillToStepFour(user: ReturnType<typeof userEvent.setup>) {
   // Step 1 — defaults are valid
   await user.click(screen.getByRole('button', { name: 'booking.next' }))
   // Step 2
-  const date = new Date(Date.now() + 7 * 864e5).toISOString().slice(0, 10)
+  const date = addDays(todayInZone(), 7)
   await user.type(await screen.findByLabelText(/booking.fields.preferredDate.label/), date)
   await user.click(screen.getByRole('button', { name: 'booking.next' }))
   // Step 3

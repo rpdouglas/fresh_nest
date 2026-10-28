@@ -25,6 +25,15 @@ export default defineConfig([
       },
     },
     rules: {
+      // P3-E38 (ADR-020): a calendar date from toISOString() is the UTC date — tomorrow after
+      // ~8 pm in Ontario. Use todayInZone / calendarDateOf / addDays from @freshnest/shared.
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "CallExpression[callee.property.name=/^(split|slice|substring)$/][callee.object.callee.property.name='toISOString']",
+          message: 'toISOString() gives the UTC date. Use todayInZone / calendarDateOf / addDays from @freshnest/shared (ADR-020).',
+        },
+      ],
       '@typescript-eslint/no-unused-vars': [
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },

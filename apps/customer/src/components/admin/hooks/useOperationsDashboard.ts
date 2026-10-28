@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react'
 import { useCollectionQuery } from '@tanstack-query-firebase/react/firestore'
 import { query, orderBy, where } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
-import { jobsCollection, staffCollection } from '@freshnest/shared'
+import { addDays, endOfMonth, getShiftDurationHours, jobsCollection, staffCollection, startOfMonth, startOfWeek, todayInZone } from '@freshnest/shared'
 import type { Job, Staff } from '@/types'
 
 export type OpsTimeRange = 'today' | 'this_week' | 'this_month' | 'custom'
@@ -14,26 +14,12 @@ export function useOperationsDashboard(enabled: boolean) {
 
   // Calculate start and end date bounds for jobs query based on selected timeRange
   const dateRangeBounds = useMemo(() => {
-    const now = new Date()
-    now.setHours(0, 0, 0, 0)
-    const todayStr = now.toISOString().split('T')[0]
-
-    // Calculate start/end of current week (Monday - Sunday)
-    const currentDay = now.getDay()
-    const diffToMonday = currentDay === 0 ? -6 : 1 - currentDay
-    const startOfWeek = new Date(now)
-    startOfWeek.setDate(now.getDate() + diffToMonday)
-    const endOfWeek = new Date(startOfWeek)
-    endOfWeek.setDate(startOfWeek.getDate() + 6)
-    
-    const startOfWeekStr = startOfWeek.toISOString().split('T')[0]
-    const endOfWeekStr = endOfWeek.toISOString().split('T')[0]
-
-    // Calculate start/end of current month
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0)
-    const startOfMonthStr = startOfMonth.toISOString().split('T')[0]
-    const endOfMonthStr = endOfMonth.toISOString().split('T')[0]
+    // Calendar dates in Toronto time (P3-E38); weeks run Monday–Sunday
+    const todayStr = todayInZone()
+    const startOfWeekStr = startOfWeek(todayStr)
+    const endOfWeekStr = addDays(startOfWeekStr, 6)
+    const startOfMonthStr = startOfMonth(todayStr)
+    const endOfMonthStr = endOfMonth(todayStr)
 
     if (timeRange === 'today') {
       return { start: todayStr, end: todayStr }
@@ -46,8 +32,8 @@ export function useOperationsDashboard(enabled: boolean) {
     }
     if (timeRange === 'custom') {
       // Fallback range if not specified
-      const start = customStartDate || new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-      const end = customEndDate || new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      const start = customStartDate || addDays(todayStr, -30)
+      const end = customEndDate || addDays(todayStr, 30)
       return { start, end }
     }
 
@@ -89,68 +75,16 @@ export function useOperationsDashboard(enabled: boolean) {
     return staffSnapshot.docs.map((docSnap) => docSnap.data())
   }, [staffSnapshot])
 
-  // Helper to parse YYYY-MM-DD to Date object
-  const parseDateString = (dateStr: string) => {
-    const [year, month, day] = dateStr.split('-').map(Number)
-    return new Date(year, month - 1, day)
-  }
-
-  // Filter jobs by time range (double check filters client-side for dynamic edge cases)
+  // Filter jobs by time range (double check filters client-side for dynamic edge cases).
+  // 'YYYY-MM-DD' strings sort as dates, so the Toronto-date bounds above compare directly.
   const filteredJobs = useMemo(() => {
-    const now = new Date()
-    now.setHours(0, 0, 0, 0)
+    if (timeRange === 'custom' && (!customStartDate || !customEndDate)) return rawJobs
+    const { start, end } = dateRangeBounds
+    return rawJobs.filter((job) => job.scheduledDate >= start && job.scheduledDate <= end)
+  }, [rawJobs, timeRange, customStartDate, customEndDate, dateRangeBounds])
 
-    const todayStr = now.toISOString().split('T')[0]
-
-    // Calculate start/end of current week (Monday - Sunday)
-    const currentDay = now.getDay()
-    const diffToMonday = currentDay === 0 ? -6 : 1 - currentDay
-    const startOfWeek = new Date(now)
-    startOfWeek.setDate(now.getDate() + diffToMonday)
-    const endOfWeek = new Date(startOfWeek)
-    endOfWeek.setDate(startOfWeek.getDate() + 6)
-    endOfWeek.setHours(23, 59, 59, 999)
-
-    // Calculate start/end of current month
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0)
-    endOfMonth.setHours(23, 59, 59, 999)
-
-    return rawJobs.filter((job) => {
-      const jobDate = parseDateString(job.scheduledDate)
-
-      if (timeRange === 'today') {
-        return job.scheduledDate === todayStr
-      }
-      if (timeRange === 'this_week') {
-        return jobDate >= startOfWeek && jobDate <= endOfWeek
-      }
-      if (timeRange === 'this_month') {
-        return jobDate >= startOfMonth && jobDate <= endOfMonth
-      }
-      if (timeRange === 'custom') {
-        if (!customStartDate || !customEndDate) return true
-        const start = new Date(customStartDate)
-        start.setHours(0, 0, 0, 0)
-        const end = new Date(customEndDate)
-        end.setHours(23, 59, 59, 999)
-        return jobDate >= start && jobDate <= end
-      }
-      return true
-    })
-  }, [rawJobs, timeRange, customStartDate, customEndDate])
-
-  // Helper to calculate job duration in hours
-  const getJobDurationHours = (job: Job): number => {
-    try {
-      const [startH, startM] = job.scheduledStartTime.split(':').map(Number)
-      const [endH, endM] = job.scheduledEndTime.split(':').map(Number)
-      const diff = (endH + endM / 60) - (startH + startM / 60)
-      return diff > 0 ? diff : 2 // default fallback 2 hours
-    } catch {
-      return 2
-    }
-  }
+  const getJobDurationHours = (job: Job): number =>
+    getShiftDurationHours(job.scheduledStartTime, job.scheduledEndTime)
 
   // KPI calculations
   const totalScheduledJobs = filteredJobs.filter(j => j.status !== 'cancelled').length

@@ -1,5 +1,6 @@
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { addDays, todayInZone } from '@freshnest/shared'
 import { cn } from '@/lib/utils/utils'
 import type { BookingFormData } from '@/lib/schemas/bookingSchema'
 
@@ -28,13 +29,10 @@ const ADD_ON_OPTIONS: { value: AddOnValue; labelKey: string }[] = [
 ]
 
 export default function BookingStep2({ stepHeaderRef }: { stepHeaderRef?: React.Ref<HTMLHeadingElement> }) {
-  const tomorrow = new Date()
-  tomorrow.setDate(tomorrow.getDate() + 1)
-  const MIN_DATE = tomorrow.toISOString().slice(0, 10)
-
-  const maxDay = new Date()
-  maxDay.setDate(maxDay.getDate() + 90)
-  const MAX_DATE = maxDay.toISOString().slice(0, 10)
+  // P2 Travis (F14): earliest date is tomorrow in Toronto — the UTC date skipped a day after ~8 pm
+  const today = todayInZone()
+  const MIN_DATE = addDays(today, 1)
+  const MAX_DATE = addDays(today, 90)
 
   const { t } = useTranslation()
   const { register, watch, setValue, formState: { errors } } = useFormContext<BookingFormData>()

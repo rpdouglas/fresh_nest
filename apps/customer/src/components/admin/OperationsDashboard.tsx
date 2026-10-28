@@ -8,22 +8,14 @@ import {
   Tooltip as RechartsTooltip,
   Legend as RechartsLegend,
 } from 'recharts'
+import { getShiftDurationHours } from '@freshnest/shared'
 import type { Job } from '@/types'
 import { useOperationsDashboard, OpsTimeRange } from './hooks/useOperationsDashboard'
 
 const CHART_COLORS = ['#5b7e8f', '#3f5f6e', '#7fa0b0', '#c4b09a', '#7a8f96']
 
-// Helper to calculate job duration in hours
-const getJobDurationHours = (job: Job): number => {
-  try {
-    const [startH, startM] = job.scheduledStartTime.split(':').map(Number)
-    const [endH, endM] = job.scheduledEndTime.split(':').map(Number)
-    const diff = (endH + endM / 60) - (startH + startM / 60)
-    return diff > 0 ? diff : 2
-  } catch {
-    return 2
-  }
-}
+const getJobDurationHours = (job: Job): number =>
+  getShiftDurationHours(job.scheduledStartTime, job.scheduledEndTime)
 
 interface OperationsDashboardProps {
   isAuthorized: boolean
