@@ -1,5 +1,5 @@
 # ADR-019 — E2E on the Firebase Emulators, Back on PRs as a Two-Week Trial (Amends ADR-013 §3 and ADR-014 §2)
-**Status:** Proposed — trial decision approved by the owner 2026-10-28 (F5 interview); becomes Accepted when the PR merges
+**Status:** Accepted (2026-10-28, PR #55 merged) — trial decision approved by the owner 2026-10-28 (F5 interview)
 **Date:** 2026-10-28
 **Deciders:** Owner
 

@@ -1,6 +1,6 @@
 # HOTFIX-11 Report — FSM staff sign-in blocked by a signed-out staff lookup
 
-**Date:** 2026-10-28 · **Found by:** F5 E2E repair (emulators run the real `firestore.rules`) · **Owner approval:** 2026-10-28 ("App fix, own HOTFIX PR") · **Status:** ✅ Code complete — ships when the PR merges (hosting auto-deploys; no rules change)
+**Date:** 2026-10-28 · **Found by:** F5 E2E repair (emulators run the real `firestore.rules`) · **Owner approval:** 2026-10-28 ("App fix, own HOTFIX PR") · **Status:** ✅ Deployed 2026-10-28 (PR #54; FSM hosting deploy succeeded; no rules change)
 
 ## Personas
 - **Primary:** all staff-app users — **P9 Mike**, **P11 Brenda**, **P7 Carla**, **P8 Jasmine**, **P13 Marcus**, **P14 Sylvie**, **P15 Daniel**. None could sign in to the FSM app with a password or a magic link.
