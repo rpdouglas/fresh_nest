@@ -11,6 +11,7 @@ import { assignCleanerTransaction } from '@/lib/firebase/firestore'
 import { OverrideModal } from './OverrideModal'
 import { ConfirmDialog } from './ui/ConfirmDialog'
 import { ChecklistDialog } from './checklist/ChecklistDialog'
+import { RecordHistory } from './audit/RecordHistory'
 import { ChecklistSummary } from './checklist/ChecklistSummary'
 import { cn } from '@/lib/utils/utils'
 import type { Booking, BookingStatus, Job } from '@/types'
@@ -473,6 +474,17 @@ export function BookingDetailPanel({
                 {b.notes?.trim() || t('admin.dashboard.details.noNotes')}
               </p>
             </div>
+          </div>
+
+          {/* P3-E37: who changed this booking and its visit, and when */}
+          <div className="text-left mt-8 pt-6 border-t border-sand flex flex-col gap-2">
+            <h4 className="font-sub text-xl text-charcoal font-bold">{t('admin.audit.history.button')}</h4>
+            <RecordHistory
+              records={[
+                { collection: 'bookings', id: b.id! },
+                ...(b.jobId ? [{ collection: 'jobs', id: b.jobId }] : []),
+              ]}
+            />
           </div>
 
           {/* Lead Source, Timestamps, Flags Footer */}

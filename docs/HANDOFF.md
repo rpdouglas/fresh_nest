@@ -52,7 +52,7 @@ Read in this order: `CLAUDE.md` → this file → [`ACTIVE_CYCLE.md`](ACTIVE_CYC
 
 All four "Now" defects (N-1 to N-4) are fixed and deployed; W0-1 (roles) and W0-2 (settings) are done. Remaining wave 0, per gap analysis §5:
 
-1. **W0-3 Audit everywhere** — P3-E37, Strategy 1 approved 2026-10-28; PR 1 (triggers, `lastChange` stamps, audit-log lock, rules) built, PR 2 (History + filters) next; see `projects/P3-E37.md`: status, assignment, checklist, staff and template changes, each with before/after values. Role and policy changes are already audited (`role_change`, `policy_change`).
+1. **W0-3 Audit everywhere** — P3-E37: PR 1 (#52, triggers, `lastChange` stamps, audit-log lock) merged and deployed 2026-10-28; PR 2 (History sections + Audit Logs filters) in review; PR 3 (stamp required, F18) ~2 weeks after PR 1; report `reports/P3-E37-close-2026-10-28.md`; see `projects/P3-E37.md`: status, assignment, checklist, staff and template changes, each with before/after values. Role and policy changes are already audited (`role_change`, `policy_change`).
 2. **W0-5** Scheduled Firestore export and a restore drill; budget alerts. Do before real data replaces the test data.
 3. **W0-4** (partly done in #46: shared scheduling module): still needs the ADR for integer cents and time zones, and the Nov 1 DST fixtures. Note the new fee settings are whole dollars (`lateCancellationFeeDollars`) — reconcile with the cents decision.
 4. **W0-6** Server-checked schedule write path (`applyScheduleChange` with `rev`). Depends on W0-4.

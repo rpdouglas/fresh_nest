@@ -13,6 +13,7 @@ import { usePolicySettings } from './hooks/usePolicySettings'
 import { checkCleanerSchedulingConflicts, resolveBufferMinutes, timeToMinutes } from '@/lib/utils/scheduling'
 import type { Booking, Job } from '@/types'
 import { cn } from '@/lib/utils/utils'
+import { HistoryDialog } from './audit/HistoryDialog'
 
 // Re-map queryClient hook since we use queryClient.invalidateQueries
 import { useQueryClient as useTanstackQueryClient } from '@tanstack/react-query'
@@ -103,12 +104,14 @@ const DraggableJobCard: React.FC<{
   conflictText?: string
   checklist: { name: string; count: number } | null
   onOpenChecklist: (job: Job) => void
+  onOpenHistory: (job: Job) => void
 }> = ({
   job,
   hasConflict,
   conflictText,
   checklist,
   onOpenChecklist,
+  onOpenHistory,
 }) => {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: job.id!,
@@ -199,6 +202,17 @@ const DraggableJobCard: React.FC<{
             className="bg-white border border-sand text-slate-dark text-[10px] px-1.5 py-0.5 rounded font-body font-medium cursor-pointer hover:border-slate-brand focus:outline-none focus:ring-2 focus:ring-slate-brand"
           >
             📋 {checklist?.count ?? 0}
+          </button>
+          {/* P3-E37: this visit's change history */}
+          <button
+            type="button"
+            onPointerDown={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+            onClick={() => onOpenHistory(job)}
+            aria-label={t('admin.audit.history.buttonLabel', { name: job.clientName })}
+            className="bg-white border border-sand text-slate-dark text-[10px] px-1.5 py-0.5 rounded font-body font-medium cursor-pointer hover:border-slate-brand focus:outline-none focus:ring-2 focus:ring-slate-brand"
+          >
+            🕘
           </button>
         </div>
       </div>
@@ -329,6 +343,7 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
   const { templates: checklistTemplates } = useChecklistTemplates(isAuthorized)
   const { policy } = usePolicySettings(isAuthorized)
   const [checklistJob, setChecklistJob] = useState<Job | null>(null)
+  const [historyJob, setHistoryJob] = useState<Job | null>(null)
   // Jobs created before P3-E34 have no copy of their tasks; describe them by their saved list.
   const checklistOf = (job: Job): { name: string; count: number } | null => {
     if (job.checklistTasks) return { name: job.checklistName ?? '', count: job.checklistTasks.length }
@@ -805,6 +820,7 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
                         conflictText={dailyConflicts[job.id!]?.text}
                         checklist={checklistOf(job)}
                         onOpenChecklist={setChecklistJob}
+                        onOpenHistory={setHistoryJob}
                       />
                     ))
                   )}
@@ -843,6 +859,7 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
                           conflictText={dailyConflicts[job.id!]?.text}
                           checklist={checklistOf(job)}
                           onOpenChecklist={setChecklistJob}
+                          onOpenHistory={setHistoryJob}
                         />
                       ))}
                     </DroppableStaffColumn>
@@ -861,6 +878,18 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
           onSaved={() => { void fetchWeeklyJobs() }}
           job={checklistJob}
           booking={null}
+        />
+      )}
+
+      {historyJob && (
+        <HistoryDialog
+          open
+          onClose={() => setHistoryJob(null)}
+          title={`${historyJob.clientName} · ${historyJob.scheduledDate}`}
+          records={[
+            { collection: 'jobs', id: historyJob.id! },
+            ...(historyJob.bookingId ? [{ collection: 'bookings', id: historyJob.bookingId }] : []),
+          ]}
         />
       )}
 

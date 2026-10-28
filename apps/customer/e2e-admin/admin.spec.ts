@@ -134,6 +134,29 @@ test.describe('phone acceptance (P3-E33)', () => {
     await expect(status).toHaveValue('pending')
   })
 
+  // P3-E37 (P12 Lauren): who moved Margaret's visit? The booking panel's History answers it,
+  // listing the booking and its visit together, newest first.
+  test('the booking panel shows the history of the booking and its visit', async ({ page }) => {
+    await openAdmin(page)
+    await page.getByText('Margaret Storey').first().click()
+    await page.getByRole('button', { name: 'Show history' }).click()
+    // Three P3-E37 entries plus the older one-field override row on the same visit.
+    const entries = page.locator('article')
+    await expect(entries).toHaveCount(4, { timeout: 20_000 })
+    await expect(entries.filter({ hasText: 'carla@freshnest.test' })).toHaveCount(1)
+    await expect(entries.filter({ hasText: 'Client asked to move the visit.' })).toContainText('lauren@freshnest.test')
+    await expect(entries.last()).toContainText('System (createJobFromBooking)')
+  })
+
+  test('a Dispatch card opens its visit history in a dialog', async ({ page }) => {
+    await openAdmin(page, { query: '&tab=dispatch' })
+    await page.getByRole('button', { name: 'History of Margaret Storey', exact: true }).click()
+    const dialog = page.getByRole('dialog')
+    await expect(dialog).toContainText('carla@freshnest.test', { timeout: 20_000 })
+    await page.keyboard.press('Escape')
+    await expect(dialog).toBeHidden()
+  })
+
   // P3-E34 (P12 Lauren): attach a saved list to a job from the booking panel on a phone.
   // Uses Kahnawà:ke's job so the desktop screenshots (Margaret's row) are not affected.
   test('a saved checklist can be attached to a job from the booking panel', async ({ page }) => {

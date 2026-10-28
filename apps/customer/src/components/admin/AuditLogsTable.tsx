@@ -1,266 +1,176 @@
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuditLogs } from './hooks/useAuditLogs'
-import { cn } from '@/lib/utils/utils'
+import { AuditEntryView } from './audit/AuditEntryView'
+import { actorLabel, collectionLabel, dayOf, entryActor, matchesSearch, sourceLabel } from './audit/auditDisplay'
 
 interface AuditLogsTableProps {
   isAuthorized: boolean
 }
 
+const fieldClass =
+  'min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-white focus:outline-none focus:ring-2 focus:ring-slate-brand'
+
+const uniqueSorted = (values: (string | null | undefined)[]) =>
+  Array.from(new Set(values.filter((v): v is string => Boolean(v)))).sort()
+
+// P3-E37: the whole audit log — every audited change, newest first — with filters.
 export function AuditLogsTable({ isAuthorized }: AuditLogsTableProps) {
   const { t } = useTranslation()
   const { logs, isLoading, error } = useAuditLogs(isAuthorized)
 
-  // Filter States
-  const [selectedCollection, setSelectedCollection] = useState<string>('all')
-  const [selectedOverride, setSelectedOverride] = useState<string>('all')
-  const [searchQuery, setSearchQuery] = useState<string>('')
+  const [collectionFilter, setCollectionFilter] = useState('all')
+  const [overrideFilter, setOverrideFilter] = useState('all')
+  const [personFilter, setPersonFilter] = useState('all')
+  const [sourceFilter, setSourceFilter] = useState('all')
+  const [from, setFrom] = useState('')
+  const [to, setTo] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
 
-  // Unique collections and override types for dropdown filters
-  const collectionsList = useMemo(() => {
-    const cols = new Set<string>()
-    logs.forEach((log) => {
-      if (log.collection) cols.add(log.collection)
-    })
-    return Array.from(cols)
-  }, [logs])
+  const collections = useMemo(() => uniqueSorted(logs.map((l) => l.collection)), [logs])
+  const overrides = useMemo(() => uniqueSorted(logs.flatMap((l) => (l.overrideType ?? '').split(','))), [logs])
+  const people = useMemo(() => uniqueSorted(logs.map(entryActor)), [logs])
+  const sources = useMemo(() => uniqueSorted(logs.map((l) => l.source)), [logs])
 
-  const overridesList = useMemo(() => {
-    const types = new Set<string>()
-    logs.forEach((log) => {
-      if (log.overrideType) types.add(log.overrideType)
-    })
-    return Array.from(types)
-  }, [logs])
+  const filteredLogs = useMemo(
+    () =>
+      logs.filter((log) => {
+        const day = dayOf(log.changedAt)
+        return (
+          (collectionFilter === 'all' || log.collection === collectionFilter) &&
+          (overrideFilter === 'all' || (log.overrideType ?? '').split(',').includes(overrideFilter)) &&
+          (personFilter === 'all' || entryActor(log) === personFilter) &&
+          (sourceFilter === 'all' || log.source === sourceFilter) &&
+          (!from || day >= from) &&
+          (!to || day <= to) &&
+          matchesSearch(log, searchQuery)
+        )
+      }),
+    [logs, collectionFilter, overrideFilter, personFilter, sourceFilter, from, to, searchQuery],
+  )
 
-  // Filter and Search Logic
-  const filteredLogs = useMemo(() => {
-    return logs.filter((log) => {
-      const matchesCol =
-        selectedCollection === 'all' || log.collection === selectedCollection
-      const matchesOverride =
-        selectedOverride === 'all' || log.overrideType === selectedOverride
-      
-      const query = searchQuery.toLowerCase().trim()
-      const matchesSearch =
-        !query ||
-        log.changedBy.toLowerCase().includes(query) ||
-        (log.reason && log.reason.toLowerCase().includes(query)) ||
-        (log.documentId && log.documentId.toLowerCase().includes(query)) ||
-        (log.field && log.field.toLowerCase().includes(query))
-
-      return matchesCol && matchesOverride && matchesSearch
-    })
-  }, [logs, selectedCollection, selectedOverride, searchQuery])
-
-  const formatValue = (val: unknown): string => {
-    if (val === null || val === undefined) return 'null'
-    if (typeof val === 'object') {
-      return JSON.stringify(val)
-    }
-    if (typeof val === 'boolean' || typeof val === 'number' || typeof val === 'string') {
-      return String(val)
-    }
-    return ''
-  }
-
-  // Helper to resolve human readable override names
-  const getOverrideLabel = (type: string | null): string => {
-    if (!type) return t('admin.audit.types.none', 'N/A')
-    const key = `admin.audit.types.${type}`
-    const defaultValue = type
-      .replace(/_/g, ' ')
-      .replace(/\b\w/g, (c) => c.toUpperCase())
-    return t(key, defaultValue)
+  const filtersActive =
+    collectionFilter !== 'all' || overrideFilter !== 'all' || personFilter !== 'all' || sourceFilter !== 'all' ||
+    Boolean(from || to || searchQuery)
+  const clearFilters = () => {
+    setCollectionFilter('all')
+    setOverrideFilter('all')
+    setPersonFilter('all')
+    setSourceFilter('all')
+    setFrom('')
+    setTo('')
+    setSearchQuery('')
   }
 
   if (!isAuthorized) {
     return (
       <div className="p-6 bg-white border border-sand rounded text-center text-charcoal">
-        {t('admin.accessDenied', 'Access Denied')}
+        {t('admin.login.errorTitle')}
       </div>
     )
   }
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <h2 className="font-display text-2xl font-bold text-charcoal">
-            {t('admin.audit.title', 'Override Audit Logs')}
-          </h2>
-          <p className="font-body text-base text-text-muted">
-            {t('admin.audit.subtitle', 'Trace operational overrides and system changes.')}
-          </p>
-        </div>
+      <div>
+        <h2 className="font-display text-2xl font-bold text-charcoal">{t('admin.audit.title')}</h2>
+        <p className="font-body text-base text-text-muted">{t('admin.audit.subtitle')}</p>
       </div>
 
-      {/* Filters Bar */}
-      <div className="bg-cream border border-sand rounded p-4 flex flex-col md:flex-row gap-4">
-        {/* Search */}
-        <div className="flex-grow flex flex-col gap-1">
-          <label htmlFor="search" className="font-body text-base font-semibold text-charcoal">
-            {t('admin.audit.filters.searchLabel', 'Search')}
+      {/* Filters */}
+      <div className="bg-cream border border-sand rounded p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="flex flex-col gap-1 sm:col-span-2">
+          <label htmlFor="audit-search" className="font-body text-base font-semibold text-charcoal">
+            {t('admin.audit.filters.searchLabel')}
           </label>
           <input
-            id="search"
-            type="text"
+            id="audit-search"
+            type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t('admin.audit.filters.search', 'Search by admin or reason...')}
-            className="min-h-[48px] px-4 border border-sand rounded font-body text-base text-charcoal bg-white focus:outline-none focus:ring-2 focus:ring-slate-brand focus:border-transparent"
+            placeholder={t('admin.audit.filters.search')}
+            className={fieldClass}
           />
         </div>
-
-        {/* Collection Filter */}
-        <div className="w-full md:w-48 flex flex-col gap-1">
-          <label htmlFor="collection-filter" className="font-body text-base font-semibold text-charcoal">
-            {t('admin.audit.filters.collection', 'Collection')}
+        <div className="flex flex-col gap-1">
+          <label htmlFor="audit-collection" className="font-body text-base font-semibold text-charcoal">
+            {t('admin.audit.filters.collection')}
           </label>
-          <select
-            id="collection-filter"
-            value={selectedCollection}
-            onChange={(e) => setSelectedCollection(e.target.value)}
-            className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-white focus:outline-none focus:ring-2 focus:ring-slate-brand"
-          >
-            <option value="all">{t('admin.audit.filters.all', 'All Collections')}</option>
-            {collectionsList.map((col) => (
-              <option key={col} value={col}>
-                {col}
-              </option>
-            ))}
+          <select id="audit-collection" value={collectionFilter} onChange={(e) => setCollectionFilter(e.target.value)} className={fieldClass}>
+            <option value="all">{t('admin.audit.filters.all')}</option>
+            {collections.map((c) => <option key={c} value={c}>{collectionLabel(c, t)}</option>)}
           </select>
         </div>
-
-        {/* Override Type Filter */}
-        <div className="w-full md:w-56 flex flex-col gap-1">
-          <label htmlFor="override-filter" className="font-body text-base font-semibold text-charcoal">
-            {t('admin.audit.filters.overrideType', 'Override Type')}
+        <div className="flex flex-col gap-1">
+          <label htmlFor="audit-person" className="font-body text-base font-semibold text-charcoal">
+            {t('admin.audit.filters.person')}
           </label>
-          <select
-            id="override-filter"
-            value={selectedOverride}
-            onChange={(e) => setSelectedOverride(e.target.value)}
-            className="min-h-[48px] px-3 border border-sand rounded font-body text-base text-charcoal bg-white focus:outline-none focus:ring-2 focus:ring-slate-brand"
-          >
-            <option value="all">{t('admin.audit.filters.all', 'All Overrides')}</option>
-            {overridesList.map((type) => (
-              <option key={type} value={type}>
-                {getOverrideLabel(type)}
-              </option>
-            ))}
+          <select id="audit-person" value={personFilter} onChange={(e) => setPersonFilter(e.target.value)} className={fieldClass}>
+            <option value="all">{t('admin.audit.filters.all')}</option>
+            {people.map((p) => <option key={p} value={p}>{actorLabel(p, t)}</option>)}
           </select>
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="audit-source" className="font-body text-base font-semibold text-charcoal">
+            {t('admin.audit.filters.source')}
+          </label>
+          <select id="audit-source" value={sourceFilter} onChange={(e) => setSourceFilter(e.target.value)} className={fieldClass}>
+            <option value="all">{t('admin.audit.filters.all')}</option>
+            {sources.map((s) => <option key={s} value={s}>{sourceLabel(s, t)}</option>)}
+          </select>
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="audit-override" className="font-body text-base font-semibold text-charcoal">
+            {t('admin.audit.filters.overrideType')}
+          </label>
+          <select id="audit-override" value={overrideFilter} onChange={(e) => setOverrideFilter(e.target.value)} className={fieldClass}>
+            <option value="all">{t('admin.audit.filters.all')}</option>
+            {overrides.map((o) => <option key={o} value={o}>{t(`admin.audit.types.${o}`, { defaultValue: o })}</option>)}
+          </select>
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="audit-from" className="font-body text-base font-semibold text-charcoal">
+            {t('admin.audit.filters.from')}
+          </label>
+          <input id="audit-from" type="date" value={from} max={to || undefined} onChange={(e) => setFrom(e.target.value)} className={fieldClass} />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="audit-to" className="font-body text-base font-semibold text-charcoal">
+            {t('admin.audit.filters.to')}
+          </label>
+          <input id="audit-to" type="date" value={to} min={from || undefined} onChange={(e) => setTo(e.target.value)} className={fieldClass} />
+        </div>
+        <div className="flex items-end justify-between gap-4 sm:col-span-2 lg:col-span-4">
+          <p className="font-body text-base text-text-muted" aria-live="polite">
+            {t('admin.audit.filters.count', { count: filteredLogs.length })}
+          </p>
+          {filtersActive && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="min-h-[48px] px-4 border border-slate-brand text-slate-brand font-body text-base font-medium rounded hover:bg-slate-pale focus:outline-none focus:ring-2 focus:ring-slate-brand"
+            >
+              {t('admin.audit.filters.clear')}
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Error / Loading State */}
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded font-body text-base">
+        <div role="alert" className="p-4 bg-red-50 border border-red-200 text-red-700 rounded font-body text-base">
           {error}
         </div>
       )}
 
       {isLoading ? (
-        <div className="py-12 text-center font-body text-base text-text-muted">
-          {t('admin.audit.loading', 'Loading audit logs...')}
-        </div>
+        <div className="py-12 text-center font-body text-base text-text-muted">{t('admin.audit.loading')}</div>
       ) : filteredLogs.length === 0 ? (
         <div className="py-12 text-center border border-sand border-dashed rounded bg-white font-body text-base text-text-muted">
-          {t('admin.audit.noLogs', 'No audit log entries found.')}
+          {t('admin.audit.noLogs')}
         </div>
       ) : (
-        /* Audit logs Table */
-        <div className="bg-white border border-sand rounded shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse font-body text-base">
-              <thead>
-                <tr className="bg-cream border-b border-sand text-charcoal font-semibold">
-                  <th className="px-6 py-4">{t('admin.audit.table.changedAt', 'Date/Time')}</th>
-                  <th className="px-6 py-4">{t('admin.audit.table.changedBy', 'Administrator')}</th>
-                  <th className="px-6 py-4">{t('admin.audit.table.action', 'Action/Override')}</th>
-                  <th className="px-6 py-4">{t('admin.audit.table.details', 'Details')}</th>
-                  <th className="px-6 py-4">{t('admin.audit.table.reason', 'Reason')}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-sand text-charcoal">
-                {filteredLogs.map((log) => (
-                  <tr key={log.id} className="hover:bg-warm-white transition-colors">
-                    {/* Timestamp */}
-                    <td className="px-6 py-4 whitespace-nowrap text-base">
-                      <span className="block font-semibold">
-                        {log.changedAt.toLocaleDateString(undefined, {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                        })}
-                      </span>
-                      <span className="text-text-muted text-sm">
-                        {log.changedAt.toLocaleTimeString()}
-                      </span>
-                    </td>
-
-                    {/* Changed By */}
-                    <td className="px-6 py-4 whitespace-nowrap font-medium text-base">
-                      {log.changedBy}
-                    </td>
-
-                    {/* Override Category */}
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {log.overrideType ? (
-                        <span
-                          className={cn(
-                            'inline-flex items-center px-2 py-1 rounded text-sm font-semibold leading-none border',
-                            log.overrideType === 'earnings_cap_exceeded' &&
-                              'bg-red-50 text-red-700 border-red-200',
-                            log.overrideType === 'travel_conflict_exceeded' &&
-                              'bg-amber-50 text-amber-700 border-amber-200',
-                            log.overrideType === 'blocked_window_overlap' &&
-                              'bg-blue-50 text-blue-700 border-blue-200'
-                          )}
-                        >
-                          {getOverrideLabel(log.overrideType)}
-                        </span>
-                      ) : (
-                        <span className="text-text-muted text-base">—</span>
-                      )}
-                    </td>
-
-                    {/* Details */}
-                    <td className="px-6 py-4 max-w-xs text-base">
-                      <div className="flex flex-col gap-1">
-                        <span className="text-sm text-text-muted uppercase tracking-wider font-semibold">
-                          {log.collection} · {log.field}
-                        </span>
-                        <div className="text-charcoal break-words">
-                          <span className="font-mono bg-cream px-1 py-0.5 rounded text-sm text-red-600 line-through">
-                            {formatValue(log.oldValue)}
-                          </span>
-                          <span className="mx-1 text-text-muted">→</span>
-                          <span className="font-mono bg-slate-pale px-1 py-0.5 rounded text-sm text-slate-dark">
-                            {formatValue(log.newValue)}
-                          </span>
-                        </div>
-                        <span className="text-sm font-mono text-text-muted">
-                          ID: {log.documentId.substring(0, 8)}...
-                        </span>
-                      </div>
-                    </td>
-
-                    {/* Reason */}
-                    <td className="px-6 py-4 max-w-md text-base">
-                      {log.reason ? (
-                        <div className="bg-cream border-l-4 border-slate-brand p-2 rounded-r italic text-charcoal">
-                          "{log.reason}"
-                        </div>
-                      ) : (
-                        <span className="text-text-muted">—</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className="bg-white border border-sand rounded shadow-sm px-4 sm:px-6 divide-y divide-sand">
+          {filteredLogs.map((log) => <AuditEntryView key={log.id} entry={log} showRecord />)}
         </div>
       )}
     </div>

@@ -114,6 +114,24 @@ async function main() {
     })
   }
 
+  // P3-E37: entries in the audit-trigger shape (actor, source, action, changes) for Margaret's
+  // booking and visit — shown by the booking panel's History and the Audit Logs tab.
+  const p3e37 = [
+    ['aud1', 'jobs', 'job3', 'create', 'system:createJobFromBooking', 'system', '2026-10-24T13:00:00Z',
+      [{ field: 'status', before: null, after: 'unassigned' }, { field: 'scheduledDate', before: null, after: day(0) }], null, 'Margaret Storey · ' + day(0)],
+    ['aud2', 'bookings', 'bk3', 'update', 'lauren@freshnest.test', 'admin', '2026-10-24T15:10:00Z',
+      [{ field: 'preferredDate', before: day(1), after: day(0) }, { field: 'assignedTo', before: null, after: 'Carla Martin' }],
+      'Client asked to move the visit.', 'Margaret Storey · ' + day(0)],
+    ['aud3', 'jobs', 'job3', 'update', 'carla@freshnest.test', 'staff_app', '2026-10-25T08:05:00Z',
+      [{ field: 'status', before: 'assigned', after: 'acknowledged' }], null, 'Margaret Storey · ' + day(0)],
+  ]
+  for (const [id, collection, documentId, action, actor, source, iso, changes, reason, recordLabel] of p3e37) {
+    await db.collection('auditLog').doc(id).set({
+      collection, documentId, action, actor, source, changes, reason, recordLabel, overrideType: null, snapshot: null,
+      changedBy: actor, field: changes.map((c) => c.field).join(', '), oldValue: null, newValue: null, changedAt: at(iso),
+    })
+  }
+
   for (const [k, [name, rating, language, text]] of [
     ['Diane L.', 5, 'fr', 'Service impeccable, très ponctuel et chaleureux.'],
     ['Travis M.', 4, 'en', 'Quick response and a great deep clean. Would book again.'],
