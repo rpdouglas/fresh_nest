@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { doc, updateDoc, onSnapshot, serverTimestamp } from 'firebase/firestore'
-import { jobsCollection, checklistTemplatesCollection } from '@freshnest/shared'
-import { db } from '../lib/firebase/firebase'
+import { jobsCollection, checklistTemplatesCollection, changeStamp } from '@freshnest/shared'
+import { db, auth } from '../lib/firebase/firebase'
 import { useJob } from '../hooks/useJob'
 import { useStaffAuth } from '../hooks/useStaffAuth'
 import { useOfflineUploads } from '../hooks/useOfflineUploads'
@@ -147,6 +147,8 @@ export const JobPage: React.FC = () => {
             checkedInAt: serverTimestamp(),
             checkedInGeo: lat !== null && lng !== null ? { lat, lng } : null,
             checklistCompletions: [],
+            // P3-E37: names the cleaner in the audit log.
+            lastChange: changeStamp(auth.currentUser?.email, 'staff_app'),
           })
         } catch (err) {
           console.error('Check in write failed:', err)
@@ -259,6 +261,7 @@ export const JobPage: React.FC = () => {
       const jobRef = doc(jobsCollection(db), job.id)
       await updateDoc(jobRef, {
         checklistCompletions: updatedCompletions,
+        lastChange: changeStamp(auth.currentUser?.email, 'staff_app'),
       })
 
       // Collapse task
@@ -282,6 +285,7 @@ export const JobPage: React.FC = () => {
       await updateDoc(jobRef, {
         status: 'completed',
         completedAt: serverTimestamp(),
+        lastChange: changeStamp(auth.currentUser?.email, 'staff_app'),
       })
       void navigate('/jobs')
     } catch (err) {

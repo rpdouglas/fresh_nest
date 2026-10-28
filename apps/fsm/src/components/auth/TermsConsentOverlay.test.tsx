@@ -9,6 +9,7 @@ import type { User } from 'firebase/auth'
 // Mock Firebase config db instance
 vi.mock('../../lib/firebase/firebase', () => ({
   db: {},
+  auth: { currentUser: { email: 'brenda@freshnest.test' } },
 }))
 
 vi.mock('firebase/firestore', () => {
@@ -19,6 +20,7 @@ vi.mock('firebase/firestore', () => {
     collection: vi.fn(() => collectionRef),
     doc: vi.fn(() => ({ id: 'staff123' })),
     updateDoc: vi.fn().mockResolvedValue({}),
+    serverTimestamp: vi.fn(() => 'server-time'),
     arrayUnion: vi.fn((val: unknown) => val),
     initializeFirestore: vi.fn(),
     persistentLocalCache: vi.fn(),

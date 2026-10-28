@@ -174,19 +174,38 @@ Stores default checklist tasks per cleaning service tier.
 ---
 
 ## 9. Collection: `auditLog`
-Stores modifications and security overrides performed by administrators.
+Append-only record of changes to audited records (P3-E37 / W0-3). **Written only by server code**: the audit triggers (`auditBookings`, `auditJobs`, `auditStaff`, `auditChecklistTemplates`, `auditPayRates`, `auditGalleryPairs`, `auditReviews`) and the role/policy callables (`setUserRole`, `syncMyRole`, `updatePolicySettings`). Apps can read (Owners and Managers) but never create, edit or delete. **Retention: 7 years** (same as bookings); the automatic clean-up and erasure anonymizing are built in P3-E15.
 
 | Field Name | Type | Required | Description / Allowed Values |
 | :--- | :--- | :--- | :--- |
 | `collection` | `string` | ✅ | Modified collection name |
 | `documentId` | `string` | ✅ | Modified document ID |
-| `field` | `string` | ✅ | Modified field name |
-| `oldValue` | `any` | ❌ | Value prior to change |
-| `newValue` | `any` | ❌ | Value post-change |
-| `changedBy` | `string` | ✅ | User email or UID performing the override |
-| `changedAt` | `Timestamp` | ✅ | Override action timestamp |
-| `reason` | `string \| null` | ✅ | Rationale for administrative override |
-| `overrideType` | `string \| null` | ✅ | Type of change category |
+| `field` | `string` | ✅ | Pre-P3-E37 rows: the changed field. P3-E37 rows: changed field names, comma-separated (`(deleted)` for deletes) |
+| `oldValue` | `any` | ❌ | Pre-P3-E37 rows: value before. P3-E37 rows: set only when one field changed |
+| `newValue` | `any` | ❌ | Pre-P3-E37 rows: value after. P3-E37 rows: set only when one field changed |
+| `changedBy` | `string` | ✅ | Who made the change (same as `actor` on P3-E37 rows) |
+| `changedAt` | `Timestamp` | ✅ | When the entry was written (server time) |
+| `reason` | `string \| null` | ✅ | Reason given (e.g. a conflict override), from `lastChange.reason` |
+| `overrideType` | `string \| null` | ✅ | Change category / override type (`travel_conflict_exceeded`, `role_change`, `policy_change`, …) |
+| `action` | `string` | ❌ | P3-E37: `'create' \| 'update' \| 'delete'` |
+| `actor` | `string` | ❌ | P3-E37: lowercased email of the person; `public` (signed-out quote/review); `system:<function>` for server code; `system:unknown` when the save carried no new stamp (console, older app version) |
+| `source` | `string` | ❌ | P3-E37: `'admin' \| 'staff_app' \| 'customer' \| 'public_form' \| 'system'` |
+| `changes` | `array` | ❌ | P3-E37: `[{ field, before, after }]` for every watched field that changed (text capped at 1,000 chars; oversized structures stored as `{ truncated: true }`) |
+| `recordLabel` | `string \| null` | ❌ | P3-E37: readable label (e.g. client name · date) |
+| `snapshot` | `map \| null` | ❌ | P3-E37: deletes only — the record as it was (photos and checklist completions omitted for jobs) |
+
+### `lastChange` stamp (P3-E37) — on `bookings`, `jobs`, `staff`, `checklistTemplates`, `payRates`, `galleryPairs`, `reviews`
+Every save stamps who made it; the audit trigger credits the change to `by` only when this save set a new stamp (its `at` changed).
+
+| Field Name | Type | Required | Description / Allowed Values |
+| :--- | :--- | :--- | :--- |
+| `lastChange.by` | `string` | ✅ | Signed-in user's lowercased email (rules enforce it); `public` for a signed-out quote/review; `system:<function>` from server code |
+| `lastChange.at` | `Timestamp` | ✅ | Request time (`serverTimestamp()`; rules enforce `== request.time`) |
+| `lastChange.source` | `string` | ✅ | `'admin'` (office only) \| `'staff_app'` \| `'customer'` \| `'public_form'` \| `'system'` (server only) |
+| `lastChange.reason` | `string \| null` | ❌ | ≤ 500 chars — e.g. the override reason typed on the Dispatch Board |
+| `lastChange.overrideType` | `string \| null` | ❌ | ≤ 100 chars — conflict override types |
+
+**Tolerant period (from release, ~2 weeks):** app saves may omit the stamp or keep the existing one (cached older apps); a follow-up makes it required. **Watched fields** (what produces an audit entry) are listed in `packages/shared/src/domain/audit.ts` (`AUDIT_CONFIG`); per-tick checklist completions and photos are not audited separately.
 
 ---
 

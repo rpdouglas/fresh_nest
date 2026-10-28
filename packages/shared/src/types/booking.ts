@@ -1,3 +1,4 @@
+import type { LastChange } from '../domain/audit'
 export type Language = 'en' | 'fr'
 export type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled'
 export type ServiceType =
@@ -7,6 +8,8 @@ export type LeadSource =
   | 'organic' | 'google' | 'referral' | 'facebook' | 'direct' | 'phone' | 'walk-in'
 
 export interface Booking {
+  /** P3-E37: who made the latest save (see domain/audit.ts). */
+  lastChange?: LastChange
   id?: string
   firstName: string
   lastName: string
@@ -42,6 +45,8 @@ export interface Booking {
 }
 
 export interface Review {
+  /** P3-E37: who made the latest save (see domain/audit.ts). */
+  lastChange?: LastChange
   id?: string
   name: string
   location: string

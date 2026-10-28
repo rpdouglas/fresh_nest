@@ -21,6 +21,7 @@ vi.mock('../hooks/useOfflineUploads')
 // Mock Firebase config db instance
 vi.mock('../lib/firebase/firebase', () => ({
   db: {},
+  auth: { currentUser: { email: 'brenda@freshnest.test' } },
 }))
 
 // Mock firebase firestore
@@ -176,6 +177,8 @@ describe('JobPage Component', () => {
         expect.objectContaining({
           status: 'in_progress',
           checkedInAt: expect.any(Object) as unknown as Date,
+          // P3-E37: the cleaner is named in the audit log.
+          lastChange: expect.objectContaining({ by: 'brenda@freshnest.test', source: 'staff_app' }) as unknown,
         })
       )
     })

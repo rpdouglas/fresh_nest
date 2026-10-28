@@ -151,7 +151,7 @@ These are not aspirational — they are done conditions.
 6. If Firestore rules, indexes, or Cloud Functions were modified:
    - Build functions (npm run build in functions/)
    - Functions and hosting deploy automatically when the PR merges to `main` (`firebase-deploy.yml`)
-   - Rules and indexes NEVER auto-deploy: the human runs Actions → **Deploy Security Rules** (ADR-016) after merge
+   - Rules and indexes also deploy on merge (ADR-018): the `rules` job in `firebase-deploy.yml` runs the emulator rules tests first and deploys only if they pass. The PR merge is the human approval, so rules changes still need explicit human sign-off in the PR. `deploy-rules.yml` stays as a manual re-deploy tool
    - Agent sessions have no production credentials; see docs/HANDOFF.md for the current state and open items
 7. All steps pass → Phase C. Any fails → halt + write failure report + await human.
 

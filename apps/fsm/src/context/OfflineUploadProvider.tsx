@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
-import { jobsCollection } from '@freshnest/shared'
+import { jobsCollection, changeStamp } from '@freshnest/shared'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { db, storage } from '../lib/firebase/firebase'
+import { db, storage, auth } from '../lib/firebase/firebase'
 import { getQueuedPhotos, addQueuedPhoto, deleteQueuedPhoto, QueuedPhoto } from '../lib/utils/indexedDb'
 import { jobPhotoPath } from '../lib/utils/jobPhotoPath'
 import { OfflineUploadContext } from './OfflineUploadContext'
@@ -113,6 +113,7 @@ export const OfflineUploadProvider: React.FC<{ children: React.ReactNode }> = ({
           await updateDoc(jobRef, {
             photos: updatedPhotos,
             checklistCompletions: updatedCompletions,
+            lastChange: changeStamp(auth.currentUser?.email, 'staff_app'),
           })
         }
 
@@ -209,6 +210,7 @@ export const OfflineUploadProvider: React.FC<{ children: React.ReactNode }> = ({
         await updateDoc(jobRef, {
           photos: updatedPhotos,
           checklistCompletions: updatedCompletions,
+          lastChange: changeStamp(auth.currentUser?.email, 'staff_app'),
         })
       }
     } catch (err) {

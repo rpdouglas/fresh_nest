@@ -9,6 +9,7 @@ import {
 } from './lib/eligibility'
 import { snapshotFromTemplate, EMPTY_CHECKLIST, type ChecklistSnapshot } from './lib/checklist'
 import { normalizePolicySettings } from './shared/policy'
+import { serverStamp } from './lib/audit'
 
 /**
  * F03: Booking-to-Job Pipeline
@@ -205,6 +206,7 @@ export async function createJobFromBooking(
     checklistCompletions: [],
     photos: [],
     createdAt: now,
+    lastChange: serverStamp('createJobFromBooking'),
   }
 
   // Atomic transaction: create job + write jobId back to booking
@@ -318,6 +320,8 @@ export async function executeClaimJob(
       transaction.update(jobRef, {
         status: 'assigned',
         assignedTo: staffId,
+        // P3-E37: the claiming cleaner is the actor (Shift Board).
+        lastChange: serverStamp(typeof staffData.email === 'string' && staffData.email ? staffData.email : `claimJob:${staffId}`),
       })
 
       transaction.update(staffRef, {

@@ -9,8 +9,11 @@ import {
   where,
   writeBatch,
 } from 'firebase/firestore'
-import { galleryPairsCollection } from '@freshnest/shared'
-import { db } from '@/lib/firebase/firebase'
+import { galleryPairsCollection, changeStamp } from '@freshnest/shared'
+import { db, auth } from '@/lib/firebase/firebase'
+
+// P3-E37: every gallery save names the signed-in admin for the audit log.
+const adminStamp = () => changeStamp(auth.currentUser?.email, 'admin')
 import type { GalleryPair, ServiceType } from '@/types'
 
 export type GalleryPhotoSlot = 'before' | 'after'
@@ -101,6 +104,7 @@ export async function createGalleryPair(
     createdAt: now,
     updatedAt: now,
     createdBy: adminUid,
+    lastChange: adminStamp(),
   })
   return docRef.id
 }
@@ -110,7 +114,7 @@ export async function updateGalleryPair(
   details: GalleryPairDetails,
   photos: { before?: Blob; after?: Blob },
 ): Promise<void> {
-  const patch: Partial<GalleryPair> = { ...details, updatedAt: new Date() }
+  const patch: Partial<GalleryPair> = { ...details, updatedAt: new Date(), lastChange: adminStamp() }
   const replaced: string[] = []
   if (photos.before) {
     const photo = await uploadGalleryPhoto(pair.id!, 'before', photos.before)
@@ -133,19 +137,21 @@ export async function setGalleryPairFlag(
   flag: 'published' | 'featured',
   value: boolean,
 ): Promise<void> {
-  await updateDoc(doc(galleryPairsCollection(db), pairId), { [flag]: value, updatedAt: new Date() })
+  await updateDoc(doc(galleryPairsCollection(db), pairId), { [flag]: value, updatedAt: new Date(), lastChange: adminStamp() })
 }
 
 /** Swaps the display position of two pairs. */
 export async function swapGalleryPairOrder(a: GalleryPair, b: GalleryPair): Promise<void> {
   const batch = writeBatch(db)
   const now = new Date()
-  batch.update(doc(galleryPairsCollection(db), a.id), { order: b.order, updatedAt: now })
-  batch.update(doc(galleryPairsCollection(db), b.id), { order: a.order, updatedAt: now })
+  batch.update(doc(galleryPairsCollection(db), a.id), { order: b.order, updatedAt: now, lastChange: adminStamp() })
+  batch.update(doc(galleryPairsCollection(db), b.id), { order: a.order, updatedAt: now, lastChange: adminStamp() })
   await batch.commit()
 }
 
 export async function deleteGalleryPair(pair: GalleryPair): Promise<void> {
+  // Stamp first so the audit trigger can credit the delete to this admin (stamp-then-delete).
+  await updateDoc(doc(galleryPairsCollection(db), pair.id), { lastChange: adminStamp() })
   await deleteDoc(doc(galleryPairsCollection(db), pair.id))
   await Promise.all([deleteGalleryPhoto(pair.beforePath), deleteGalleryPhoto(pair.afterPath)])
 }

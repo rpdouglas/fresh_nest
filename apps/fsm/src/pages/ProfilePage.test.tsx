@@ -9,6 +9,7 @@ import { Staff } from '../types'
 // Mock Firebase config db instance
 vi.mock('../lib/firebase/firebase', () => ({
   db: {},
+  auth: { currentUser: { email: 'brenda@freshnest.test' } },
 }))
 
 // Mock firebase firestore
@@ -21,6 +22,7 @@ vi.mock('firebase/firestore', () => {
     doc: vi.fn(() => ({ id: 'staff123', withConverter: vi.fn().mockReturnThis() })),
     onSnapshot: vi.fn(() => () => {}),
     updateDoc: vi.fn().mockResolvedValue({}),
+    serverTimestamp: vi.fn(() => 'server-time'),
     initializeFirestore: vi.fn(),
     persistentLocalCache: vi.fn(),
   }

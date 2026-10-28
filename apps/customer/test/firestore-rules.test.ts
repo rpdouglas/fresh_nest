@@ -527,3 +527,76 @@ describe('Operational Settings & Policy (P3-E36 / W0-2)', () => {
   })
 })
 
+
+describe('Audit everywhere (P3-E37 / W0-3): locked audit log and the lastChange stamp', () => {
+  const as = (role: string, uid = `${role}-uid`, email = `${role}@freshnest.test`) =>
+    testEnv.authenticatedContext(uid, { role, email }).firestore()
+  const stamp = (by: string, source: string, extra: Record<string, unknown> = {}) => ({
+    lastChange: { by, at: serverTimestamp(), source, reason: null, overrideType: null, ...extra },
+  })
+
+  beforeEach(async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore()
+      await setDoc(doc(db, 'auditLog/a1'), { collection: 'jobs', documentId: 'j1', field: 'status', changedBy: 'x', changedAt: new Date(), reason: null, overrideType: null })
+      await setDoc(doc(db, 'jobs/j1'), {
+        assignedTo: 'brenda', status: 'assigned', bookingId: 'b1',
+        lastChange: { by: 'owner@freshnest.test', at: new Date('2026-01-01'), source: 'admin' },
+      })
+      await setDoc(doc(db, 'bookings/b1'), { ...validBooking, email: 'client@test.com', createdAt: new Date() })
+      await setDoc(doc(db, 'galleryPairs/g1'), { captionEn: 'Kitchen', published: false })
+    })
+  })
+
+  it('no app can create, edit or delete audit entries — not even the Owner', async () => {
+    for (const role of ['owner', 'manager', 'staff', 'customer']) {
+      await assertFails(setDoc(doc(as(role), 'auditLog/new'), { collection: 'jobs', documentId: 'j1', field: 'x', changedBy: `${role}@freshnest.test`, changedAt: new Date(), reason: null, overrideType: null }))
+    }
+    await assertFails(updateDoc(doc(as('owner'), 'auditLog/a1'), { reason: 'edited' }))
+    await assertFails(deleteDoc(doc(as('owner'), 'auditLog/a1')))
+    await assertSucceeds(getDoc(doc(as('manager'), 'auditLog/a1')))
+  })
+
+  it('an office save with a stamp naming the signed-in person (and an override reason) is accepted', async () => {
+    await assertSucceeds(updateDoc(doc(as('owner'), 'jobs/j1'), {
+      status: 'unassigned', ...stamp('owner@freshnest.test', 'admin', { reason: 'Short drive', overrideType: 'travel_conflict_exceeded' }),
+    }))
+  })
+
+  it('a stamp naming someone else, with the wrong time, or with extra fields is rejected', async () => {
+    const ref = doc(as('manager'), 'jobs/j1')
+    await assertFails(updateDoc(ref, { status: 'unassigned', ...stamp('owner@freshnest.test', 'admin') }))
+    await assertFails(updateDoc(ref, { status: 'unassigned', lastChange: { by: 'manager@freshnest.test', at: new Date('2020-01-01'), source: 'admin' } }))
+    await assertFails(updateDoc(ref, { status: 'unassigned', ...stamp('manager@freshnest.test', 'admin', { extra: 1 }) }))
+    await assertFails(updateDoc(ref, { status: 'unassigned', ...stamp('manager@freshnest.test', 'admin', { reason: 'x'.repeat(501) }) }))
+  })
+
+  it('the assigned cleaner can stamp their own job update as staff_app, but cannot claim to be the office', async () => {
+    const db = testEnv.authenticatedContext('brenda', { role: 'staff', email: 'brenda@freshnest.test' }).firestore()
+    await assertSucceeds(updateDoc(doc(db, 'jobs/j1'), { status: 'in_progress', ...stamp('brenda@freshnest.test', 'staff_app') }))
+    await assertFails(updateDoc(doc(db, 'jobs/j1'), { status: 'completed', ...stamp('brenda@freshnest.test', 'admin') }))
+  })
+
+  it('tolerant period: saves without a stamp, or keeping the old one, still work (older cached apps)', async () => {
+    await assertSucceeds(updateDoc(doc(as('owner'), 'jobs/j1'), { status: 'unassigned' }))
+    await assertSucceeds(updateDoc(doc(as('owner'), 'bookings/b1'), { status: 'confirmed' }))
+  })
+
+  it('a customer cancels their own booking with a customer stamp; an office stamp is refused', async () => {
+    const db = testEnv.authenticatedContext('c1', { role: 'customer', email: 'client@test.com' }).firestore()
+    await assertFails(updateDoc(doc(db, 'bookings/b1'), { status: 'cancelled', ...stamp('client@test.com', 'admin') }))
+    await assertSucceeds(updateDoc(doc(db, 'bookings/b1'), { status: 'cancelled', ...stamp('client@test.com', 'customer') }))
+  })
+
+  it('a signed-out quote request may be stamped only as the public form', async () => {
+    const db = testEnv.unauthenticatedContext().firestore()
+    await assertSucceeds(setDoc(doc(db, 'bookings/q1'), { ...validBooking, ...stamp('public', 'public_form') }))
+    await assertFails(setDoc(doc(db, 'bookings/q2'), { ...validBooking, ...stamp('lauren@freshnest.test', 'admin') }))
+  })
+
+  it('gallery: stamped saves, then delete (stamp-then-delete) still work for the office', async () => {
+    const db = as('owner')
+    await assertSucceeds(updateDoc(doc(db, 'galleryPairs/g1'), { published: true, ...stamp('owner@freshnest.test', 'admin') }))
+    await assertSucceeds(deleteDoc(doc(db, 'galleryPairs/g1')))
+  })
+})

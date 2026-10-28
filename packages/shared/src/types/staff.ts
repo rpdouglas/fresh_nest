@@ -1,3 +1,4 @@
+import type { LastChange } from '../domain/audit'
 export type StaffLanguage = 'en' | 'fr'
 export type TransportMode = 'personal_vehicle' | 'transit' | 'rideshare' | 'walk'
 export type StaffRole = 'cleaner' | 'lead' | 'supervisor'
@@ -20,6 +21,8 @@ export interface TermsAcceptance {
 }
 
 export interface Staff {
+  /** P3-E37: who made the latest save (see domain/audit.ts). */
+  lastChange?: LastChange
   id: string
   uid?: string
   firstName: string

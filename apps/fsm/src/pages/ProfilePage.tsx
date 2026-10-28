@@ -6,8 +6,9 @@ import {
   policySettingsDoc,
   staffCollection,
   cn,
+  changeStamp,
 } from '@freshnest/shared'
-import { db } from '../lib/firebase/firebase'
+import { db, auth } from '../lib/firebase/firebase'
 import { useStaffAuth } from '../hooks/useStaffAuth'
 import type { TransportMode, BlockedWindow } from '../types'
 
@@ -150,6 +151,7 @@ export const ProfilePage: React.FC = () => {
         'constraints.transitBufferMinutes': Number(transitBufferMinutes),
         'constraints.blockedWindows': blockedWindows,
         'financials.monthlyEarningsLimit': parsedLimit,
+        lastChange: changeStamp(auth.currentUser?.email, 'staff_app'),
       })
 
       setSuccessMsg(t('fsm.profile.saveSuccess'))
