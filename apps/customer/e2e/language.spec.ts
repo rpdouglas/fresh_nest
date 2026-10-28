@@ -5,7 +5,7 @@ test('Language toggle switches all nav strings to French', async ({ page }) => {
   // Select the desktop language toggle
   await page.locator('#lang-toggle-desktop').click()
   // Check that the specific desktop CTA in the navbar switches to French
-  await expect(page.locator('#cta-book-now-nav')).toHaveText(/réservez maintenant/i)
+  await expect(page.locator('#cta-book-now-nav')).toHaveText(/demander un devis/i)
 })
 
 test('French booking page has French field labels', async ({ page }) => {

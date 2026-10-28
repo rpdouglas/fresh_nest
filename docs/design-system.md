@@ -56,9 +56,12 @@ All tokens are defined in `tailwind.config.js` under `theme.extend.colors`. Use 
 | `text-muted` `#5f727c` | `warm-white` `#fdfaf6` | ~4.9:1 | ✅ Pass |
 | `text-muted` `#5f727c` | `cream` `#f7f3ee` | ~4.6:1 | ✅ Pass |
 | `slate-brand` `#547788` | `warm-white` `#fdfaf6` | ~4.7:1 | ✅ Pass |
+| `sand` `#e8ddd0` | `charcoal` `#2c3a40` | ~8.8:1 | ✅ Pass — footer body text and links (F5) |
+| `text-muted` `#5f727c` | `charcoal` `#2c3a40` | ~2.3:1 | ❌ Fail — never use on dark backgrounds |
 
 > [!WARNING]
 > Never place `slate-light` text on `warm-white` backgrounds — contrast is insufficient for WCAG AA.
+> Never place `text-muted` on `charcoal` (the footer) — use `sand` there.
 
 ---
 

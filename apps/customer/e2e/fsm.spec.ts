@@ -1,130 +1,28 @@
 import { test, expect, type Page } from '@playwright/test'
+import { getJob, resetJobToAssigned } from './harness/emulator'
 
-// FSM Staff Portal E2E spec — Strategy 1 (Mock-Centric)
-//
-// Firebase Auth is mocked by intercepting the Firebase Identity Toolkit REST API
-// so the login flow can be tested in CI without the Auth emulator or real credentials.
-//
-// Firestore REST calls are intercepted to return mock staff profile and job data.
-// The FSM app initialises on http://localhost:5174 (separate Vite server, port 5174).
+// FSM staff app persona flows (F5). Runs against the Auth, Firestore and Storage emulators with
+// the real security rules; accounts and the job come from e2e/harness/seed.cjs.
+// P9 Mike: staff sign-in and job screens · P11 Brenda: FR UI and photo proof · P3: 48px targets.
 
-const FSM = 'http://localhost:5174'
+const FSM = 'http://localhost:5191'
+const STAFF = { email: 'mike@freshnest.test', password: 'password123' }
+const CUSTOMER = { email: 'diane@example.test', password: 'password123' }
+const JOB = `${FSM}/jobs/test-job-id`
 
-// Constructs a minimal Firebase-compatible JWT.
-// The Firebase Web SDK does not verify signatures on the client; it only decodes
-// the base64url payload to read claims. A mock signature is accepted.
-function makeMockJwt(claims: Record<string, unknown>): string {
-  const header = Buffer.from(JSON.stringify({ alg: 'RS256', kid: 'mock-key', typ: 'JWT' })).toString('base64url')
-  const payload = Buffer.from(JSON.stringify({
-    iss: 'https://securetoken.google.com/freshnest-aa51e',
-    aud: 'freshnest-aa51e',
-    auth_time: 1_000_000,
-    iat: 1_000_000,
-    exp: 9_999_999_999,
-    firebase: { identities: { email: [claims.email] }, sign_in_provider: 'password' },
-    ...claims,
-  })).toString('base64url')
-  return `${header}.${payload}.MOCK_SIGNATURE`
+async function signIn(page: Page, { email, password }: { email: string; password: string }) {
+  await page.goto(`${FSM}/login`)
+  await page.locator('#email').fill(email)
+  await page.locator('#password').fill(password)
+  await page.getByRole('button', { name: /sign in/i }).click()
 }
 
-const STAFF_JWT = makeMockJwt({
-  user_id: 'mike-uid',
-  sub: 'mike-uid',
-  email: 'mike@freshnest.ca',
-  email_verified: true,
-  role: 'staff',
-})
-
-// Intercepts Firebase Auth + Firestore REST endpoints with mock responses.
-// Called inside test.beforeEach for authenticated-flow describe blocks.
-async function mockFirebase(page: Page) {
-  // Firebase Auth — signInWithPassword
-  await page.route('**/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword**', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({
-        kind: 'identitytoolkit#VerifyPasswordResponse',
-        localId: 'mike-uid',
-        email: 'mike@freshnest.ca',
-        idToken: STAFF_JWT,
-        refreshToken: 'mock-refresh-token',
-        expiresIn: '3600',
-        registered: true,
-      }),
-    })
-  })
-
-  // Firebase Auth — token refresh (called by getIdTokenResult with forceRefresh=true)
-  await page.route('**/securetoken.googleapis.com/v1/token**', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({
-        access_token: STAFF_JWT,
-        id_token: STAFF_JWT,
-        refresh_token: 'mock-refresh-token',
-        token_type: 'Bearer',
-        expires_in: '3600',
-      }),
-    })
-  })
-
-  // Firestore — staff profile document
-  await page.route('**/firestore.googleapis.com/**', async (route, request) => {
-    const url = request.url()
-
-    if (url.includes('/staff/mike-uid')) {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          name: 'projects/freshnest-aa51e/databases/(default)/documents/staff/mike-uid',
-          fields: {
-            firstName:   { stringValue: 'Mike' },
-            lastName:    { stringValue: 'Cleaner' },
-            email:       { stringValue: 'mike@freshnest.ca' },
-            role:        { stringValue: 'staff' },
-            status:      { stringValue: 'active' },
-            preferences: { mapValue: { fields: { language: { stringValue: 'en' } } } },
-            constraints: { mapValue: { fields: {
-              transportMode:        { stringValue: 'car' },
-              transitBufferMinutes: { integerValue: 15 },
-              blockedWindows:       { arrayValue: { values: [] } },
-            }}},
-          },
-        }),
-      })
-    } else if (url.includes('/jobs/test-job-id')) {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          name: 'projects/freshnest-aa51e/databases/(default)/documents/jobs/test-job-id',
-          fields: {
-            bookingId:           { stringValue: 'booking-123' },
-            clientName:          { stringValue: 'Jane Smith' },
-            clientAddress:       { stringValue: '456 Riverdale, Cornwall ON' },
-            clientPhone:         { stringValue: '6135559900' },
-            serviceType:         { stringValue: 'standard' },
-            scheduledDate:       { stringValue: '2026-06-25' },
-            scheduledStartTime:  { stringValue: '09:00' },
-            scheduledEndTime:    { stringValue: '11:00' },
-            status:              { stringValue: 'assigned' },
-            assignedTo:          { stringValue: 'mike-uid' },
-            checkedInAt:         { nullValue: null },
-            checklistCompletions: { arrayValue: { values: [] } },
-            photos:              { arrayValue: { values: [] } },
-          },
-        }),
-      })
-    } else {
-      await route.continue()
-    }
-  })
+async function signInAsStaff(page: Page) {
+  await signIn(page, STAFF)
+  await expect(page).not.toHaveURL(/\/login/, { timeout: 15_000 })
 }
 
-// ─── Login Page — always-passing UI tests (no Firebase needed) ───────────────
+// ─── Login page ───────────────────────────────────────────────────────────────
 
 test.describe('FSM Login Page — UI', () => {
   test('renders email, password fields, Sign In and Send Magic Link buttons', async ({ page }) => {
@@ -144,139 +42,100 @@ test.describe('FSM Login Page — UI', () => {
 
   test('language toggle switches login page to French', async ({ page }) => {
     await page.goto(`${FSM}/login`)
-    await page.getByRole('button', { name: /fr/i }).click()
-    // The Sign In button label should switch to French
-    await expect(page.getByRole('button', { name: /connexion/i })).toBeVisible()
+    await page.getByRole('button', { name: 'FR', exact: true }).click()
+    await expect(page.getByRole('button', { name: /se connecter avec mot de passe/i })).toBeVisible()
   })
 })
 
-// ─── Auth Gates — always-passing redirect tests ───────────────────────────────
+// ─── Auth gate ────────────────────────────────────────────────────────────────
 
 test.describe('FSM Protected Routes — Auth Gate', () => {
-  test('/jobs redirects unauthenticated visitor to /login', async ({ page }) => {
-    await page.goto(`${FSM}/jobs`)
-    await expect(page).toHaveURL(/\/login/, { timeout: 5000 })
-  })
-
-  test('/jobs/:id redirects unauthenticated visitor to /login', async ({ page }) => {
-    await page.goto(`${FSM}/jobs/test-job-id`)
-    await expect(page).toHaveURL(/\/login/, { timeout: 5000 })
-  })
-
-  test('/profile redirects unauthenticated visitor to /login', async ({ page }) => {
-    await page.goto(`${FSM}/profile`)
-    await expect(page).toHaveURL(/\/login/, { timeout: 5000 })
-  })
-
-  test('/shifts redirects unauthenticated visitor to /login', async ({ page }) => {
-    await page.goto(`${FSM}/shifts`)
-    await expect(page).toHaveURL(/\/login/, { timeout: 5000 })
-  })
+  for (const path of ['/jobs', '/jobs/test-job-id', '/profile', '/shifts']) {
+    test(`${path} redirects unauthenticated visitor to /login`, async ({ page }) => {
+      await page.goto(`${FSM}${path}`)
+      await expect(page).toHaveURL(/\/login/)
+    })
+  }
 })
 
-// ─── Login Flow — Firebase REST API mocked ───────────────────────────────────
+// ─── Sign-in ──────────────────────────────────────────────────────────────────
 
-test.describe('FSM Login Flow — Mocked Firebase Auth', () => {
-  test('shows error alert when Firebase rejects invalid credentials', async ({ page }) => {
-    await page.route('**/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword**', async (route) => {
-      await route.fulfill({
-        status: 400,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          error: { code: 400, message: 'INVALID_LOGIN_CREDENTIALS', status: 'INVALID_ARGUMENT' },
-        }),
-      })
-    })
-
-    await page.goto(`${FSM}/login`)
-    await page.locator('#email').fill('wrong@example.com')
-    await page.locator('#password').fill('wrongpassword')
-    await page.getByRole('button', { name: /sign in/i }).click()
-
-    await expect(page.getByRole('alert')).toBeVisible({ timeout: 5000 })
-    // User stays on login page — no redirect on failed auth
+test.describe('FSM Login Flow', () => {
+  test('shows an error when the password is wrong', async ({ page }) => {
+    await signIn(page, { ...STAFF, password: 'wrong-password' })
+    await expect(page.getByRole('alert')).toBeVisible()
     await expect(page).toHaveURL(/\/login/)
   })
 
-  test('Sign In call is made to Firebase when form is submitted with valid input', async ({ page }) => {
-    let authCallMade = false
-
-    await page.route('**/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword**', async (route) => {
-      authCallMade = true
-      // Return a reject so the test doesn't need full Firebase session setup
-      await route.fulfill({
-        status: 400,
-        contentType: 'application/json',
-        body: JSON.stringify({ error: { code: 400, message: 'INVALID_LOGIN_CREDENTIALS' } }),
-      })
-    })
-
-    await page.goto(`${FSM}/login`)
-    await page.locator('#email').fill('mike@freshnest.ca')
-    await page.locator('#password').fill('testpassword123')
-    await page.getByRole('button', { name: /sign in/i }).click()
-
-    await page.waitForResponse('**/identitytoolkit.googleapis.com/**', { timeout: 5000 })
-    expect(authCallMade).toBe(true)
+  test('staff member signs in with email and password and leaves the login page', async ({ page }) => {
+    await signInAsStaff(page)
+    await expect(page.locator('#email')).toHaveCount(0)
   })
 
-  test('authenticated staff navigates away from login after sign-in', async ({ page }) => {
-    await mockFirebase(page)
-
-    await page.goto(`${FSM}/login`)
-    await page.locator('#email').fill('mike@freshnest.ca')
-    await page.locator('#password').fill('testpassword123')
-    await page.getByRole('button', { name: /sign in/i }).click()
-
-    // After successful mocked auth, the app should leave /login
-    // (navigates to / or shows the staff dashboard — not the login form)
-    await expect(page.locator('#email')).not.toBeVisible({ timeout: 6000 })
+  // HOTFIX-11: the "no staff profile" message must stay on screen after the sign-out.
+  test('a customer account is refused with a plain-language message', async ({ page }) => {
+    // The seeded account is brand new, so the app polls up to 20 s for a staff role first (HOTFIX-10).
+    test.setTimeout(60_000)
+    await signIn(page, CUSTOMER)
+    await expect(page.getByRole('alert')).toContainText(/not registered/i, { timeout: 30_000 })
+    await expect(page).toHaveURL(/\/login/)
   })
 })
 
-// ─── Job Flow — Mocked Firebase Auth + Firestore ─────────────────────────────
+// ─── Job screens ──────────────────────────────────────────────────────────────
 
-test.describe('FSM Job Flow — Mocked Firebase', () => {
+test.describe('FSM Job Flow', () => {
   test.beforeEach(async ({ page }) => {
-    await mockFirebase(page)
+    await signInAsStaff(page)
   })
 
   test('job detail page renders client address and service type', async ({ page }) => {
-    await page.goto(`${FSM}/login`)
-    await page.locator('#email').fill('mike@freshnest.ca')
-    await page.locator('#password').fill('testpassword123')
-    await page.getByRole('button', { name: /sign in/i }).click()
-    await expect(page.locator('#email')).not.toBeVisible({ timeout: 6000 })
-
-    await page.goto(`${FSM}/jobs/test-job-id`)
-
-    // Client address and service type from the mocked Firestore response must appear
-    await expect(page.getByText(/456 Riverdale/i)).toBeVisible({ timeout: 5000 })
+    await page.goto(JOB)
+    await expect(page.getByText(/456 Riverdale/i)).toBeVisible()
   })
 
   test('Check In button is visible when job status is assigned', async ({ page }) => {
-    await page.goto(`${FSM}/login`)
-    await page.locator('#email').fill('mike@freshnest.ca')
-    await page.locator('#password').fill('testpassword123')
-    await page.getByRole('button', { name: /sign in/i }).click()
-    await expect(page.locator('#email')).not.toBeVisible({ timeout: 6000 })
-
-    await page.goto(`${FSM}/jobs/test-job-id`)
-
-    await expect(page.getByRole('button', { name: /check in/i })).toBeVisible({ timeout: 5000 })
+    await page.goto(JOB)
+    await expect(page.getByRole('button', { name: /check in/i })).toBeVisible()
   })
 
   test('photo upload input is present on job page', async ({ page }) => {
-    await page.goto(`${FSM}/login`)
-    await page.locator('#email').fill('mike@freshnest.ca')
-    await page.locator('#password').fill('testpassword123')
-    await page.getByRole('button', { name: /sign in/i }).click()
-    await expect(page.locator('#email')).not.toBeVisible({ timeout: 6000 })
+    await page.goto(JOB)
+    await expect(page.getByText(/456 Riverdale/i)).toBeVisible()
+    // The capture input is in the DOM from the start (hidden until a task asks for a photo).
+    await expect(page.locator('input[type="file"][accept*="image"]')).toBeAttached()
+  })
 
-    await page.goto(`${FSM}/jobs/test-job-id`)
+  // HOTFIX-06 regression (P11 Brenda's photo proof): check in, photograph a task that requires
+  // one, and the photo reaches Storage under the real storage.rules and is saved on the job.
+  test('checked-in staff member uploads a task photo to the job', async ({ page, context, request }) => {
+    await context.grantPermissions(['geolocation'], { origin: FSM })
+    await context.setGeolocation({ latitude: 45.0213, longitude: -74.7303 }) // Cornwall ON
+    await resetJobToAssigned(request, 'photo-job-id')
+    await page.goto(`${FSM}/jobs/photo-job-id`)
 
-    // File input for photo capture must exist in the DOM (may be hidden until check-in)
-    const fileInput = page.locator('input[type="file"][accept*="image"]')
-    await expect(fileInput).toBeAttached({ timeout: 5000 })
+    await page.getByRole('button', { name: /check in/i }).click()
+    await expect(page.getByText(/cleaning tasks/i)).toBeVisible()
+
+    await page.getByRole('button', { name: /kitchen counters/i }).click()
+    const chooser = page.waitForEvent('filechooser')
+    await page.getByRole('button', { name: /take photo/i }).click()
+    await (await chooser).setFiles({ name: 'counters.jpg', mimeType: 'image/jpeg', buffer: TINY_JPEG })
+
+    await expect.poll(async () => {
+      const photos = (await getJob(request, 'photo-job-id')).photos.arrayValue?.values ?? []
+      return photos.map((p) => p.mapValue?.fields?.url?.stringValue ?? '')
+    }, { timeout: 20_000 }).toEqual([expect.stringContaining('jobs%2Fphoto-job-id%2Fphotos%2Fmike-uid%2F')])
+
+    const job = await getJob(request, 'photo-job-id')
+    expect(job.status.stringValue).toBe('in_progress')
+    expect(job.checkedInGeo.mapValue?.fields?.lat).toBeDefined()
   })
 })
+
+// Smallest valid JPEG (1×1 px) — enough for the upload path and the image/* content-type rule.
+const TINY_JPEG = Buffer.from(
+  '/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP////////////////////////////////////////////////////////////////' +
+  '//////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=',
+  'base64',
+)

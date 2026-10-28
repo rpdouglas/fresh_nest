@@ -1,6 +1,6 @@
 # Handoff — where things stand
 
-**Updated:** 2026-10-28 · **`main`:** `d95d430` (after PR #51)
+**Updated:** 2026-10-28 · **`main`:** `12efae4` (after PR #53)
 **For:** whoever picks up next, a person or an AI agent (Claude Code, Antigravity / Gemini CLI). `GEMINI.md` is a link to `CLAUDE.md`, so both agents read the same rules.
 
 Read in this order: `CLAUDE.md` → this file → [`ACTIVE_CYCLE.md`](ACTIVE_CYCLE.md) → [`gap-analysis/GAP_ANALYSIS_2026-10-27.md`](gap-analysis/GAP_ANALYSIS_2026-10-27.md) (sections 5–7) → the spec and plan for the epic you pick up.
@@ -16,6 +16,8 @@ Read in this order: `CLAUDE.md` → this file → [`ACTIVE_CYCLE.md`](ACTIVE_CYC
 | ADR-018 | Security rules and indexes deploy on merge after the emulator tests pass | #48 |
 | P3-E32 | Public before/after gallery live (`SHOW_GALLERY = true`, real photos); CSP allows Storage images | #50, #51 |
 | Architecture | Customer bundle chunking, smaller PWA precache; shared scheduling/eligibility code in `packages/shared/src/domain/` synced into `functions/src/shared/` (`functions/scripts/sync-shared.cjs`) | #46 |
+| P3-E37 PR 2 | History on bookings, Dispatch and staff; Audit Logs filters | #53 |
+| F5 + HOTFIX-11 | E2E suite green on the emulators (29/29) and back on PRs as a non-required trial (ADR-019, Proposed); FSM staff sign-in fixed (was always denied); footer contrast fixed | (this PR pair) |
 | Customer policies | Late fee, lockout and 24 h complaint wording in the FAQ and touchpoints (no amounts shown — P3-E29) | #44 |
 
 ### P3-E35 & HOTFIX-10 — Office roles (`owner`, `manager`) & self-healing role sync
@@ -52,14 +54,14 @@ Read in this order: `CLAUDE.md` → this file → [`ACTIVE_CYCLE.md`](ACTIVE_CYC
 
 All four "Now" defects (N-1 to N-4) are fixed and deployed; W0-1 (roles) and W0-2 (settings) are done. Remaining wave 0, per gap analysis §5:
 
-1. **W0-3 Audit everywhere** — P3-E37: PR 1 (#52, triggers, `lastChange` stamps, audit-log lock) merged and deployed 2026-10-28; PR 2 (History sections + Audit Logs filters) in review; PR 3 (stamp required, F18) ~2 weeks after PR 1; report `reports/P3-E37-close-2026-10-28.md`; see `projects/P3-E37.md`: status, assignment, checklist, staff and template changes, each with before/after values. Role and policy changes are already audited (`role_change`, `policy_change`).
+1. **W0-3 Audit everywhere** — P3-E37: PR 1 (#52, triggers, `lastChange` stamps, audit-log lock) merged and deployed 2026-10-28; PR 2 (#53, History sections + Audit Logs filters) merged; PR 3 (stamp required, F18) ~2 weeks after PR 1; report `reports/P3-E37-close-2026-10-28.md`; see `projects/P3-E37.md`: status, assignment, checklist, staff and template changes, each with before/after values. Role and policy changes are already audited (`role_change`, `policy_change`).
 2. **W0-5** Scheduled Firestore export and a restore drill; budget alerts. Do before real data replaces the test data.
 3. **W0-4** (partly done in #46: shared scheduling module): still needs the ADR for integer cents and time zones, and the Nov 1 DST fixtures. Note the new fee settings are whole dollars (`lateCancellationFeeDollars`) — reconcile with the cents decision.
 4. **W0-6** Server-checked schedule write path (`applyScheduleChange` with `rev`). Depends on W0-4.
 
 Then wave 1 (clients, sites, employees, availability, agreements, Camelo import). The older Phase 3 backlog (P3-E27 onboarding B2/C/D, P3-E10, P3-E15…) still sits in `ACTIVE_CYCLE.md`; suggestion pending owner decision: fold P3-E27's remaining parts into W1-3.
 
-Smaller AI-owned follow-ups are in `ACTIVE_CYCLE.md` → Open Follow-Ups: F5 (repair Playwright), F6 (pre-render), F7 (review-email links), F14 (quote-form date and `Ref #`).
+Smaller AI-owned follow-ups are in `ACTIVE_CYCLE.md` → Open Follow-Ups: F6 (pre-render), F7 (review-email links), F14 (quote-form date and `Ref #`), F21 (end of the E2E PR trial, ~2026-11-11).
 
 **Owner decisions that override the spec** (gap analysis §7):
 - clean slate: production holds only test data;
@@ -88,8 +90,9 @@ Smaller AI-owned follow-ups are in `ACTIVE_CYCLE.md` → Open Follow-Ups: F5 (re
   - `functions`: `npm run build`, `npx vitest run`
   - Rules (needs Java), from `apps/customer`:
     `npx -y firebase-tools@15 emulators:exec --only firestore,storage --project freshnest-aa51e "npx vitest run --config vitest.rules.config.ts"`
-  - Admin screenshots (needs Java and `npm ci` in `functions/`): `npm run test:admin-visual` in `apps/customer`. Desktop baselines are in `e2e-admin/__screenshots__/desktop/`.
-- **CI:** `firebase-preview.yml` runs path-filtered jobs (customer, fsm, functions, rules) plus CodeQL and the markdown link check, and posts preview URLs on the PR.
+  - E2E persona flows (needs Java and `npm ci` in `functions/`), from `apps/customer`: `npm run test:e2e` — emulators, seeded data, no Firebase secrets (ADR-019)
+  - Admin screenshots (needs Java and `npm ci` in `functions/`): `npm run test:admin-visual` in `apps/customer`. Desktop baselines are in `e2e-admin/__screenshots__/desktop/` (they don't match on the Codespace: F20).
+- **CI:** `firebase-preview.yml` runs path-filtered jobs (customer, fsm, functions, rules, and `e2e` — not required during the ADR-019 trial) plus CodeQL and the markdown link check, and posts preview URLs on the PR.
 - **Never edit:**
   - accepted ADRs (ADR-016, ADR-017 and ADR-018 are accepted; ADR-018 supersedes ADR-016);
   - `PERSONAS.md`;

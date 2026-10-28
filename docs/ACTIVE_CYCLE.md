@@ -115,7 +115,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | F2 | Confirm `OWNER_PHONE` — owner alerts go to (613) 861-8812 unless `OWNER_PHONE` is set for Cloud Functions; that number must receive SMS | Human | HOTFIX-04 | ⬜ Open |
 | F3 | Run the email backfill: `functions/scripts/backfill-lowercase-booking-emails.cjs` — dry run on `freshnest-dev`, then `(default)`; `--apply` on production needs human approval | Human + AI | HOTFIX-05 | ⬜ Open |
 | F4 | Run **E2E (weekly)** and **Security Audit (daily)** once by hand (Actions → Run workflow) to confirm the new workflows | Human | ADR-014 | ⬜ Open |
-| F5 | Repair the Playwright suite (15/31 failing per ADR-013), then a new ADR to make E2E a PR gate again | AI | ADR-013 / ADR-014 | ⬜ Open |
+| F5 | Repair the Playwright suite (15/31 failing per ADR-013), then a new ADR to make E2E a PR gate again | AI | ADR-013 / ADR-014 | ✅ 2026-10-28 — 29/29 on the emulators ([report](reports/F5-close-2026-10-28.md)); back on PRs as a non-required trial ([ADR-019](decisions/ADR-019-e2e-on-emulators-pr-trial.md)); found HOTFIX-11 and a footer contrast failure (fixed) |
 | F6 | Pre-render public pages at build time so non-JS crawlers (AI answer engines, social previews) get real content — needs an ADR + Phase A | AI | SEO-01 | ⬜ Open |
 | F7 | Review-request emails link to `lilypad-freshnest.web.app` — move to `https://www.freshnestco.ca` (`functions/src/scheduled/reviews.ts`) | AI | SEO-01 | ⬜ Open |
 | F8 | Optional: redirect `lilypad-freshnest.web.app` to `www.freshnestco.ca` in Firebase Hosting (canonicals already point to www) | Human (console) | SEO-01 | ⬜ Open |
@@ -130,6 +130,8 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | F17 | Remove the no-op `onStaffUpdatedTrigger` (its audit moved to `auditStaff`) with a one-off `firebase deploy --only functions --force` — the CI deploy is non-interactive and can't delete functions | Human (deploy) + AI | P3-E37 | ⬜ Open |
 | F18 | P3-E37 PR 3: make the `lastChange` stamp **required** on app saves (end of the tolerant period, ~2 weeks after PR 1 deploys) | AI + human approval (rules) | P3-E37 | ⬜ Open |
 | F19 | `submitReview` also updates the job (`reviewSubmitted: true`), but the jobs rules only let the office or the assigned cleaner update — a signed-out reviewer's update is likely denied (pre-existing; the review itself is saved). Move the flag to a server trigger on review create | AI | P3-E37 review | ⬜ Open |
+| F20 | Regenerate the admin **desktop** screenshot baselines where they were made (`npm run test:admin-visual -- --project=desktop --update-snapshots`, then review): they already mismatch on the Codespace (text rendering), and the F5 footer colour changes them | Human (or AI on the baseline machine) | F5 | ⬜ Open |
+| F21 | E2E PR trial ends ~2026-11-11: review the `e2e` check on PRs; if no failures without a code cause, write the follow-up ADR making it required (ADR-019 §5) | AI + human approval | F5 / ADR-019 | ⬜ Open |
 
 ---
 

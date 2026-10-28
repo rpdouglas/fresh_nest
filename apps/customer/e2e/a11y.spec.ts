@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Locator, type Page } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
 // P3-E6: WCAG 2.1 AA accessibility audit
@@ -14,26 +14,19 @@ function futureDateStr(daysAhead = 5): string {
   ].join('-')
 }
 
-// Shared mocks for tests that reach the booking form.
-async function setupBookingMocks(page: import('@playwright/test').Page) {
-  await page.route('**/firestore.googleapis.com/**', async (route, request) => {
-    if (request.method() === 'POST') {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ writeResults: [{ updateTime: new Date().toISOString() }], status: [] }),
-      })
-    } else {
-      await route.continue()
-    }
-  })
-}
-
 // ─── Axe WCAG 2.1 AA audits ────────────────────────────────────────────────
+
+// Audit only a finished page: the lazily loaded part is on screen and no fade-in is still running
+// (a half-faded element reads as low contrast, so an early audit fails at random).
+async function waitUntilSettled(page: Page, ready: Locator) {
+  await expect(ready).toBeVisible()
+  await page.waitForFunction(() => document.getAnimations().every((a) => a.playState !== 'running'))
+}
 
 test.describe('Axe WCAG 2.1 AA audit', () => {
   test('home page — no critical or serious violations', async ({ page }) => {
     await page.goto('/')
+    await waitUntilSettled(page, page.getByRole('contentinfo'))
     const results = await new AxeBuilder({ page })
       .exclude('iframe')
       .withTags(['wcag2a', 'wcag2aa'])
@@ -48,8 +41,8 @@ test.describe('Axe WCAG 2.1 AA audit', () => {
   })
 
   test('/booking — no critical or serious violations', async ({ page }) => {
-    await setupBookingMocks(page)
     await page.goto('/booking')
+    await waitUntilSettled(page, page.getByRole('contentinfo'))
     const results = await new AxeBuilder({ page })
       .exclude('iframe')
       .withTags(['wcag2a', 'wcag2aa'])
@@ -66,6 +59,7 @@ test.describe('Axe WCAG 2.1 AA audit', () => {
   test('/admin — no critical or serious violations on login view', async ({ page }) => {
     // Admin routes redirect to login when unauthenticated — audit the login page.
     await page.goto('/admin')
+    await waitUntilSettled(page, page.getByRole('heading', { level: 1 }))
     const results = await new AxeBuilder({ page })
       .exclude('iframe')
       .withTags(['wcag2a', 'wcag2aa'])
@@ -85,6 +79,8 @@ test.describe('Axe WCAG 2.1 AA audit', () => {
 test.describe('Keyboard navigation — P3 Margaret', () => {
   test('skip link is the first tab stop and activates focus on main content', async ({ page }) => {
     await page.goto('/')
+    // Wait for the app to render: a Tab pressed during the loading spinner lands on <body>.
+    await expect(page.getByRole('navigation').first()).toBeVisible()
     await page.keyboard.press('Tab')
     const focused = page.locator(':focus')
     await expect(focused).toContainText(/skip to main content/i)
@@ -106,34 +102,30 @@ test.describe('Keyboard navigation — P3 Margaret', () => {
   })
 
   test('Margaret completes booking form using keyboard only', async ({ page }) => {
-    await setupBookingMocks(page)
     await page.goto('/booking')
 
     // Step 1 — service and property selection
-    await page.getByRole('radio', { name: /standard cleaning/i }).first().focus()
+    await page.getByRole('radio', { name: /standard cleaning/i }).focus()
     await page.keyboard.press('Space')
-    await page.getByRole('radio', { name: /apartment/i }).first().focus()
+    await page.getByRole('radio', { name: /apartment/i }).focus()
     await page.keyboard.press('Space')
-    // frequency radio
-    await page.getByRole('radio', { name: /one.time/i }).first().focus()
-    await page.keyboard.press('Space')
-    // Next button
     await page.getByRole('button', { name: /next/i }).focus()
     await page.keyboard.press('Enter')
 
     // Step 2 heading should receive focus after step transition.
-    await expect(page.getByRole('heading', { level: 2 }).first()).toBeFocused({ timeout: 3000 })
+    await expect(page.getByRole('heading', { level: 2, name: /when would you like us/i })).toBeFocused()
 
-    // Step 2 — schedule
-    await page.getByRole('radio', { name: /one.time/i }).first().focus()
+    // Step 2 — schedule. The native date field's typed segment order depends on the browser
+    // locale, so the value is set on the focused field rather than typed digit by digit.
+    await page.getByRole('radio', { name: /one.time/i }).focus()
     await page.keyboard.press('Space')
     await page.locator('#preferredDate').focus()
-    await page.keyboard.type(futureDateStr())
+    await page.locator('#preferredDate').fill(futureDateStr())
     await page.getByRole('button', { name: /next/i }).focus()
     await page.keyboard.press('Enter')
 
     // Step 3 heading should receive focus.
-    await expect(page.getByRole('heading', { level: 2 }).first()).toBeFocused({ timeout: 3000 })
+    await expect(page.getByRole('heading', { level: 2, name: /your contact details/i })).toBeFocused()
 
     // Step 3 — contact details
     await page.locator('#firstName').focus()
@@ -150,29 +142,26 @@ test.describe('Keyboard navigation — P3 Margaret', () => {
     await page.keyboard.press('Enter')
 
     // Step 4 heading should receive focus.
-    await expect(page.getByRole('heading', { level: 2 }).first()).toBeFocused({ timeout: 3000 })
+    await expect(page.getByRole('heading', { level: 2, name: /review your request/i })).toBeFocused()
 
-    // Step 4 — CASL consent + submit
-    const caslCheckbox = page.getByRole('checkbox', { name: /consent|agree|casl/i }).first()
-    await caslCheckbox.focus()
+    // Step 4 — optional CASL marketing consent + submit
+    await page.getByRole('checkbox', { name: /i agree to receive/i }).focus()
     await page.keyboard.press('Space')
     await page.getByRole('button', { name: /send quote request/i }).focus()
     await page.keyboard.press('Enter')
 
-    await expect(page).toHaveURL(/\/thank-you/, { timeout: 8000 })
+    await expect(page).toHaveURL(/\/thank-you/)
   })
 
   test('step progress is announced by screen reader when step changes', async ({ page }) => {
-    await setupBookingMocks(page)
     await page.goto('/booking')
 
     // The aria-live paragraph should initially show Step 1 of 4.
     await expect(page.getByText(/step 1 of 4/i)).toBeVisible()
 
     // Click Next to advance to step 2.
-    await page.getByRole('radio', { name: /standard cleaning/i }).first().click()
-    await page.getByRole('radio', { name: /apartment/i }).first().click()
-    await page.getByRole('radio', { name: /one.time/i }).first().click()
+    await page.getByRole('radio', { name: /standard cleaning/i }).click()
+    await page.getByRole('radio', { name: /apartment/i }).click()
     await page.getByRole('button', { name: /next/i }).click()
 
     // aria-live paragraph updates — screen reader would announce new text.

@@ -1,7 +1,6 @@
 name: E2E (weekly)
-# Playwright persona flows, weekly and on demand (ADR-014). Moved off PRs while the suite is
-# being repaired (ADR-013): it took ~9 minutes per PR and could never block. A red run here is
-# the signal; it gates nothing.
+# Playwright persona flows, weekly and on demand, on the Firebase emulators (ADR-019). The same suite
+# also runs on PRs (firebase-preview.yml) during the two-week trial. No Firebase secrets needed.
 on:
   schedule:
     - cron: '17 9 * * 1' # Mondays 09:17 UTC
@@ -10,16 +9,6 @@ on:
 permissions:
   contents: read
 
-env:
-  # Same dev-database settings the PR previews use.
-  VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
-  VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
-  VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
-  VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
-  VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
-  VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
-  VITE_FIRESTORE_DB_ID: freshnest-dev
-
 jobs:
   e2e:
     runs-on: ubuntu-latest
@@ -27,13 +16,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '22', cache: 'npm' }
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            functions/package-lock.json
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '21' }
       - run: npm ci
-      - name: Install Playwright browsers
+      - name: Install functions dependencies (the seed uses firebase-admin)
+        run: npm ci
+        working-directory: functions
+      - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
         working-directory: apps/customer
-      - name: E2E tests (Playwright)
-        run: npm run test:e2e -- --project=chromium
+      - name: E2E tests (Playwright on emulators)
+        run: npm run test:e2e
         working-directory: apps/customer
         env:
           CI: true
+      - name: Upload traces of failed tests
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-traces
+          path: apps/customer/test-results/
+          retention-days: 7
