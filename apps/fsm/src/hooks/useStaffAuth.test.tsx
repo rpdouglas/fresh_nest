@@ -211,6 +211,27 @@ describe('useStaffAuth Hook', () => {
     expect(result.current.error).toBe('fsm.login.errorNoProfile')
   })
 
+  // HOTFIX-11: real Firebase reports the sign-out after the gate has set the message.
+  it('keeps the refusal message when the sign-out is reported afterwards', async () => {
+    const { result } = renderHook(() => useStaffAuth(), { wrapper })
+
+    act(() => {
+      authStateCallback?.({ uid: 'customer1', email: 'diane@example.ca' })
+    })
+    await waitFor(() => {
+      expect(result.current.error).toBe('fsm.login.errorNoProfile')
+    })
+
+    act(() => {
+      authStateCallback?.(null)
+    })
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
+    })
+    expect(result.current.user).toBeNull()
+    expect(result.current.error).toBe('fsm.login.errorNoProfile')
+  })
+
   it('shows the invalid-credentials error when Firebase rejects the password', async () => {
     mockSignInWithEmailAndPassword.mockRejectedValueOnce(new Error('auth/invalid-credential'))
 

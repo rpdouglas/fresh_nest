@@ -34,7 +34,10 @@ export const StaffAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
       const handleAuthChange = () => {
         setLoading(true)
-        setError(null)
+        // HOTFIX-11: clear the message only when someone signs in. When the gate below signs a
+        // non-staff account out, this listener fires again with null and must keep
+        // fsm.login.errorNoProfile on screen.
+        if (currentUser) setError(null)
         setUser(currentUser)
 
         if (unsubscribeProfile) {
