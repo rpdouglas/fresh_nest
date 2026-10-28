@@ -11,15 +11,15 @@ import {
   where,
   getDoc,
 } from 'firebase/firestore'
-import { db } from '@/lib/firebase/firebase'
+import { db, auth } from '@/lib/firebase/firebase'
 import {
   bookingsCollection,
   jobsCollection,
   payRatesCollection,
   reviewsCollection,
   checklistTemplatesCollection,
-  auditLogCollection,
   staffCollection,
+  changeStamp,
 } from '@freshnest/shared'
 import type { BookingFormData, AdminBookingFormData } from '@/lib/schemas/bookingSchema'
 import type { Language, Booking, BookingStatus, Job, ChecklistTemplate, ChecklistTask, ChecklistSource, PayRate, Review } from '@/types'
@@ -29,6 +29,11 @@ import type { QuotePropertySize, QuoteServiceType, QuoteFrequency } from '@/lib/
 
 
 export type LeadSource = 'organic' | 'google' | 'referral' | 'facebook' | 'direct'
+
+// P3-E37: every save on an audited record carries a `lastChange` stamp naming the signed-in person;
+// the audit triggers turn it into the audit log entry.
+const adminStamp = (extra?: { reason?: string | null; overrideType?: string | null }) =>
+  changeStamp(auth.currentUser?.email, 'admin', extra)
 
 // Firebase Auth lowercases account emails, and the customer portal and the bookings read rule
 // match on `email`, so bookings must store it trimmed and lowercased too.
@@ -89,6 +94,7 @@ export async function submitBooking(
     photoConfirmation: data.serviceType === 'airbnb',
     fsmAppointmentId:  null,
     createdAt:         serverTimestamp(),
+    lastChange:        changeStamp(auth.currentUser?.email, auth.currentUser ? 'customer' : 'public_form'),
   }
 
   if (marketingConsent) {
@@ -125,6 +131,7 @@ export async function createAdminBooking(
     checklistTemplateId: data.checklistTemplateId || null,
     createdBy:         adminEmail,
     createdAt:         serverTimestamp(),
+    lastChange:        changeStamp(adminEmail, 'admin'),
   }
 
   if (marketingConsent) {
@@ -139,12 +146,12 @@ export async function createAdminBooking(
 
 export async function updateBookingStatus(bookingId: string, status: BookingStatus): Promise<void> {
   const docRef = doc(bookingsCollection(db), bookingId)
-  await updateDoc(docRef, { status })
+  await updateDoc(docRef, { status, lastChange: adminStamp() })
 }
 
 export async function updateBookingAssignment(bookingId: string, cleanerName: string | null): Promise<void> {
   const docRef = doc(bookingsCollection(db), bookingId)
-  await updateDoc(docRef, { assignedTo: cleanerName })
+  await updateDoc(docRef, { assignedTo: cleanerName, lastChange: adminStamp() })
 }
 
 export async function assignCleanerTransaction({
@@ -168,6 +175,8 @@ export async function assignCleanerTransaction({
   overrideType?: string | null
   changedByEmail: string
 }): Promise<void> {
+  // P3-E37: the override reason and type travel on the stamp; the audit trigger records them.
+  const stamp = () => changeStamp(changedByEmail, 'admin', { reason: overrideReason, overrideType })
   await runTransaction(db, async (transaction) => {
     // Firestore transactions require every read to happen before any write.
     const newStaffRef = cleanerId ? doc(staffCollection(db), cleanerId) : null
@@ -177,7 +186,7 @@ export async function assignCleanerTransaction({
 
     // 1. Booking update
     const bookingRef = doc(bookingsCollection(db), bookingId)
-    transaction.update(bookingRef, { assignedTo: cleanerName })
+    transaction.update(bookingRef, { assignedTo: cleanerName, lastChange: stamp() })
  
     // 2. Job update
     if (jobId) {
@@ -185,6 +194,7 @@ export async function assignCleanerTransaction({
       transaction.update(jobRef, {
         assignedTo: cleanerId,
         status: cleanerId ? 'assigned' : 'unassigned',
+        lastChange: stamp(),
       })
     }
 
@@ -197,30 +207,15 @@ export async function assignCleanerTransaction({
       if (newStaffRef && newStaffSnap?.exists()) {
         transaction.update(newStaffRef, {
           'financials.currentMonthEarnings': earningsOf(newStaffSnap) + estimatedPay,
+          lastChange: stamp(),
         })
       }
       if (oldStaffRef && oldStaffSnap?.exists()) {
         transaction.update(oldStaffRef, {
           'financials.currentMonthEarnings': Math.max(0, earningsOf(oldStaffSnap) - estimatedPay),
+          lastChange: stamp(),
         })
       }
-    }
-
-    // 5. Create Audit Log if it is an override
-    if (overrideReason && overrideType) {
-      const auditLogRef = doc(auditLogCollection(db))
-      transaction.set(auditLogRef, {
-        id: auditLogRef.id,
-        collection: 'jobs',
-        documentId: jobId || bookingId,
-        field: 'assignedTo',
-        oldValue: oldCleanerId || null,
-        newValue: cleanerId || null,
-        changedBy: changedByEmail,
-        changedAt: new Date(),
-        reason: overrideReason,
-        overrideType: overrideType,
-      })
     }
   })
 }
@@ -255,7 +250,7 @@ export function subscribeToChecklistTemplates(
 export async function createChecklistTemplate(
   template: Omit<ChecklistTemplate, 'id'>,
 ): Promise<string> {
-  const ref = await addDoc(checklistTemplatesCollection(db), template as ChecklistTemplate)
+  const ref = await addDoc(checklistTemplatesCollection(db), { ...template, lastChange: adminStamp() })
   return ref.id
 }
 
@@ -264,13 +259,13 @@ export async function updateChecklistTemplate(
   updates: Partial<Omit<ChecklistTemplate, 'id'>>,
 ): Promise<void> {
   const docRef = doc(checklistTemplatesCollection(db), templateId)
-  await updateDoc(docRef, updates as Record<string, unknown>)
+  await updateDoc(docRef, { ...(updates as Record<string, unknown>), lastChange: adminStamp() })
 }
  
 export async function deleteChecklistTemplate(templateId: string): Promise<void> {
   // Soft-delete: set active to false rather than removing the document
   const docRef = doc(checklistTemplatesCollection(db), templateId)
-  await updateDoc(docRef, { active: false })
+  await updateDoc(docRef, { active: false, lastChange: adminStamp() })
 }
 
 // ── P3-E34: Job checklists ───────────────────────────────────────────────────
@@ -301,6 +296,7 @@ export async function attachJobChecklist(jobId: string, checklist: JobChecklist)
       checklistName: checklist.name,
       checklistSource: checklist.source,
       checklistTasks: orderedTasks(checklist.tasks),
+      lastChange: adminStamp(),
     })
   })
 }
@@ -308,7 +304,7 @@ export async function attachJobChecklist(jobId: string, checklist: JobChecklist)
 /** The saved list future visits of this booking use; renewals copy it (null = by service type). */
 export async function setBookingChecklistTemplate(bookingId: string, templateId: string | null): Promise<void> {
   const docRef = doc(bookingsCollection(db), bookingId)
-  await updateDoc(docRef, { checklistTemplateId: templateId })
+  await updateDoc(docRef, { checklistTemplateId: templateId, lastChange: adminStamp() })
 }
 
 // ── F04: Pay Rates ───────────────────────────────────────────────────────────
@@ -330,6 +326,7 @@ export async function createPayRate(
   const docData = {
     ...rate,
     createdAt: serverTimestamp(),
+    lastChange: adminStamp(),
   }
   const ref = await addDoc(payRatesCollection(db), docData as unknown as PayRate)
   return ref.id
@@ -341,6 +338,7 @@ export async function submitReview(review: Omit<Review, 'id' | 'createdAt'>): Pr
   const docData = {
     ...review,
     createdAt: serverTimestamp(),
+    lastChange: changeStamp(auth.currentUser?.email, auth.currentUser ? 'customer' : 'public_form'),
   }
   
   // Submit the review
@@ -386,9 +384,9 @@ export async function updateReviewStatus(
 ): Promise<void> {
   const docRef = doc(reviewsCollection(db), reviewId)
   if (status === 'approved') {
-    await updateDoc(docRef, { approved: true, rejected: false })
+    await updateDoc(docRef, { approved: true, rejected: false, lastChange: adminStamp() })
   } else {
-    await updateDoc(docRef, { approved: false, rejected: true })
+    await updateDoc(docRef, { approved: false, rejected: true, lastChange: adminStamp() })
   }
 }
 

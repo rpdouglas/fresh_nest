@@ -3,6 +3,7 @@ import { twMerge } from 'tailwind-merge'
 
 export * from './firebase'
 export * from './firebase/converters'
+export * from './firebase/changeStamp'
 export * from './types/booking'
 export * from './types/staff'
 export * from './types/job'
@@ -11,6 +12,7 @@ export * from './roles'
 export * from './auth/waitForRoleClaim'
 export * from './domain/scheduling'
 export * from './domain/policy'
+export * from './domain/audit'
 
 /**
  * Utility to merge Tailwind classes using clsx and tailwind-merge.

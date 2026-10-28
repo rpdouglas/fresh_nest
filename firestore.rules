@@ -16,6 +16,32 @@ service cloud.firestore {
         && request.auth.token.role in ['staff', 'supervisor', 'owner', 'manager'];
     }
 
+    // P3-E37 (W0-3): the `lastChange` stamp on audited records names who made each save; the audit
+    // triggers turn it into the audit log. A new stamp must name the signed-in person (or `public`
+    // for a signed-out quote/review) and carry the request time. TOLERANT PERIOD: a save may leave
+    // the stamp out or unchanged; a follow-up PR (~2 weeks after release) makes it required.
+    function stampValid(lc) {
+      return lc is map
+        && lc.keys().hasAll(['by', 'at', 'source'])
+        && lc.keys().hasOnly(['by', 'at', 'source', 'reason', 'overrideType'])
+        && lc.at == request.time
+        && (!('reason' in lc) || lc.reason == null || (lc.reason is string && lc.reason.size() <= 500))
+        && (!('overrideType' in lc) || lc.overrideType == null || (lc.overrideType is string && lc.overrideType.size() <= 100))
+        && (
+          (request.auth != null
+            && request.auth.token.email is string
+            && lc.by == request.auth.token.email.lower()
+            && (lc.source in ['staff_app', 'customer', 'public_form'] || (lc.source == 'admin' && isOffice())))
+          || (request.auth == null && lc.by == 'public' && lc.source == 'public_form')
+        );
+    }
+
+    function lastChangeOk() {
+      return !('lastChange' in request.resource.data)
+        || (resource != null && resource.data.get('lastChange', null) == request.resource.data.lastChange)
+        || stampValid(request.resource.data.lastChange);
+    }
+
     // 1. Bookings Collection
     match /bookings/{bookingId} {
       
@@ -69,7 +95,8 @@ service cloud.firestore {
         && (!('stripePaymentIntentId' in request.resource.data)
             || request.resource.data.stripePaymentIntentId is string)
         && (!('stripeChargeStatus' in request.resource.data)
-            || request.resource.data.stripeChargeStatus == 'hold');
+            || request.resource.data.stripeChargeStatus == 'hold')
+        && lastChangeOk();
 
       // Admin Booking Creation (phone-in / walk-in — P3-E3)
       allow create: if
@@ -117,18 +144,19 @@ service cloud.firestore {
         && (!('addOns' in request.resource.data) || request.resource.data.addOns is list)
         && (!('squareFootage' in request.resource.data) || request.resource.data.squareFootage is int)
         && (!('notes' in request.resource.data) || request.resource.data.notes is string)
-        && (!('estimatedPrice' in request.resource.data) || request.resource.data.estimatedPrice is number);
+        && (!('estimatedPrice' in request.resource.data) || request.resource.data.estimatedPrice is number)
+        && lastChangeOk();
 
       // Admin and owner read
       allow read: if isOffice() || (request.auth != null && request.auth.token.email == resource.data.email);
 
       // Admin update, or customer cancellation (only status field can change to 'cancelled')
-      allow update: if isOffice() || (
+      allow update: if lastChangeOk() && (isOffice() || (
         request.auth != null 
         && request.auth.token.email == resource.data.email
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'lastChange'])
         && request.resource.data.status == 'cancelled'
-      );
+      ));
       
       // Permanently deleting bookings is forbidden
       allow delete: if false;
@@ -154,10 +182,11 @@ service cloud.firestore {
         && request.resource.data.rating is int && request.resource.data.rating >= 1 && request.resource.data.rating <= 5
         && request.resource.data.approved == false
         && request.resource.data.rejected == false
-        && request.resource.data.createdAt == request.time;
+        && request.resource.data.createdAt == request.time
+        && lastChangeOk();
         
       // Moderation changes allowed only for admins
-      allow update: if isOffice();
+      allow update: if isOffice() && lastChangeOk();
       
       // Prevent direct deletions
       allow delete: if false;
@@ -176,49 +205,51 @@ service cloud.firestore {
       allow read:   if (request.auth != null && request.auth.uid == staffId) || isOffice();
       // P3-E27-A2: create removed — all staff docs created server-side by onStaffRegistered CF
       // (Admin SDK bypasses rules). Client-side addDoc to staff is now blocked as defence in depth.
-      allow update: if isOffice()
+      allow update: if lastChangeOk() && (isOffice()
         || (request.auth != null
             && request.auth.uid == staffId
-            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['constraints', 'preferences', 'financials', 'compliance'])
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['constraints', 'preferences', 'financials', 'compliance', 'lastChange'])
             && (!request.resource.data.financials.diff(resource.data.financials).affectedKeys().hasAny(['currentMonthEarnings', 'earningsHistory']))
-           );
+           ));
       allow delete: if false;
     }
 
     match /jobs/{jobId} {
       allow read:   if (request.auth != null && resource.data.assignedTo == request.auth.uid) || isOffice();
-      allow create: if isOffice();
-      allow update: if isOffice()
+      allow create: if isOffice() && lastChangeOk();
+      allow update: if lastChangeOk() && (isOffice()
         || (request.auth != null
             && resource.data.assignedTo == request.auth.uid
             && request.resource.data.diff(resource.data).affectedKeys()
-                 .hasOnly(['status', 'checkedInAt', 'checkedInGeo', 'completedAt', 'checklistCompletions', 'photos'])
-           );
+                 .hasOnly(['status', 'checkedInAt', 'checkedInGeo', 'completedAt', 'checklistCompletions', 'photos', 'lastChange'])
+           ));
       allow delete: if false;
     }
 
     match /payRates/{rateId} {
       allow read:   if isOffice();
-      allow create: if isOffice();
+      allow create: if isOffice() && lastChangeOk();
       allow update, delete: if false;
     }
 
     match /auditLog/{logId} {
+      // P3-E37: written only by server code (audit triggers, role and policy callables).
       allow read:   if isOffice();
-      allow create: if isOffice();
-      allow update, delete: if false;
+      allow create, update, delete: if false;
     }
 
     match /checklistTemplates/{templateId} {
       allow read:  if isStaff();
-      allow write: if isOffice();
+      allow create, update: if isOffice() && lastChangeOk();
+      allow delete: if isOffice();
     }
 
     // P3-E32: before/after gallery pairs (human-approved 2026-10-04)
     match /galleryPairs/{pairId} {
       // Anyone can read published pairs; admins can read all
       allow read: if resource.data.published == true || isOffice();
-      allow create, update, delete: if isOffice();
+      allow create, update: if isOffice() && lastChangeOk();
+      allow delete: if isOffice();
     }
 
     match /notifications/{staffId}/messages/{messageId} {

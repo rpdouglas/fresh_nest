@@ -1,6 +1,7 @@
 import { onSchedule } from 'firebase-functions/v2/scheduler'
 import { getFirestore } from 'firebase-admin/firestore'
 import { RENEWAL_CREATED_BY, type BookingData } from '../emailTemplates'
+import { serverStamp } from '../lib/audit'
 
 export const onDailyRecurringRenewal = onSchedule(
   {
@@ -90,6 +91,7 @@ export const onDailyRecurringRenewal = onSchedule(
             checklistTemplateId: booking.checklistTemplateId ?? null,
             createdBy: RENEWAL_CREATED_BY,
             createdAt: new Date(),
+            lastChange: serverStamp('onDailyRecurringRenewal'),
           }
 
           await db.collection('bookings').add(newBookingData)

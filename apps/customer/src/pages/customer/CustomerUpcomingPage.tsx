@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { query, where, getDocs, doc, updateDoc } from 'firebase/firestore'
-import { bookingsCollection } from '@freshnest/shared'
-import { db } from '@/lib/firebase/firebase'
+import { bookingsCollection, changeStamp } from '@freshnest/shared'
+import { db, auth } from '@/lib/firebase/firebase'
 import { useCustomerAuthContext } from '@/components/layout/CustomerAuthContext'
 import type { Booking } from '@/types'
 
@@ -56,7 +56,8 @@ export default function CustomerUpcomingPage() {
     try {
       const docRef = doc(bookingsCollection(db), cancellingId)
       // Update status to cancelled. Security rules permit this specifically.
-      await updateDoc(docRef, { status: 'cancelled' })
+      // P3-E37: the stamp names the customer in the audit log (rules allow status + lastChange only).
+      await updateDoc(docRef, { status: 'cancelled', lastChange: changeStamp(auth.currentUser?.email, 'customer') })
       setSuccessMsg(t('customerPortal.upcoming.cancelSuccess'))
       setTimeout(() => setSuccessMsg(null), 4000)
     } catch (err) {

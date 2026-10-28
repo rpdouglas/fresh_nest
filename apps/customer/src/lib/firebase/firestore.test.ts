@@ -5,7 +5,7 @@ import { bookingFormSchema, type BookingFormData } from '@/lib/schemas/bookingSc
 // Capture what would be written to Firestore without touching the network.
 const addDocMock = vi.fn((..._args: unknown[]) => Promise.resolve({ id: 'booking-123' }))
 
-vi.mock('@/lib/firebase/firebase', () => ({ db: {} }))
+vi.mock('@/lib/firebase/firebase', () => ({ db: {}, auth: { currentUser: null } }))
 vi.mock('@freshnest/shared', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@freshnest/shared')>()),
   bookingsCollection: () => ({ name: 'bookings' }),
@@ -17,6 +17,7 @@ vi.mock('@freshnest/shared', async (importOriginal) => ({
 // A fake transaction that enforces Firestore's rule: every read must come before any write.
 const staffDocs: Record<string, { financials?: { currentMonthEarnings?: number } }> = {}
 const txUpdates: { path: string; data: Record<string, unknown> }[] = []
+const txSets: string[] = []
 function fakeTransaction() {
   let wrote = false
   return {
@@ -26,7 +27,7 @@ function fakeTransaction() {
       return Promise.resolve({ exists: () => data !== undefined, data: () => data })
     },
     update: (ref: { path: string }, data: Record<string, unknown>) => { wrote = true; txUpdates.push({ path: ref.path, data }) },
-    set: () => { wrote = true },
+    set: (ref: { path: string }) => { wrote = true; txSets.push(ref.path) },
   }
 }
 vi.mock('firebase/firestore', async (importOriginal) => ({
@@ -67,6 +68,9 @@ describe('submitBooking (public quote request)', () => {
     expect(written).not.toHaveProperty('estimatedPrice')
     expect(written).not.toHaveProperty('stripePaymentIntentId')
     expect(written).not.toHaveProperty('stripeChargeStatus')
+    // P3-E37: a visitor's quote request is stamped for the audit log as the public form.
+    expect(written).toHaveProperty('lastChange.by', 'public')
+    expect(written).toHaveProperty('lastChange.source', 'public_form')
   })
 
   it('stores the email lowercased so the customer portal and read rule can find it', async () => {
@@ -83,6 +87,7 @@ describe('submitBooking (public quote request)', () => {
 describe('assignCleanerTransaction (P12 Lauren dispatch)', () => {
   beforeEach(() => {
     txUpdates.length = 0
+    txSets.length = 0
     staffDocs['carla'] = { financials: { currentMonthEarnings: 400 } }
     staffDocs['brenda'] = { financials: { currentMonthEarnings: 100 } }
   })
@@ -93,17 +98,28 @@ describe('assignCleanerTransaction (P12 Lauren dispatch)', () => {
     await assignCleanerTransaction({
       ...base, cleanerId: 'brenda', cleanerName: 'Brenda Côté', oldCleanerId: 'carla',
     })
-    expect(txUpdates).toContainEqual({ path: 'bookings/b1', data: { assignedTo: 'Brenda Côté' } })
-    expect(txUpdates).toContainEqual({ path: 'jobs/j1', data: { assignedTo: 'brenda', status: 'assigned' } })
-    expect(txUpdates).toContainEqual({ path: 'staff/brenda', data: { 'financials.currentMonthEarnings': 160 } })
-    expect(txUpdates).toContainEqual({ path: 'staff/carla', data: { 'financials.currentMonthEarnings': 340 } })
+    expect(txUpdates.find((u) => u.path === 'bookings/b1')?.data).toMatchObject({ assignedTo: 'Brenda Côté' })
+    expect(txUpdates.find((u) => u.path === 'jobs/j1')?.data).toMatchObject({ assignedTo: 'brenda', status: 'assigned' })
+    expect(txUpdates.find((u) => u.path === 'staff/brenda')?.data).toMatchObject({ 'financials.currentMonthEarnings': 160 })
+    expect(txUpdates.find((u) => u.path === 'staff/carla')?.data).toMatchObject({ 'financials.currentMonthEarnings': 340 })
   })
 
   it('unassigning returns the job to the pool and never takes earnings below zero', async () => {
     staffDocs['carla'] = { financials: { currentMonthEarnings: 20 } }
     await assignCleanerTransaction({ ...base, cleanerId: null, cleanerName: null, oldCleanerId: 'carla' })
-    expect(txUpdates).toContainEqual({ path: 'jobs/j1', data: { assignedTo: null, status: 'unassigned' } })
-    expect(txUpdates).toContainEqual({ path: 'staff/carla', data: { 'financials.currentMonthEarnings': 0 } })
+    expect(txUpdates.find((u) => u.path === 'jobs/j1')?.data).toMatchObject({ assignedTo: null, status: 'unassigned' })
+    expect(txUpdates.find((u) => u.path === 'staff/carla')?.data).toMatchObject({ 'financials.currentMonthEarnings': 0 })
+  })
+
+  // P3-E37: the audit trigger writes the log; the override reason and type ride on the stamp.
+  it('stamps every write with the dispatcher and the override; no audit row from the browser', async () => {
+    await assignCleanerTransaction({
+      ...base, cleanerId: 'brenda', cleanerName: 'Brenda Côté', oldCleanerId: 'carla',
+      overrideReason: 'Short drive', overrideType: 'travel_conflict_exceeded',
+    })
+    const stamp = { by: 'lauren@example.com', source: 'admin', reason: 'Short drive', overrideType: 'travel_conflict_exceeded' }
+    for (const update of txUpdates) expect(update.data.lastChange).toMatchObject(stamp)
+    expect(txSets).toEqual([])
   })
 
   it('reassigning to the same cleaner leaves earnings unchanged', async () => {

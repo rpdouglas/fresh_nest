@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { doc, updateDoc, arrayUnion } from 'firebase/firestore'
-import { staffCollection, cn } from '@freshnest/shared'
-import { db } from '../../lib/firebase/firebase'
+import { staffCollection, cn, changeStamp } from '@freshnest/shared'
+import { db, auth } from '../../lib/firebase/firebase'
 import { useStaffAuth } from '../../hooks/useStaffAuth'
 
 export const TermsConsentOverlay: React.FC = () => {
@@ -59,6 +59,7 @@ export const TermsConsentOverlay: React.FC = () => {
           acceptedAt: new Date(),
           ipAddress: ipAddress || 'offline',
         }),
+        lastChange: changeStamp(auth.currentUser?.email, 'staff_app'),
       })
     } catch (err) {
       console.error('Failed to accept Terms of Service:', err)

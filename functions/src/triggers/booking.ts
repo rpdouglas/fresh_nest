@@ -15,6 +15,7 @@ import { sendOwnerNotification, sendClientConfirmation } from '../sendEmail'
 import { sendSmsConfirmation, sendOwnerAlertSms } from '../sendSms'
 import { isRenewal, isAdminCreated, type BookingData } from '../emailTemplates'
 import { createJobFromBooking } from '../jobs'
+import { serverStamp } from '../lib/audit'
 
 // F03 / E31: Trigger when booking is created
 export const onBookingCreated = onDocumentCreated(
@@ -174,6 +175,7 @@ export const onBookingCancelled = onDocumentUpdated(
           await db.collection('jobs').doc(jobId).update({
             status: 'cancelled',
             cancelledAt: new Date(),
+            lastChange: serverStamp('onBookingCancelled', { reason: 'Booking cancelled' }),
           })
         }
       } catch (jobErr) {

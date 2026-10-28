@@ -93,6 +93,15 @@
         { "fieldPath": "reviewEmailSent", "order": "ASCENDING" },
         { "fieldPath": "reviewRequestScheduledFor", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "auditLog",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "collection", "order": "ASCENDING" },
+        { "fieldPath": "documentId", "order": "ASCENDING" },
+        { "fieldPath": "changedAt", "order": "DESCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []

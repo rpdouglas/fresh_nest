@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { doc, updateDoc } from 'firebase/firestore'
-import { staffCollection } from '@freshnest/shared'
-import { db } from '../../lib/firebase/firebase'
+import { staffCollection, changeStamp } from '@freshnest/shared'
+import { db, auth } from '../../lib/firebase/firebase'
 import { useStaffAuth } from '../../hooks/useStaffAuth'
 import type { StaffLanguage } from '../../types'
 
@@ -31,6 +31,7 @@ export const LanguageSelectionOverlay: React.FC<LanguageSelectionOverlayProps> =
       const staffRef = doc(staffCollection(db), staffProfile.id)
       await updateDoc(staffRef, {
         'preferences.language': lang,
+        lastChange: changeStamp(auth.currentUser?.email, 'staff_app'),
       })
 
       if (onComplete) onComplete()

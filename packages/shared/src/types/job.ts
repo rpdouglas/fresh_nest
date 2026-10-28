@@ -1,3 +1,4 @@
+import type { LastChange } from '../domain/audit'
 import type { ServiceType } from './booking'
 import type { ChecklistTask } from './common'
 
@@ -37,6 +38,8 @@ export interface ChecklistCompletion {
 }
 
 export interface Job {
+  /** P3-E37: who made the latest save (see domain/audit.ts). */
+  lastChange?: LastChange
   id?: string
   bookingId: string
   clientName: string

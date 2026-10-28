@@ -1,6 +1,6 @@
 # P3-E37 Plan — Audit Everywhere (W0-3)
 
-**Spec:** [`projects/P3-E37.md`](../projects/P3-E37.md) · **Date:** 2026-10-28 · **Status:** Phase A — awaiting approval
+**Spec:** [`projects/P3-E37.md`](../projects/P3-E37.md) · **Date:** 2026-10-28 · **Status:** Strategy 1 approved 2026-10-28 (Phase B)
 
 The owner decisions (spec §"Owner decisions") fix *what* we build. The three strategies below differ in **how the triggers are organised** and **how it ships**.
 

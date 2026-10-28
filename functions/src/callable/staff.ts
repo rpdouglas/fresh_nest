@@ -5,6 +5,7 @@ import { getAuth } from 'firebase-admin/auth'
 import { logger } from 'firebase-functions'
 import { Sentry, RESEND_API_KEY, OWNER_EMAIL, FSM_APP_URL } from '../lib/shared'
 import { sendWelcomeEmail } from '../sendEmail'
+import { serverStamp } from '../lib/audit'
 
 // P3-E27-A2: Staff registration — atomic Auth + claims + Firestore write
 export const onStaffRegistered = onCall(
@@ -107,6 +108,8 @@ export const onStaffRegistered = onCall(
         trainingCompleted: false,
       },
       createdAt: Timestamp.now(),
+      // P3-E37: the Owner/Manager who registered them.
+      lastChange: serverStamp(authContext.token.email ?? `onStaffRegistered:${authContext.uid}`, { source: 'admin' }),
     })
 
     logger.info(`[onStaffRegistered] staff/${uid} document written for ${email}`)
@@ -222,7 +225,6 @@ export const migrateComplianceRecords = onCall(async (request) => {
   let patched = 0
   let skipped = 0
   const batch = db.batch()
-  const auditBatch = db.batch()
 
   for (const staffDoc of staffSnap.docs) {
     const data = staffDoc.data()
@@ -233,29 +235,20 @@ export const migrateComplianceRecords = onCall(async (request) => {
       continue
     }
 
+    // P3-E37: auditStaff records the change; the stamp carries the reason and override type.
     batch.update(staffDoc.ref, {
       'compliance.acceptedTermsVersion': null,
       'compliance.termsHistory': [],
-    })
-
-    const auditRef = db.collection('auditLog').doc()
-    auditBatch.set(auditRef, {
-      collection: 'staff',
-      documentId: staffDoc.id,
-      field: 'compliance',
-      oldValue: { acceptedTermsVersion: currentVersion, termsHistory: data.compliance?.termsHistory ?? [] },
-      newValue: { acceptedTermsVersion: null, termsHistory: [] },
-      changedBy: 'P3-E27-A1-migration',
-      changedAt: Timestamp.now(),
-      reason: 'PIPEDA false-consent remediation — acceptedTermsVersion was written by admin at registration before employee saw or agreed to anything.',
-      overrideType: 'compliance_migration',
+      lastChange: serverStamp('migrateComplianceRecords', {
+        reason: 'PIPEDA false-consent remediation — acceptedTermsVersion was written by admin at registration before employee saw or agreed to anything.',
+        overrideType: 'compliance_migration',
+      }),
     })
 
     patched++
   }
 
   await batch.commit()
-  await auditBatch.commit()
 
   const summary = { patched, skipped, total: staffSnap.size }
   logger.info('[migrateComplianceRecords] P3-E27-A1 migration complete', summary)
