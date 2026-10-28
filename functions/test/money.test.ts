@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { amountCentsOf, centsOrLegacy, formatCents, HST_BASIS_POINTS, multiplyCents, normalizeFinancials, percentOfCents, roundHalfUp, toCents } from '../src/shared/money'
+import { amountCentsOf, formatCents, HST_BASIS_POINTS, multiplyCents, normalizeFinancials, percentOfCents, roundHalfUp, toCents } from '../src/shared/money'
 import { estimateShiftPayCents, earningsOverageCents } from '../src/shared/scheduling'
 
 // P3-E38 (ADR-020): integer cents, rounded half up once.
@@ -44,24 +44,21 @@ describe('earnings stay exact (P7 Carla, P13 Marcus)', () => {
   })
 })
 
-describe('records saved in dollars read as cents (P3-E38 PR 2 transition)', () => {
-  it('prefers the cents field, then converts the dollar field', () => {
-    expect(centsOrLegacy(2250, 99)).toBe(2250)
-    expect(centsOrLegacy(undefined, 22.5)).toBe(2250)
-    expect(centsOrLegacy(undefined, null)).toBeNull()
-    expect(amountCentsOf({ amount: 18 })).toBe(1800) // P12 Lauren's $18 snapshot
-    expect(amountCentsOf({ amountCents: 2000, amount: 18 })).toBe(2000)
+describe('Firestore cents normalizers (P3-E38, ADR-020)', () => {
+  it('reads amountCents on pay rates and snapshots', () => {
+    expect(amountCentsOf({ amountCents: 1800 })).toBe(1800) // P12 Lauren's $18 snapshot
+    expect(amountCentsOf({})).toBe(0)
   })
 
-  it('staff financials, including history totals and a null (no) limit', () => {
+  it('normalizes staff financials in cents, including history totals and a null (no) limit', () => {
     expect(normalizeFinancials({
-      monthlyEarningsLimit: 1000, currentMonthEarnings: 640.5,
-      earningsHistory: [{ month: '2026-09', total: 980.25 }, { month: '2026-10', totalCents: 12345 }],
+      monthlyEarningsLimitCents: 100000, currentMonthEarningsCents: 64050,
+      earningsHistory: [{ month: '2026-09', totalCents: 98025 }, { month: '2026-10', totalCents: 12345 }],
     })).toEqual({
       monthlyEarningsLimitCents: 100000, currentMonthEarningsCents: 64050,
       earningsHistory: [{ month: '2026-09', totalCents: 98025 }, { month: '2026-10', totalCents: 12345 }],
     })
-    expect(normalizeFinancials({ monthlyEarningsLimit: null }).monthlyEarningsLimitCents).toBeNull()
+    expect(normalizeFinancials({ monthlyEarningsLimitCents: null }).monthlyEarningsLimitCents).toBeNull()
     expect(normalizeFinancials(undefined)).toEqual({ monthlyEarningsLimitCents: null, currentMonthEarningsCents: 0, earningsHistory: [] })
   })
 })

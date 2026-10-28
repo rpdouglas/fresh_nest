@@ -1,10 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import { toCents as sharedToCents } from '../src/shared/money'
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const { toCents, planDocument, parseArgs } = require('../scripts/migrate-money-to-cents.cjs') as {
+const { toCents, planDocument, planStripDocument, parseArgs } = require('../scripts/migrate-money-to-cents.cjs') as {
   toCents: (dollars: number) => number
   planDocument: (kind: string, data: Record<string, unknown>) => Record<string, unknown> | null
-  parseArgs: (argv: string[]) => { apply: boolean; database: string }
+  planStripDocument: (kind: string, data: Record<string, unknown>, deleteSentinel: unknown) => Record<string, unknown> | null
+  parseArgs: (argv: string[]) => { apply: boolean; stripLegacy: boolean; database: string }
 }
 
 // P3-E38 PR 2: dollar fields get their integer-cents twin; dollars stay for one release.
@@ -46,6 +47,37 @@ describe('migrate-money-to-cents', () => {
 
   it('requires an explicit database', () => {
     expect(() => parseArgs([])).toThrow(/--database is required/)
-    expect(parseArgs(['--database=freshnest-dev', '--apply'])).toEqual({ apply: true, database: 'freshnest-dev' })
+    expect(parseArgs(['--database=freshnest-dev', '--apply'])).toEqual({ apply: true, stripLegacy: false, database: 'freshnest-dev' })
+    expect(parseArgs(['--database=freshnest-dev', '--strip-legacy', '--apply'])).toEqual({ apply: true, stripLegacy: true, database: 'freshnest-dev' })
+  })
+
+  it('strips legacy dollar fields only when their cents twin is present (--strip-legacy)', () => {
+    const DEL = '__DELETE__'
+    expect(planStripDocument('bookings', { estimatedPrice: 182.5, estimatedPriceCents: 18250 }, DEL)).toEqual({ estimatedPrice: DEL })
+    expect(planStripDocument('bookings', { estimatedPrice: 182.5 }, DEL)).toBeNull()
+    expect(planStripDocument('payRates', { amount: 22, amountCents: 2200 }, DEL)).toEqual({ amount: DEL })
+    expect(planStripDocument('jobs', { payRateSnapshot: { rateId: 'r1', amount: 18, amountCents: 1800 } }, DEL))
+      .toEqual({ 'payRateSnapshot.amount': DEL })
+    expect(planStripDocument('staff', {
+      financials: {
+        monthlyEarningsLimit: 1000,
+        monthlyEarningsLimitCents: 100000,
+        currentMonthEarnings: 640.5,
+        currentMonthEarningsCents: 64050,
+        earningsHistory: [{ month: '2026-09', total: 980.25, totalCents: 98025 }],
+      },
+    }, DEL)).toEqual({
+      'financials.monthlyEarningsLimit': DEL,
+      'financials.currentMonthEarnings': DEL,
+      'financials.earningsHistory': [{ month: '2026-09', totalCents: 98025 }],
+    })
+    expect(planStripDocument('staff', {
+      financials: { monthlyEarningsLimit: null, monthlyEarningsLimitCents: null, currentMonthEarningsCents: 0, earningsHistory: [] },
+    }, DEL)).toEqual({ 'financials.monthlyEarningsLimit': DEL })
+    expect(planStripDocument('policy', {
+      defaultOdspMonthlyLimit: 1000,
+      defaultOdspMonthlyLimitCents: 100000,
+      lateCancellationFeeDollars: 25,
+    }, DEL)).toEqual({ defaultOdspMonthlyLimit: DEL })
   })
 })

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { deleteField, doc, onSnapshot, updateDoc } from 'firebase/firestore'
+import { doc, onSnapshot, updateDoc } from 'firebase/firestore'
 import {
   DEFAULT_POLICY_SETTINGS,
   centsToDollars,
@@ -154,7 +154,6 @@ export const ProfilePage: React.FC = () => {
         'constraints.transitBufferMinutes': Number(transitBufferMinutes),
         'constraints.blockedWindows': blockedWindows,
         'financials.monthlyEarningsLimitCents': parsedLimit === null ? null : toCents(parsedLimit),
-        'financials.monthlyEarningsLimit': deleteField(), // pre-P3-E38 dollars
         lastChange: changeStamp(auth.currentUser?.email, 'staff_app'),
       })
 

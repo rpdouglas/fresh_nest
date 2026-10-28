@@ -46,19 +46,11 @@ export function formatCents(cents: Cents, lang: string = 'en'): string {
     .format(centsToDollars(cents))
 }
 
-// ── Dollar fields → cents (P3-E38 PR 2) ─────────────────────────────────────
-// Records saved before the migration hold dollars in the old field names. Readers go through
-// these normalizers (the app converters and the Cloud Functions), so the rest of the code sees
-// only `…Cents`. Remove them once migrate-money-to-cents.cjs has run and the old fields are gone.
+// ── Firestore record normalizers (P3-E38, ADR-020) ──────────────────────────
+// Coerces raw Firestore fields to integer cents (or null / 0 when absent).
 
-const isNum = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v)
-
-/** The cents value, or the old dollar value converted, or null when neither is set. */
-export function centsOrLegacy(cents: unknown, legacyDollars: unknown): Cents | null {
-  if (isNum(cents)) return Math.round(cents)
-  if (isNum(legacyDollars)) return toCents(legacyDollars)
-  return null
-}
+const asCents = (v: unknown): Cents | null =>
+  typeof v === 'number' && Number.isFinite(v) ? Math.round(v) : null
 
 export interface StaffFinancialsCents {
   monthlyEarningsLimitCents: Cents | null
@@ -70,17 +62,17 @@ export function normalizeFinancials(raw: unknown): StaffFinancialsCents {
   const f = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>
   const history = Array.isArray(f.earningsHistory) ? (f.earningsHistory as Array<Record<string, unknown>>) : []
   return {
-    monthlyEarningsLimitCents: centsOrLegacy(f.monthlyEarningsLimitCents, f.monthlyEarningsLimit),
-    currentMonthEarningsCents: centsOrLegacy(f.currentMonthEarningsCents, f.currentMonthEarnings) ?? 0,
+    monthlyEarningsLimitCents: asCents(f.monthlyEarningsLimitCents),
+    currentMonthEarningsCents: asCents(f.currentMonthEarningsCents) ?? 0,
     earningsHistory: history.map((h) => ({
       month: String(h.month ?? ''),
-      totalCents: centsOrLegacy(h.totalCents, h.total) ?? 0,
+      totalCents: asCents(h.totalCents) ?? 0,
     })),
   }
 }
 
-/** Pay rate or pay-rate snapshot amount in cents (`amountCents`, or the old `amount` in dollars). */
+/** Pay rate or pay-rate snapshot amount in integer cents (`amountCents`). */
 export function amountCentsOf(raw: unknown): Cents {
   const r = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>
-  return centsOrLegacy(r.amountCents, r.amount) ?? 0
+  return asCents(r.amountCents) ?? 0
 }

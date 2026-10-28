@@ -12,12 +12,10 @@ import { buildOpenShifts, type JobRecord } from '../src/lib/openShifts'
 describe('P3-E36 (W0-2) — Operational Settings & Policy Record', () => {
   it('returns DEFAULT_POLICY_SETTINGS when Firestore doc is missing or partial', () => {
     expect(normalizePolicySettings(undefined)).toEqual(DEFAULT_POLICY_SETTINGS)
-    // P3-E38: settings saved in dollars before the migration read as cents
-    expect(normalizePolicySettings({ defaultOdspMonthlyLimit: 1200, lateCancellationFeeDollars: 25.5 })).toMatchObject({
-      defaultOdspMonthlyLimitCents: 120000,
+    expect(normalizePolicySettings({ defaultOdspMonthlyLimitCents: 90000, lateCancellationFeeCents: 2550 })).toMatchObject({
+      defaultOdspMonthlyLimitCents: 90000,
       lateCancellationFeeCents: 2550,
     })
-    expect(normalizePolicySettings({ defaultOdspMonthlyLimit: 1200, defaultOdspMonthlyLimitCents: 90000 }).defaultOdspMonthlyLimitCents).toBe(90000)
     expect(normalizePolicySettings({ defaultVehicleBufferMinutes: 45 })).toEqual({
       ...DEFAULT_POLICY_SETTINGS,
       defaultVehicleBufferMinutes: 45,
@@ -169,7 +167,7 @@ describe('P3-E36 (W0-2) — Operational Settings & Policy Record', () => {
         scheduledStartTime: '11:35', // 35 min gap: allowed under 30m default, blocked under 45m policy!
         scheduledEndTime: '13:35',
         clientAddress: '9 Main St, Long Sault ON K0C 1P0',
-        payRateSnapshot: { rateId: 'r1', amount: 25, currency: 'CAD' },
+        payRateSnapshot: { rateId: 'r1', amountCents: 2500, currency: 'CAD' },
         createdAt: { toMillis: () => 100 },
       },
     }

@@ -35,3 +35,6 @@ docs/archive/
 
 # Bundle report from rollup-plugin-visualizer, rebuilt on every build
 apps/customer/stats.html
+
+# Service account keys (never commit)
+*firebase-adminsdk*.json

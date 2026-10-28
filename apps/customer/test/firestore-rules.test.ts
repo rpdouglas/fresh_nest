@@ -176,7 +176,7 @@ describe('Firestore Security Rules', () => {
         status: 'active',
         preferences: { language: 'fr' },
         constraints: { transportMode: 'transit', transitBufferMinutes: 60, blockedWindows: [] },
-        financials: { monthlyEarningsLimit: 800, currentMonthEarnings: 200, earningsHistory: [] },
+        financials: { monthlyEarningsLimitCents: 80000, currentMonthEarningsCents: 20000, earningsHistory: [] },
       }
       await testEnv.withSecurityRulesDisabled(async (context) => {
         const db = context.firestore()
@@ -192,26 +192,24 @@ describe('Firestore Security Rules', () => {
         constraints: { transportMode: 'walk', transitBufferMinutes: 30, blockedWindows: [] },
       }))
 
-      // Attempt to modify financials currentMonthEarnings (blocked)
+      // Attempt to modify financials currentMonthEarningsCents (blocked)
       await assertFails(updateDoc(ref, {
-        'financials.currentMonthEarnings': 1000,
+        'financials.currentMonthEarningsCents': 100000,
       }))
     })
 
-    // P3-E38: the earnings total in cents is protected the same way, and so is the old dollar
-    // total on a record the migration hasn't reached yet (lowering it would raise the headroom).
-    it('blocks staff from changing their earnings total in cents or the old dollar total', async () => {
+    // P3-E38: the earnings total in cents and history are protected from staff self-modification.
+    it('blocks staff from changing their earnings total in cents or earningsHistory', async () => {
       await testEnv.withSecurityRulesDisabled(async (context) => {
         await setDoc(doc(context.firestore(), 'staff', 'carla-uid'), {
           firstName: 'Carla', lastName: 'M', role: 'cleaner', status: 'active',
           preferences: { language: 'en' },
           constraints: { transportMode: 'transit', transitBufferMinutes: 60, blockedWindows: [] },
-          financials: { monthlyEarningsLimitCents: 100000, currentMonthEarningsCents: 95000, currentMonthEarnings: 950, earningsHistory: [] },
+          financials: { monthlyEarningsLimitCents: 100000, currentMonthEarningsCents: 95000, earningsHistory: [] },
         })
       })
       const ref = doc(testEnv.authenticatedContext('carla-uid').firestore(), 'staff', 'carla-uid')
       await assertFails(updateDoc(ref, { 'financials.currentMonthEarningsCents': 0 }))
-      await assertFails(updateDoc(ref, { 'financials.currentMonthEarnings': 0 }))
       await assertFails(updateDoc(ref, { 'financials.earningsHistory': [{ month: '2026-09', totalCents: 0 }] }))
     })
   })

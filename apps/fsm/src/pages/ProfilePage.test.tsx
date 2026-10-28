@@ -167,9 +167,8 @@ describe('ProfilePage Component', () => {
       expect.objectContaining({
         'constraints.transportMode': 'personal_vehicle',
         'constraints.transitBufferMinutes': 60,
-        // typed as 1000 dollars, saved as cents; the old dollar field is removed
+        // typed as 1000 dollars, saved as cents
         'financials.monthlyEarningsLimitCents': 100000,
-        'financials.monthlyEarningsLimit': 'delete-field',
       })
     )
   })

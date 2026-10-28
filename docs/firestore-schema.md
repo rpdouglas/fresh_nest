@@ -1,5 +1,5 @@
 # Firestore Database Schema Reference
-**Version:** 2.1 | **Updated:** 2026-10-27 (P3-E34 job checklists)
+**Version:** 2.2 | **Updated:** 2026-10-28 (P3-E38 money in integer cents, ADR-020)
 
 ---
 
@@ -18,7 +18,6 @@ Stores residential, commercial, and Airbnb cleaning reservations.
 | `bathrooms` | `number` | ✅ | Count of bathrooms |
 | `squareFootage` | `number` | ❌ | Approximate square footage (optional) |
 | `estimatedPriceCents` | `int` | ❌ | P3-E38: internal estimate in integer cents (office-created bookings); never shown on the public site (P3-E29). Rules: must be `int` |
-| `estimatedPrice` | `number` | ❌ | *Deprecated (P3-E38): dollars, before the migration — read as cents by the converters; removed by the clean-up PR.* |
 | `frequency` | `string` | ✅ | `'one-time' \| 'weekly' \| 'biweekly' \| 'monthly'` |
 | `pets` | `boolean` | ✅ | `true` if pets are present (triggers pet-safe products notification) |
 | `address` | `string` | ✅ | Full street address |
@@ -90,7 +89,7 @@ Stores employee profiles, schedule constraints, financial limits, and compliance
 | `status` | `string` | ✅ | `'onboarding' \| 'active' \| 'inactive'` |
 | `preferences` | `map` | ✅ | Preferences: `{ language: 'en' \| 'fr' }` |
 | `constraints` | `map` | ✅ | Constraints: `{ transportMode: 'personal_vehicle' \| 'transit' \| 'rideshare' \| 'walk', transitBufferMinutes: number, blockedWindows: BlockedWindow[] }` |
-| `financials` | `map` | ✅ | Earnings in integer cents (P3-E38): `{ monthlyEarningsLimitCents: int \| null, currentMonthEarningsCents: int, earningsHistory: Array<{ month: string, totalCents: int }> }`. `null` limit = no cap; `month` is the Toronto month `YYYY-MM`. Staff can't change `currentMonthEarningsCents` or `earningsHistory` (rules). The old dollar keys `monthlyEarningsLimit`, `currentMonthEarnings` and `earningsHistory[].total` are Deprecated (P3-E38): dollars, before the migration — read as cents by the converters; removed by the clean-up PR. |
+| `financials` | `map` | ✅ | Earnings in integer cents (P3-E38, ADR-020): `{ monthlyEarningsLimitCents: int \| null, currentMonthEarningsCents: int, earningsHistory: Array<{ month: string, totalCents: int }> }`. `null` limit = no cap; `month` is the Toronto month `YYYY-MM`. Staff can't change `currentMonthEarningsCents` or `earningsHistory` (rules). |
 | `compliance` | `map` | ✅ | Terms consent details: `{ acceptedTermsVersion: string \| null, termsHistory: TermsAcceptance[] }`. `null` = employee has not yet accepted any version (P3-E27-A1 fix). Real consent is collected client-side by `TermsConsentOverlay` — never written by admin at registration. |
 | `welcomeEmailSentAt` | `Timestamp \| null` | ❌ | Timestamp representing when the onboarding welcome/invitation email was sent. |
 | `onboardingChecklist` | `map` | ✅ | Key-value mapping of checkpoints, e.g., `{"backgroundCheck": true}` |
@@ -132,7 +131,7 @@ Stores assigned and unassigned cleaning jobs generated from confirmed bookings.
 | `checkedInAt` | `Timestamp \| null` | ✅ | Geotagged check-in timestamp |
 | `checkedInGeo` | `map \| null` | ✅ | `{ lat: number, lng: number }` check-in geolocation coordinates |
 | `completedAt` | `Timestamp \| null` | ✅ | Completed job check-out timestamp |
-| `payRateSnapshot` | `map` | ✅ | `{ rateId: string, amountCents: int, currency: 'CAD', effectiveAt: string, snapshotAt: string }` — hourly rate in integer cents, frozen when the job is created (P12). The old `amount` (dollars) is Deprecated (P3-E38): dollars, before the migration — read as cents by the converters; removed by the clean-up PR. |
+| `payRateSnapshot` | `map` | ✅ | `{ rateId: string, amountCents: int, currency: 'CAD', effectiveAt: string, snapshotAt: string }` — hourly rate in integer cents, frozen when the job is created (P12, ADR-020). |
 | `checklistTemplate` | `string` | ✅ | ID of the saved list the checklist came from (`''` for a custom list or when no template exists). Kept for traceability. |
 | `checklistTasks` | `array` | ❌ | P3-E34: the job's own copy of its checklist, written at job creation and when an admin attaches a list: `Array<{ id, labelEn, labelFr, icon, requiresPhoto, photoPhase, order? }>` (same task shape as §8). Later edits to the saved list don't change it. The FSM app reads this first; jobs created before P3-E34 lack it and read the live template. Admin-written only, and only while the job is `unassigned`/`assigned`/`acknowledged` with no `checklistCompletions`. |
 | `checklistName` | `string` | ❌ | P3-E34: display name of the job's checklist (the saved list's name, or "Custom checklist") |
@@ -154,7 +153,6 @@ Stores configured pay rates per employee role for payroll tracking.
 | :--- | :--- | :--- | :--- |
 | `role` | `string` | ✅ | Target role: `'cleaner' \| 'lead' \| 'supervisor'` |
 | `amountCents` | `int` | ✅ | P3-E38: hourly rate in integer cents (entered in dollars in the admin form) |
-| `amount` | `number` | ❌ | *Deprecated (P3-E38): dollars, before the migration — read as cents by the converters; removed by the clean-up PR.* |
 | `currency` | `string` | ✅ | `'CAD'` |
 | `effectiveFrom` | `Timestamp` | ✅ | Timestamp of rate applicability start |
 | `effectiveTo` | `Timestamp \| null` | ✅ | Timestamp of rate applicability end |
@@ -346,9 +344,4 @@ const db = getFirestore('(default)')
 - **Calendar dates and wall times are local to `America/Toronto`.** This covers `preferredDate`, `scheduledDate`, `scheduledStartTime` and `scheduledEndTime`, and also `earningsHistory[].month` (`YYYY-MM`, the Toronto month). Compute them with the `packages/shared/src/domain/time.ts` helpers, never from `toISOString()`, which gives the UTC date.
 - **Instants** (`createdAt`, `checkedInAt`, `completedAt`, `changedAt`, …) are Firestore Timestamps, which are UTC.
 - **Scheduled Functions** run on `America/Toronto` time: reminders at 09:00, the earnings rollover at 00:00 on the 1st, renewals at 02:00.
-- **Money:** integer cents in fields named `…Cents`, with tax in a separate `taxCents`; one rounding, half up (`packages/shared/src/domain/money.ts`). Forms take dollars and convert.
-- **Money migration (P3-E38 PR 2):**
-  - **Fields:** `bookings.estimatedPrice`, `payRates.amount`, `jobs.payRateSnapshot.amount`, `staff.financials.{monthlyEarningsLimit, currentMonthEarnings, earningsHistory[].total}` and the four `settings/policy` money keys now have `…Cents` versions.
-  - **Reading:** readers prefer cents and fall back to the old dollar field (×100) until `functions/scripts/migrate-money-to-cents.cjs` has run.
-  - **Clean-up:** a follow-up PR removes the dollar fields.
-  - **Policy history:** `settings/policy/history` versions saved before the change keep their dollar keys, as recorded.
+- **Money:** integer cents in fields named `…Cents` (`bookings.estimatedPriceCents`, `payRates.amountCents`, `jobs.payRateSnapshot.amountCents`, `staff.financials.{monthlyEarningsLimitCents, currentMonthEarningsCents, earningsHistory[].totalCents}`, and the four `settings/policy` money keys), with tax in a separate `taxCents`; one rounding, half up (`packages/shared/src/domain/money.ts`). Forms take dollars and convert. All legacy dollar fields were migrated and stripped on 2026-10-28 (`functions/scripts/migrate-money-to-cents.cjs`).

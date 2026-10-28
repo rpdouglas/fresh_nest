@@ -9,7 +9,7 @@ import {
   CollectionReference,
 } from 'firebase-admin/firestore'
 import { logError } from '../lib/shared'
-import { centsOrLegacy, centsToDollars, roundHalfUp, toCents } from '../shared/money'
+import { centsToDollars, roundHalfUp, toCents } from '../shared/money'
 import { BUSINESS_TZ, monthKey } from '../shared/time'
 
 function calculateEstimatedPriceFallback(propertyType: string, serviceType: string, frequency: string): number {
@@ -117,7 +117,6 @@ export const getAnalyticsKPIs = onCall(async (request) => {
   const snapshot = await bookingsQuery.select(
     'leadSource',
     'createdAt',
-    'estimatedPrice',
     'estimatedPriceCents',
     'referredBy',
     'propertyType',
@@ -146,12 +145,14 @@ export const getAnalyticsKPIs = onCall(async (request) => {
     const date = createdAtTimestamp.toDate()
 
     // P3-E38: summed in integer cents; reported in dollars for the charts
-    const price = centsOrLegacy(data['estimatedPriceCents'], data['estimatedPrice'])
-      ?? toCents(calculateEstimatedPriceFallback(
-        data['propertyType'] || 'apartment',
-        data['serviceType'] || 'standard',
-        data['frequency'] || 'one-time',
-      ))
+    const rawCents = data['estimatedPriceCents']
+    const price = typeof rawCents === 'number' && Number.isFinite(rawCents)
+      ? Math.round(rawCents)
+      : toCents(calculateEstimatedPriceFallback(
+          data['propertyType'] || 'apartment',
+          data['serviceType'] || 'standard',
+          data['frequency'] || 'one-time',
+        ))
     totalRevenueCents += price
 
     if (data['referredBy']) {

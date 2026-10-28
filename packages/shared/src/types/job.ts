@@ -10,8 +10,6 @@ export interface PayRateSnapshot {
   rateId: string | null
   /** P3-E38: hourly rate in integer cents, frozen when the shift was confirmed (P12). */
   amountCents: number
-  /** @deprecated dollars, before P3-E38 — read through amountCentsOf(); removed after migration. */
-  amount?: number
   currency: 'CAD'
   effectiveAt: string
   snapshotAt: string
