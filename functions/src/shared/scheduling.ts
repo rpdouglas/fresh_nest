@@ -11,6 +11,9 @@
  * Pure functions only — zero Firebase / browser / Node dependencies.
  */
 
+import { dayOfWeek } from './time'
+import { centsToDollars, multiplyCents, toCents } from './money'
+
 export interface TravelShift {
   startTime: string
   endTime: string
@@ -106,8 +109,9 @@ export function getShiftDurationHours(startTime: string, endTime: string): numbe
   return durationHours
 }
 
+/** Rate × hours, rounded once to whole cents (ADR-020) so monthly totals don't drift. */
 export function estimateShiftPay(payRate: number, startTime: string, endTime: string): number {
-  return payRate * getShiftDurationHours(startTime, endTime)
+  return centsToDollars(multiplyCents(toCents(payRate), getShiftDurationHours(startTime, endTime)))
 }
 
 /** P7/P13: amount the shift exceeds the remaining monthly limit by, or 0 if it fits / no limit set. */
@@ -128,7 +132,7 @@ export function overlapsBlockedWindow(
   shiftEnd: string,
   blockedWindows: BlockedWindowLike[],
 ): boolean {
-  const shiftDayOfWeek = new Date(shiftDate + 'T00:00:00').getDay()
+  const shiftDayOfWeek = dayOfWeek(shiftDate)
   const startS = timeToMinutes(shiftStart)
   const endS = timeToMinutes(shiftEnd)
 

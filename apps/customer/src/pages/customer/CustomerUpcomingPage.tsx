@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { query, where, getDocs, doc, updateDoc } from 'firebase/firestore'
-import { bookingsCollection, changeStamp } from '@freshnest/shared'
+import { bookingsCollection, changeStamp, todayInZone } from '@freshnest/shared'
 import { db, auth } from '@/lib/firebase/firebase'
 import { useCustomerAuthContext } from '@/components/layout/CustomerAuthContext'
 import type { Booking } from '@/types'
@@ -20,7 +20,7 @@ export default function CustomerUpcomingPage() {
 
     const fetchUpcoming = async () => {
       try {
-        const todayStr = new Date().toISOString().split('T')[0] // YYYY-MM-DD
+        const todayStr = todayInZone() // P3-E38: Toronto date, not UTC
         const q = query(
           bookingsCollection(db),
           where('email', '==', user.email?.trim().toLowerCase()),

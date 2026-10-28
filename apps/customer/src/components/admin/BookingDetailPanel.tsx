@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { useQueryClient } from '@tanstack/react-query'
 import { doc, getDoc } from 'firebase/firestore'
-import { jobsCollection } from '@freshnest/shared'
+import { getShiftDurationHours, jobsCollection } from '@freshnest/shared'
 import { db, auth } from '@/lib/firebase/firebase'
 import { useStaff } from './hooks/useStaff'
 import { usePolicySettings } from './hooks/usePolicySettings'
@@ -70,17 +70,8 @@ export function BookingDetailPanel({
     }
   }, [b.jobId, jobVersion])
 
-  // Get job duration
-  const getJobDurationHours = (jobDoc: Job): number => {
-    try {
-      const [startH, startM] = jobDoc.scheduledStartTime.split(':').map(Number)
-      const [endH, endM] = jobDoc.scheduledEndTime.split(':').map(Number)
-      const diff = (endH + endM / 60) - (startH + startM / 60)
-      return diff > 0 ? diff : 2
-    } catch {
-      return 2
-    }
-  }
+  const getJobDurationHours = (jobDoc: Job): number =>
+    getShiftDurationHours(jobDoc.scheduledStartTime, jobDoc.scheduledEndTime)
 
   // Map cleaner UIDs to select value
   const getSelectedValue = () => {

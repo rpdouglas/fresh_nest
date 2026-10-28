@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useQueryClient, useInfiniteQuery } from '@tanstack/react-query'
-import { bookingsCollection } from '@freshnest/shared'
+import { addDays, bookingsCollection, todayInZone } from '@freshnest/shared'
 import { query, orderBy, limit, startAfter, getDocs, where } from 'firebase/firestore'
 import type { QueryDocumentSnapshot, DocumentData } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
@@ -12,16 +12,8 @@ export function useBookings(enabled: boolean) {
   const queryClient = useQueryClient()
 
   // Date window (default: last 90 days to 180 days in future)
-  const [startDate, setStartDate] = useState<string>(() => {
-    const d = new Date()
-    d.setDate(d.getDate() - 90)
-    return d.toISOString().split('T')[0]
-  })
-  const [endDate, setEndDate] = useState<string>(() => {
-    const d = new Date()
-    d.setDate(d.getDate() + 180)
-    return d.toISOString().split('T')[0]
-  })
+  const [startDate, setStartDate] = useState<string>(() => addDays(todayInZone(), -90))
+  const [endDate, setEndDate] = useState<string>(() => addDays(todayInZone(), 180))
 
   // Server-side filter state — all three live in the queryKey so a change triggers a fresh Firestore fetch
   const [statusFilter, setStatusFilter] = useState<string>('all')

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { doc, updateDoc, onSnapshot, serverTimestamp } from 'firebase/firestore'
-import { jobsCollection, checklistTemplatesCollection, changeStamp } from '@freshnest/shared'
+import { jobsCollection, checklistTemplatesCollection, changeStamp, estimateShiftPay, getShiftDurationHours } from '@freshnest/shared'
 import { db, auth } from '../lib/firebase/firebase'
 import { useJob } from '../hooks/useJob'
 import { useStaffAuth } from '../hooks/useStaffAuth'
@@ -306,20 +306,9 @@ export const JobPage: React.FC = () => {
   // Check if checkout is allowed (all tasks complete)
   const isCheckoutAllowed = tasks.length > 0 && tasks.every((task: ChecklistTask) => isTaskCompleted(task.id))
 
-  // Estimate total pay
-  const getShiftDurationHours = (startTime: string, endTime: string): number => {
-    try {
-      const [startH, startM] = startTime.split(':').map(Number)
-      const [endH, endM] = endTime.split(':').map(Number)
-      const diff = (endH + endM / 60) - (startH + startM / 60)
-      return diff > 0 ? diff : 2
-    } catch {
-      return 2
-    }
-  }
   const duration = getShiftDurationHours(job.scheduledStartTime, job.scheduledEndTime)
   const rate = job.payRateSnapshot?.amount || 0
-  const estPay = rate * duration
+  const estPay = estimateShiftPay(rate, job.scheduledStartTime, job.scheduledEndTime)
 
   return (
     <main className="min-h-screen bg-warm-white py-6 px-4 md:py-12 md:px-6">

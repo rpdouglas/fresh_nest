@@ -2,12 +2,13 @@ import { onSchedule } from 'firebase-functions/v2/scheduler'
 import { getFirestore, Timestamp } from 'firebase-admin/firestore'
 import { RESEND_API_KEY, logError } from '../lib/shared'
 import { sendReviewRequestEmail } from '../sendEmail'
+import { BUSINESS_TZ } from '../shared/time'
 
 // P2-E2: Post-Job Review Automation Hourly Scheduler
 export const onReviewEmailScheduler = onSchedule(
   {
     schedule: '0 * * * *', // Every hour
-    timeZone: 'UTC',
+    timeZone: BUSINESS_TZ,
     secrets: [RESEND_API_KEY],
   },
   async () => {

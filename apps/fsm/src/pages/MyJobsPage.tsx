@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { doc, onSnapshot } from 'firebase/firestore'
-import { checklistTemplatesCollection } from '@freshnest/shared'
+import { checklistTemplatesCollection, estimateShiftPay, getShiftDurationHours } from '@freshnest/shared'
 import { db } from '../lib/firebase/firebase'
 import { useStaffAuth } from '../hooks/useStaffAuth'
 import { useMyAssignedShifts } from '../hooks/useMyAssignedShifts'
@@ -17,18 +17,6 @@ export const MyJobsPage: React.FC = () => {
   )
 
   const [activeTab, setActiveTab] = useState<'upcoming' | 'completed'>('upcoming')
-
-  // Calculate shift duration in hours
-  const getShiftDurationHours = (startTime: string, endTime: string): number => {
-    try {
-      const [startH, startM] = startTime.split(':').map(Number)
-      const [endH, endM] = endTime.split(':').map(Number)
-      const diff = (endH + endM / 60) - (startH + startM / 60)
-      return diff > 0 ? diff : 2
-    } catch {
-      return 2
-    }
-  }
 
   // Format date based on selected locale
   const formatShiftDate = (dateStr: string): string => {
@@ -146,7 +134,7 @@ export const MyJobsPage: React.FC = () => {
             {displayedJobs.map((job) => {
               const duration = getShiftDurationHours(job.scheduledStartTime, job.scheduledEndTime)
               const rate = job.payRateSnapshot?.amount || 0
-              const estPay = rate * duration
+              const estPay = estimateShiftPay(rate, job.scheduledStartTime, job.scheduledEndTime)
 
               return (
                 <div 

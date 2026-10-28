@@ -10,6 +10,7 @@ import {
 import { snapshotFromTemplate, EMPTY_CHECKLIST, type ChecklistSnapshot } from './lib/checklist'
 import { normalizePolicySettings } from './shared/policy'
 import { serverStamp } from './lib/audit'
+import { monthKey, previousMonthKey } from './shared/time'
 
 /**
  * F03: Booking-to-Job Pipeline
@@ -341,12 +342,10 @@ export async function executeClaimJob(
  * F05: Earnings Cap Monthly Rollover
  * Resets currentMonthEarnings to 0 and archives past month's earnings.
  */
-export async function rollOverAllStaffEarnings(): Promise<void> {
+export async function rollOverAllStaffEarnings(now: Date = new Date()): Promise<void> {
   const db = getFirestore('(default)')
-  const lastMonth = new Date()
-  lastMonth.setUTCDate(1)
-  lastMonth.setUTCMonth(lastMonth.getUTCMonth() - 1)
-  const lastMonthStr = `${lastMonth.getUTCFullYear()}-${String(lastMonth.getUTCMonth() + 1).padStart(2, '0')}`
+  // Runs just after midnight on the 1st (Toronto): the month being archived is the previous one.
+  const lastMonthStr = previousMonthKey(monthKey(now))
 
   const staffSnap = await db.collection('staff').get()
   if (staffSnap.empty) {
