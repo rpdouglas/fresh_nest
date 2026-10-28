@@ -211,32 +211,47 @@ describe('useStaffAuth Hook', () => {
     expect(result.current.error).toBe('fsm.login.errorNoProfile')
   })
 
-  it('fails password sign-in if email does not exist in staff collection', async () => {
-    // mock query checkEmailExists to return empty snapshot
-    mockGetDocs.mockResolvedValueOnce({
-      empty: true,
+  // HOTFIX-11: real Firebase reports the sign-out after the gate has set the message.
+  it('keeps the refusal message when the sign-out is reported afterwards', async () => {
+    const { result } = renderHook(() => useStaffAuth(), { wrapper })
+
+    act(() => {
+      authStateCallback?.({ uid: 'customer1', email: 'diane@example.ca' })
     })
+    await waitFor(() => {
+      expect(result.current.error).toBe('fsm.login.errorNoProfile')
+    })
+
+    act(() => {
+      authStateCallback?.(null)
+    })
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
+    })
+    expect(result.current.user).toBeNull()
+    expect(result.current.error).toBe('fsm.login.errorNoProfile')
+  })
+
+  it('shows the invalid-credentials error when Firebase rejects the password', async () => {
+    mockSignInWithEmailAndPassword.mockRejectedValueOnce(new Error('auth/invalid-credential'))
 
     const { result } = renderHook(() => useStaffAuth(), { wrapper })
 
     let err: unknown
     await act(async () => {
       try {
-        await result.current.signInWithPassword('notfound@freshnest.ca', 'password123')
+        await result.current.signInWithPassword('john@freshnest.ca', 'wrong')
       } catch (e) {
         err = e
       }
     })
 
     expect(err).toBeDefined()
-    expect((err as Error).message).toBe('No staff profile found')
-    expect(result.current.error).toBe('fsm.login.errorNoProfile')
+    expect(result.current.error).toBe('fsm.login.errorInvalid')
   })
 
-  it('succeeds password sign-in if email exists in staff collection', async () => {
-    mockGetDocs.mockResolvedValueOnce({
-      empty: false,
-    })
+  // HOTFIX-11: signed-out visitors can't read `staff`, so sign-in must not look the email up first.
+  it('signs in with Firebase Auth directly, without a signed-out staff lookup', async () => {
     mockSignInWithEmailAndPassword.mockResolvedValueOnce({})
 
     const { result } = renderHook(() => useStaffAuth(), { wrapper })
@@ -250,34 +265,11 @@ describe('useStaffAuth Hook', () => {
       'john@freshnest.ca',
       'password123'
     )
+    expect(mockGetDocs).not.toHaveBeenCalled()
     expect(result.current.error).toBeNull()
   })
 
-  it('fails sendMagicLink if email does not exist in staff collection', async () => {
-    mockGetDocs.mockResolvedValueOnce({
-      empty: true,
-    })
-
-    const { result } = renderHook(() => useStaffAuth(), { wrapper })
-
-    let err: unknown
-    await act(async () => {
-      try {
-        await result.current.sendMagicLink('notfound@freshnest.ca')
-      } catch (e) {
-        err = e
-      }
-    })
-
-    expect(err).toBeDefined()
-    expect((err as Error).message).toBe('No staff profile found')
-    expect(result.current.error).toBe('fsm.login.errorNoProfile')
-  })
-
-  it('succeeds sendMagicLink if email exists in staff collection', async () => {
-    mockGetDocs.mockResolvedValueOnce({
-      empty: false,
-    })
+  it('sends a magic link without a signed-out staff lookup', async () => {
     mockSendSignInLinkToEmail.mockResolvedValueOnce({})
 
     const { result } = renderHook(() => useStaffAuth(), { wrapper })
@@ -301,9 +293,6 @@ describe('useStaffAuth Hook', () => {
   it('completes magic link sign in successfully', async () => {
     mockIsSignInWithEmailLink.mockReturnValueOnce(true)
     localStorage.setItem('emailForSignIn', 'john@freshnest.ca')
-    mockGetDocs.mockResolvedValueOnce({
-      empty: false,
-    })
     mockSignInWithEmailLink.mockResolvedValueOnce({})
 
     const { result } = renderHook(() => useStaffAuth(), { wrapper })
