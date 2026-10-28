@@ -71,6 +71,9 @@ describe('P3-E31 hero order', () => {
     expect(follows(subhead, headline)).toBe(true)
     expect(follows(headline, button)).toBe(true)
     expect(container.querySelector('img[src="/images/nest-watermark.jpg"]')).toBeNull()
+    const bgImg = container.querySelector('img[src="/images/home-hero-boho.jpg"]')
+    expect(bgImg).not.toBeNull()
+    expect(bgImg).toHaveAttribute('aria-hidden', 'true')
   })
 })
 
