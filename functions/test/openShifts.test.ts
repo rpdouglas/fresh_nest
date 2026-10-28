@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
-  estimateShiftPay,
-  earningsOverage,
+  estimateShiftPayCents,
+  earningsOverageCents,
   overlapsBlockedWindow,
   findTravelConflict,
   resolveBufferMinutes,
@@ -31,21 +31,30 @@ const job = (id: string, overrides: Record<string, unknown> = {}): JobRecord => 
   },
 })
 
-describe('P7 Carla — earnings cap acceptance test', () => {
+describe('P7 Carla — earnings cap acceptance test (integer cents, P3-E38)', () => {
   // Limit $800, current $750 → $50 remaining
   it('blocks a $75 shift with a $25 overage and allows a $45 shift', () => {
-    expect(earningsOverage(estimateShiftPay(75, '09:00', '10:00'), 800, 750)).toBe(25)
-    expect(earningsOverage(estimateShiftPay(45, '09:00', '10:00'), 800, 750)).toBe(0)
+    expect(earningsOverageCents(estimateShiftPayCents(7500, '09:00', '10:00'), 80000, 75000)).toBe(2500)
+    expect(earningsOverageCents(estimateShiftPayCents(4500, '09:00', '10:00'), 80000, 75000)).toBe(0)
   })
 
-  // PERSONAS.md v4.1 P7 step 6
+  // PERSONAS.md P7 step 6
   it('after claiming $45 (current $795): exactly the $5 remaining fits, $6 is blocked', () => {
-    expect(earningsOverage(5, 800, 795)).toBe(0)
-    expect(earningsOverage(6, 800, 795)).toBe(1)
+    expect(earningsOverageCents(500, 80000, 79500)).toBe(0)
+    expect(earningsOverageCents(600, 80000, 79500)).toBe(100)
   })
 
-  it('applies no cap when monthlyEarningsLimit is null', () => {
-    expect(earningsOverage(10_000, null, 750)).toBe(0)
+  it('a shift one cent over the limit is blocked', () => {
+    expect(earningsOverageCents(501, 80000, 79500)).toBe(1)
+  })
+
+  it('applies no cap when monthlyEarningsLimitCents is null', () => {
+    expect(earningsOverageCents(1_000_000, null, 75000)).toBe(0)
+  })
+
+  it('reads a staff record saved in dollars before the migration', () => {
+    const [shift] = buildOpenShifts([job('j1')], { financials: { monthlyEarningsLimit: 800, currentMonthEarnings: 790 } }, [])
+    expect(shift.eligibility.overageCents).toBe(4000) // $50 shift, $10 left
   })
 })
 
@@ -118,14 +127,15 @@ describe('listOpenShifts projection — PII minimisation', () => {
   it('returns only whitelisted fields', () => {
     const [shift] = buildOpenShifts([job('j1')], {}, [])
     expect(Object.keys(shift).sort()).toEqual(
-      ['area', 'eligibility', 'id', 'payRate', 'scheduledDate', 'scheduledEndTime', 'scheduledStartTime', 'serviceType'],
+      ['area', 'eligibility', 'id', 'payRateCents', 'scheduledDate', 'scheduledEndTime', 'scheduledStartTime', 'serviceType'],
     )
     const json = JSON.stringify(shift)
     for (const pii of ['Jane Smith', '6135559900', 'Gate code', 'Riverdale', 'booking-j1']) {
       expect(json).not.toContain(pii)
     }
     expect(shift.area).toEqual({ municipality: 'Cornwall', postalPrefix: 'K6H' })
-    expect(shift.eligibility).toMatchObject({ durationHours: 2, estimatedPay: 50, overage: 0, travelConflict: null })
+    expect(shift.payRateCents).toBe(2500) // snapshot saved in dollars ($25) reads as cents
+    expect(shift.eligibility).toMatchObject({ durationHours: 2, estimatedPayCents: 5000, overageCents: 0, travelConflict: null })
   })
 
   it('excludes jobs that are not genuinely unassigned and sorts newest first', () => {

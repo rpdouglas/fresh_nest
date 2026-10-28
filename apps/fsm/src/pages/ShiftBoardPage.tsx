@@ -5,7 +5,7 @@ import { httpsCallable } from 'firebase/functions'
 import { functions } from '../lib/firebase/firebase'
 import { useStaffAuth } from '../hooks/useStaffAuth'
 import { useShifts, AVAILABLE_SHIFTS_QUERY_KEY } from '../hooks/useShifts'
-import { cn } from '@freshnest/shared'
+import { cn, formatCents } from '@freshnest/shared'
 
 // HOTFIX-02: blocked-window filtering (P9), earnings cap (P7/P13) and travel buffer
 // (P8/P15) are evaluated server-side by listOpenShifts using the same code as claimJob.
@@ -42,7 +42,7 @@ export const ShiftBoardPage: React.FC = () => {
     setErrorMsg(null)
 
     try {
-      const claimJobFn = httpsCallable<{ jobId: string }, { success: boolean; newEarnings: number }>(
+      const claimJobFn = httpsCallable<{ jobId: string }, { success: boolean; newEarningsCents: number }>(
         functions,
         'claimJob'
       )
@@ -72,8 +72,10 @@ export const ShiftBoardPage: React.FC = () => {
   }
 
   // Get current financials
-  const currentEarnings = staffProfile.financials?.currentMonthEarnings ?? 0
-  const limitValue = staffProfile.financials?.monthlyEarningsLimit ?? null
+  // P3-E38: integer cents
+  const currentEarnings = staffProfile.financials?.currentMonthEarningsCents ?? 0
+  const limitValue = staffProfile.financials?.monthlyEarningsLimitCents ?? null
+  const money = (cents: number) => formatCents(cents, i18n.language)
   const isCapConfigured = limitValue !== null && limitValue > 0
 
   // Calculate limit warnings
@@ -85,7 +87,7 @@ export const ShiftBoardPage: React.FC = () => {
     const remaining = limitValue - currentEarnings
     if (percentage > 90 || remaining <= 0) {
       safetyState = 'at_limit'
-    } else if (percentage >= 75 || remaining <= 100) {
+    } else if (percentage >= 75 || remaining <= 10000) { // within $100
       safetyState = 'caution'
     } else {
       safetyState = 'safe'
@@ -136,7 +138,7 @@ export const ShiftBoardPage: React.FC = () => {
                   {t('fsm.profile.odsp.currentEarnings')}
                 </span>
                 <span className="font-display text-2xl text-charcoal font-bold">
-                  ${currentEarnings} / ${limitValue}
+                  {money(currentEarnings)} / {money(limitValue ?? 0)}
                 </span>
               </div>
             </div>
@@ -190,9 +192,8 @@ export const ShiftBoardPage: React.FC = () => {
           /* Shift Cards Grid */
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {shifts.map((job) => {
-              const { durationHours: duration, estimatedPay: estPay, overage, travelConflict } = job.eligibility
-              const rate = job.payRate
-              const isOverLimit = overage > 0
+              const { durationHours: duration, estimatedPayCents, overageCents, travelConflict } = job.eligibility
+              const isOverLimit = overageCents > 0
               const isConflict = travelConflict !== null
               const areaText = [job.area.municipality, job.area.postalPrefix].filter(Boolean).join(' · ')
 
@@ -213,7 +214,7 @@ export const ShiftBoardPage: React.FC = () => {
                         {t(`fsm.shifts.serviceTypes.${job.serviceType}`, { defaultValue: job.serviceType })}
                       </span>
                       <span className="font-body text-sm font-semibold text-slate-brand">
-                        {t('fsm.shifts.estimatedPay', { pay: estPay, hours: duration, rate })}
+                        {t('fsm.shifts.estimatedPay', { pay: money(estimatedPayCents), hours: duration, rate: money(job.payRateCents) })}
                       </span>
                     </div>
 
@@ -245,7 +246,7 @@ export const ShiftBoardPage: React.FC = () => {
                   <div className="flex flex-col gap-3">
                     {isOverLimit && (
                       <span className="font-body text-xs font-semibold text-red-700 bg-red-50 border border-red-200 px-3 py-2 rounded text-center">
-                        ⚠️ {t('fsm.shifts.disabledOverage', { overage })}
+                        ⚠️ {t('fsm.shifts.disabledOverage', { overage: money(overageCents) })}
                       </span>
                     )}
 

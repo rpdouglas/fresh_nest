@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
-import { DEFAULT_POLICY_SETTINGS, type PolicySettingsValues } from '@freshnest/shared'
+import { centsToDollars, DEFAULT_POLICY_SETTINGS, formatCents, toCents, type PolicySettingsValues } from '@freshnest/shared'
 import { cn } from '@/lib/utils/utils'
 import { RegisterStaffInput } from './hooks/useStaff'
 import { AdminDialog } from './ui/AdminDialog'
@@ -40,7 +40,7 @@ export const RegisterStaffModal: React.FC<RegisterStaffModalProps> = ({
   onRegister,
   policy = DEFAULT_POLICY_SETTINGS,
 }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
@@ -72,8 +72,9 @@ export const RegisterStaffModal: React.FC<RegisterStaffModalProps> = ({
     setSubmitting(true)
     setSubmitError(null)
     try {
+      // Typed in dollars, stored in integer cents (P3-E38); blank = no cap
       const limitVal = values.monthlyEarningsLimit?.trim()
-      const monthlyEarningsLimit = limitVal ? Number(limitVal) : null
+      const monthlyEarningsLimitCents = limitVal ? toCents(Number(limitVal)) : null
 
       await onRegister({
         firstName: values.firstName,
@@ -85,7 +86,7 @@ export const RegisterStaffModal: React.FC<RegisterStaffModalProps> = ({
         language: values.language,
         transportMode: values.transportMode,
         transitBufferMinutes: values.transitBufferMinutes,
-        monthlyEarningsLimit,
+        monthlyEarningsLimitCents,
       })
       reset()
       onClose()
@@ -311,19 +312,18 @@ export const RegisterStaffModal: React.FC<RegisterStaffModalProps> = ({
               </label>
               <button
                 type="button"
-                onClick={() => setValue('monthlyEarningsLimit', String(policy.defaultOdspMonthlyLimit), { shouldValidate: true })}
+                onClick={() => setValue('monthlyEarningsLimit', String(centsToDollars(policy.defaultOdspMonthlyLimitCents)), { shouldValidate: true })}
                 className="font-body text-base text-slate-brand underline hover:text-slate-dark focus:outline-none focus:ring-2 focus:ring-slate-brand rounded px-1"
               >
                 {t('admin.staff.modal.applyOdspDefault', {
-                  limit: policy.defaultOdspMonthlyLimit,
-                  defaultValue: `Apply ODSP default ($${policy.defaultOdspMonthlyLimit})`,
+                  limit: formatCents(policy.defaultOdspMonthlyLimitCents, i18n.language),
                 })}
               </button>
             </div>
             <input
               id="monthlyEarningsLimit"
               type="number"
-              placeholder={`e.g. ${policy.defaultOdspMonthlyLimit}`}
+              placeholder={`e.g. ${centsToDollars(policy.defaultOdspMonthlyLimitCents)}`}
               {...register('monthlyEarningsLimit')}
               className={cn(
                 'min-h-[48px] px-4 py-2 border border-sand rounded font-body text-base text-charcoal bg-transparent',

@@ -24,7 +24,7 @@ export function AuditEntryView({ entry, showRecord = false }: AuditEntryViewProp
   const changes = entryChanges(entry)
   const source = sourceLabel(entry.source, t)
   const action = entry.action ?? 'update'
-  const fmt = (v: unknown) => formatAuditValue(v, t, i18n.language)
+  const fmt = (v: unknown, field?: string) => formatAuditValue(v, t, i18n.language, field)
 
   return (
     <article className="flex flex-col gap-2 py-4">
@@ -58,12 +58,12 @@ export function AuditEntryView({ entry, showRecord = false }: AuditEntryViewProp
               <dd className="text-charcoal break-words">
                 {action !== 'create' && (
                   <>
-                    <span className="line-through text-text-muted">{fmt(c.before)}</span>
+                    <span className="line-through text-text-muted">{fmt(c.before, c.field)}</span>
                     <span aria-hidden="true" className="mx-1 text-text-muted">→</span>
                     <span className="sr-only">{t('admin.audit.changedTo')}</span>
                   </>
                 )}
-                <span>{fmt(c.after)}</span>
+                <span>{fmt(c.after, c.field)}</span>
               </dd>
             </div>
           ))}
@@ -77,7 +77,7 @@ export function AuditEntryView({ entry, showRecord = false }: AuditEntryViewProp
             {Object.entries(entry.snapshot).map(([field, value]) => (
               <div key={field} className="flex flex-col sm:flex-row sm:gap-2">
                 <dt className="text-text-muted sm:w-48 shrink-0">{fieldLabel(field, t)}</dt>
-                <dd className="text-charcoal break-words">{fmt(value)}</dd>
+                <dd className="text-charcoal break-words">{fmt(value, field)}</dd>
               </div>
             ))}
           </dl>

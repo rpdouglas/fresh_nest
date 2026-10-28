@@ -27,7 +27,7 @@ vi.mock('../lib/firebase/firebase', () => ({
 }))
 
 // Mock firebase functions
-const mockClaimJobFn = vi.fn().mockResolvedValue({ data: { success: true, newEarnings: 800 } })
+const mockClaimJobFn = vi.fn().mockResolvedValue({ data: { success: true, newEarningsCents: 80000 } })
 vi.mock('firebase/functions', () => ({
   getFunctions: vi.fn(),
   httpsCallable: vi.fn(() => mockClaimJobFn),
@@ -55,8 +55,8 @@ describe('ShiftBoardPage Component', () => {
     role: 'cleaner',
     status: 'active',
     financials: {
-      monthlyEarningsLimit: 1000,
-      currentMonthEarnings: 500,
+      monthlyEarningsLimitCents: 100000,
+      currentMonthEarningsCents: 50000,
       earningsHistory: [],
     },
   }
@@ -67,9 +67,9 @@ describe('ShiftBoardPage Component', () => {
     scheduledDate: '2026-06-20',
     scheduledStartTime: '09:00',
     scheduledEndTime: '11:00',
-    payRate: 25,
+    payRateCents: 2500,
     area: { municipality: 'Cornwall', postalPrefix: 'K6H' },
-    eligibility: { durationHours: 2, estimatedPay: 50, overage: 0, travelConflict: null },
+    eligibility: { durationHours: 2, estimatedPayCents: 5000, overageCents: 0, travelConflict: null },
     ...overrides,
   })
 
@@ -81,9 +81,9 @@ describe('ShiftBoardPage Component', () => {
       scheduledDate: '2026-06-21',
       scheduledStartTime: '13:00',
       scheduledEndTime: '16:00',
-      payRate: 30,
+      payRateCents: 3000,
       area: { municipality: 'Long Sault', postalPrefix: null },
-      eligibility: { durationHours: 3, estimatedPay: 90, overage: 0, travelConflict: null },
+      eligibility: { durationHours: 3, estimatedPayCents: 9000, overageCents: 0, travelConflict: null },
     }),
   ]
 
@@ -114,7 +114,7 @@ describe('ShiftBoardPage Component', () => {
       ...mockStaffProfile,
       financials: {
         ...mockStaffProfile.financials,
-        monthlyEarningsLimit: null,
+        monthlyEarningsLimitCents: null,
       },
     }
     vi.mocked(useStaffAuth).mockReturnValueOnce({
@@ -139,10 +139,10 @@ describe('ShiftBoardPage Component', () => {
 
     // Estimated pay label with correct mock translation option format
     expect(
-      screen.getByText('fsm.shifts.estimatedPay_opt_{"pay":50,"hours":2,"rate":25}')
+      screen.getByText('fsm.shifts.estimatedPay_opt_{"pay":"$50.00","hours":2,"rate":"$25.00"}')
     ).toBeInTheDocument()
     expect(
-      screen.getByText('fsm.shifts.estimatedPay_opt_{"pay":90,"hours":3,"rate":30}')
+      screen.getByText('fsm.shifts.estimatedPay_opt_{"pay":"$90.00","hours":3,"rate":"$30.00"}')
     ).toBeInTheDocument()
   })
 
@@ -150,8 +150,8 @@ describe('ShiftBoardPage Component', () => {
     const profileSafe = {
       ...mockStaffProfile,
       financials: {
-        monthlyEarningsLimit: 1000,
-        currentMonthEarnings: 300,
+        monthlyEarningsLimitCents: 100000,
+        currentMonthEarningsCents: 30000,
       },
     }
     vi.mocked(useStaffAuth).mockReturnValueOnce({
@@ -162,7 +162,7 @@ describe('ShiftBoardPage Component', () => {
     const { container } = render(<ShiftBoardPage />)
 
     // Current earnings label check
-    expect(screen.getByText('$300 / $1000')).toBeInTheDocument()
+    expect(screen.getByText('$300.00 / $1,000.00')).toBeInTheDocument()
 
     // Safe state label check
     expect(screen.getByText('fsm.profile.odsp.gauge.safe: fsm.profile.odsp.messages.safe')).toBeInTheDocument()
@@ -176,8 +176,8 @@ describe('ShiftBoardPage Component', () => {
     const profileCaution = {
       ...mockStaffProfile,
       financials: {
-        monthlyEarningsLimit: 1000,
-        currentMonthEarnings: 800,
+        monthlyEarningsLimitCents: 100000,
+        currentMonthEarningsCents: 80000,
       },
     }
     vi.mocked(useStaffAuth).mockReturnValueOnce({
@@ -187,7 +187,7 @@ describe('ShiftBoardPage Component', () => {
 
     const { container } = render(<ShiftBoardPage />)
 
-    expect(screen.getByText('$800 / $1000')).toBeInTheDocument()
+    expect(screen.getByText('$800.00 / $1,000.00')).toBeInTheDocument()
     expect(screen.getByText('fsm.profile.odsp.gauge.caution: fsm.profile.odsp.messages.caution')).toBeInTheDocument()
 
     const gauge = container.querySelector('.bg-amber-500')
@@ -198,8 +198,8 @@ describe('ShiftBoardPage Component', () => {
     const profileAtLimit = {
       ...mockStaffProfile,
       financials: {
-        monthlyEarningsLimit: 1000,
-        currentMonthEarnings: 950,
+        monthlyEarningsLimitCents: 100000,
+        currentMonthEarningsCents: 95000,
       },
     }
     vi.mocked(useStaffAuth).mockReturnValueOnce({
@@ -209,7 +209,7 @@ describe('ShiftBoardPage Component', () => {
 
     const { container } = render(<ShiftBoardPage />)
 
-    expect(screen.getByText('$950 / $1000')).toBeInTheDocument()
+    expect(screen.getByText('$950.00 / $1,000.00')).toBeInTheDocument()
     expect(screen.getByText('fsm.profile.odsp.gauge.at_limit: fsm.profile.odsp.messages.at_limit')).toBeInTheDocument()
 
     const gauge = container.querySelector('.bg-red-500')
@@ -220,7 +220,7 @@ describe('ShiftBoardPage Component', () => {
     vi.mocked(useShifts).mockReturnValue({
       shifts: [
         mockShifts[0],
-        { ...mockShifts[1], eligibility: { ...mockShifts[1].eligibility, overage: 10 } },
+        { ...mockShifts[1], eligibility: { ...mockShifts[1].eligibility, overageCents: 1000 } },
       ],
       isLoading: false,
       error: null,
@@ -232,7 +232,7 @@ describe('ShiftBoardPage Component', () => {
     expect(buttons[0]).not.toBeDisabled()
     expect(buttons[1]).toBeDisabled()
     expect(
-      screen.getByText('⚠️ fsm.shifts.disabledOverage_opt_{"overage":10}')
+      screen.getByText('⚠️ fsm.shifts.disabledOverage_opt_{"overage":"$10.00"}')
     ).toBeInTheDocument()
   })
 
@@ -258,8 +258,8 @@ describe('ShiftBoardPage Component', () => {
           id: 'job1',
           eligibility: {
             durationHours: 2,
-            estimatedPay: 50,
-            overage: 0,
+            estimatedPayCents: 5000,
+            overageCents: 0,
             travelConflict: { startTime: '10:00', endTime: '12:00', bufferMinutes: 60 },
           },
         }),

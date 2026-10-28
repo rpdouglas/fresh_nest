@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils/utils'
 import type { StaffRole } from '@/types'
 import { usePayRates } from './hooks/usePayRates'
+import { formatCents, toCents, zonedWallTimeToInstant } from '@freshnest/shared'
 
 const payRateFormSchema = z.object({
   role: z.enum(['cleaner', 'lead', 'supervisor']),
@@ -24,7 +25,7 @@ interface PayRatesManagerProps {
 }
 
 export const PayRatesManager: React.FC<PayRatesManagerProps> = ({ isAuthorized }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { payRates, activeRates, isLoading, error, createRate } = usePayRates(isAuthorized)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [submitError, setSubmitError] = useState<string | null>(null)
@@ -59,7 +60,7 @@ export const PayRatesManager: React.FC<PayRatesManagerProps> = ({ isAuthorized }
   const handleFormSubmit = async (values: PayRateFormValues) => {
     try {
       setSubmitError(null)
-      const amountNum = parseFloat(values.amount)
+      const amountCents = toCents(parseFloat(values.amount)) // P3-E38: typed in dollars, stored in cents
       let effectiveFrom = new Date()
 
       if (!values.effectiveImmediately) {
@@ -67,7 +68,13 @@ export const PayRatesManager: React.FC<PayRatesManagerProps> = ({ isAuthorized }
           setSubmitError(t('admin.payRates.form.errors.date'))
           return
         }
-        effectiveFrom = new Date(values.effectiveDate)
+        // Midnight at the start of that day in Toronto — new Date('YYYY-MM-DD') is UTC midnight,
+        // the previous evening in Ontario (ADR-020)
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(values.effectiveDate)) {
+          setSubmitError(t('admin.payRates.form.errors.date'))
+          return
+        }
+        effectiveFrom = zonedWallTimeToInstant(values.effectiveDate, '00:00')
         if (isNaN(effectiveFrom.getTime())) {
           setSubmitError(t('admin.payRates.form.errors.date'))
           return
@@ -76,7 +83,7 @@ export const PayRatesManager: React.FC<PayRatesManagerProps> = ({ isAuthorized }
 
       await createRate({
         role: values.role,
-        amount: amountNum,
+        amountCents,
         effectiveFrom,
       })
 
@@ -105,12 +112,7 @@ export const PayRatesManager: React.FC<PayRatesManagerProps> = ({ isAuthorized }
     }
   }
 
-  const formatCurrency = (val: number) => {
-    return new Intl.NumberFormat('en-CA', {
-      style: 'currency',
-      currency: 'CAD',
-    }).format(val)
-  }
+  const formatCurrency = (cents: number) => formatCents(cents, i18n.language)
 
   // Calculate rate status for historical log list
   const getRateStatus = (rate: typeof payRates[0]) => {
@@ -297,8 +299,8 @@ export const PayRatesManager: React.FC<PayRatesManagerProps> = ({ isAuthorized }
                   {getRoleLabel(role)}
                 </span>
                 <span className="font-display text-4xl text-charcoal font-bold mt-1">
-                  {activeRate ? formatCurrency(activeRate.amount) : formatCurrency(0)}
-                  <span className="font-body text-base text-text-muted font-normal ml-1">/ hr</span>
+                  {activeRate ? formatCurrency(activeRate.amountCents) : formatCurrency(0)}
+                  <span className="font-body text-base text-text-muted font-normal ml-1">{t('admin.payRates.perHour')}</span>
                 </span>
                 <div className="mt-2 flex items-center justify-between">
                   {activeRate ? (
@@ -354,7 +356,7 @@ export const PayRatesManager: React.FC<PayRatesManagerProps> = ({ isAuthorized }
                         {getRoleLabel(rate.role)}
                       </td>
                       <td className="p-4 font-body text-base text-charcoal">
-                        {formatCurrency(rate.amount)}
+                        {formatCurrency(rate.amountCents)}
                       </td>
                       <td className="p-4 font-body text-base text-charcoal">
                         {rate.effectiveFrom.toLocaleString()}

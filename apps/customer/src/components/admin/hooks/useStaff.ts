@@ -17,7 +17,8 @@ export interface RegisterStaffInput {
   language: StaffLanguage
   transportMode: TransportMode
   transitBufferMinutes: number
-  monthlyEarningsLimit: number | null
+  /** P3-E38: integer cents, or null for no cap */
+  monthlyEarningsLimitCents: number | null
 }
 
 export function useStaff(enabled: boolean) {

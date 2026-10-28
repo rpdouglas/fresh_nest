@@ -9,6 +9,8 @@ import {
   CollectionReference,
 } from 'firebase-admin/firestore'
 import { logError } from '../lib/shared'
+import { centsOrLegacy, centsToDollars, roundHalfUp, toCents } from '../shared/money'
+import { BUSINESS_TZ, monthKey } from '../shared/time'
 
 function calculateEstimatedPriceFallback(propertyType: string, serviceType: string, frequency: string): number {
   if (propertyType === 'commercial') {
@@ -104,17 +106,10 @@ export const getAnalyticsKPIs = onCall(async (request) => {
   }
 
   let totalBookings = 0
-  let totalRevenueAgg = 0
   try {
-    const aggSnapshot = await bookingsQuery.aggregate({
-      count: AggregateField.count(),
-      sumRevenue: AggregateField.sum('estimatedPrice'),
-    }).get()
-
-    const aggData = aggSnapshot.data()
-    totalBookings = aggData.count || 0
-    totalRevenueAgg = aggData.sumRevenue || 0
-    console.log(`[getAnalyticsKPIs] Aggregation query: count=${totalBookings}, sumRevenue=${totalRevenueAgg}`)
+    const aggSnapshot = await bookingsQuery.aggregate({ count: AggregateField.count() }).get()
+    totalBookings = aggSnapshot.data().count || 0
+    console.log(`[getAnalyticsKPIs] Aggregation query: count=${totalBookings}`)
   } catch (aggErr) {
     logError('[getAnalyticsKPIs] Aggregation query failed:', aggErr)
   }
@@ -123,6 +118,7 @@ export const getAnalyticsKPIs = onCall(async (request) => {
     'leadSource',
     'createdAt',
     'estimatedPrice',
+    'estimatedPriceCents',
     'referredBy',
     'propertyType',
     'serviceType',
@@ -130,6 +126,7 @@ export const getAnalyticsKPIs = onCall(async (request) => {
   ).get()
 
   let referredBookingsCount = 0
+  let totalRevenueCents = 0
 
   const leadSourceCounts: Record<string, { count: number; revenue: number }> = {
     organic: { count: 0, revenue: 0 },
@@ -148,14 +145,14 @@ export const getAnalyticsKPIs = onCall(async (request) => {
 
     const date = createdAtTimestamp.toDate()
 
-    let price = data['estimatedPrice'] as number | undefined
-    if (price === undefined || price === null) {
-      price = calculateEstimatedPriceFallback(
+    // P3-E38: summed in integer cents; reported in dollars for the charts
+    const price = centsOrLegacy(data['estimatedPriceCents'], data['estimatedPrice'])
+      ?? toCents(calculateEstimatedPriceFallback(
         data['propertyType'] || 'apartment',
         data['serviceType'] || 'standard',
         data['frequency'] || 'one-time',
-      )
-    }
+      ))
+    totalRevenueCents += price
 
     if (data['referredBy']) {
       referredBookingsCount++
@@ -169,14 +166,15 @@ export const getAnalyticsKPIs = onCall(async (request) => {
       leadSourceCounts[source] = { count: 1, revenue: price }
     }
 
-    const year = date.getFullYear()
-    const month = date.getMonth()
+    // Toronto month (ADR-020): a booking made on the 31st at 21:00 belongs to that month
+    const key = monthKey(date)
+    const [year, month] = key.split('-').map(Number)
     const sortKey = year * 100 + month
     const monthName = date.toLocaleDateString('en-CA', {
       month: 'short',
       year: 'numeric',
+      timeZone: BUSINESS_TZ,
     })
-    const key = `${year}-${month}`
     if (!monthlyDataMap[key]) {
       monthlyDataMap[key] = {
         monthKey: key,
@@ -193,11 +191,13 @@ export const getAnalyticsKPIs = onCall(async (request) => {
   const leadSourceData = Object.entries(leadSourceCounts).map(([key, val]) => ({
     name: key.charAt(0).toUpperCase() + key.slice(1),
     value: val.count,
-    revenue: val.revenue,
+    revenue: centsToDollars(val.revenue),
     key,
   })).filter(item => item.value > 0)
 
-  const monthlyTrendData = Object.values(monthlyDataMap).sort((a, b) => a.sortKey - b.sortKey)
+  const monthlyTrendData = Object.values(monthlyDataMap)
+    .sort((a, b) => a.sortKey - b.sortKey)
+    .map((m) => ({ ...m, revenue: centsToDollars(m.revenue) }))
 
   const analyticsTotalBookings = totalBookings
   const channelsPerformance = Object.entries(leadSourceCounts).map(([source, val]) => {
@@ -207,17 +207,20 @@ export const getAnalyticsKPIs = onCall(async (request) => {
       source,
       name: source.charAt(0).toUpperCase() + source.slice(1),
       volume: val.count,
-      revenue: val.revenue,
-      avgValue,
+      revenue: centsToDollars(val.revenue),
+      avgValue: centsToDollars(avgValue),
       share,
     }
   }).sort((a, b) => b.revenue - a.revenue)
 
-  const analyticsAvgBookingValue = analyticsTotalBookings > 0 ? totalRevenueAgg / analyticsTotalBookings : 0
+  const analyticsAvgBookingValue = analyticsTotalBookings > 0
+    ? centsToDollars(roundHalfUp(totalRevenueCents / analyticsTotalBookings))
+    : 0
 
+  // Display payload for the admin charts: amounts in dollars, computed from cents.
   const payload = {
     analyticsTotalBookings,
-    analyticsTotalRevenue: totalRevenueAgg,
+    analyticsTotalRevenue: centsToDollars(totalRevenueCents),
     analyticsAvgBookingValue,
     leadSourceData,
     monthlyTrendData,

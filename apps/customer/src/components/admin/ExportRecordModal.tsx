@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { query, where, getDocs } from 'firebase/firestore'
-import { jobsCollection, auditLogCollection } from '@freshnest/shared'
+import { auditLogCollection, centsToDollars, jobsCollection, multiplyCents } from '@freshnest/shared'
 import { db, auth } from '@/lib/firebase/firebase'
 import type { Staff } from '@/types'
 import { useTranslation } from 'react-i18next'
@@ -91,8 +91,10 @@ export const ExportRecordModal: React.FC<ExportRecordModalProps> = ({
             hours = Math.max(0, (outTime - inTime) / (1000 * 60 * 60))
           }
 
-          const rate = job.payRateSnapshot?.amount || 0
-          const grossPay = hours * rate
+          // P3-E38: computed in integer cents, written to the CSV as dollars (e.g. 22.50)
+          const rateCents = job.payRateSnapshot?.amountCents || 0
+          const rate = centsToDollars(rateCents)
+          const grossPay = centsToDollars(multiplyCents(rateCents, hours))
 
           // Escape commas in fields
           const clientName = `"${job.clientName.replace(/"/g, '""')}"`

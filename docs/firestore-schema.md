@@ -17,7 +17,8 @@ Stores residential, commercial, and Airbnb cleaning reservations.
 | `bedrooms` | `number` | ✅ | Count of bedrooms |
 | `bathrooms` | `number` | ✅ | Count of bathrooms |
 | `squareFootage` | `number` | ❌ | Approximate square footage (optional) |
-| `estimatedPrice` | `number` | ❌ | Estimated booking price calculated using quotePricing rules (optional) |
+| `estimatedPriceCents` | `int` | ❌ | P3-E38: internal estimate in integer cents (office-created bookings); never shown on the public site (P3-E29). Rules: must be `int` |
+| `estimatedPrice` | `number` | ❌ | *Deprecated (P3-E38): dollars, before the migration — read as cents by the converters; removed by the clean-up PR.* |
 | `frequency` | `string` | ✅ | `'one-time' \| 'weekly' \| 'biweekly' \| 'monthly'` |
 | `pets` | `boolean` | ✅ | `true` if pets are present (triggers pet-safe products notification) |
 | `address` | `string` | ✅ | Full street address |
@@ -89,7 +90,7 @@ Stores employee profiles, schedule constraints, financial limits, and compliance
 | `status` | `string` | ✅ | `'onboarding' \| 'active' \| 'inactive'` |
 | `preferences` | `map` | ✅ | Preferences: `{ language: 'en' \| 'fr' }` |
 | `constraints` | `map` | ✅ | Constraints: `{ transportMode: 'personal_vehicle' \| 'transit' \| 'rideshare' \| 'walk', transitBufferMinutes: number, blockedWindows: BlockedWindow[] }` |
-| `financials` | `map` | ✅ | Earnings details: `{ monthlyEarningsLimit: number \| null, currentMonthEarnings: number, earningsHistory: Array<{ month: string, total: number }> }` |
+| `financials` | `map` | ✅ | Earnings in integer cents (P3-E38): `{ monthlyEarningsLimitCents: int \| null, currentMonthEarningsCents: int, earningsHistory: Array<{ month: string, totalCents: int }> }`. `null` limit = no cap; `month` is the Toronto month `YYYY-MM`. Staff can't change `currentMonthEarningsCents` or `earningsHistory` (rules). The old dollar keys `monthlyEarningsLimit`, `currentMonthEarnings` and `earningsHistory[].total` are Deprecated (P3-E38): dollars, before the migration — read as cents by the converters; removed by the clean-up PR. |
 | `compliance` | `map` | ✅ | Terms consent details: `{ acceptedTermsVersion: string \| null, termsHistory: TermsAcceptance[] }`. `null` = employee has not yet accepted any version (P3-E27-A1 fix). Real consent is collected client-side by `TermsConsentOverlay` — never written by admin at registration. |
 | `welcomeEmailSentAt` | `Timestamp \| null` | ❌ | Timestamp representing when the onboarding welcome/invitation email was sent. |
 | `onboardingChecklist` | `map` | ✅ | Key-value mapping of checkpoints, e.g., `{"backgroundCheck": true}` |
@@ -131,7 +132,7 @@ Stores assigned and unassigned cleaning jobs generated from confirmed bookings.
 | `checkedInAt` | `Timestamp \| null` | ✅ | Geotagged check-in timestamp |
 | `checkedInGeo` | `map \| null` | ✅ | `{ lat: number, lng: number }` check-in geolocation coordinates |
 | `completedAt` | `Timestamp \| null` | ✅ | Completed job check-out timestamp |
-| `payRateSnapshot` | `map` | ✅ | `{ rateId: string, amount: number, currency: 'CAD', effectiveAt: string, snapshotAt: string }` |
+| `payRateSnapshot` | `map` | ✅ | `{ rateId: string, amountCents: int, currency: 'CAD', effectiveAt: string, snapshotAt: string }` — hourly rate in integer cents, frozen when the job is created (P12). The old `amount` (dollars) is Deprecated (P3-E38): dollars, before the migration — read as cents by the converters; removed by the clean-up PR. |
 | `checklistTemplate` | `string` | ✅ | ID of the saved list the checklist came from (`''` for a custom list or when no template exists). Kept for traceability. |
 | `checklistTasks` | `array` | ❌ | P3-E34: the job's own copy of its checklist, written at job creation and when an admin attaches a list: `Array<{ id, labelEn, labelFr, icon, requiresPhoto, photoPhase, order? }>` (same task shape as §8). Later edits to the saved list don't change it. The FSM app reads this first; jobs created before P3-E34 lack it and read the live template. Admin-written only, and only while the job is `unassigned`/`assigned`/`acknowledged` with no `checklistCompletions`. |
 | `checklistName` | `string` | ❌ | P3-E34: display name of the job's checklist (the saved list's name, or "Custom checklist") |
@@ -152,7 +153,8 @@ Stores configured pay rates per employee role for payroll tracking.
 | Field Name | Type | Required | Description / Allowed Values |
 | :--- | :--- | :--- | :--- |
 | `role` | `string` | ✅ | Target role: `'cleaner' \| 'lead' \| 'supervisor'` |
-| `amount` | `number` | ✅ | Rate amount (hourly or per-job) |
+| `amountCents` | `int` | ✅ | P3-E38: hourly rate in integer cents (entered in dollars in the admin form) |
+| `amount` | `number` | ❌ | *Deprecated (P3-E38): dollars, before the migration — read as cents by the converters; removed by the clean-up PR.* |
 | `currency` | `string` | ✅ | `'CAD'` |
 | `effectiveFrom` | `Timestamp` | ✅ | Timestamp of rate applicability start |
 | `effectiveTo` | `Timestamp \| null` | ✅ | Timestamp of rate applicability end |
@@ -295,8 +297,8 @@ Operational settings and policy record with append-only version history (**P3-E3
 | `scheduleFreezeDays` | `number` | `7` | Days before a shift when recurring schedule slots freeze |
 | `undoWindowMinutes` | `number` | `15` | Minutes after claiming an open shift during which a cleaner can undo |
 | `swapNoticeHours` | `number` | `12` | Minimum hours notice before shift start to request a swap |
-| `defaultOdspMonthlyLimit` | `number` | `1000` | Default monthly ODSP net earnings cap (CAD) pre-filled during staff registration |
-| `earningsCautionThreshold` | `number` | `100` | Remaining monthly headroom (CAD) at which the Safe-to-Earn bar turns amber |
+| `defaultOdspMonthlyLimitCents` | `int` | `100000` | Default monthly ODSP net earnings cap in cents ($1,000) pre-filled during staff registration |
+| `earningsCautionThresholdCents` | `int` | `10000` | Remaining monthly headroom in cents ($100) at which the Safe-to-Earn bar turns amber |
 | `vacationNoticeDays` | `number` | `14` | Minimum advance notice (days) for vacation requests |
 | `maxConcurrentOff` | `number` | `2` | Maximum active cleaners allowed off on the same day |
 | `checkInGeofenceMeters` | `number` | `250` | Allowed GPS check-in radius (meters) from the site |
@@ -304,8 +306,8 @@ Operational settings and policy record with append-only version history (**P3-E3
 | `standardCancelWindowHours` | `number` | `24` | Notice window (hours) for standard and Airbnb cancellations |
 | `deepCancelWindowHours` | `number` | `48` | Notice window (hours) for deep, move-out, post-construction, and commercial cancellations |
 | `complaintWindowHours` | `number` | `24` | Window (hours) after completion for a complimentary re-clean report |
-| `lateCancellationFeeDollars` | `number` | `0` | Flat fee (CAD) for late cancellations |
-| `lockoutFeeDollars` | `number` | `0` | Flat fee (CAD) when crew cannot gain entry on site |
+| `lateCancellationFeeCents` | `int` | `0` | Flat fee in cents for late cancellations |
+| `lockoutFeeCents` | `int` | `0` | Flat fee in cents when crew cannot gain entry on site |
 | `photoRetentionDays` | `number` | `90` | Retention period (days) for internal job verification photos |
 | `agreementRetentionYears` | `number` | `7` | Retention period (years) for signed agreements and tax records |
 | `emergencyPrimaryPhone` | `string` | `"(613) 861-8812"` | Primary emergency dispatch phone number |
@@ -344,4 +346,9 @@ const db = getFirestore('(default)')
 - **Calendar dates and wall times are local to `America/Toronto`.** This covers `preferredDate`, `scheduledDate`, `scheduledStartTime` and `scheduledEndTime`, and also `earningsHistory[].month` (`YYYY-MM`, the Toronto month). Compute them with the `packages/shared/src/domain/time.ts` helpers, never from `toISOString()`, which gives the UTC date.
 - **Instants** (`createdAt`, `checkedInAt`, `completedAt`, `changedAt`, …) are Firestore Timestamps, which are UTC.
 - **Scheduled Functions** run on `America/Toronto` time: reminders at 09:00, the earnings rollover at 00:00 on the 1st, renewals at 02:00.
-- **Money:** the convention for new fields is integer cents in fields named `…Cents`, with tax in a separate `taxCents`. Existing dollar fields move to cents in P3-E38 PR 2.
+- **Money:** integer cents in fields named `…Cents`, with tax in a separate `taxCents`; one rounding, half up (`packages/shared/src/domain/money.ts`). Forms take dollars and convert.
+- **Money migration (P3-E38 PR 2):**
+  - **Fields:** `bookings.estimatedPrice`, `payRates.amount`, `jobs.payRateSnapshot.amount`, `staff.financials.{monthlyEarningsLimit, currentMonthEarnings, earningsHistory[].total}` and the four `settings/policy` money keys now have `…Cents` versions.
+  - **Reading:** readers prefer cents and fall back to the old dollar field (×100) until `functions/scripts/migrate-money-to-cents.cjs` has run.
+  - **Clean-up:** a follow-up PR removes the dollar fields.
+  - **Policy history:** `settings/policy/history` versions saved before the change keep their dollar keys, as recorded.

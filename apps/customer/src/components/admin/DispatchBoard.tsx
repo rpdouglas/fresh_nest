@@ -11,7 +11,7 @@ import { ChecklistDialog } from './checklist/ChecklistDialog'
 import { useChecklistTemplates } from './hooks/useChecklistTemplates'
 import { usePolicySettings } from './hooks/usePolicySettings'
 import { checkCleanerSchedulingConflicts, resolveBufferMinutes, timeToMinutes } from '@/lib/utils/scheduling'
-import { addDays, dayOfWeek, getShiftDurationHours, startOfWeek, todayInZone } from '@freshnest/shared'
+import { addDays, dayOfWeek, formatCents, getShiftDurationHours, multiplyCents, startOfWeek, todayInZone } from '@freshnest/shared'
 import type { Booking, Job } from '@/types'
 import { cn } from '@/lib/utils/utils'
 import { HistoryDialog } from './audit/HistoryDialog'
@@ -24,17 +24,20 @@ interface DispatchBoardProps {
 }
 
 // Visual helpers for P7 Carla's Safe to Earn Meter
+// P7 Carla meter colours; amounts in integer cents (P3-E38), amber within $100 of the limit
+const CAUTION_CENTS = 10000
+
 const getEarningsBgClass = (current: number, limit: number) => {
   const diff = limit - current
   if (diff <= 0) return 'bg-red-600'
-  if (diff <= 100) return 'bg-amber-500'
+  if (diff <= CAUTION_CENTS) return 'bg-amber-500'
   return 'bg-green-600'
 }
 
 const getEarningsColorClass = (current: number, limit: number) => {
   const diff = limit - current
   if (diff <= 0) return 'text-red-700'
-  if (diff <= 100) return 'text-amber-600'
+  if (diff <= CAUTION_CENTS) return 'text-amber-600'
   return 'text-green-700'
 }
 
@@ -227,7 +230,7 @@ const DroppableStaffColumn: React.FC<{
   const { setNodeRef, isOver } = useDroppable({
     id,
   })
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   // Generate hourly lines for 8 AM to 6 PM
   const hourlySlots = Array.from({ length: 11 }, (_, i) => 8 + i) // [8, 9, ..., 18]
@@ -255,7 +258,7 @@ const DroppableStaffColumn: React.FC<{
           <div className="flex flex-col gap-1 mt-1 border-t border-sand/50 pt-1.5">
             <div className="flex justify-between text-[11px] font-body">
               <span className="text-text-muted">
-                {t('admin.dispatch.earned', { defaultValue: 'Earned' })}: ${currentEarnings} / ${earningsLimit}
+                {t('admin.dispatch.earned', { defaultValue: 'Earned' })}: {formatCents(currentEarnings, i18n.language)} / {formatCents(earningsLimit, i18n.language)}
               </span>
               <span className={cn('font-semibold', getEarningsColorClass(currentEarnings, earningsLimit))}>
                 {Math.round((currentEarnings / earningsLimit) * 100)}%
@@ -301,7 +304,7 @@ const DroppableStaffColumn: React.FC<{
 }
 
 export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const queryClient = useTanstackQueryClient()
 
   // Selected Date State
@@ -439,8 +442,8 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
       )
 
       // 1. Earnings cap check (simple warnings check)
-      const limit = staff.financials?.monthlyEarningsLimit ?? null
-      const current = staff.financials?.currentMonthEarnings ?? 0
+      const limit = staff.financials?.monthlyEarningsLimitCents ?? null
+      const current = staff.financials?.currentMonthEarningsCents ?? 0
 
       const isOverMonthlyCap = limit !== null && current > limit
 
@@ -449,7 +452,7 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
 
         // Earnings cap overage warning
         if (isOverMonthlyCap) {
-          warnings.push(t('admin.override.earningsWarning', { name: `${staff.firstName} ${staff.lastName}`, overage: Math.max(0, current - limit) }))
+          warnings.push(t('admin.override.earningsWarning', { name: `${staff.firstName} ${staff.lastName}`, overage: formatCents(Math.max(0, current - limit), i18n.language) }))
         }
 
         // 2. Blocked Window check
@@ -513,7 +516,7 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
     })
 
     return conflictsMap
-  }, [activeStaff, dailyJobs, policy, t])
+  }, [activeStaff, dailyJobs, policy, t, i18n.language])
 
   // Extract postal prefix helper locally for formatting
   const extractPostalPrefix = (address: string): string | null => {
@@ -538,7 +541,7 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
     cleanerId: string | null
     cleanerName: string | null
     oldCleanerId: string | null
-    estimatedPay: number
+    estimatedPayCents: number
     warnings: string[]
     overrideTypes: string[]
   } | null>(null)
@@ -559,9 +562,10 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
     // If dropped in the same column, do nothing
     if (currentlyAssignedCleanerId === targetCleanerId) return
 
-    const payRate = jobToAssign.payRateSnapshot?.amount || 25
+    // P3-E38: cents; $25/h when the job has no rate snapshot
+    const payRateCents = jobToAssign.payRateSnapshot?.amountCents || 2500
     const duration = getJobDurationHours(jobToAssign)
-    const estPay = payRate * duration
+    const estPay = multiplyCents(payRateCents, duration)
 
     // 1. Unassignment Flow
     if (targetCleanerId === null) {
@@ -573,7 +577,7 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
           cleanerId: null,
           cleanerName: null,
           oldCleanerId: currentlyAssignedCleanerId,
-          estimatedPay: estPay,
+          estimatedPayCents: estPay,
           changedByEmail: auth.currentUser?.email || 'admin@freshnest.ca',
         })
         await queryClient.invalidateQueries({ queryKey: ['jobs'] })
@@ -598,8 +602,9 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
       selectedStaff,
       booking: mockBooking,
       job: jobToAssign,
-      estimatedPay: estPay,
+      estimatedPayCents: estPay,
       policy,
+      language: i18n.language,
       t,
     })
 
@@ -616,7 +621,7 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
         cleanerId: targetCleanerId,
         cleanerName: newCleanerName,
         oldCleanerId: currentlyAssignedCleanerId,
-        estimatedPay: estPay,
+        estimatedPayCents: estPay,
         warnings: conflictResult.warnings,
         overrideTypes: conflictResult.overrideTypes,
       })
@@ -631,7 +636,7 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
           cleanerId: targetCleanerId,
           cleanerName: newCleanerName,
           oldCleanerId: currentlyAssignedCleanerId,
-          estimatedPay: estPay,
+          estimatedPayCents: estPay,
           changedByEmail: auth.currentUser?.email || 'admin@freshnest.ca',
         })
         await queryClient.invalidateQueries({ queryKey: ['jobs'] })
@@ -647,7 +652,7 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
     setIsOverrideOpen(false)
     if (!pendingAssignment) return
 
-    const { jobId, bookingId, cleanerId, cleanerName, oldCleanerId, estimatedPay, overrideTypes } = pendingAssignment
+    const { jobId, bookingId, cleanerId, cleanerName, oldCleanerId, estimatedPayCents, overrideTypes } = pendingAssignment
 
     try {
       setLocalAssignments((prev) => ({ ...prev, [jobId]: cleanerId }))
@@ -657,7 +662,7 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
         cleanerId,
         cleanerName,
         oldCleanerId,
-        estimatedPay,
+        estimatedPayCents,
         overrideReason: reason,
         overrideType: overrideTypes.join(','),
         changedByEmail: auth.currentUser?.email || 'admin@freshnest.ca',
@@ -820,8 +825,8 @@ export const DispatchBoard: React.FC<DispatchBoardProps> = ({ isAuthorized }) =>
                       title={`${cleaner.firstName} ${cleaner.lastName}`}
                       subtitle={t(`admin.staff.modal.roleOption.${cleaner.role}`, { defaultValue: cleaner.role })}
                       weeklyHours={hours}
-                      earningsLimit={cleaner.financials?.monthlyEarningsLimit ?? null}
-                      currentEarnings={cleaner.financials?.currentMonthEarnings ?? 0}
+                      earningsLimit={cleaner.financials?.monthlyEarningsLimitCents ?? null}
+                      currentEarnings={cleaner.financials?.currentMonthEarningsCents ?? 0}
                     >
                       {cleanerJobs.map((job) => (
                         <DraggableJobCard

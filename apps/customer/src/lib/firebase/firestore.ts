@@ -10,6 +10,7 @@ import {
   runTransaction,
   where,
   getDoc,
+  deleteField,
 } from 'firebase/firestore'
 import { db, auth } from '@/lib/firebase/firebase'
 import {
@@ -20,6 +21,7 @@ import {
   checklistTemplatesCollection,
   staffCollection,
   changeStamp,
+  toCents,
 } from '@freshnest/shared'
 import type { BookingFormData, AdminBookingFormData } from '@/lib/schemas/bookingSchema'
 import type { Language, Booking, BookingStatus, Job, ChecklistTemplate, ChecklistTask, ChecklistSource, PayRate, Review } from '@/types'
@@ -52,9 +54,10 @@ export function detectLeadSource(params: URLSearchParams): LeadSource {
   return map[ref] ?? 'organic'
 }
 
-export function computeBookingEstimatedPrice(propertyType: string, serviceType: string, frequency: string): number {
+/** Internal estimate in integer cents (P3-E38); never shown on the public site (P3-E29). */
+export function computeBookingEstimatedPriceCents(propertyType: string, serviceType: string, frequency: string): number {
   if (propertyType === 'commercial') {
-    return 300 // Baseline average for commercial clean estimates
+    return 30000 // Baseline average for commercial clean estimates ($300)
   }
   const sizeMap: Record<string, QuotePropertySize> = {
     apartment: 'apartment',
@@ -69,9 +72,9 @@ export function computeBookingEstimatedPrice(propertyType: string, serviceType: 
 
   const quote = calculateQuote(size, service, freq)
   if (quote.type === 'range') {
-    return (quote.min + quote.max) / 2
+    return toCents((quote.min + quote.max) / 2)
   }
-  return 150
+  return 15000
 }
 
 // P3-E29: public submissions are quote requests — no price or payment is recorded;
@@ -114,7 +117,7 @@ export async function createAdminBooking(
 ): Promise<string> {
   const { marketingConsent, ...formFields } = data
 
-  const estimatedPrice = computeBookingEstimatedPrice(
+  const estimatedPriceCents = computeBookingEstimatedPriceCents(
     data.propertyType,
     data.serviceType,
     data.frequency,
@@ -127,7 +130,7 @@ export async function createAdminBooking(
     isAirbnb:          data.serviceType === 'airbnb',
     photoConfirmation: data.serviceType === 'airbnb',
     fsmAppointmentId:  null,
-    estimatedPrice,
+    estimatedPriceCents,
     checklistTemplateId: data.checklistTemplateId || null,
     createdBy:         adminEmail,
     createdAt:         serverTimestamp(),
@@ -160,7 +163,7 @@ export async function assignCleanerTransaction({
   cleanerId,
   cleanerName,
   oldCleanerId,
-  estimatedPay,
+  estimatedPayCents,
   overrideReason = null,
   overrideType = null,
   changedByEmail,
@@ -170,7 +173,8 @@ export async function assignCleanerTransaction({
   cleanerId: string | null
   cleanerName: string | null
   oldCleanerId: string | null
-  estimatedPay: number
+  /** P3-E38: the shift's pay in integer cents, moved between cleaners' monthly totals */
+  estimatedPayCents: number
   overrideReason?: string | null
   overrideType?: string | null
   changedByEmail: string
@@ -200,19 +204,23 @@ export async function assignCleanerTransaction({
 
     // 3 + 4. Move the shift's earnings from the old cleaner to the new one
     // (no-op when reassigned to the same cleaner).
+    // P3-E38: cents; the converter reads totals saved in dollars as cents, and the dollar
+    // field is removed as soon as a total is rewritten.
     const earningsOf = (snap: typeof newStaffSnap): number =>
-      snap?.exists() ? (snap.data()?.financials?.currentMonthEarnings ?? 0) : 0
+      snap?.exists() ? (snap.data()?.financials?.currentMonthEarningsCents ?? 0) : 0
 
     if (cleanerId !== oldCleanerId) {
       if (newStaffRef && newStaffSnap?.exists()) {
         transaction.update(newStaffRef, {
-          'financials.currentMonthEarnings': earningsOf(newStaffSnap) + estimatedPay,
+          'financials.currentMonthEarningsCents': earningsOf(newStaffSnap) + estimatedPayCents,
+          'financials.currentMonthEarnings': deleteField(),
           lastChange: stamp(),
         })
       }
       if (oldStaffRef && oldStaffSnap?.exists()) {
         transaction.update(oldStaffRef, {
-          'financials.currentMonthEarnings': Math.max(0, earningsOf(oldStaffSnap) - estimatedPay),
+          'financials.currentMonthEarningsCents': Math.max(0, earningsOf(oldStaffSnap) - estimatedPayCents),
+          'financials.currentMonthEarnings': deleteField(),
           lastChange: stamp(),
         })
       }

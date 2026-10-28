@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { useQueryClient } from '@tanstack/react-query'
 import { doc, getDoc } from 'firebase/firestore'
-import { getShiftDurationHours, jobsCollection } from '@freshnest/shared'
+import { getShiftDurationHours, jobsCollection, multiplyCents } from '@freshnest/shared'
 import { db, auth } from '@/lib/firebase/firebase'
 import { useStaff } from './hooks/useStaff'
 import { usePolicySettings } from './hooks/usePolicySettings'
@@ -51,7 +51,7 @@ export function BookingDetailPanel({
     cleanerId: string | null
     cleanerName: string | null
     oldCleanerId: string | null
-    estimatedPay: number
+    estimatedPayCents: number
     warnings: string[]
     overrideTypes: string[]
   } | null>(null)
@@ -97,9 +97,10 @@ export function BookingDetailPanel({
       (s) => `${s.firstName} ${s.lastName}` === b.assignedTo
     )?.id || null
 
-    const payRate = job?.payRateSnapshot?.amount || 25
+    // P3-E38: cents; $25/h when the job has no rate snapshot
+    const payRateCents = job?.payRateSnapshot?.amountCents || 2500
     const duration = job ? getJobDurationHours(job) : 2
-    const estPay = payRate * duration
+    const estPay = multiplyCents(payRateCents, duration)
 
     if (selectedVal === 'unassigned') {
       try {
@@ -109,7 +110,7 @@ export function BookingDetailPanel({
           cleanerId: null,
           cleanerName: null,
           oldCleanerId: currentlyAssignedStaffUid,
-          estimatedPay: estPay,
+          estimatedPayCents: estPay,
           changedByEmail: auth.currentUser?.email || 'admin@freshnest.ca',
         })
         await queryClient.invalidateQueries({ queryKey: ['bookings'] })
@@ -129,8 +130,9 @@ export function BookingDetailPanel({
       selectedStaff,
       booking: b,
       job,
-      estimatedPay: estPay,
+      estimatedPayCents: estPay,
       policy,
+      language: i18n.language,
       t,
     })
 
@@ -144,7 +146,7 @@ export function BookingDetailPanel({
         cleanerId: selectedStaff.id,
         cleanerName: newCleanerName,
         oldCleanerId: currentlyAssignedStaffUid,
-        estimatedPay: estPay,
+        estimatedPayCents: estPay,
         warnings: conflictResult.warnings,
         overrideTypes: conflictResult.overrideTypes,
       })
@@ -157,7 +159,7 @@ export function BookingDetailPanel({
           cleanerId: selectedStaff.id,
           cleanerName: newCleanerName,
           oldCleanerId: currentlyAssignedStaffUid,
-          estimatedPay: estPay,
+          estimatedPayCents: estPay,
           changedByEmail: auth.currentUser?.email || 'admin@freshnest.ca',
         })
         await queryClient.invalidateQueries({ queryKey: ['bookings'] })
@@ -178,7 +180,7 @@ export function BookingDetailPanel({
         cleanerId: pendingAssignment.cleanerId,
         cleanerName: pendingAssignment.cleanerName,
         oldCleanerId: pendingAssignment.oldCleanerId,
-        estimatedPay: pendingAssignment.estimatedPay,
+        estimatedPayCents: pendingAssignment.estimatedPayCents,
         overrideReason: reason,
         overrideType: pendingAssignment.overrideTypes.join(','),
         changedByEmail: auth.currentUser?.email || 'admin@freshnest.ca',
@@ -199,9 +201,10 @@ export function BookingDetailPanel({
       (s) => `${s.firstName} ${s.lastName}` === b.assignedTo
     )?.id || null
 
-    const payRate = job?.payRateSnapshot?.amount || 25
+    // P3-E38: cents; $25/h when the job has no rate snapshot
+    const payRateCents = job?.payRateSnapshot?.amountCents || 2500
     const duration = job ? getJobDurationHours(job) : 2
-    const estPay = payRate * duration
+    const estPay = multiplyCents(payRateCents, duration)
 
     try {
       await assignCleanerTransaction({
@@ -210,7 +213,7 @@ export function BookingDetailPanel({
         cleanerId: null,
         cleanerName: customName,
         oldCleanerId: currentlyAssignedStaffUid,
-        estimatedPay: estPay,
+        estimatedPayCents: estPay,
         changedByEmail: auth.currentUser?.email || 'admin@freshnest.ca',
       })
       setCustomCleanerNames((prev) => ({ ...prev, [b.id!]: '' }))

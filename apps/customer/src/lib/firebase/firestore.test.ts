@@ -15,7 +15,7 @@ vi.mock('@freshnest/shared', async (importOriginal) => ({
 }))
 
 // A fake transaction that enforces Firestore's rule: every read must come before any write.
-const staffDocs: Record<string, { financials?: { currentMonthEarnings?: number } }> = {}
+const staffDocs: Record<string, { financials?: { currentMonthEarningsCents?: number } }> = {}
 const txUpdates: { path: string; data: Record<string, unknown> }[] = []
 const txSets: string[] = []
 function fakeTransaction() {
@@ -88,11 +88,12 @@ describe('assignCleanerTransaction (P12 Lauren dispatch)', () => {
   beforeEach(() => {
     txUpdates.length = 0
     txSets.length = 0
-    staffDocs['carla'] = { financials: { currentMonthEarnings: 400 } }
-    staffDocs['brenda'] = { financials: { currentMonthEarnings: 100 } }
+    // P3-E38: integer cents
+    staffDocs['carla'] = { financials: { currentMonthEarningsCents: 40000 } }
+    staffDocs['brenda'] = { financials: { currentMonthEarningsCents: 10000 } }
   })
 
-  const base = { bookingId: 'b1', jobId: 'j1', estimatedPay: 60, changedByEmail: 'lauren@example.com' }
+  const base = { bookingId: 'b1', jobId: 'j1', estimatedPayCents: 6000, changedByEmail: 'lauren@example.com' }
 
   it('reassigning reads both cleaners before writing and moves the earnings', async () => {
     await assignCleanerTransaction({
@@ -100,15 +101,17 @@ describe('assignCleanerTransaction (P12 Lauren dispatch)', () => {
     })
     expect(txUpdates.find((u) => u.path === 'bookings/b1')?.data).toMatchObject({ assignedTo: 'Brenda Côté' })
     expect(txUpdates.find((u) => u.path === 'jobs/j1')?.data).toMatchObject({ assignedTo: 'brenda', status: 'assigned' })
-    expect(txUpdates.find((u) => u.path === 'staff/brenda')?.data).toMatchObject({ 'financials.currentMonthEarnings': 160 })
-    expect(txUpdates.find((u) => u.path === 'staff/carla')?.data).toMatchObject({ 'financials.currentMonthEarnings': 340 })
+    expect(txUpdates.find((u) => u.path === 'staff/brenda')?.data).toMatchObject({ 'financials.currentMonthEarningsCents': 16000 })
+    expect(txUpdates.find((u) => u.path === 'staff/carla')?.data).toMatchObject({ 'financials.currentMonthEarningsCents': 34000 })
+    // the pre-P3-E38 dollar total is removed when the total is rewritten
+    expect(txUpdates.find((u) => u.path === 'staff/carla')?.data).toHaveProperty(['financials.currentMonthEarnings'])
   })
 
   it('unassigning returns the job to the pool and never takes earnings below zero', async () => {
-    staffDocs['carla'] = { financials: { currentMonthEarnings: 20 } }
+    staffDocs['carla'] = { financials: { currentMonthEarningsCents: 2000 } }
     await assignCleanerTransaction({ ...base, cleanerId: null, cleanerName: null, oldCleanerId: 'carla' })
     expect(txUpdates.find((u) => u.path === 'jobs/j1')?.data).toMatchObject({ assignedTo: null, status: 'unassigned' })
-    expect(txUpdates.find((u) => u.path === 'staff/carla')?.data).toMatchObject({ 'financials.currentMonthEarnings': 0 })
+    expect(txUpdates.find((u) => u.path === 'staff/carla')?.data).toMatchObject({ 'financials.currentMonthEarningsCents': 0 })
   })
 
   // P3-E37: the audit trigger writes the log; the override reason and type ride on the stamp.

@@ -1,4 +1,5 @@
 import type { TFunction } from 'i18next'
+import { formatCents } from '@freshnest/shared'
 import type { AuditEntry } from '@/types'
 
 // P3-E37: how audit entries read in the admin panel (History sections and the Audit Logs tab).
@@ -54,9 +55,10 @@ function asDate(value: unknown): Date | null {
   return null
 }
 
-/** A before/after value as short readable text. */
-export function formatAuditValue(value: unknown, t: TFunction, language: string): string {
+/** A before/after value as short readable text. Money fields (`…Cents`, ADR-020) show as currency. */
+export function formatAuditValue(value: unknown, t: TFunction, language: string, field?: string): string {
   if (value === null || value === undefined || value === '') return t('admin.audit.values.empty')
+  if (typeof value === 'number' && field?.endsWith('Cents')) return formatCents(value, language)
   if (typeof value === 'boolean') return t(value ? 'admin.audit.values.yes' : 'admin.audit.values.no')
   if (typeof value === 'number' || typeof value === 'string') return String(value)
   const date = asDate(value)

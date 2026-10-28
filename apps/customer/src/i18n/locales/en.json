@@ -849,7 +849,7 @@
         "transport": "Default Transportation Mode",
         "buffer": "Transit Buffer (Minutes)",
         "earningsLimit": "Monthly Earnings Limit (Optional)",
-        "applyOdspDefault": "Apply ODSP default ({{limit}} CAD)",
+        "applyOdspDefault": "Apply ODSP default ({{limit}})",
         "roleOption": {
           "cleaner": "Cleaner",
           "lead": "Lead Cleaner",
@@ -931,6 +931,7 @@
       "activeHeader": "Active Pay Rates",
       "historyHeader": "Chronological Rate History",
       "hourly": "{{amount}} / hr",
+      "perHour": "/ hr",
       "role": "Role",
       "amount": "Hourly Rate (CAD)",
       "effectiveFrom": "Effective From Date",
@@ -980,7 +981,7 @@
     "override": {
       "modalTitle": "Administrator Override Required",
       "modalMessage": "Assigning this shift to {{name}} requires an administrator override due to the following constraint violations:",
-      "earningsWarning": "{{name}} exceeds monthly earnings limit by ${{overage}}",
+      "earningsWarning": "{{name}} exceeds monthly earnings limit by {{overage}}",
       "travelWarning": "{{name}} needs {{buffer}}m travel buffer with shift {{start}}-{{end}}",
       "blockedWindowWarning": "{{name}} has a blocked window that overlaps with this shift",
       "overlapWarning": "{{name}} has an overlapping shift ({{start}} - {{end}})",
@@ -1072,6 +1073,7 @@
         "role": "Role",
         "preferences_language": "Language",
         "financials_monthlyEarningsLimit": "Monthly earnings limit",
+        "financials_monthlyEarningsLimitCents": "Monthly earnings limit",
         "compliance_acceptedTermsVersion": "Terms accepted (version)",
         "constraints_transportMode": "Transport",
         "constraints_transitBufferMinutes": "Travel buffer (min)",
@@ -1080,6 +1082,7 @@
         "tasks": "Tasks",
         "active": "Active",
         "amount": "Hourly rate",
+        "amountCents": "Hourly rate",
         "currency": "Currency",
         "effectiveFrom": "Effective from",
         "effectiveTo": "Effective to",
@@ -1361,7 +1364,15 @@
           "label": "Default ODSP Monthly Earnings Cap",
           "help": "Pre-filled monthly net earnings cap when onboarding a staff member on ODSP."
         },
+        "defaultOdspMonthlyLimitCents": {
+          "label": "Default ODSP Monthly Earnings Cap",
+          "help": "Pre-filled monthly net earnings cap when onboarding a staff member on ODSP."
+        },
         "earningsCautionThreshold": {
+          "label": "Safe-to-Earn Caution Threshold",
+          "help": "Remaining monthly headroom at which the Safe-to-Earn bar switches from green to amber."
+        },
+        "earningsCautionThresholdCents": {
           "label": "Safe-to-Earn Caution Threshold",
           "help": "Remaining monthly headroom at which the Safe-to-Earn bar switches from green to amber."
         },
@@ -1397,7 +1408,15 @@
           "label": "Late Cancellation Fee",
           "help": "Flat fee applied when a client cancels inside the required notice window."
         },
+        "lateCancellationFeeCents": {
+          "label": "Late Cancellation Fee",
+          "help": "Flat fee applied when a client cancels inside the required notice window."
+        },
         "lockoutFeeDollars": {
+          "label": "Client Lockout Fee",
+          "help": "Fee applied when a cleaner arrives on site and cannot gain entry within the waiting window."
+        },
+        "lockoutFeeCents": {
           "label": "Client Lockout Fee",
           "help": "Fee applied when a cleaner arrives on site and cannot gain entry within the waiting window."
         },

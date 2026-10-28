@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react'
 import { useCollectionQuery } from '@tanstack-query-firebase/react/firestore'
 import { query, orderBy, where } from 'firebase/firestore'
 import { db } from '@/lib/firebase/firebase'
-import { addDays, endOfMonth, getShiftDurationHours, jobsCollection, staffCollection, startOfMonth, startOfWeek, todayInZone } from '@freshnest/shared'
+import { addDays, endOfMonth, getShiftDurationHours, multiplyCents, jobsCollection, staffCollection, startOfMonth, startOfWeek, todayInZone } from '@freshnest/shared'
 import type { Job, Staff } from '@/types'
 
 export type OpsTimeRange = 'today' | 'this_week' | 'this_month' | 'custom'
@@ -97,9 +97,9 @@ export function useOperationsDashboard(enabled: boolean) {
 
   const payrollExpenses = useMemo(() => {
     return completedJobs.reduce((sum, job) => {
-      const rate = job.payRateSnapshot?.amount || 0
-      const hours = getJobDurationHours(job)
-      return sum + (rate * hours)
+      // P3-E38: integer cents
+      const rateCents = job.payRateSnapshot?.amountCents || 0
+      return sum + multiplyCents(rateCents, getJobDurationHours(job))
     }, 0)
   }, [completedJobs])
 

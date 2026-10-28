@@ -6,6 +6,8 @@
  * (synced into `functions/src/shared/policy.ts` via `functions/scripts/sync-shared.cjs`).
  */
 
+import { toCents } from './money'
+
 export interface PolicySettingsValues {
   // 1. Scheduling & Travel Buffers
   defaultVehicleBufferMinutes: number
@@ -18,8 +20,8 @@ export interface PolicySettingsValues {
   swapNoticeHours: number
 
   // 2. Staff Earnings, Time & Attendance
-  defaultOdspMonthlyLimit: number
-  earningsCautionThreshold: number
+  defaultOdspMonthlyLimitCents: number
+  earningsCautionThresholdCents: number
   vacationNoticeDays: number
   maxConcurrentOff: number
   checkInGeofenceMeters: number
@@ -29,8 +31,8 @@ export interface PolicySettingsValues {
   standardCancelWindowHours: number
   deepCancelWindowHours: number
   complaintWindowHours: number
-  lateCancellationFeeDollars: number
-  lockoutFeeDollars: number
+  lateCancellationFeeCents: number
+  lockoutFeeCents: number
 
   // 4. Compliance, Retention & Emergency Contacts
   photoRetentionDays: number
@@ -76,8 +78,8 @@ export const DEFAULT_POLICY_SETTINGS: Readonly<PolicySettingsValues> = {
   swapNoticeHours: 12,
 
   // 2. Staff Earnings, Time & Attendance (P7 Carla, P13 Marcus, Owner 9 & 16)
-  defaultOdspMonthlyLimit: 1000,
-  earningsCautionThreshold: 100,
+  defaultOdspMonthlyLimitCents: 100000, // $1,000
+  earningsCautionThresholdCents: 10000, // $100
   vacationNoticeDays: 14,
   maxConcurrentOff: 2,
   checkInGeofenceMeters: 250,
@@ -87,8 +89,8 @@ export const DEFAULT_POLICY_SETTINGS: Readonly<PolicySettingsValues> = {
   standardCancelWindowHours: 24,
   deepCancelWindowHours: 48,
   complaintWindowHours: 24,
-  lateCancellationFeeDollars: 0,
-  lockoutFeeDollars: 0,
+  lateCancellationFeeCents: 0,
+  lockoutFeeCents: 0,
 
   // 4. Compliance, Retention & Emergency Contacts (Owner 9 & 18)
   photoRetentionDays: 90,
@@ -114,8 +116,8 @@ export const POLICY_NUMERIC_BOUNDS: Readonly<
   scheduleFreezeDays: { min: 0, max: 60 },
   undoWindowMinutes: { min: 1, max: 120 },
   swapNoticeHours: { min: 0, max: 168 },
-  defaultOdspMonthlyLimit: { min: 0, max: 10000 },
-  earningsCautionThreshold: { min: 0, max: 2000 },
+  defaultOdspMonthlyLimitCents: { min: 0, max: 1000000 },
+  earningsCautionThresholdCents: { min: 0, max: 200000 },
   vacationNoticeDays: { min: 0, max: 90 },
   maxConcurrentOff: { min: 1, max: 50 },
   checkInGeofenceMeters: { min: 25, max: 5000 },
@@ -123,10 +125,26 @@ export const POLICY_NUMERIC_BOUNDS: Readonly<
   standardCancelWindowHours: { min: 0, max: 168 },
   deepCancelWindowHours: { min: 0, max: 168 },
   complaintWindowHours: { min: 1, max: 168 },
-  lateCancellationFeeDollars: { min: 0, max: 1000 },
-  lockoutFeeDollars: { min: 0, max: 1000 },
+  lateCancellationFeeCents: { min: 0, max: 100000 },
+  lockoutFeeCents: { min: 0, max: 100000 },
   photoRetentionDays: { min: 7, max: 3650 },
   agreementRetentionYears: { min: 1, max: 25 },
+}
+
+/** P3-E38 (ADR-020): money settings, stored in integer cents and entered in dollars. */
+export const POLICY_MONEY_KEYS: readonly NumericPolicyKey[] = [
+  'defaultOdspMonthlyLimitCents',
+  'earningsCautionThresholdCents',
+  'lateCancellationFeeCents',
+  'lockoutFeeCents',
+]
+
+/** Dollar keys saved before P3-E38 → their cents key. Read by normalizePolicySettings. */
+const LEGACY_DOLLAR_KEYS: Readonly<Record<string, NumericPolicyKey>> = {
+  defaultOdspMonthlyLimit: 'defaultOdspMonthlyLimitCents',
+  earningsCautionThreshold: 'earningsCautionThresholdCents',
+  lateCancellationFeeDollars: 'lateCancellationFeeCents',
+  lockoutFeeDollars: 'lockoutFeeCents',
 }
 
 export const POLICY_SETTING_KEYS: readonly (keyof PolicySettingsValues)[] = [
@@ -138,8 +156,8 @@ export const POLICY_SETTING_KEYS: readonly (keyof PolicySettingsValues)[] = [
   'scheduleFreezeDays',
   'undoWindowMinutes',
   'swapNoticeHours',
-  'defaultOdspMonthlyLimit',
-  'earningsCautionThreshold',
+  'defaultOdspMonthlyLimitCents',
+  'earningsCautionThresholdCents',
   'vacationNoticeDays',
   'maxConcurrentOff',
   'checkInGeofenceMeters',
@@ -147,8 +165,8 @@ export const POLICY_SETTING_KEYS: readonly (keyof PolicySettingsValues)[] = [
   'standardCancelWindowHours',
   'deepCancelWindowHours',
   'complaintWindowHours',
-  'lateCancellationFeeDollars',
-  'lockoutFeeDollars',
+  'lateCancellationFeeCents',
+  'lockoutFeeCents',
   'photoRetentionDays',
   'agreementRetentionYears',
   'emergencyPrimaryPhone',
@@ -164,6 +182,10 @@ export function normalizePolicySettings(
     return { ...DEFAULT_POLICY_SETTINGS }
   }
   const result: PolicySettingsValues = { ...DEFAULT_POLICY_SETTINGS }
+  for (const [legacy, key] of Object.entries(LEGACY_DOLLAR_KEYS)) {
+    const val = (raw as Record<string, unknown>)[legacy]
+    if (typeof val === 'number' && Number.isFinite(val)) result[key] = toCents(val)
+  }
   for (const key of Object.keys(POLICY_NUMERIC_BOUNDS) as Array<keyof typeof POLICY_NUMERIC_BOUNDS>) {
     const val = raw[key]
     if (typeof val === 'number' && Number.isFinite(val)) {
@@ -196,7 +218,8 @@ export function validatePolicySettingsInput(
   >) {
     const rawVal = input[key]
     const num = typeof rawVal === 'number' ? rawVal : Number(rawVal)
-    if (!Number.isFinite(num) || num < bounds.min || num > bounds.max) {
+    const wholeCents = !POLICY_MONEY_KEYS.includes(key) || Number.isInteger(num)
+    if (!Number.isFinite(num) || num < bounds.min || num > bounds.max || !wholeCents) {
       return {
         ok: false,
         error: `Invalid value for ${key}: must be a number between ${bounds.min} and ${bounds.max}.`,

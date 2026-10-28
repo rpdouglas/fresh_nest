@@ -39,7 +39,8 @@ async function main() {
       firstName, lastName, email: `${id}@freshnest.test`, phone: '6135550100', role, status,
       preferences: { language: id === 'brenda' ? 'fr' : 'en' },
       constraints: { transportMode: id === 'jasmine' ? 'transit' : 'personal_vehicle', transitBufferMinutes: 30, blockedWindows: [] },
-      financials: { monthlyEarningsLimit: limit, currentMonthEarnings: earned, earningsHistory: [] },
+      // P3-E38: integer cents (the table above is in dollars)
+      financials: { monthlyEarningsLimitCents: limit === null ? null : limit * 100, currentMonthEarningsCents: earned * 100, earningsHistory: [] },
       compliance: { acceptedTermsVersion: status === 'active' ? 'v1' : null, termsHistory: [] },
       onboardingChecklist: { backgroundCheck: status === 'active' },
       createdAt: at('2026-10-01T15:00:00Z'), welcomeEmailSentAt: at('2026-10-10T15:00:00Z'),
@@ -69,7 +70,7 @@ async function main() {
     })
   }
 
-  const payRateSnapshot = { rateId: 'r1', amount: 22, currency: 'CAD', effectiveAt: '2026-08-04', snapshotAt: '2026-08-04' }
+  const payRateSnapshot = { rateId: 'r1', amountCents: 2200, currency: 'CAD', effectiveAt: '2026-08-04', snapshotAt: '2026-08-04' }
   const jobs = [
     ['job3', 'Margaret Storey', '45 Montreal Rd, Cornwall ON', 'standard', 'carla', '09:00', '11:00'],
     ['job4', 'Kahnawà:ke Baptiste', '7 Island Rd, Cornwall Island', 'moveout', null, '09:00', '13:00'],
@@ -90,7 +91,7 @@ async function main() {
     ['r3', 'supervisor', 30, '2026-08-04T22:00:00Z', null], ['r0', 'cleaner', 20, '2026-02-19T07:00:00Z', '2026-08-04T22:00:00Z'],
   ]) {
     await db.collection('payRates').doc(id).set({
-      role, amount, currency: 'CAD', effectiveFrom: at(from), effectiveTo: to ? at(to) : null,
+      role, amountCents: amount * 100, currency: 'CAD', effectiveFrom: at(from), effectiveTo: to ? at(to) : null,
       createdBy: 'lauren@freshnest.test', createdAt: at(from),
     })
   }

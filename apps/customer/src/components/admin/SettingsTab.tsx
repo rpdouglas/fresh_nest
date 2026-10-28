@@ -2,6 +2,10 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   POLICY_NUMERIC_BOUNDS,
+  POLICY_MONEY_KEYS,
+  centsToDollars,
+  formatCents,
+  toCents,
   validatePolicySettingsInput,
   type NumericPolicyKey,
   type PolicySettingsValues,
@@ -31,8 +35,8 @@ const SCHEDULING_FIELDS: NumericFieldMeta[] = [
 ]
 
 const EARNINGS_TIME_FIELDS: NumericFieldMeta[] = [
-  { key: 'defaultOdspMonthlyLimit', unitKey: 'cad' },
-  { key: 'earningsCautionThreshold', unitKey: 'cad' },
+  { key: 'defaultOdspMonthlyLimitCents', unitKey: 'cad' },
+  { key: 'earningsCautionThresholdCents', unitKey: 'cad' },
   { key: 'vacationNoticeDays', unitKey: 'days' },
   { key: 'maxConcurrentOff', unitKey: 'staff' },
   { key: 'checkInGeofenceMeters', unitKey: 'meters' },
@@ -43,14 +47,16 @@ const CLIENT_POLICY_FIELDS: NumericFieldMeta[] = [
   { key: 'standardCancelWindowHours', unitKey: 'hours' },
   { key: 'deepCancelWindowHours', unitKey: 'hours' },
   { key: 'complaintWindowHours', unitKey: 'hours' },
-  { key: 'lateCancellationFeeDollars', unitKey: 'cad' },
-  { key: 'lockoutFeeDollars', unitKey: 'cad' },
+  { key: 'lateCancellationFeeCents', unitKey: 'cad' },
+  { key: 'lockoutFeeCents', unitKey: 'cad' },
 ]
 
 const COMPLIANCE_NUMERIC_FIELDS: NumericFieldMeta[] = [
   { key: 'photoRetentionDays', unitKey: 'days' },
   { key: 'agreementRetentionYears', unitKey: 'years' },
 ]
+
+const isMoneyKey = (key: NumericPolicyKey) => POLICY_MONEY_KEYS.includes(key)
 
 const inputClass =
   'w-full min-h-[48px] px-4 py-2 border border-sand rounded font-body text-base text-charcoal bg-white focus:outline-none focus:ring-2 focus:ring-slate-brand disabled:bg-cream disabled:text-text-muted'
@@ -81,9 +87,11 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ isAuthorized, isOwner 
 
   const handleNumericChange = (key: NumericPolicyKey, rawValue: string) => {
     const parsed = rawValue === '' ? 0 : Number(rawValue)
+    const value = Number.isFinite(parsed) ? parsed : 0
     setDraftEdits((prev) => ({
       ...prev,
-      [key]: Number.isFinite(parsed) ? parsed : 0,
+      // P3-E38: money settings are typed in dollars and stored in cents
+      [key]: isMoneyKey(key) ? toCents(value) : value,
     }))
   }
 
@@ -136,6 +144,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ isAuthorized, isOwner 
 
   const renderNumericField = ({ key, unitKey }: NumericFieldMeta) => {
     const bounds = POLICY_NUMERIC_BOUNDS[key]
+    const money = isMoneyKey(key)
     return (
       <div key={key} className="flex flex-col gap-1">
         <div className="flex items-baseline justify-between gap-2">
@@ -152,17 +161,21 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ isAuthorized, isOwner 
         <input
           id={`policy-${key}`}
           type="number"
-          min={bounds.min}
-          max={bounds.max}
-          step={1}
+          min={money ? centsToDollars(bounds.min) : bounds.min}
+          max={money ? centsToDollars(bounds.max) : bounds.max}
+          step={money ? 0.01 : 1}
           disabled={!isOwner || saving}
-          value={formValues[key]}
+          value={money ? centsToDollars(formValues[key]) : formValues[key]}
           onChange={(e) => handleNumericChange(key, e.target.value)}
           className={inputClass}
         />
       </div>
     )
   }
+
+  // Money settings saved since P3-E38 are cents; older history rows hold dollars under the old keys
+  const historyValue = (field: string, value: number | string) =>
+    typeof value === 'number' && field.endsWith('Cents') ? formatCents(value, i18n.language) : String(value)
 
   const formatDate = (date: Date | null) => {
     if (!date) return ''
@@ -449,8 +462,8 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ isAuthorized, isOwner 
                         <span className="font-medium">
                           {t(`admin.settings.fields.${diff.field}.label`)}:
                         </span>{' '}
-                        <span className="text-text-muted">{String(diff.oldValue)}</span> &rarr;{' '}
-                        <span className="font-medium text-slate-brand">{String(diff.newValue)}</span>
+                        <span className="text-text-muted">{historyValue(diff.field, diff.oldValue)}</span> &rarr;{' '}
+                        <span className="font-medium text-slate-brand">{historyValue(diff.field, diff.newValue)}</span>
                       </li>
                     ))}
                   </ul>

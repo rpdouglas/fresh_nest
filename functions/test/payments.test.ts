@@ -15,7 +15,7 @@ vi.mock('firebase-admin/firestore', () => ({ getFirestore: vi.fn(() => ({})) }))
 const { createPaymentIntent, stripeWebhookHandler } = await import('../src/callable/payments')
 
 type RunRequest = Parameters<typeof createPaymentIntent.run>[0]
-const call = (auth: unknown, data: unknown = { estimatedPrice: 225 }) =>
+const call = (auth: unknown, data: unknown = { estimatedPriceCents: 22500 }) =>
   createPaymentIntent.run({ data, auth } as unknown as RunRequest)
 
 function fakeRes() {
@@ -47,6 +47,17 @@ describe('createPaymentIntent', () => {
   it('works for a signed-in caller', async () => {
     await expect(call({ uid: 'u1', token: {} })).resolves.toEqual({ clientSecret: 'secret_123' })
     expect(create).toHaveBeenCalledTimes(1)
+  })
+
+  // P3-E38: integer cents in, HST added in cents
+  it('charges the amount plus 13 % HST in cents', async () => {
+    await call({ uid: 'u1', token: {} }, { estimatedPriceCents: 11550 })
+    expect(create).toHaveBeenCalledWith(expect.objectContaining({ amount: 11550 + 1502 })) // 1501.5 → 1502
+  })
+
+  it('rejects dollar amounts and fractions of a cent', async () => {
+    await expect(call({ uid: 'u1', token: {} }, { estimatedPrice: 225 })).rejects.toMatchObject({ code: 'invalid-argument' })
+    await expect(call({ uid: 'u1', token: {} }, { estimatedPriceCents: 22500.5 })).rejects.toMatchObject({ code: 'invalid-argument' })
   })
 })
 

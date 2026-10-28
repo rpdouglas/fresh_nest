@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { doc, updateDoc, onSnapshot, serverTimestamp } from 'firebase/firestore'
-import { jobsCollection, checklistTemplatesCollection, changeStamp, estimateShiftPay, getShiftDurationHours } from '@freshnest/shared'
+import { jobsCollection, checklistTemplatesCollection, changeStamp, estimateShiftPayCents, formatCents, getShiftDurationHours } from '@freshnest/shared'
 import { db, auth } from '../lib/firebase/firebase'
 import { useJob } from '../hooks/useJob'
 import { useStaffAuth } from '../hooks/useStaffAuth'
@@ -307,8 +307,9 @@ export const JobPage: React.FC = () => {
   const isCheckoutAllowed = tasks.length > 0 && tasks.every((task: ChecklistTask) => isTaskCompleted(task.id))
 
   const duration = getShiftDurationHours(job.scheduledStartTime, job.scheduledEndTime)
-  const rate = job.payRateSnapshot?.amount || 0
-  const estPay = estimateShiftPay(rate, job.scheduledStartTime, job.scheduledEndTime)
+  // P3-E38: integer cents
+  const rateCents = job.payRateSnapshot?.amountCents || 0
+  const estPay = estimateShiftPayCents(rateCents, job.scheduledStartTime, job.scheduledEndTime)
 
   return (
     <main className="min-h-screen bg-warm-white py-6 px-4 md:py-12 md:px-6">
@@ -395,7 +396,7 @@ export const JobPage: React.FC = () => {
                 {t('fsm.myJobs.jobCard.estPayLabel', { defaultValue: 'Estimated Pay' })}
               </span>
               <span className="text-charcoal font-semibold mt-0.5 block">
-                ${estPay} <span className="text-text-muted font-normal">({duration}h @ ${rate}/h)</span>
+                {formatCents(estPay, i18n.language)} <span className="text-text-muted font-normal">({duration}h @ {formatCents(rateCents, i18n.language)}/h)</span>
               </span>
             </div>
             <div>

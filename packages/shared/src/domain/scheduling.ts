@@ -11,7 +11,7 @@
  */
 
 import { dayOfWeek } from './time'
-import { centsToDollars, multiplyCents, toCents } from './money'
+import { multiplyCents } from './money'
 
 export interface TravelShift {
   startTime: string
@@ -108,20 +108,20 @@ export function getShiftDurationHours(startTime: string, endTime: string): numbe
   return durationHours
 }
 
-/** Rate × hours, rounded once to whole cents (ADR-020) so monthly totals don't drift. */
-export function estimateShiftPay(payRate: number, startTime: string, endTime: string): number {
-  return centsToDollars(multiplyCents(toCents(payRate), getShiftDurationHours(startTime, endTime)))
+/** Hourly rate (cents) × shift hours, rounded once to whole cents (ADR-020). */
+export function estimateShiftPayCents(payRateCents: number, startTime: string, endTime: string): number {
+  return multiplyCents(payRateCents, getShiftDurationHours(startTime, endTime))
 }
 
-/** P7/P13: amount the shift exceeds the remaining monthly limit by, or 0 if it fits / no limit set. */
-export function earningsOverage(
-  estimatedShiftPay: number,
-  monthlyEarningsLimit: number | null | undefined,
-  currentMonthEarnings: number,
+/** P7/P13: cents the shift exceeds the remaining monthly limit by, or 0 if it fits / no limit set. */
+export function earningsOverageCents(
+  shiftPayCents: number,
+  monthlyEarningsLimitCents: number | null | undefined,
+  currentMonthEarningsCents: number,
 ): number {
-  if (monthlyEarningsLimit === null || monthlyEarningsLimit === undefined) return 0
-  const remaining = monthlyEarningsLimit - currentMonthEarnings
-  return estimatedShiftPay > remaining ? estimatedShiftPay - remaining : 0
+  if (monthlyEarningsLimitCents === null || monthlyEarningsLimitCents === undefined) return 0
+  const remaining = monthlyEarningsLimitCents - currentMonthEarningsCents
+  return shiftPayCents > remaining ? shiftPayCents - remaining : 0
 }
 
 /** P9: true when the shift overlaps any recurring or one-off blocked window. */

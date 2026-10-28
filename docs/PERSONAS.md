@@ -1,7 +1,8 @@
 # Fresh Nest Co. — Persona Reference
 
-**Version:** 4.2 | **Updated:** 2026-09-30
+**Version:** 4.3 | **Updated:** 2026-10-28
 **Status:** Human-defined — AI agents READ ONLY unless the human explicitly authorises a specific change.
+**v4.3 (2026-10-28, human-authorised, P3-E38):** Money is stored in integer cents (ADR-020). Field names in the P7 data table and acceptance steps and in P12's rate snapshot now use the `…Cents` names (`monthlyEarningsLimitCents`, `currentMonthEarningsCents`, `payRateSnapshot.amountCents: 1800` for $18/hr). Wording only; the personas' needs and the dollar amounts in the stories are unchanged.
 **v4.2 (2026-09-30, human-authorised, P3-E29):** The public site shows no prices or discounts — pricing is agreed in a quote follow-up. P2 Travis is re-scoped from price visibility to speed and zero friction.
 **v4.1 (2026-09-30, human-authorised):** Release language scope is English + French only. P10 Arabic UI / RTL deferred; P10 is served by the icon-first UI. P7 acceptance step 6 arithmetic corrected ($5 claimable / $6 blocked at $795/$800).
 **Supersedes:** v3.0 (June 2026)
@@ -457,12 +458,12 @@ Carla cannot earn more than her ODSP-allowable limit in a given month (e.g., $1,
 
 | Field / Requirement | Specification |
 |---|---|
-| `staff.financials.monthlyEarningsLimit` | Integer, set by admin. Required field for ODSP-flagged staff profiles |
-| `staff.financials.currentMonthEarnings` | Running total, updated on every confirmed shift claim |
-| Pre-claim earnings check | Before a shift can be claimed: `(currentMonthEarnings + shiftGrossPay) <= monthlyEarningsLimit` must be true. If false, the claim button is disabled and a clear explanation is shown. This is a hard block, not a soft warning. |
+| `staff.financials.monthlyEarningsLimitCents` | Integer cents, set by admin (entered in dollars). Required field for ODSP-flagged staff profiles |
+| `staff.financials.currentMonthEarningsCents` | Running total in integer cents, updated on every confirmed shift claim |
+| Pre-claim earnings check | Before a shift can be claimed: `(currentMonthEarningsCents + shiftGrossPayCents) <= monthlyEarningsLimitCents` must be true. If false, the claim button is disabled and a clear explanation is shown. This is a hard block, not a soft warning. |
 | "Safe to Earn" progress bar | Visual indicator showing current month earnings vs. limit. Colour-coded: green (safe), amber (within $100 of limit), red (at or over limit). Present on dashboard and on every shift detail screen. |
 | Shift listing filter | Shifts that would push Carla over her limit must be visually marked as unclaimed (greyed, with explanation) — they should still be visible so she understands why, but the claim action is disabled. |
-| Admin override | Lauren (P12) can manually adjust `monthlyEarningsLimit` and `currentMonthEarnings` with an audit log entry. |
+| Admin override | Lauren (P12) can manually adjust `monthlyEarningsLimitCents` and `currentMonthEarningsCents` with an audit log entry. |
 
 #### Persona Quote
 > *"I can't afford to guess. If the app lets me claim it, I need to know it's safe."*
@@ -470,11 +471,11 @@ Carla cannot earn more than her ODSP-allowable limit in a given month (e.g., $1,
 #### Acceptance Test — P7
 **Pass/Fail Gate for Phase C:**
 
-1. Carla's profile has `monthlyEarningsLimit` set to $800 and `currentMonthEarnings` at $750
+1. Carla's profile has `monthlyEarningsLimitCents` set to $800 (80000) and `currentMonthEarningsCents` at $750 (75000)
 2. She views a shift worth $75 — the claim button is disabled with a message explaining she is $25 over her limit for this shift
 3. She views a shift worth $45 — the claim button is active
 4. The "Safe to Earn" progress bar shows $750/$800 (94% — amber state)
-5. After claiming the $45 shift, `currentMonthEarnings` updates to $795 and the bar shows red
+5. After claiming the $45 shift, `currentMonthEarningsCents` updates to $795 (79500) and the bar shows red
 6. With $5 remaining ($795/$800), a shift worth $5 remains claimable; a shift worth $6 or more is blocked
 
 ---
@@ -779,7 +780,7 @@ Compliance is not a feature. It is the floor beneath every other feature. If a p
 | Earnings cap meter | Alert when any employee's earnings are approaching their monthly cap |
 | IntakeModeSettings toggle | Toggle intake mode (instant booking vs. quote-required) per service type without deploying code |
 | `staff.compliance.acceptedTermsVersion` | String (semantic version, e.g., `"2.1"`). Updated only when the staff member explicitly accepts the new terms document. All versions stored in `staff.compliance.termsHistory[]`. |
-| `shift.payRateSnapshot` | Object: `{ rateId: string, amount: number, currency: 'CAD', effectiveAt: ISO timestamp, snapshotAt: ISO timestamp }`. Captured at the moment the shift is confirmed/claimed. Immutable after capture — no update pathway exists. |
+| `shift.payRateSnapshot` | Object: `{ rateId: string, amountCents: integer, currency: 'CAD', effectiveAt: ISO timestamp, snapshotAt: ISO timestamp }`. Captured at the moment the shift is confirmed/claimed. Immutable after capture — no update pathway exists. |
 | Immutable shift records | Once a shift status reaches `completed`, no field on the shift record can be updated except by an admin override that creates a new record with a `reason` field (the original record is preserved). |
 | Audit log | Every write operation on `staff`, `shifts`, and `bookings` collections that changes a financial, status, or compliance field generates an entry in `auditLog/{docId}`: `{ collection, documentId, field, oldValue, newValue, changedBy, changedAt }`. |
 | Admin override trail | Any time Lauren (or another admin) overrides a system rule (P7 earnings cap, P8 travel conflict, P9 blocked window, P11 photo requirement), the override is recorded in the audit log with a mandatory `reason` field. No silently-overridden rules. |
@@ -800,8 +801,8 @@ Compliance is not a feature. It is the floor beneath every other feature. If a p
 
 **Compliance gate:**
 1. A pay rate is changed from $18/hr to $20/hr effective today
-2. A shift confirmed last week at $18/hr still shows `payRateSnapshot.amount: 18` — the rate change did not retroactively update it
-3. A new shift confirmed today shows `payRateSnapshot.amount: 20`
+2. A shift confirmed last week at $18/hr still shows `payRateSnapshot.amountCents: 1800` — the rate change did not retroactively update it
+3. A new shift confirmed today shows `payRateSnapshot.amountCents: 2000`
 4. Lauren publishes Terms v2.1 — all active staff see an in-app prompt requiring acceptance before their next shift claim
 5. Staff member Ahmed accepts v2.1 — `acceptedTermsVersion: "2.1"` is stored, and the previous version `"2.0"` is retained in `termsHistory[]`
 6. Lauren uses the admin override to bypass Carla's earnings cap for one shift — the audit log records the override with the reason Lauren entered

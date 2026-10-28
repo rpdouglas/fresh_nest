@@ -39,10 +39,11 @@ export interface Staff {
     transitBufferMinutes: number
     blockedWindows: BlockedWindow[]
   }
+  /** P3-E38: integer cents (ADR-020); `null` limit = no cap. Months are Toronto `YYYY-MM`. */
   financials: {
-    monthlyEarningsLimit: number | null
-    currentMonthEarnings: number
-    earningsHistory: Array<{ month: string; total: number }>
+    monthlyEarningsLimitCents: number | null
+    currentMonthEarningsCents: number
+    earningsHistory: Array<{ month: string; totalCents: number }>
   }
   compliance: {
     acceptedTermsVersion: string | null

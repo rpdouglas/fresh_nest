@@ -85,7 +85,7 @@ export const AUDIT_CONFIG: Readonly<Record<string, AuditCollectionConfig>> = {
   staff: {
     fields: [
       'status', 'role', 'firstName', 'lastName', 'email', 'phone', 'preferences.language',
-      'financials.monthlyEarningsLimit', 'compliance.acceptedTermsVersion', 'constraints.transportMode',
+      'financials.monthlyEarningsLimitCents', 'compliance.acceptedTermsVersion', 'constraints.transportMode',
       'constraints.transitBufferMinutes', 'constraints.blockedWindows',
     ],
     label: (d) => joinLabel(`${str(d.firstName)} ${str(d.lastName)}`),
@@ -95,7 +95,7 @@ export const AUDIT_CONFIG: Readonly<Record<string, AuditCollectionConfig>> = {
     label: (d) => joinLabel(d.name),
   },
   payRates: {
-    fields: ['role', 'amount', 'currency', 'effectiveFrom', 'effectiveTo'],
+    fields: ['role', 'amountCents', 'currency', 'effectiveFrom', 'effectiveTo'],
     label: (d) => joinLabel(d.role),
   },
   galleryPairs: {

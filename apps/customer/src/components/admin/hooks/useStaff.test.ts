@@ -64,7 +64,7 @@ const validInput: RegisterStaffInput = {
   language: 'fr',
   transportMode: 'transit',
   transitBufferMinutes: 30,
-  monthlyEarningsLimit: null,
+  monthlyEarningsLimitCents: null,
 }
 
 describe('useStaff — registerStaff (P3-E27-A2)', () => {
