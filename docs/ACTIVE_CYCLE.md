@@ -124,7 +124,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | F13 | Tighten the public `bookings` create rule with `keys().hasOnly([...])` | Human approval (rules) | Quote review | ⬜ Open |
 | F14 | Quote form minimum date uses UTC (after ~8 pm ET it skips a day) and isn't checked server-side; owner email lacks the short `Ref #` | AI | Quote review | ⬜ Open |
 | F15 | Re-sync `firestore.dev.rules` with production — dev still allows office staff-doc creates from the app (production blocked it in P3-E27-A2); one rules test fails against the dev file | Human approval (rules) + AI | P3-E35 | ⬜ Open |
-| F16 | Optional service account so agent sessions can run admin scripts (Firebase Authentication Admin + Cloud Datastore User; env var `FRESHNEST_SA_JSON`); rules deploys stay on the workflow | Human (GCP console) | P3-E35 rollout | ⬜ Open |
+| F16 | Optional service account so agent sessions can run admin scripts (Firebase Authentication Admin + Cloud Datastore User; env var `FRESHNEST_SA_JSON`); rules deploy through CI on merge (ADR-018) | Human (GCP console) | P3-E35 rollout | ⬜ Open |
 
 ---
 
