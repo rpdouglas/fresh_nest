@@ -87,7 +87,7 @@ export default function QuoteCalculator() {
                   alt=""
                   aria-hidden="true"
                   className="w-full h-full object-cover"
-                  style={{ opacity: 0.25 }}
+                  style={{ opacity: 0.18 }}
                 />
               </div>
               <div className="relative z-10">
@@ -119,7 +119,7 @@ export default function QuoteCalculator() {
                   alt=""
                   aria-hidden="true"
                   className="w-full h-full object-cover"
-                  style={{ opacity: 0.25 }}
+                  style={{ opacity: 0.18 }}
                 />
               </div>
               <div className="relative z-10">
@@ -151,7 +151,7 @@ export default function QuoteCalculator() {
                   alt=""
                   aria-hidden="true"
                   className="w-full h-full object-cover"
-                  style={{ opacity: 0.25 }}
+                  style={{ opacity: 0.18 }}
                 />
               </div>
               <div className="relative z-10">
@@ -180,9 +180,19 @@ export default function QuoteCalculator() {
             role="status"
             aria-live="polite"
             aria-atomic="true"
-            className="mt-8 p-6 bg-white rounded border border-sand text-center"
+            className="relative overflow-hidden mt-8 p-6 bg-white rounded border border-sand text-center"
           >
-            <div className="space-y-3">
+            {/* Background Image decoration */}
+            <div className="absolute inset-0 pointer-events-none">
+              <img
+                src="/images/quote-cta.jpg"
+                alt=""
+                aria-hidden="true"
+                className="w-full h-full object-cover"
+                style={{ opacity: 0.18 }}
+              />
+            </div>
+            <div className="relative z-10 space-y-3">
               <p className="font-sub text-2xl text-charcoal">
                 {size === 'commercial' ? t('quote.commercialTitle') : t('quote.ctaTitle')}
               </p>
