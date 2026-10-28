@@ -7,7 +7,8 @@ import {
   shiftsOverlap,
   overlapsBlockedWindow,
   resolveBufferMinutes,
-  earningsOverage,
+  earningsOverageCents,
+  formatCents,
   type BufferPolicyConfig,
 } from '@freshnest/shared'
 import { db } from '@/lib/firebase/firebase'
@@ -20,7 +21,7 @@ export {
   shiftsOverlap,
   overlapsBlockedWindow,
   resolveBufferMinutes,
-  earningsOverage,
+  earningsOverageCents,
 }
 
 export interface ConflictCheckResult {
@@ -32,7 +33,8 @@ export interface ConflictCheckResult {
   isOverEarnings: boolean
   isOverTravel: boolean
   isOverBlockedWindow: boolean
-  overage: number
+  /** P3-E38: integer cents over the cleaner's monthly limit (0 when it fits). */
+  overageCents: number
   conflictingShift: Job | null
   warnings: string[]
   overrideTypes: string[]
@@ -42,8 +44,9 @@ export async function checkCleanerSchedulingConflicts({
   selectedStaff,
   booking,
   job,
-  estimatedPay,
+  estimatedPayCents,
   policy,
+  language = 'en',
   t = (key: string, options?: Record<string, unknown>) => {
     const name = typeof options?.name === 'string' ? options.name : 'Cleaner'
     const overage = typeof options?.overage === 'number' || typeof options?.overage === 'string' ? String(options.overage) : '0'
@@ -52,7 +55,7 @@ export async function checkCleanerSchedulingConflicts({
     const end = typeof options?.end === 'string' ? options.end : ''
 
     if (key.includes('earningsWarning')) {
-      return `${name} exceeds monthly earnings limit by $${overage}`
+      return `${name} exceeds monthly earnings limit by ${overage}`
     }
     if (key.includes('travelWarning')) {
       return `${name} needs ${buffer}m travel buffer with shift ${start}-${end}`
@@ -69,17 +72,20 @@ export async function checkCleanerSchedulingConflicts({
   selectedStaff: Staff
   booking: Booking
   job: Job | null
-  estimatedPay: number
+  /** P3-E38: integer cents */
+  estimatedPayCents: number
   policy?: BufferPolicyConfig
+  /** i18n language, for the amounts in warnings */
+  language?: string
   t?: (key: string, options?: Record<string, unknown>) => string
 }): Promise<ConflictCheckResult> {
   const newCleanerName = `${selectedStaff.firstName} ${selectedStaff.lastName}`
 
   // 1. Check earnings cap via shared domain helper
-  const limit = selectedStaff.financials?.monthlyEarningsLimit ?? null
-  const current = selectedStaff.financials?.currentMonthEarnings ?? 0
-  const overage = earningsOverage(estimatedPay, limit, current)
-  const isOverEarnings = overage > 0
+  const limit = selectedStaff.financials?.monthlyEarningsLimitCents ?? null
+  const current = selectedStaff.financials?.currentMonthEarningsCents ?? 0
+  const overageCents = earningsOverageCents(estimatedPayCents, limit, current)
+  const isOverEarnings = overageCents > 0
 
   // 2. Check overlaps (blocking) and travel buffer conflicts (overridable) via shared domain helpers
   let isOverlap = false
@@ -152,7 +158,7 @@ export async function checkCleanerSchedulingConflicts({
     warnings.push(
       t('admin.override.earningsWarning', {
         name: newCleanerName,
-        overage,
+        overage: formatCents(overageCents, language),
       })
     )
     overrideTypes.push('earnings_cap_exceeded')
@@ -186,7 +192,7 @@ export async function checkCleanerSchedulingConflicts({
     isOverEarnings,
     isOverTravel,
     isOverBlockedWindow,
-    overage,
+    overageCents,
     conflictingShift,
     warnings,
     overrideTypes,

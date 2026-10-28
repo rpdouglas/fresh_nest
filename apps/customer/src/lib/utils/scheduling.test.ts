@@ -14,7 +14,7 @@ vi.mock('firebase/firestore', () => ({ query: vi.fn(), where: vi.fn(), getDocs: 
 
 const staff = {
   id: 'carla', firstName: 'Carla', lastName: 'Martin',
-  financials: { monthlyEarningsLimit: null, currentMonthEarnings: 0, earningsHistory: [] },
+  financials: { monthlyEarningsLimitCents: null, currentMonthEarningsCents: 0, earningsHistory: [] },
   constraints: { transportMode: 'personal_vehicle', transitBufferMinutes: 30, blockedWindows: [] },
 } as unknown as Staff
 const booking = { id: 'bk1', jobId: 'job-new', address: '1 Pitt St, Cornwall ON K6H 1A1', preferredDate: '2026-10-28' } as unknown as Booking
@@ -23,7 +23,7 @@ const job = (id: string, start: string, end: string, address = '9 Water St, Long
 const existing = (...jobs: Job[]) => vi.mocked(getDocs).mockResolvedValue({ docs: jobs.map((j) => ({ data: () => j })) } as never)
 
 const check = (candidate: Job) =>
-  checkCleanerSchedulingConflicts({ selectedStaff: staff, booking, job: candidate, estimatedPay: 50 })
+  checkCleanerSchedulingConflicts({ selectedStaff: staff, booking, job: candidate, estimatedPayCents: 5000 })
 
 beforeEach(() => vi.clearAllMocks())
 

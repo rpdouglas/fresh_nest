@@ -1,7 +1,8 @@
 import type { DocumentData } from 'firebase-admin/firestore'
 import {
   getShiftDurationHours,
-  earningsOverage,
+  estimateShiftPayCents,
+  earningsOverageCents,
   overlapsBlockedWindow,
   resolveBufferMinutes,
   findTravelConflict,
@@ -10,6 +11,7 @@ import {
   type StaffConstraintsLike,
   type BufferPolicyConfig,
 } from './eligibility'
+import { amountCentsOf, normalizeFinancials } from '../shared/money'
 
 // Service-area names matched in the free-text client address. Longest first so
 // "Cornwall Island" (P4/P15 — Akwesasne) wins over "Cornwall".
@@ -22,15 +24,16 @@ export interface OpenShiftResponse {
   scheduledDate: string
   scheduledStartTime: string
   scheduledEndTime: string
-  payRate: number
+  /** P3-E38: integer cents (ADR-020) */
+  payRateCents: number
   area: {
     municipality: string | null
     postalPrefix: string | null
   }
   eligibility: {
     durationHours: number
-    estimatedPay: number
-    overage: number
+    estimatedPayCents: number
+    overageCents: number
     travelConflict: { startTime: string; endTime: string; bufferMinutes: number } | null
   }
 }
@@ -62,8 +65,7 @@ export function buildOpenShifts(
   const constraints: StaffConstraintsLike = staffData.constraints || {}
   const blockedWindows = constraints.blockedWindows || []
   const bufferMinutes = resolveBufferMinutes(constraints, policy)
-  const monthlyEarningsLimit = staffData.financials?.monthlyEarningsLimit ?? null
-  const currentMonthEarnings = staffData.financials?.currentMonthEarnings ?? 0
+  const { monthlyEarningsLimitCents, currentMonthEarningsCents } = normalizeFinancials(staffData.financials)
 
   const assignedByDate = new Map<string, TravelShift[]>()
   for (const { data: j } of assignedJobs) {
@@ -81,9 +83,9 @@ export function buildOpenShifts(
       !overlapsBlockedWindow(job.scheduledDate, job.scheduledStartTime, job.scheduledEndTime, blockedWindows))
     .sort((a, b) => createdAtMillis(b.data) - createdAtMillis(a.data))
     .map(({ id, data: job }) => {
-      const payRate = job.payRateSnapshot?.amount || 0
+      const payRateCents = amountCentsOf(job.payRateSnapshot)
       const durationHours = getShiftDurationHours(job.scheduledStartTime, job.scheduledEndTime)
-      const estimatedPay = payRate * durationHours
+      const estimatedPayCents = estimateShiftPayCents(payRateCents, job.scheduledStartTime, job.scheduledEndTime)
       const conflict = findTravelConflict(
         { startTime: job.scheduledStartTime, endTime: job.scheduledEndTime, address: job.clientAddress },
         assignedByDate.get(job.scheduledDate) ?? [],
@@ -96,15 +98,15 @@ export function buildOpenShifts(
         scheduledDate: job.scheduledDate,
         scheduledStartTime: job.scheduledStartTime,
         scheduledEndTime: job.scheduledEndTime,
-        payRate,
+        payRateCents,
         area: {
           municipality: resolveMunicipality(job.clientAddress),
           postalPrefix: extractPostalPrefix(job.clientAddress),
         },
         eligibility: {
           durationHours,
-          estimatedPay,
-          overage: earningsOverage(estimatedPay, monthlyEarningsLimit, currentMonthEarnings),
+          estimatedPayCents,
+          overageCents: earningsOverageCents(estimatedPayCents, monthlyEarningsLimitCents, currentMonthEarningsCents),
           travelConflict: conflict
             ? { startTime: conflict.startTime, endTime: conflict.endTime, bufferMinutes }
             : null,

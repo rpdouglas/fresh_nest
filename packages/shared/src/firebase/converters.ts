@@ -19,6 +19,7 @@ import {
   type PolicySettings,
   type PolicyHistoryEntry,
 } from '../domain/policy'
+import { amountCentsOf, centsOrLegacy, normalizeFinancials } from '../domain/money'
 
 // Helper to convert dynamic values to Date
 export function toDate(val: any): Date {
@@ -71,11 +72,16 @@ function createConverter<T extends { id?: string }>(
 }
 
 // Booking Converter
-export const bookingConverter = createConverter<Booking>((data, id) => ({
-  ...data,
-  id,
-  createdAt: toDate(data.createdAt),
-} as Booking))
+export const bookingConverter = createConverter<Booking>((data, id) => {
+  // P3-E38: dollar estimates saved before the migration read as cents
+  const estimatedPriceCents = centsOrLegacy(data.estimatedPriceCents, data.estimatedPrice)
+  return {
+    ...data,
+    id,
+    createdAt: toDate(data.createdAt),
+    ...(estimatedPriceCents !== null ? { estimatedPriceCents } : {}),
+  } as Booking
+})
 
 // Job Photo Mapper
 function mapJobPhoto(p: any): JobPhoto {
@@ -105,6 +111,8 @@ export const jobConverter = createConverter<Job>((data, id) => ({
   reviewRequestScheduledFor: toDateOrNull(data.reviewRequestScheduledFor),
   photos: (data.photos || []).map(mapJobPhoto),
   checklistCompletions: (data.checklistCompletions || []).map(mapChecklistCompletion),
+  // P3-E38: dollar snapshots saved before the migration read as cents
+  ...(data.payRateSnapshot ? { payRateSnapshot: { ...data.payRateSnapshot, amountCents: amountCentsOf(data.payRateSnapshot) } } : {}),
 } as Job))
 
 // Staff Converter
@@ -114,6 +122,7 @@ export const staffConverter = createConverter<Staff>((data, id) => ({
   uid: data.uid || id,
   createdAt: toDate(data.createdAt),
   welcomeEmailSentAt: data.welcomeEmailSentAt ? toDate(data.welcomeEmailSentAt) : null,
+  financials: normalizeFinancials(data.financials), // P3-E38: cents, with dollar fallback
   compliance: {
     ...data.compliance,
     acceptedTermsVersion: data.compliance?.acceptedTermsVersion ?? null,
@@ -138,6 +147,7 @@ export const payRateConverter = createConverter<PayRate>((data, id) => ({
   createdAt: toDate(data.createdAt),
   effectiveFrom: toDate(data.effectiveFrom),
   effectiveTo: toDateOrNull(data.effectiveTo),
+  amountCents: amountCentsOf(data), // P3-E38: cents, with dollar fallback
 } as PayRate))
 
 // ChecklistTemplate Converter

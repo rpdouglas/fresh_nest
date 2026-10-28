@@ -27,7 +27,10 @@ export interface PayRate {
   lastChange?: LastChange
   id?: string
   role: StaffRole
-  amount: number
+  /** P3-E38: hourly rate in integer cents (ADR-020). */
+  amountCents: number
+  /** @deprecated dollars, before P3-E38 — read through amountCentsOf(); removed after migration. */
+  amount?: number
   currency: 'CAD'
   effectiveFrom: Date
   effectiveTo: Date | null

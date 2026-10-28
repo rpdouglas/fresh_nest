@@ -52,7 +52,7 @@ describe('MyJobsPage Component', () => {
       clientName: 'Client A',
       clientAddress: '123 Pitt St, Cornwall ON',
       clientPhone: '613-555-0101',
-      payRateSnapshot: { amount: 25 },
+      payRateSnapshot: { amountCents: 2500 },
       status: 'assigned',
       createdAt: new Date(),
     },
@@ -66,7 +66,7 @@ describe('MyJobsPage Component', () => {
       clientName: 'Client B',
       clientAddress: '456 Montreal Rd, Cornwall ON',
       clientPhone: '613-555-0202',
-      payRateSnapshot: { amount: 30 },
+      payRateSnapshot: { amountCents: 3000 },
       status: 'completed',
       createdAt: new Date(),
     },
@@ -119,7 +119,7 @@ describe('MyJobsPage Component', () => {
 
     // Estimated pay details check
     expect(
-      screen.getByText('fsm.myJobs.jobCard.estPay_opt_{"pay":50,"hours":2,"rate":25}')
+      screen.getByText('fsm.myJobs.jobCard.estPay_opt_{"pay":"$50.00","hours":2,"rate":"$25.00"}')
     ).toBeInTheDocument()
   })
 

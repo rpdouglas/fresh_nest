@@ -23,6 +23,7 @@ vi.mock('firebase/firestore', () => {
     onSnapshot: vi.fn(() => () => {}),
     updateDoc: vi.fn().mockResolvedValue({}),
     serverTimestamp: vi.fn(() => 'server-time'),
+    deleteField: vi.fn(() => 'delete-field'),
     initializeFirestore: vi.fn(),
     persistentLocalCache: vi.fn(),
   }
@@ -35,6 +36,7 @@ vi.mock('../hooks/useStaffAuth')
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
+    i18n: { language: 'en' },
   }),
 }))
 
@@ -65,8 +67,8 @@ describe('ProfilePage Component', () => {
       ],
     },
     financials: {
-      monthlyEarningsLimit: 1000,
-      currentMonthEarnings: 750,
+      monthlyEarningsLimitCents: 100000, // P3-E38: integer cents
+      currentMonthEarningsCents: 75000,
       earningsHistory: [],
     },
     compliance: {
@@ -146,7 +148,7 @@ describe('ProfilePage Component', () => {
     render(<ProfilePage />)
 
     // Limit is 1000, current earnings is 750 (75% -> Approaching Limit / Caution)
-    expect(screen.getByText('$750 / $1000')).toBeInTheDocument()
+    expect(screen.getByText('$750.00 / $1,000.00')).toBeInTheDocument()
     expect(screen.getByText('fsm.profile.odsp.gauge.caution')).toBeInTheDocument()
   })
 
@@ -165,7 +167,9 @@ describe('ProfilePage Component', () => {
       expect.objectContaining({
         'constraints.transportMode': 'personal_vehicle',
         'constraints.transitBufferMinutes': 60,
-        'financials.monthlyEarningsLimit': 1000,
+        // typed as 1000 dollars, saved as cents; the old dollar field is removed
+        'financials.monthlyEarningsLimitCents': 100000,
+        'financials.monthlyEarningsLimit': 'delete-field',
       })
     )
   })

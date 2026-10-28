@@ -35,7 +35,8 @@ export const onStaffRegistered = onCall(
       language?: string
       transportMode?: string
       transitBufferMinutes?: number
-      monthlyEarningsLimit?: number | null
+      /** P3-E38: integer cents, or null for no cap (P7 Carla, P13 Marcus). */
+      monthlyEarningsLimitCents?: number | null
     }
 
     const VALID_ROLES = ['cleaner', 'lead', 'supervisor']
@@ -52,6 +53,8 @@ export const onStaffRegistered = onCall(
     if (!data.language || !VALID_LANGUAGES.includes(data.language)) throw new HttpsError('invalid-argument', 'language must be en or fr.')
     if (!data.transportMode || !VALID_TRANSPORT.includes(data.transportMode)) throw new HttpsError('invalid-argument', 'transportMode is invalid.')
     if (typeof data.transitBufferMinutes !== 'number' || data.transitBufferMinutes < 0) throw new HttpsError('invalid-argument', 'transitBufferMinutes must be a non-negative number.')
+    const limitCents = data.monthlyEarningsLimitCents ?? null
+    if (limitCents !== null && (!Number.isInteger(limitCents) || limitCents < 0)) throw new HttpsError('invalid-argument', 'monthlyEarningsLimitCents must be a whole number of cents, or null.')
 
     const email = data.email.toLowerCase().trim()
 
@@ -94,8 +97,8 @@ export const onStaffRegistered = onCall(
         blockedWindows: [],
       },
       financials: {
-        monthlyEarningsLimit: data.monthlyEarningsLimit ?? null,
-        currentMonthEarnings: 0,
+        monthlyEarningsLimitCents: limitCents,
+        currentMonthEarningsCents: 0,
         earningsHistory: [],
       },
       compliance: {

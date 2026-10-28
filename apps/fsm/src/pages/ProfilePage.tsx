@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { doc, onSnapshot, updateDoc } from 'firebase/firestore'
+import { deleteField, doc, onSnapshot, updateDoc } from 'firebase/firestore'
 import {
   DEFAULT_POLICY_SETTINGS,
+  centsToDollars,
+  formatCents,
   policySettingsDoc,
+  toCents,
   staffCollection,
   cn,
   changeStamp,
@@ -13,10 +16,11 @@ import { useStaffAuth } from '../hooks/useStaffAuth'
 import type { TransportMode, BlockedWindow } from '../types'
 
 export const ProfilePage: React.FC = () => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { staffProfile } = useStaffAuth()
-  const [cautionThreshold, setCautionThreshold] = useState<number>(
-    DEFAULT_POLICY_SETTINGS.earningsCautionThreshold,
+  // P3-E38: integer cents
+  const [cautionThresholdCents, setCautionThresholdCents] = useState<number>(
+    DEFAULT_POLICY_SETTINGS.earningsCautionThresholdCents,
   )
 
   useEffect(() => {
@@ -27,11 +31,11 @@ export const ProfilePage: React.FC = () => {
         ref,
         (snap) => {
           if (snap.exists()) {
-            setCautionThreshold(snap.data().earningsCautionThreshold)
+            setCautionThresholdCents(snap.data().earningsCautionThresholdCents)
           }
         },
         () => {
-          // Ignore and keep DEFAULT_POLICY_SETTINGS.earningsCautionThreshold
+          // Ignore and keep DEFAULT_POLICY_SETTINGS.earningsCautionThresholdCents
         },
       )
       return () => unsub?.()
@@ -47,12 +51,11 @@ export const ProfilePage: React.FC = () => {
   const [transitBufferMinutes, setTransitBufferMinutes] = useState<number>(
     () => staffProfile?.constraints?.transitBufferMinutes ?? 60
   )
-  const [monthlyEarningsLimit, setMonthlyEarningsLimit] = useState<string>(
-    () => staffProfile?.financials?.monthlyEarningsLimit !== null && 
-          staffProfile?.financials?.monthlyEarningsLimit !== undefined
-            ? staffProfile.financials.monthlyEarningsLimit.toString()
-            : ''
-  )
+  // The limit is typed in dollars and stored in cents (P3-E38)
+  const [monthlyEarningsLimit, setMonthlyEarningsLimit] = useState<string>(() => {
+    const cents = staffProfile?.financials?.monthlyEarningsLimitCents
+    return cents !== null && cents !== undefined ? String(centsToDollars(cents)) : ''
+  })
   const [blockedWindows, setBlockedWindows] = useState<BlockedWindow[]>(
     () => staffProfile?.constraints?.blockedWindows || []
   )
@@ -150,7 +153,8 @@ export const ProfilePage: React.FC = () => {
         'constraints.transportMode': transportMode,
         'constraints.transitBufferMinutes': Number(transitBufferMinutes),
         'constraints.blockedWindows': blockedWindows,
-        'financials.monthlyEarningsLimit': parsedLimit,
+        'financials.monthlyEarningsLimitCents': parsedLimit === null ? null : toCents(parsedLimit),
+        'financials.monthlyEarningsLimit': deleteField(), // pre-P3-E38 dollars
         lastChange: changeStamp(auth.currentUser?.email, 'staff_app'),
       })
 
@@ -167,9 +171,12 @@ export const ProfilePage: React.FC = () => {
   }
 
   // Calculate ODSP limit status
-  const currentEarnings = staffProfile.financials?.currentMonthEarnings ?? 0
-  const limitValue = monthlyEarningsLimit.trim() === '' ? null : Number(monthlyEarningsLimit)
-  const isCapConfigured = limitValue !== null && !isNaN(limitValue) && limitValue > 0
+  // Integer cents (P3-E38); the limit comes from the form, typed in dollars
+  const currentEarnings = staffProfile.financials?.currentMonthEarningsCents ?? 0
+  const typedLimit = monthlyEarningsLimit.trim() === '' ? null : Number(monthlyEarningsLimit)
+  const limitValue = typedLimit === null || isNaN(typedLimit) ? null : toCents(typedLimit)
+  const isCapConfigured = limitValue !== null && limitValue > 0
+  const money = (cents: number) => formatCents(cents, i18n.language)
   
   let percentage = 0
   let safetyState: 'safe' | 'caution' | 'at_limit' = 'safe'
@@ -181,7 +188,7 @@ export const ProfilePage: React.FC = () => {
     const remaining = limitValue - currentEarnings
     if (percentage > 90 || remaining <= 0) {
       safetyState = 'at_limit'
-    } else if (percentage >= 75 || remaining <= cautionThreshold) {
+    } else if (percentage >= 75 || remaining <= cautionThresholdCents) {
       safetyState = 'caution'
     } else {
       safetyState = 'safe'
@@ -484,7 +491,7 @@ export const ProfilePage: React.FC = () => {
                       {t('fsm.profile.odsp.currentEarnings')}
                     </span>
                     <span className="font-display text-3xl text-charcoal font-bold">
-                      ${currentEarnings} / ${limitValue}
+                      {money(currentEarnings)} / {money(limitValue ?? 0)}
                     </span>
                   </div>
 

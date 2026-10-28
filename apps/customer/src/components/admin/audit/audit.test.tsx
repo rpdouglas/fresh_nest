@@ -69,6 +69,9 @@ describe('auditDisplay', () => {
     expect(formatAuditValue(['deep', 'oven'], t, 'en')).toBe('deep, oven')
     expect(formatAuditValue([{ a: 1 }, { b: 2 }], t, 'en')).toBe('admin.audit.values.items:2')
     expect(formatAuditValue({ truncated: true }, t, 'en')).toBe('admin.audit.values.truncated')
+    // P3-E38: money fields stored in cents read as currency
+    expect(formatAuditValue(2250, t, 'en', 'amountCents')).toBe('$22.50')
+    expect(formatAuditValue(2250, t, 'en', 'bedrooms')).toBe('2250')
   })
 
   it('search covers person, client label, record ID, reason and field', () => {

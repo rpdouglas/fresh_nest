@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { formatCents, HST_BASIS_POINTS, multiplyCents, percentOfCents, roundHalfUp, toCents } from '../src/shared/money'
-import { estimateShiftPay, earningsOverage } from '../src/shared/scheduling'
+import { amountCentsOf, centsOrLegacy, formatCents, HST_BASIS_POINTS, multiplyCents, normalizeFinancials, percentOfCents, roundHalfUp, toCents } from '../src/shared/money'
+import { estimateShiftPayCents, earningsOverageCents } from '../src/shared/scheduling'
 
 // P3-E38 (ADR-020): integer cents, rounded half up once.
 
@@ -35,11 +35,33 @@ describe('rounding and conversion', () => {
 
 describe('earnings stay exact (P7 Carla, P13 Marcus)', () => {
   it('shift pay is whole cents', () => {
-    expect(estimateShiftPay(17.6, '09:00', '10:45')).toBe(30.8)
-    expect(estimateShiftPay(22.15, '09:00', '09:20')).toBe(7.38) // 7.3833… → 7.38
+    expect(estimateShiftPayCents(1760, '09:00', '10:45')).toBe(3080)
+    expect(estimateShiftPayCents(2215, '09:00', '09:20')).toBe(738) // 738.33… → 738
   })
 
   it('a shift that exactly fills the limit is allowed', () => {
-    expect(earningsOverage(estimateShiftPay(22, '09:00', '11:00'), 1000, 956)).toBe(0)
+    expect(earningsOverageCents(estimateShiftPayCents(2200, '09:00', '11:00'), 100000, 95600)).toBe(0)
+  })
+})
+
+describe('records saved in dollars read as cents (P3-E38 PR 2 transition)', () => {
+  it('prefers the cents field, then converts the dollar field', () => {
+    expect(centsOrLegacy(2250, 99)).toBe(2250)
+    expect(centsOrLegacy(undefined, 22.5)).toBe(2250)
+    expect(centsOrLegacy(undefined, null)).toBeNull()
+    expect(amountCentsOf({ amount: 18 })).toBe(1800) // P12 Lauren's $18 snapshot
+    expect(amountCentsOf({ amountCents: 2000, amount: 18 })).toBe(2000)
+  })
+
+  it('staff financials, including history totals and a null (no) limit', () => {
+    expect(normalizeFinancials({
+      monthlyEarningsLimit: 1000, currentMonthEarnings: 640.5,
+      earningsHistory: [{ month: '2026-09', total: 980.25 }, { month: '2026-10', totalCents: 12345 }],
+    })).toEqual({
+      monthlyEarningsLimitCents: 100000, currentMonthEarningsCents: 64050,
+      earningsHistory: [{ month: '2026-09', totalCents: 98025 }, { month: '2026-10', totalCents: 12345 }],
+    })
+    expect(normalizeFinancials({ monthlyEarningsLimit: null }).monthlyEarningsLimitCents).toBeNull()
+    expect(normalizeFinancials(undefined)).toEqual({ monthlyEarningsLimitCents: null, currentMonthEarningsCents: 0, earningsHistory: [] })
   })
 })

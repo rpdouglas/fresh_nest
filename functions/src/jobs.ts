@@ -1,7 +1,7 @@
 import { getFirestore, FieldValue } from 'firebase-admin/firestore'
 import {
-  estimateShiftPay,
-  earningsOverage,
+  estimateShiftPayCents,
+  earningsOverageCents,
   overlapsBlockedWindow,
   resolveBufferMinutes,
   findTravelConflict,
@@ -11,6 +11,7 @@ import { snapshotFromTemplate, EMPTY_CHECKLIST, type ChecklistSnapshot } from '.
 import { normalizePolicySettings } from './shared/policy'
 import { serverStamp } from './lib/audit'
 import { monthKey, previousMonthKey } from './shared/time'
+import { amountCentsOf, normalizeFinancials } from './shared/money'
 
 /**
  * F03: Booking-to-Job Pipeline
@@ -29,7 +30,7 @@ import { monthKey, previousMonthKey } from './shared/time'
 
 interface PayRateSnapshot {
   rateId: string | null
-  amount: number
+  amountCents: number
   currency: 'CAD'
   effectiveAt: string
   snapshotAt: string
@@ -70,7 +71,7 @@ async function resolvePayRateSnapshot(db: FirebaseFirestore.Firestore): Promise<
       const rate = rateDoc.data()
       return {
         rateId: rateDoc.id,
-        amount: rate.amount as number,
+        amountCents: amountCentsOf(rate), // P3-E38: frozen in cents (P12)
         currency: 'CAD',
         effectiveAt: (rate.effectiveFrom as FirebaseFirestore.Timestamp).toDate().toISOString(),
         snapshotAt: now,
@@ -84,7 +85,7 @@ async function resolvePayRateSnapshot(db: FirebaseFirestore.Firestore): Promise<
   console.log('[resolvePayRateSnapshot] No active cleaner rate found — using null placeholder.')
   return {
     rateId: null,
-    amount: 0,
+    amountCents: 0,
     currency: 'CAD',
     effectiveAt: now,
     snapshotAt: now,
@@ -239,7 +240,7 @@ export type { TravelShift } from './lib/eligibility'
 export async function executeClaimJob(
   staffId: string,
   jobId: string,
-): Promise<{ success: boolean; newEarnings: number }> {
+): Promise<{ success: boolean; newEarningsCents: number }> {
   const db = getFirestore('(default)')
 
   try {
@@ -269,15 +270,13 @@ export async function executeClaimJob(
         throw new Error('STAFF_INACTIVE')
       }
 
-      // Calculate shift pay
-      const payRate = jobData.payRateSnapshot?.amount || 0
-      const estimatedShiftPay = estimateShiftPay(payRate, jobData.scheduledStartTime, jobData.scheduledEndTime)
+      // Shift pay and the P7/P13 earnings cap, in integer cents (P3-E38)
+      const shiftPayCents = estimateShiftPayCents(
+        amountCentsOf(jobData.payRateSnapshot), jobData.scheduledStartTime, jobData.scheduledEndTime,
+      )
+      const { monthlyEarningsLimitCents, currentMonthEarningsCents } = normalizeFinancials(staffData.financials)
 
-      // Earnings cap check
-      const monthlyEarningsLimit = staffData.financials?.monthlyEarningsLimit ?? null
-      const currentMonthEarnings = staffData.financials?.currentMonthEarnings ?? 0
-
-      if (earningsOverage(estimatedShiftPay, monthlyEarningsLimit, currentMonthEarnings) > 0) {
+      if (earningsOverageCents(shiftPayCents, monthlyEarningsLimitCents, currentMonthEarningsCents) > 0) {
         throw new Error('EARNINGS_CAP_EXCEEDED')
       }
 
@@ -325,11 +324,13 @@ export async function executeClaimJob(
         lastChange: serverStamp(typeof staffData.email === 'string' && staffData.email ? staffData.email : `claimJob:${staffId}`),
       })
 
+      const newEarningsCents = currentMonthEarningsCents + shiftPayCents
       transaction.update(staffRef, {
-        'financials.currentMonthEarnings': currentMonthEarnings + estimatedShiftPay,
+        'financials.currentMonthEarningsCents': newEarningsCents,
+        'financials.currentMonthEarnings': FieldValue.delete(), // pre-P3-E38 dollars
       })
 
-      return { success: true, newEarnings: currentMonthEarnings + estimatedShiftPay }
+      return { success: true, newEarningsCents }
     })
 
     return result
@@ -340,7 +341,7 @@ export async function executeClaimJob(
 
 /**
  * F05: Earnings Cap Monthly Rollover
- * Resets currentMonthEarnings to 0 and archives past month's earnings.
+ * Resets currentMonthEarningsCents to 0 and archives the past month's earnings (P3-E38: cents).
  */
 export async function rollOverAllStaffEarnings(now: Date = new Date()): Promise<void> {
   const db = getFirestore('(default)')
@@ -357,15 +358,14 @@ export async function rollOverAllStaffEarnings(now: Date = new Date()): Promise<
   let rolloverCount = 0
 
   staffSnap.docs.forEach((docSnap) => {
-    const data = docSnap.data()
-    const currentMonthEarnings = data.financials?.currentMonthEarnings ?? 0
-    const earningsHistory = data.financials?.earningsHistory ?? []
-
-    const newHistory = [...earningsHistory, { month: lastMonthStr, total: currentMonthEarnings }]
+    // P3-E38: cents; history entries saved in dollars are converted as they are rewritten
+    const { currentMonthEarningsCents, earningsHistory } = normalizeFinancials(docSnap.data().financials)
+    const newHistory = [...earningsHistory, { month: lastMonthStr, totalCents: currentMonthEarningsCents }]
 
     batch.update(docSnap.ref, {
-      'financials.currentMonthEarnings': 0,
+      'financials.currentMonthEarningsCents': 0,
       'financials.earningsHistory': newHistory,
+      'financials.currentMonthEarnings': FieldValue.delete(), // pre-P3-E38 dollars
     })
     rolloverCount++
   })

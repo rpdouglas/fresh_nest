@@ -24,7 +24,7 @@ async function main() {
     role: 'cleaner', status: 'active',
     preferences: { language: 'en' },
     constraints: { transportMode: 'personal_vehicle', transitBufferMinutes: 15, blockedWindows: [] },
-    financials: { monthlyEarningsLimit: null, currentMonthEarnings: 0, earningsHistory: [] },
+    financials: { monthlyEarningsLimitCents: null, currentMonthEarningsCents: 0, earningsHistory: [] },
     // Current terms (TermsConsentOverlay, VITE_CURRENT_TERMS_VERSION default) — no consent overlay.
     compliance: { acceptedTermsVersion: '2.1', termsHistory: [] },
     onboardingChecklist: { backgroundCheck: true },
@@ -40,7 +40,7 @@ async function main() {
       scheduledDate: today, scheduledStartTime: '09:00', scheduledEndTime: '11:00',
       status: 'assigned', assignedTo: mike.uid,
       checkedInAt: null, checkedInGeo: null, completedAt: null,
-      payRateSnapshot: { rateId: 'r1', amount: 22, currency: 'CAD', effectiveAt: '2026-08-04', snapshotAt: '2026-08-04' },
+      payRateSnapshot: { rateId: 'r1', amountCents: 2200, currency: 'CAD', effectiveAt: '2026-08-04', snapshotAt: '2026-08-04' },
       checklistTemplate: '', checklistName: 'Custom checklist', checklistSource: 'custom',
       // P11 Brenda's photo proof: one task requires an "after" photo.
       checklistTasks: [

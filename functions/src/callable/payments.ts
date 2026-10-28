@@ -2,6 +2,7 @@ import { onCall, onRequest, HttpsError } from 'firebase-functions/v2/https'
 import { getFirestore } from 'firebase-admin/firestore'
 import Stripe from 'stripe'
 import { logError } from '../lib/shared'
+import { HST_BASIS_POINTS, percentOfCents } from '../shared/money'
 
 // P3-E1: Create Stripe PaymentIntent for booking checkout.
 // N-4 (owner decision 2026-10-27: keep, require sign-in): callers must be signed in, so the
@@ -11,21 +12,23 @@ export const createPaymentIntent = onCall(async (request) => {
     throw new HttpsError('unauthenticated', 'You must be signed in to start a payment.')
   }
 
-  const { estimatedPrice } = request.data as { estimatedPrice?: number }
+  // P3-E38: amount in integer cents ($50–$5,000 before tax); HST added in cents, rounded once
+  const { estimatedPriceCents } = request.data as { estimatedPriceCents?: number }
 
-  if (!estimatedPrice || estimatedPrice < 50 || estimatedPrice > 5000) {
+  if (!Number.isInteger(estimatedPriceCents) || estimatedPriceCents! < 5000 || estimatedPriceCents! > 500000) {
     throw new HttpsError('invalid-argument', 'Invalid booking amount.')
   }
+  const subtotalCents = estimatedPriceCents!
 
   const stripeKey = process.env['STRIPE_SECRET_KEY']
   if (!stripeKey) {
     throw new HttpsError('internal', 'Payment service unavailable.')
   }
 
-  const totalWithTax = Math.round(estimatedPrice * 1.13 * 100) // in cents
+  const taxCents = percentOfCents(subtotalCents, HST_BASIS_POINTS)
   const stripeClient = new Stripe(stripeKey)
   const paymentIntent = await stripeClient.paymentIntents.create({
-    amount: totalWithTax,
+    amount: subtotalCents + taxCents,
     currency: 'cad',
     capture_method: 'manual',
     automatic_payment_methods: { enabled: true },

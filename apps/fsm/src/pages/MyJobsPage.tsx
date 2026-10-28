@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { doc, onSnapshot } from 'firebase/firestore'
-import { checklistTemplatesCollection, estimateShiftPay, getShiftDurationHours } from '@freshnest/shared'
+import { checklistTemplatesCollection, estimateShiftPayCents, formatCents, getShiftDurationHours } from '@freshnest/shared'
 import { db } from '../lib/firebase/firebase'
 import { useStaffAuth } from '../hooks/useStaffAuth'
 import { useMyAssignedShifts } from '../hooks/useMyAssignedShifts'
@@ -133,8 +133,9 @@ export const MyJobsPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {displayedJobs.map((job) => {
               const duration = getShiftDurationHours(job.scheduledStartTime, job.scheduledEndTime)
-              const rate = job.payRateSnapshot?.amount || 0
-              const estPay = estimateShiftPay(rate, job.scheduledStartTime, job.scheduledEndTime)
+              // P3-E38: integer cents
+              const rateCents = job.payRateSnapshot?.amountCents || 0
+              const estPay = estimateShiftPayCents(rateCents, job.scheduledStartTime, job.scheduledEndTime)
 
               return (
                 <div 
@@ -175,10 +176,10 @@ export const MyJobsPage: React.FC = () => {
                     <div className="text-left font-body pt-2 border-t border-sand/50 flex flex-col gap-1.5">
                       <div>
                         <span className="text-xs text-text-muted uppercase tracking-wider block font-semibold">
-                          {t('fsm.myJobs.jobCard.estPay', { pay: estPay, hours: duration, rate })}
+                          {t('fsm.myJobs.jobCard.estPay', { pay: formatCents(estPay, i18n.language), hours: duration, rate: formatCents(rateCents, i18n.language) })}
                         </span>
                         <span className="text-charcoal text-sm font-semibold mt-0.5">
-                          ${estPay} <span className="text-text-muted font-normal">({duration}h @ ${rate}/h)</span>
+                          {formatCents(estPay, i18n.language)} <span className="text-text-muted font-normal">({duration}h @ {formatCents(rateCents, i18n.language)}/h)</span>
                         </span>
                       </div>
                       

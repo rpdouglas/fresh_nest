@@ -12,6 +12,12 @@ import { buildOpenShifts, type JobRecord } from '../src/lib/openShifts'
 describe('P3-E36 (W0-2) — Operational Settings & Policy Record', () => {
   it('returns DEFAULT_POLICY_SETTINGS when Firestore doc is missing or partial', () => {
     expect(normalizePolicySettings(undefined)).toEqual(DEFAULT_POLICY_SETTINGS)
+    // P3-E38: settings saved in dollars before the migration read as cents
+    expect(normalizePolicySettings({ defaultOdspMonthlyLimit: 1200, lateCancellationFeeDollars: 25.5 })).toMatchObject({
+      defaultOdspMonthlyLimitCents: 120000,
+      lateCancellationFeeCents: 2550,
+    })
+    expect(normalizePolicySettings({ defaultOdspMonthlyLimit: 1200, defaultOdspMonthlyLimitCents: 90000 }).defaultOdspMonthlyLimitCents).toBe(90000)
     expect(normalizePolicySettings({ defaultVehicleBufferMinutes: 45 })).toEqual({
       ...DEFAULT_POLICY_SETTINGS,
       defaultVehicleBufferMinutes: 45,
@@ -35,6 +41,10 @@ describe('P3-E36 (W0-2) — Operational Settings & Policy Record', () => {
       defaultVehicleBufferMinutes: 500,
     })
     expect(outOfRange.ok).toBe(false)
+
+    // P3-E38: money settings are whole cents
+    expect(validatePolicySettingsInput({ ...DEFAULT_POLICY_SETTINGS, lockoutFeeCents: 2550 }).ok).toBe(true)
+    expect(validatePolicySettingsInput({ ...DEFAULT_POLICY_SETTINGS, lockoutFeeCents: 25.5 }).ok).toBe(false)
 
     const emptyPhone = validatePolicySettingsInput({
       ...DEFAULT_POLICY_SETTINGS,
@@ -101,8 +111,8 @@ describe('P3-E36 (W0-2) — Operational Settings & Policy Record', () => {
       currentDoc: first.nextDoc,
       input: {
         ...first.nextDoc,
-        defaultOdspMonthlyLimit: 1100,
-        earningsCautionThreshold: 120,
+        defaultOdspMonthlyLimitCents: 110000,
+        earningsCautionThresholdCents: 12000,
       },
       changedBy: 'freshnestcompany2023@gmail.com',
       now,
@@ -110,8 +120,8 @@ describe('P3-E36 (W0-2) — Operational Settings & Policy Record', () => {
 
     expect(second.version).toBe(2)
     expect(second.changes).toEqual([
-      { field: 'defaultOdspMonthlyLimit', oldValue: 1000, newValue: 1100 },
-      { field: 'earningsCautionThreshold', oldValue: 100, newValue: 120 },
+      { field: 'defaultOdspMonthlyLimitCents', oldValue: 100000, newValue: 110000 },
+      { field: 'earningsCautionThresholdCents', oldValue: 10000, newValue: 12000 },
     ])
   })
 

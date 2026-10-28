@@ -849,7 +849,7 @@
         "transport": "Mode de transport par défaut",
         "buffer": "Marge de déplacement (minutes)",
         "earningsLimit": "Limite de gains mensuelle (Optionnelle)",
-        "applyOdspDefault": "Appliquer le plafond POSPH par défaut ({{limit}} CAD)",
+        "applyOdspDefault": "Appliquer le plafond POSPH par défaut ({{limit}})",
         "roleOption": {
           "cleaner": "Nettoyeur/Nettoyeuse",
           "lead": "Chef d'équipe",
@@ -931,6 +931,7 @@
       "activeHeader": "Taux de Rémunération Actifs",
       "historyHeader": "Historique Chronologique des Taux",
       "hourly": "{{amount}} / h",
+      "perHour": "/ h",
       "role": "Rôle",
       "amount": "Taux horaire (CAD)",
       "effectiveFrom": "Date d'entrée en vigueur",
@@ -980,7 +981,7 @@
     "override": {
       "modalTitle": "Dérogation Administrateur Requise",
       "modalMessage": "L'assignation de ce quart à {{name}} requiert une dérogation administrateur en raison des violations de contraintes suivantes :",
-      "earningsWarning": "{{name}} dépasse la limite mensuelle de {{overage}} $",
+      "earningsWarning": "{{name}} dépasse la limite mensuelle de {{overage}}",
       "travelWarning": "{{name}} a besoin de {{buffer}} min de trajet avec le quart {{start}}-{{end}}",
       "blockedWindowWarning": "{{name}} a un créneau bloqué qui chevauche ce quart",
       "overlapWarning": "{{name}} a un quart qui chevauche ({{start}} - {{end}})",
@@ -1072,6 +1073,7 @@
         "role": "Rôle",
         "preferences_language": "Langue",
         "financials_monthlyEarningsLimit": "Plafond de revenus mensuel",
+        "financials_monthlyEarningsLimitCents": "Plafond de revenus mensuel",
         "compliance_acceptedTermsVersion": "Conditions acceptées (version)",
         "constraints_transportMode": "Transport",
         "constraints_transitBufferMinutes": "Battement de déplacement (min)",
@@ -1080,6 +1082,7 @@
         "tasks": "Tâches",
         "active": "Actif",
         "amount": "Taux horaire",
+        "amountCents": "Taux horaire",
         "currency": "Devise",
         "effectiveFrom": "En vigueur le",
         "effectiveTo": "Fin de validité",
@@ -1361,7 +1364,15 @@
           "label": "Plafond mensuel POSPH par défaut",
           "help": "Plafond mensuel net prérempli lors de l'inscription d'un membre du personnel au POSPH."
         },
+        "defaultOdspMonthlyLimitCents": {
+          "label": "Plafond mensuel POSPH par défaut",
+          "help": "Plafond mensuel net prérempli lors de l'inscription d'un membre du personnel au POSPH."
+        },
         "earningsCautionThreshold": {
+          "label": "Seuil d'avertissement de la jauge de gains",
+          "help": "Marge mensuelle restante sous laquelle la jauge passe du vert à l'ambre."
+        },
+        "earningsCautionThresholdCents": {
           "label": "Seuil d'avertissement de la jauge de gains",
           "help": "Marge mensuelle restante sous laquelle la jauge passe du vert à l'ambre."
         },
@@ -1397,7 +1408,15 @@
           "label": "Frais d'annulation tardive",
           "help": "Frais fixes appliqués lorsqu'un client annule à l'intérieur du délai de préavis."
         },
+        "lateCancellationFeeCents": {
+          "label": "Frais d'annulation tardive",
+          "help": "Frais fixes appliqués lorsqu'un client annule à l'intérieur du délai de préavis."
+        },
         "lockoutFeeDollars": {
+          "label": "Frais d'accès impossible sur place",
+          "help": "Frais appliqués lorsque l'équipe ne peut pas accéder aux lieux après le délai d'attente."
+        },
+        "lockoutFeeCents": {
           "label": "Frais d'accès impossible sur place",
           "help": "Frais appliqués lorsque l'équipe ne peut pas accéder aux lieux après le délai d'attente."
         },

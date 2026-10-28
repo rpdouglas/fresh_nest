@@ -45,7 +45,7 @@ const job = (overrides: Partial<Job> = {}): Job => ({
   checkedInAt: null,
   checkedInGeo: null,
   completedAt: null,
-  payRateSnapshot: { rateId: 'r', amount: 25, currency: 'CAD', effectiveAt: '', snapshotAt: '' },
+  payRateSnapshot: { rateId: 'r', amountCents: 2500, currency: 'CAD', effectiveAt: '', snapshotAt: '' },
   checklistTemplate: 'tpl-standard',
   checklistCompletions: [],
   photos: [],

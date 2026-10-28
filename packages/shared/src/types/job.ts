@@ -8,7 +8,10 @@ export type JobStatus =
 
 export interface PayRateSnapshot {
   rateId: string | null
-  amount: number
+  /** P3-E38: hourly rate in integer cents, frozen when the shift was confirmed (P12). */
+  amountCents: number
+  /** @deprecated dollars, before P3-E38 — read through amountCentsOf(); removed after migration. */
+  amount?: number
   currency: 'CAD'
   effectiveAt: string
   snapshotAt: string
@@ -81,15 +84,16 @@ export interface OpenShift {
   scheduledDate: string
   scheduledStartTime: string
   scheduledEndTime: string
-  payRate: number
+  /** P3-E38: integer cents (ADR-020) */
+  payRateCents: number
   area: {
     municipality: string | null
     postalPrefix: string | null
   }
   eligibility: {
     durationHours: number
-    estimatedPay: number
-    overage: number
+    estimatedPayCents: number
+    overageCents: number
     travelConflict: { startTime: string; endTime: string; bufferMinutes: number } | null
   }
 }

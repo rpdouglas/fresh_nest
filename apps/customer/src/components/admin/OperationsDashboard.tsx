@@ -8,7 +8,7 @@ import {
   Tooltip as RechartsTooltip,
   Legend as RechartsLegend,
 } from 'recharts'
-import { getShiftDurationHours } from '@freshnest/shared'
+import { formatCents, getShiftDurationHours, multiplyCents } from '@freshnest/shared'
 import type { Job } from '@/types'
 import { useOperationsDashboard, OpsTimeRange } from './hooks/useOperationsDashboard'
 
@@ -22,7 +22,7 @@ interface OperationsDashboardProps {
 }
 
 export const OperationsDashboard: React.FC<OperationsDashboardProps> = ({ isAuthorized }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const {
     timeRange,
     setTimeRange,
@@ -40,12 +40,8 @@ export const OperationsDashboard: React.FC<OperationsDashboardProps> = ({ isAuth
     error,
   } = useOperationsDashboard(isAuthorized)
 
-  const formatCurrency = (val: number) => {
-    return new Intl.NumberFormat('en-CA', {
-      style: 'currency',
-      currency: 'CAD',
-    }).format(val)
-  }
+  // P3-E38: payroll figures are integer cents
+  const formatCurrency = (cents: number) => formatCents(cents, i18n.language)
 
   const formatDuration = (val: number) => {
     // `admin.operations.hours` is "{{val}} hrs" — it already includes the number.
@@ -91,9 +87,9 @@ export const OperationsDashboard: React.FC<OperationsDashboardProps> = ({ isAuth
     filteredJobs
       .filter((j) => j.status === 'completed')
       .forEach((job) => {
-        const rate = job.payRateSnapshot?.amount || 0
+        const rateCents = job.payRateSnapshot?.amountCents || 0
         const hours = getJobDurationHours(job)
-        const cost = rate * hours
+        const cost = multiplyCents(rateCents, hours)
         // Since snapshot doesn't store role explicitly but we resolved rate by role, we'll map role snapshot or default to cleaner
         // Let's resolve what role was snapshot. Wait, does snapshot store role? No, snapshot stores rateId, amount, currency, effectiveAt.
         // Wait, since we don't have role in the snapshot, let's map by checking the job's assigned staff role!

@@ -84,9 +84,9 @@ describe('attribution (lastChange)', () => {
 describe('create and delete', () => {
   it('create lists the watched fields that were set', () => {
     const entry = buildAuditEntry({ collection: 'payRates', documentId: 'r1', nowMs: NOW, before: null,
-      after: { role: 'cleaner', amount: 22, currency: 'CAD', createdBy: 'x', ...stamp('lauren@x.ca', NOW) } })
+      after: { role: 'cleaner', amountCents: 2200, currency: 'CAD', createdBy: 'x', ...stamp('lauren@x.ca', NOW) } })
     expect(entry?.action).toBe('create')
-    expect(entry?.changes.map((c) => c.field)).toEqual(['role', 'amount', 'currency'])
+    expect(entry?.changes.map((c) => c.field)).toEqual(['role', 'amountCents', 'currency'])
   })
 
   it('delete keeps a trimmed snapshot and credits a stamp made just before deleting', () => {

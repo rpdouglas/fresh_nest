@@ -45,12 +45,13 @@ export function usePayRates(enabled: boolean) {
     return result
   }, [payRates])
 
-  const createRate = async (input: { role: StaffRole; amount: number; effectiveFrom: Date }) => {
+  /** P3-E38: the hourly rate in integer cents */
+  const createRate = async (input: { role: StaffRole; amountCents: number; effectiveFrom: Date }) => {
     if (!user) throw new Error('Unauthorized')
 
     await createPayRate({
       role: input.role,
-      amount: input.amount,
+      amountCents: input.amountCents,
       currency: 'CAD',
       effectiveFrom: input.effectiveFrom,
       effectiveTo: null,
