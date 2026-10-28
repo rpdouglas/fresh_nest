@@ -71,6 +71,12 @@ describe('P3-E31 hero order', () => {
     expect(follows(subhead, headline)).toBe(true)
     expect(follows(headline, button)).toBe(true)
     expect(container.querySelector('img[src="/images/nest-watermark.jpg"]')).toBeNull()
+    const mobileSource = container.querySelector('picture source[media="(max-width: 767px)"]')
+    expect(mobileSource).not.toBeNull()
+    expect(mobileSource).toHaveAttribute('srcset', '/images/home-hero-boho-mobile.jpg')
+    const bgImg = container.querySelector('picture img[src="/images/home-hero-boho.jpg"]')
+    expect(bgImg).not.toBeNull()
+    expect(bgImg).toHaveAttribute('aria-hidden', 'true')
   })
 })
 

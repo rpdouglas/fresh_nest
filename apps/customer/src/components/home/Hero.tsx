@@ -9,6 +9,22 @@ export default function Hero() {
 
   return (
     <section className="bg-warm-white py-12 px-4 md:py-16 md:px-6 overflow-hidden relative">
+      {/* Background Image decoration */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <picture>
+          <source media="(max-width: 767px)" srcSet="/images/home-hero-boho-mobile.jpg" />
+          <img
+            src="/images/home-hero-boho.jpg"
+            alt=""
+            aria-hidden="true"
+            className="w-full h-full object-cover"
+            style={{ opacity: 0.18 }}
+          />
+        </picture>
+        <div className="hidden md:block absolute inset-0 bg-gradient-to-r from-transparent via-warm-white/60 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-warm-white to-transparent" />
+      </div>
+
       <div className="relative max-w-4xl mx-auto text-center flex flex-col items-center gap-6 min-h-[300px] justify-center">
         <motion.div
           initial="hidden"
