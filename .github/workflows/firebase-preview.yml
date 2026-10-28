@@ -164,7 +164,7 @@ jobs:
       - run: npm test
 
   # Firestore and Storage security rules tests on the emulator — only when the rules or their tests change.
-  # (Rules are still never deployed by CI — COMPLIANCE.md §4.) E2E runs weekly in e2e.yml (ADR-014).
+  # (Rules are still never deployed by CI — COMPLIANCE.md §4.)
   rules:
     needs: changes
     if: needs.changes.outputs.rules == 'true'
@@ -179,3 +179,46 @@ jobs:
       - name: Firestore and Storage rules tests (emulator)
         working-directory: apps/customer
         run: npx -y firebase-tools@15 emulators:exec --only firestore,storage --project freshnest-aa51e "npx vitest run --config vitest.rules.config.ts"
+
+  # Playwright persona flows on the Auth, Firestore and Storage emulators with the real rules (ADR-019).
+  # Two-week trial: a failure shows red but is not a required check; a follow-up ADR makes it required.
+  e2e:
+    needs: changes
+    if: needs.changes.outputs.customer == 'true' || needs.changes.outputs.fsm == 'true' || needs.changes.outputs.rules == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            functions/package-lock.json
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '21' }
+      - run: npm ci
+      - name: Install functions dependencies (the seed uses firebase-admin)
+        run: npm ci
+        working-directory: functions
+      - name: Cache Firebase emulators
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/firebase/emulators
+          key: firebase-emulators-${{ runner.os }}-v15
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+        working-directory: apps/customer
+      - name: E2E tests (Playwright on emulators)
+        run: npm run test:e2e
+        working-directory: apps/customer
+        env:
+          CI: true
+      - name: Upload traces of failed tests
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-traces
+          path: apps/customer/test-results/
+          retention-days: 7

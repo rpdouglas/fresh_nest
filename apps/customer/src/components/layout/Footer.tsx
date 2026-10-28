@@ -63,12 +63,12 @@ export default function Footer() {
                 className="h-12 w-auto"
               />
             </Link>
-            <p className="font-body text-base text-text-muted leading-relaxed mb-4 max-w-xs">
+            <p className="font-body text-base text-sand leading-relaxed mb-4 max-w-xs">
               {t('footer.tagline')}
             </p>
             {/* Trust badges */}
-            <p className="font-body text-base text-text-muted">{t('footer.insured')}</p>
-            <p className="font-body text-base text-text-muted">{t('footer.bilingual')}</p>
+            <p className="font-body text-base text-sand">{t('footer.insured')}</p>
+            <p className="font-body text-base text-sand">{t('footer.bilingual')}</p>
           </div>
 
           {/* ── Col 2: Services ── */}
@@ -82,7 +82,7 @@ export default function Footer() {
                   <Link
                     to={to}
                     className={cn(
-                      'font-body text-base text-text-muted',
+                      'font-body text-base text-sand',
                       'hover:text-slate-pale transition-colors duration-200',
                       'min-h-[48px]  flex md:inline-flex items-center',
                       'focus:outline-none focus:ring-2 focus:ring-slate-pale rounded',
@@ -106,7 +106,7 @@ export default function Footer() {
                   <Link
                     to={to}
                     className={cn(
-                      'font-body text-base text-text-muted',
+                      'font-body text-base text-sand',
                       'hover:text-slate-pale transition-colors duration-200',
                       'min-h-[48px]  flex md:inline-flex items-center',
                       'focus:outline-none focus:ring-2 focus:ring-slate-pale rounded',
@@ -131,7 +131,7 @@ export default function Footer() {
                     <Link
                       to={to}
                       className={cn(
-                        'font-body text-base text-text-muted',
+                        'font-body text-base text-sand',
                         'hover:text-slate-pale transition-colors duration-200',
                         'min-h-[48px]  flex md:inline-flex items-center',
                         'focus:outline-none focus:ring-2 focus:ring-slate-pale rounded',
@@ -156,7 +156,7 @@ export default function Footer() {
                     onClick={() => logPhoneClicked('footer')}
                     aria-label={t('a11y.callUs', { phone: PHONE_NUMBER })}
                     className={cn(
-                      'font-body text-base text-text-muted',
+                      'font-body text-base text-sand',
                       'hover:text-slate-pale transition-colors duration-200',
                       'min-h-[48px]  flex md:inline-flex items-center gap-2',
                       'focus:outline-none focus:ring-2 focus:ring-slate-pale rounded',
@@ -183,7 +183,7 @@ export default function Footer() {
                   <a
                     href={`mailto:${EMAIL}`}
                     className={cn(
-                      'font-body text-base text-text-muted',
+                      'font-body text-base text-sand',
                       'hover:text-slate-pale transition-colors duration-200',
                       'min-h-[48px]  flex md:inline-flex items-center',
                       'focus:outline-none focus:ring-2 focus:ring-slate-pale rounded',
@@ -193,7 +193,7 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <p className="font-body text-base text-text-muted">
+                  <p className="font-body text-base text-sand">
                     <span className="font-medium text-warm-white">{t('footer.hours')}</span>
                     <br />
                     {t('footer.hoursValue')}
@@ -209,25 +209,25 @@ export default function Footer() {
       {/* ── Bottom bar ── */}
       <div className="border-t border-charcoal/50 bg-charcoal/80">
         <div className="max-w-content mx-auto px-4 md:px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-2">
-          <p className="font-body text-base text-text-muted text-center md:text-left">
+          <p className="font-body text-base text-sand text-center md:text-left">
             {t('footer.copyright', { year: CURRENT_YEAR })}
           </p>
           <div className="flex items-center gap-4">
             <button
               onClick={() => window.dispatchEvent(new CustomEvent('open-cookie-banner'))}
               className={cn(
-                'font-body text-base text-text-muted hover:text-slate-pale',
+                'font-body text-base text-sand hover:text-slate-pale',
                 'transition-colors duration-200 min-h-[48px] inline-flex items-center',
                 'focus:outline-none focus:ring-2 focus:ring-slate-pale rounded',
               )}
             >
               {t('cookieBanner.preferences')}
             </button>
-            <span className="text-text-muted/30" aria-hidden="true">|</span>
+            <span className="text-sand/30" aria-hidden="true">|</span>
             <Link
               to="/privacy"
               className={cn(
-                'font-body text-base text-text-muted hover:text-slate-pale',
+                'font-body text-base text-sand hover:text-slate-pale',
                 'transition-colors duration-200 min-h-[48px] inline-flex items-center',
                 'focus:outline-none focus:ring-2 focus:ring-slate-pale rounded',
               )}
