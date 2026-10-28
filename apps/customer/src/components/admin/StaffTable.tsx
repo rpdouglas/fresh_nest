@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils/utils'
 import type { StaffRole, StaffStatus, Staff } from '@/types'
 import { RegisterStaffModal } from './RegisterStaffModal'
 import { ExportRecordModal } from './ExportRecordModal'
+import { HistoryDialog } from './audit/HistoryDialog'
 import { useStaff, RegisterStaffInput } from './hooks/useStaff'
 import { usePolicySettings } from './hooks/usePolicySettings'
 
@@ -19,6 +20,7 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
   // Export modal state
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null)
   const [isExportModalOpen, setIsExportModalOpen] = useState(false)
+  const [historyStaff, setHistoryStaff] = useState<Staff | null>(null)
 
   const {
     filteredStaff,
@@ -313,6 +315,15 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
                         >
                           {t('admin.staff.table.export', { defaultValue: 'Export' })}
                         </button>
+                        {/* P3-E37: this staff member's change history */}
+                        <button
+                          type="button"
+                          onClick={() => setHistoryStaff(s)}
+                          aria-label={t('admin.audit.history.buttonLabel', { name: `${s.firstName} ${s.lastName}` })}
+                          className="text-slate-brand hover:text-slate-dark font-medium min-h-[48px] px-3 rounded hover:bg-slate-pale transition-colors duration-150"
+                        >
+                          {t('admin.audit.history.button')}
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -338,6 +349,15 @@ export const StaffTable: React.FC<StaffTableProps> = ({ isAuthorized }) => {
         }}
         staff={selectedStaff}
       />
+
+      {historyStaff && (
+        <HistoryDialog
+          open
+          onClose={() => setHistoryStaff(null)}
+          title={`${historyStaff.firstName} ${historyStaff.lastName}`}
+          records={[{ collection: 'staff', id: historyStaff.id }]}
+        />
+      )}
     </div>
   )
 }

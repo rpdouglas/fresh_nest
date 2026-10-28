@@ -16,7 +16,7 @@ The dashboard is split into seven tabs:
 3. **Analytics & Metrics:** Monitor business, marketing, and operational metrics.
 4. **Staff Registry:** Manage staff profiles, roles, and registration.
 5. **Pay Rate Management:** Configure and monitor hourly pay rates per role.
-6. **Audit Logs:** View administrative security override tracking (e.g., travel buffers, earnings caps, and blocked windows overrides).
+6. **Audit Logs:** Every change to bookings, visits, staff, saved checklists, pay rates, the gallery and reviews — who made it, from which app, and each field's old and new value. See [Audit Log and History](#audit-log-and-history).
 7. **Reviews Moderation:** Approve or reject submitted client reviews before they appear publicly on the website.
 
 ---
@@ -115,7 +115,7 @@ The **Visual Dispatch Board** tab provides a daily grid view where you can manag
     *   **Earnings Cap Warning:** Flags if the cleaner's projected monthly earnings will exceed their ODSP/financial limit.
     *   **Transit Buffer Check:** Flags if the gap between shifts violates the travel buffer (e.g., 30m for drivers, 60m for transit users), unless both addresses share the same postal prefix (FSA).
     *   **Blocked Windows Conflict:** Flags if a cleaner has blocked out that day/time block.
-*   **Override and Audit Logging:** Any detected conflict prompts the **Administrator Override Required** modal. Confirming the assignment requires an override reason, which is automatically saved to the `auditLog` collection. Cancelling the modal returns the card to its original position.
+*   **Override and Audit Logging:** Any detected conflict prompts the **Administrator Override Required** modal. Confirming the assignment requires an override reason, which is recorded in **Audit Logs** with the change itself (who, when, the reason and the override type). Cancelling the modal returns the card to its original position.
 *   **Safe to Earn Meter:** Each column header features a color-coded bar (green/amber/red) indicating the cleaner's monthly progress towards their monthly earnings cap.
 
 ---
@@ -166,6 +166,25 @@ The **Settings & Policies** tab stores company-wide operational rules in one ver
   3. **Client Policies & Fees:** Standard/Airbnb cancellation window (`24` h), Deep/Specialty cancellation window (`48` h), service quality re-clean report window (`24` h), late cancellation fee, and client lockout fee.
   4. **Compliance, Retention & Emergency Contacts:** Job verification photo retention (`90` days), signed agreement & tax record retention (`7` years), primary emergency dispatch phone (`(613) 861-8812`), and backup emergency contact name and phone.
 - **Version History & Audit Trail:** Every save increments the policy version (`v1`, `v2`, `v3`…), records an immutable snapshot and field-by-field diff in **Policy Version History** at the bottom of the tab, and writes an entry to **Audit Logs** (`policy_change`).
+
+## Audit Log and History
+Every change that matters is recorded automatically by the server — you don't have to do anything. Nobody can edit or delete these entries, not even an Owner. They are kept for 7 years.
+
+**What each entry shows:**
+- **Created / Changed / Deleted**, the record (e.g. *Booking · Margaret Storey · 2026-11-05*) and when.
+- **Who:** the person's email, *Website visitor* (quote form), *System (…)* for automatic changes (e.g. renewals), or *Unknown (older app version or direct change)*.
+- **From which app:** Admin panel, Staff app, Customer portal, Website form or System.
+- **Each changed field**, old value crossed out → new value, plus any reason and override type typed on the Dispatch Board.
+- **Deletes** keep a copy of the record as it was (tap *Record as it was when deleted*).
+
+**History on a record (fastest way to answer "who moved this visit?"):**
+- **Bookings:** open a booking and tap **Show history** — it lists the booking and its visit together, newest first.
+- **Dispatch Board:** tap the 🕘 button on a card.
+- **Staff Registry:** tap **History** on a staff member's row (status, role, earnings limit, availability, contact details, terms).
+
+**Audit Logs tab:** search by person, client, record ID or reason, and filter by record type, person, app, override type and a date range. **Clear filters** resets them.
+
+**Not recorded separately:** each checklist tick and photo upload (the visit keeps those with their times). Starting and finishing a visit *is* recorded.
 
 ## Analytics & Metrics Tab
 
