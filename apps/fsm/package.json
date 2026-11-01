@@ -12,6 +12,6 @@
   },
   "dependencies": {
     "@freshnest/shared": "*",
-    "@sentry/react": "^10.75.3"
+    "@sentry/react": "^10.78.0"
   }
 }
