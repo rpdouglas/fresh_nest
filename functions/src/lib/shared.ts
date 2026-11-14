@@ -36,6 +36,12 @@ export function ownerPhone(): string {
   return process.env['OWNER_PHONE'] || '+16138618812'
 }
 
+// Reply-To for emails sent from noreply@ (client confirmations, review requests, staff welcome),
+// so replies reach a monitored inbox instead of bouncing (human decision 2026-11-14).
+export function replyToEmail(): string {
+  return process.env['REPLY_TO_EMAIL'] || 'hr.freshnest@gmail.com'
+}
+
 // Standard Firebase services
 export const db = getFirestore()
 export const auth = getAuth()

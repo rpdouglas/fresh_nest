@@ -16,6 +16,8 @@ export interface EmailConfig {
   resendApiKey: string
   fromEmail: string
   ownerEmail: string
+  /** Where replies to client/staff emails go (noreply@ cannot receive mail). */
+  replyTo?: string
 }
 
 /**
@@ -59,6 +61,7 @@ export async function sendClientConfirmation(
   const result = await resend.emails.send({
     from:    config.fromEmail,
     to:      booking.email,
+    replyTo: config.replyTo,
     subject: clientSubject(lang, isQuoteRequest(booking)),
     html:    clientHtml(booking, lang),
   })
@@ -78,6 +81,7 @@ export async function sendReviewRequestEmail(
   const result = await resend.emails.send({
     from:    config.fromEmail,
     to:      clientEmail,
+    replyTo: config.replyTo,
     subject: reviewRequestSubject(lang),
     html:    reviewRequestHtml(clientName, reviewUrl, lang),
   })
@@ -97,6 +101,7 @@ export async function sendWelcomeEmail(
   const result = await resend.emails.send({
     from:    config.fromEmail,
     to:      email,
+    replyTo: config.replyTo,
     subject: staffWelcomeSubject(lang),
     html:    staffWelcomeHtml(firstName, magicLink, lang),
   })
