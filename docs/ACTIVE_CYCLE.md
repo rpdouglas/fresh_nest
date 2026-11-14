@@ -47,7 +47,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | **P3-E8** | `useBookings` Server-Side Filtering Fix | M | P1 | ✅ Completed 2026-06-21 |
 | **P3-E9** | Remove `window.__MOCK_*` from Production | S | P1 | ✅ Completed 2026-06-18 |
 | **HOTFIX-02** | Shift Board permission fix — `listOpenShifts` callable, `test:rules` fix, CI functions deploy, Node 22 runtime | M | P0 | ✅ Completed 2026-09-30 |
-| **P3-E30** | Business Email Setup — Zoho Mail inboxes + Resend domain/API key (app emails currently failing) | S | P0 | ⏸ Paused 2026-10-01 — waiting on human Zoho/Resend/CanSpace DNS setup; PR #26 (contact details) merged, remaining code in a follow-up PR. See [`projects/P3-E30.md`](projects/P3-E30.md) |
+| **P3-E30** | Business Email Setup — Zoho Mail inboxes + Resend domain/API key (Resend live 2026-11-14) | S | P0 | 🟡 Partly done — Resend verified + live 2026-11-14 (PR #66, quote alerts to 2 Gmail inboxes confirmed); Zoho inboxes + Reply-To still open; PR #26 (contact details) merged, remaining code in a follow-up PR. See [`projects/P3-E30.md`](projects/P3-E30.md) |
 | **P3-E31** | Home hero reorder (logo → serving statement → headline), hide gallery / team / reviews behind flags, FAQ payment methods fix | S | P1 | ✅ Completed 2026-10-04 — see [`reports/P3-E31-close-2026-10-04.md`](reports/P3-E31-close-2026-10-04.md) |
 | **P3-E32** | Before/after gallery managed from the admin page — phone upload, uniform photo fitting, publish/feature/reorder | M | P2 | ✅ Completed 2026-10-27 (`SHOW_GALLERY = true`, real photos uploaded, [ADR-015](decisions/ADR-015-gallery-storage-and-browser-image-processing.md) Accepted) — see [`reports/P3-E32-close-2026-10-27.md`](reports/P3-E32-close-2026-10-27.md) |
 | **HOTFIX-03** | Quote flow fixes — renewals no longer sent as quote requests, reminders only for confirmed bookings, Dispatch Board assignment transaction | S | P0 | ✅ Completed 2026-10-26 — see [`reports/HOTFIX-03-close-2026-10-26.md`](reports/HOTFIX-03-close-2026-10-26.md) |
@@ -112,7 +112,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 
 | # | Follow-up | Owner | Source | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| F1 | Finish business email setup — **all app emails still fail**; the owner SMS alert (HOTFIX-04) covers new quote requests meanwhile | Human (Zoho / Resend / DNS) | P3-E30 | ⏸ Waiting on human |
+| F1 | Finish business email setup — ✅ **Resend done 2026-11-14** (domain verified, new key, `OWNER_EMAIL` = 2 office Gmail addresses, test quote alert received in both). Remaining: Zoho inboxes + Reply-To (P3-E30) | Human (Zoho / DNS) | P3-E30 | 🟡 Partly done |
 | F2 | Confirm `OWNER_PHONE` — owner alerts go to (613) 861-8812 unless `OWNER_PHONE` is set for Cloud Functions; that number must receive SMS | Human | HOTFIX-04 | ⬜ Open |
 | F3 | Run the email backfill: `functions/scripts/backfill-lowercase-booking-emails.cjs` — dry run on `freshnest-dev`, then `(default)`; `--apply` on production needs human approval | Human + AI | HOTFIX-05 | ✅ 2026-10-28 — ran against `freshnest-dev` (12 scanned, 0 to lowercase) and `(default)` (4 scanned, 0 to lowercase) |
 | F4 | Run **E2E (weekly)** and **Security Audit (daily)** once by hand (Actions → Run workflow) to confirm the new workflows | Human | ADR-014 | ⬜ Open |

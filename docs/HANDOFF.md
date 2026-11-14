@@ -42,7 +42,7 @@ Read in this order: `CLAUDE.md` → this file → [`ACTIVE_CYCLE.md`](ACTIVE_CYC
 
 | # | What | Where it's tracked |
 |---|---|---|
-| H2 | Business email (Zoho / Resend / DNS). **All app emails still fail.** The owner SMS alert covers new quote requests in the meantime | ACTIVE_CYCLE F1, P3-E30 |
+| H2 | Business email. **Resend fixed 2026-11-14**: `freshnestco.ca` verified, new `RESEND_API_KEY`, quote alerts go to both office Gmail inboxes (PR #66, test quote received). Still open: Zoho inboxes (`hello@` etc. — root MX points nowhere, so replies to `noreply@` bounce) and Reply-To | ACTIVE_CYCLE F1, P3-E30 |
 | H3 | Confirm `OWNER_PHONE` for Cloud Functions | F2 |
 | H6 | Owner answers still open: **rates** for deep, move-out, post-construction and organizing; Lead/Trainee billing; whether breaks are billed; **island travel times**. Late-cancellation and lockout **fee amounts** and the **backup emergency contact** can now be entered by an Owner in Admin → Settings & Policies (fees default to $0) | Gap analysis §7, P3-E36 |
 | H8 | Re-sync `firestore.dev.rules` with production. The dev rules still let the office create staff docs from the app; production blocked that in P3-E27-A2. Needs human approval (rules) | F15 |
