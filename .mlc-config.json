@@ -41,6 +41,9 @@
     },
     {
       "pattern": "^https://www\\.mondaq\\.com"
+    },
+    {
+      "pattern": "^https://www\\.techinterview\\.org/post/3233475175/"
     }
   ],
   "retryOn429": true,
