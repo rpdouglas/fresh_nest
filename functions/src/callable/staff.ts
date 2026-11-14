@@ -3,7 +3,7 @@ import { requireOffice } from '../lib/roles'
 import { getFirestore, Timestamp } from 'firebase-admin/firestore'
 import { getAuth } from 'firebase-admin/auth'
 import { logger } from 'firebase-functions'
-import { Sentry, RESEND_API_KEY, OWNER_EMAIL, FSM_APP_URL } from '../lib/shared'
+import { Sentry, RESEND_API_KEY, OWNER_EMAIL, FSM_APP_URL, replyToEmail } from '../lib/shared'
 import { sendWelcomeEmail } from '../sendEmail'
 import { serverStamp } from '../lib/audit'
 
@@ -134,6 +134,7 @@ export const onStaffRegistered = onCall(
         resendApiKey: RESEND_API_KEY.value(),
         ownerEmail: OWNER_EMAIL.value(),
         fromEmail: process.env.FROM_EMAIL || 'Fresh Nest Co. <noreply@freshnestco.ca>',
+        replyTo: replyToEmail(),
       }
 
       await sendWelcomeEmail(data.firstName.trim(), email, magicLink, data.language as 'en' | 'fr', emailConfig)
@@ -197,6 +198,7 @@ export const resendWelcomeEmail = onCall(
         resendApiKey: RESEND_API_KEY.value(),
         ownerEmail: OWNER_EMAIL.value(),
         fromEmail: process.env.FROM_EMAIL || 'Fresh Nest Co. <noreply@freshnestco.ca>',
+        replyTo: replyToEmail(),
       }
 
       await sendWelcomeEmail(firstName, email, magicLink, language as 'en' | 'fr', emailConfig)

@@ -10,6 +10,7 @@ import {
   TWILIO_PHONE_NUMBER,
   logError,
   ownerPhone,
+  replyToEmail,
 } from '../lib/shared'
 import { sendOwnerNotification, sendClientConfirmation } from '../sendEmail'
 import { sendSmsConfirmation, sendOwnerAlertSms } from '../sendSms'
@@ -54,6 +55,7 @@ export const onBookingCreated = onDocumentCreated(
       resendApiKey: RESEND_API_KEY.value(),
       ownerEmail: OWNER_EMAIL.value(),
       fromEmail: process.env['FROM_EMAIL'] ?? 'Fresh Nest Co. <noreply@freshnestco.ca>',
+      replyTo: replyToEmail(),
     }
 
     const smsConfig = {

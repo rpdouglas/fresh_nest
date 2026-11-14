@@ -1,6 +1,6 @@
 import { onSchedule } from 'firebase-functions/v2/scheduler'
 import { getFirestore, Timestamp } from 'firebase-admin/firestore'
-import { RESEND_API_KEY, logError } from '../lib/shared'
+import { RESEND_API_KEY, logError, replyToEmail } from '../lib/shared'
 import { sendReviewRequestEmail } from '../sendEmail'
 import { BUSINESS_TZ } from '../shared/time'
 
@@ -32,6 +32,7 @@ export const onReviewEmailScheduler = onSchedule(
         resendApiKey: RESEND_API_KEY.value(),
         ownerEmail: '',
         fromEmail: process.env['FROM_EMAIL'] ?? 'Fresh Nest Co. <noreply@freshnestco.ca>',
+        replyTo: replyToEmail(),
       }
 
       for (const jobDoc of snapshot.docs) {
