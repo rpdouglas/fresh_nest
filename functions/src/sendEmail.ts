@@ -40,10 +40,13 @@ export async function sendOwnerNotification(
   if (recipients.length === 0) {
     throw new Error('Owner notification failed: OWNER_EMAIL is empty')
   }
+  // Replying to the alert writes straight to the customer (human decision 2026-11-14).
+  const customerEmail = booking.email?.trim()
   const resend = new Resend(config.resendApiKey)
   const result = await resend.emails.send({
     from:    config.fromEmail,
     to:      recipients,
+    replyTo: customerEmail || undefined,
     subject: ownerSubject(booking),
     text:    ownerText(booking, docId),
   })
