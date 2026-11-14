@@ -135,6 +135,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | F21 | E2E PR trial ends ~2026-11-11: review the `e2e` check on PRs; if no failures without a code cause, write the follow-up ADR making it required (ADR-019 §5) | AI + human approval | F5 / ADR-019 | ⬜ Open |
 | F22 | Run `functions/scripts/migrate-money-to-cents.cjs`: dry run, then `--apply` on `freshnest-dev`; dry run on `(default)`, then `--apply` with approval. Apps read the old dollar fields as cents until then | Human | P3-E38 PR 2 | ✅ 2026-10-28 — converted 5 documents in `(default)` (0 needed in `freshnest-dev`), then stripped legacy dollar fields with `--strip-legacy --apply` |
 | F23 | P3-E38 clean-up PR after F22: remove the dollar fields (`estimatedPrice`, `amount`, `monthlyEarningsLimit`, `currentMonthEarnings`, `earningsHistory[].total`, old policy keys), the legacy normalizers, and `currentMonthEarnings` from the protected rules list | AI + human approval (rules) | P3-E38 PR 2 | ✅ 2026-10-28 — legacy dollar fields, normalizers, transitional field deletes, and `currentMonthEarnings` rules entry removed |
+| F24 | Delete quote requests from before 2026-11-11 (owner request 2026-11-14): Actions → **Delete old quote requests** — `dry-run` first, check the list, then `apply` + type DELETE. Deletes the bookings and their linked visits; the audit log keeps a snapshot of each (`functions/scripts/delete-old-quote-requests.cjs`) | Human (Actions) | Owner request | ⬜ Open |
 
 ---
 

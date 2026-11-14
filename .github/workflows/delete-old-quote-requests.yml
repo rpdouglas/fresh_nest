@@ -1,0 +1,87 @@
+name: Delete old quote requests
+# Manual-only: permanently deletes quote requests (bookings) created before a date, plus their
+# linked visits (jobs), in production. Owner request 2026-11-14. Run "dry-run" first and read the
+# list in the log; then run "apply" and type DELETE. Every run is logged with who started it, and
+# the audit log keeps a snapshot of each deleted record (functions/scripts/delete-old-quote-requests.cjs).
+on:
+  workflow_dispatch:
+    inputs:
+      before:
+        description: 'Delete quote requests created before this date (YYYY-MM-DD, Ontario time)'
+        required: true
+        default: '2026-11-11'
+        type: string
+      mode:
+        description: 'dry-run lists what would be deleted; apply deletes it'
+        required: true
+        default: dry-run
+        type: choice
+        options:
+          - dry-run
+          - apply
+      confirm:
+        description: 'For apply: type DELETE'
+        required: false
+        type: string
+
+concurrency:
+  group: production-data
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    # From main only; apply also needs the confirmation typed exactly.
+    if: github.ref == 'refs/heads/main' && (inputs.mode == 'dry-run' || inputs.confirm == 'DELETE')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: 'npm', cache-dependency-path: functions/package-lock.json }
+      - run: npm ci
+        working-directory: functions
+
+      - name: Delete old quote requests (${{ inputs.mode }})
+        working-directory: functions
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          BEFORE: ${{ inputs.before }}
+          MODE: ${{ inputs.mode }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          SA_FILE="$RUNNER_TEMP/firebase-sa.json"
+          trap 'rm -f "$SA_FILE"' EXIT
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$SA_FILE"
+          export GOOGLE_APPLICATION_CREDENTIALS="$SA_FILE"
+          echo "Started by $ACTOR — mode: $MODE, before: $BEFORE"
+          if [ "$MODE" = "apply" ]; then
+            node scripts/delete-old-quote-requests.cjs --database='(default)' --before="$BEFORE" --apply
+          else
+            node scripts/delete-old-quote-requests.cjs --database='(default)' --before="$BEFORE"
+          fi
+
+      - name: Summary
+        if: always()
+        env:
+          BEFORE: ${{ inputs.before }}
+          MODE: ${{ inputs.mode }}
+          ACTOR: ${{ github.actor }}
+          RESULT: ${{ job.status }}
+        run: |
+          {
+            echo "### Delete old quote requests: $MODE (before $BEFORE)"
+            echo "- Started by: $ACTOR"
+            echo "- Commit: $GITHUB_SHA"
+            echo "- Result: $RESULT — see the step log for the list"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  # Not from main, or apply without the confirmation: fail visibly instead of silently skipping.
+  refused:
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/main' || (inputs.mode == 'apply' && inputs.confirm != 'DELETE')
+    steps:
+      - run: |
+          echo "Not run: start it from main, and for apply type DELETE in the confirm box."
+          exit 1
