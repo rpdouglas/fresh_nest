@@ -52,9 +52,14 @@ describe('Reply-To on outgoing email', () => {
     expect(send.mock.calls[1][0].replyTo).toBe('hr.freshnest@gmail.com')
   })
 
-  it('owner alert goes to every OWNER_EMAIL address and sets no Reply-To', async () => {
+  it('owner alert goes to every OWNER_EMAIL address and replies go to the customer', async () => {
     await sendOwnerNotification(booking, 'abcd1234', config)
     expect(send.mock.calls[0][0].to).toEqual(['a@example.com', 'b@example.com'])
+    expect(send.mock.calls[0][0].replyTo).toBe('diane@example.com')
+  })
+
+  it('owner alert sets no Reply-To when the booking has no email', async () => {
+    await sendOwnerNotification({ ...booking, email: '  ' }, 'abcd1234', config)
     expect(send.mock.calls[0][0].replyTo).toBeUndefined()
   })
 })
