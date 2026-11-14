@@ -41,6 +41,9 @@
     },
     {
       "pattern": "^https://www\\.mondaq\\.com"
+    },
+    {
+      "pattern": "^https://www\\.techinterview\\.org"
     }
   ],
   "retryOn429": true,
