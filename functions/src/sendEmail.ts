@@ -18,15 +18,30 @@ export interface EmailConfig {
   ownerEmail: string
 }
 
+/**
+ * OWNER_EMAIL may hold one address or several separated by commas/semicolons,
+ * e.g. "a@example.com, b@example.com". Every address receives the owner alert.
+ */
+export function parseRecipients(value: string): string[] {
+  return value
+    .split(/[,;]/)
+    .map((address) => address.trim())
+    .filter((address) => address.length > 0)
+}
+
 export async function sendOwnerNotification(
   booking: BookingData,
   docId: string,
   config: EmailConfig,
 ): Promise<void> {
+  const recipients = parseRecipients(config.ownerEmail)
+  if (recipients.length === 0) {
+    throw new Error('Owner notification failed: OWNER_EMAIL is empty')
+  }
   const resend = new Resend(config.resendApiKey)
   const result = await resend.emails.send({
     from:    config.fromEmail,
-    to:      config.ownerEmail,
+    to:      recipients,
     subject: ownerSubject(booking),
     text:    ownerText(booking, docId),
   })
