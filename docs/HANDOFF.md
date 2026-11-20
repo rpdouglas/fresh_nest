@@ -45,6 +45,7 @@ Read in this order: `CLAUDE.md` → this file → [`ACTIVE_CYCLE.md`](ACTIVE_CYC
 | H2 | Business email. **Resend fixed 2026-11-14**: `freshnestco.ca` verified, new `RESEND_API_KEY`, quote alerts go to both office Gmail inboxes (PR #66, test quote received). Still open: Zoho inboxes (`hello@` etc. — root MX points nowhere, so replies to `noreply@` bounce) and Reply-To | ACTIVE_CYCLE F1, P3-E30 |
 | H3 | Confirm `OWNER_PHONE` for Cloud Functions | F2 |
 | H6 | Owner answers still open: **rates** for deep, move-out, post-construction and organizing; Lead/Trainee billing; whether breaks are billed; **island travel times**. Late-cancellation and lockout **fee amounts** and the **backup emergency contact** can now be entered by an Owner in Admin → Settings & Policies (fees default to $0) | Gap analysis §7, P3-E36 |
+| H9 | **P3-E39 e-agreements:** pick a strategy (the plan recommends 2) and answer the spec's owner decisions 2–8 (no-prices exception for agreement links, link validity, who creates agreements, existing clients, legal name, retention vs deletion, access-code visibility). Start Phase 0 content: lawyer review of Draft v3 and French review | [`projects/P3-E39.md`](projects/P3-E39.md), [`plans/P3-E39_PLAN.md`](plans/P3-E39_PLAN.md) |
 | H8 | Re-sync `firestore.dev.rules` with production. The dev rules still let the office create staff docs from the app; production blocked that in P3-E27-A2. Needs human approval (rules) | F15 |
 
 ---
@@ -58,6 +59,8 @@ All four "Now" defects (N-1 to N-4) are fixed and deployed; W0-1 (roles), W0-2 (
 3. **W0-3 PR 3 (`F18`)** Make the `lastChange` stamp required on app saves (~2 weeks after P3-E37 PR 1).
 
 Then wave 1 (clients, sites, employees, availability, agreements, Camelo import). The older Phase 3 backlog (P3-E27 onboarding B2/C/D, P3-E10, P3-E15…) still sits in `ACTIVE_CYCLE.md`; suggestion pending owner decision: fold P3-E27's remaining parts into W1-3.
+
+**P3-E39 (client e-agreements, Phase A done 2026-11-20):** brings the Agreements module's click-to-sign forward. Waiting on the owner's strategy approval (H9). Its launch depends on W0-5 (backups) and the H2 Reply-To inbox; the build itself does not.
 
 Smaller AI-owned follow-ups are in `ACTIVE_CYCLE.md` → Open Follow-Ups: F6 (pre-render), F7 (review-email links), F14 (quote-form date and `Ref #`), F21 (end of the E2E PR trial, ~2026-11-11).
 
