@@ -34,6 +34,19 @@ service firebase.storage {
                     && request.resource.contentType.matches('image/.*');
     }
 
+    // P3-E39 (ADR-021, human-approved 2026-11-20): signed client agreement PDFs.
+    // Written server-side only (Cloud Functions Admin SDK); office (Owner / Manager) read-only.
+    // Dev/preview builds store PDFs under `agreements-dev/` so preview data never mixes with prod.
+    match /agreements/{agreementId}/{fileName} {
+      allow read: if request.auth != null && request.auth.token.role in ['owner', 'manager'];
+      allow write: if false;
+    }
+
+    match /agreements-dev/{agreementId}/{fileName} {
+      allow read: if request.auth != null && request.auth.token.role in ['owner', 'manager'];
+      allow write: if false;
+    }
+
     match /{allPaths=**} {
       allow read, write: if false;
     }

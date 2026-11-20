@@ -106,6 +106,35 @@ export const AUDIT_CONFIG: Readonly<Record<string, AuditCollectionConfig>> = {
     fields: ['approved', 'rejected'],
     label: (d) => joinLabel(d.name, d.location),
   },
+  agreements: {
+    // P3-E39: audit lifecycle & metadata only — NEVER watch tokenHash or private/access codes.
+    fields: [
+      'status',
+      'type',
+      'language',
+      'templateId',
+      'versionId',
+      'sentAt',
+      'viewedAt',
+      'signedAt',
+      'tokenExpiresAt',
+      'currentSignatureId',
+      'pdfPath',
+      'documentHash',
+      'redactedAt',
+      'redactedBy',
+      'terms.rateCents',
+      'terms.rateType',
+      'terms.serviceType',
+      'terms.frequency',
+      'terms.startDate',
+    ],
+    label: (d) => {
+      const party = d.party && typeof d.party === 'object' ? (d.party as Doc) : null
+      return joinLabel(party?.name, d.type)
+    },
+    omitFromSnapshot: ['tokenHash'],
+  },
 }
 
 export const AUDITED_COLLECTIONS = Object.keys(AUDIT_CONFIG)

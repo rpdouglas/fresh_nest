@@ -1,7 +1,7 @@
 # ADR-021 — Public Signing by Private Link (Hashed Tokens, Server-Only Access)
-**Status:** Proposed
+**Status:** Accepted
 **Date:** 2026-11-20
-**Deciders:** Owner (approval pending, with P3-E39 strategy choice)
+**Deciders:** Owner (approved 2026-11-20 with P3-E39 Strategy 2)
 
 ## Context
 P3-E39 lets a client sign their service agreement from a link, without an account. This is the first time the site will expose **sensitive, per-client data to a signed-out visitor**. It includes the client's address, rate and entry details, and the client writes back door and alarm codes. Today's public patterns are not safe enough for this:

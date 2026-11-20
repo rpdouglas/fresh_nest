@@ -226,6 +226,32 @@ service cloud.firestore {
       }
     }
 
+    // 8. Client E-Agreements (P3-E39, ADR-021, human-approved 2026-11-20)
+    match /agreements/{agreementId} {
+      allow read: if isOffice();
+      allow write: if false;
+
+      match /signatures/{signatureId} {
+        allow read: if isOffice();
+        allow write: if false;
+      }
+
+      match /private/{docId} {
+        allow read: if isOffice();
+        allow write: if false;
+      }
+    }
+
+    match /agreementTemplates/{templateId} {
+      allow read: if isOffice();
+      allow write: if false;
+
+      match /versions/{versionId} {
+        allow read: if isOffice();
+        allow write: if false;
+      }
+    }
+
     // Default Deny-All for other collections
     match /{document=**} {
       allow read, write: if false;

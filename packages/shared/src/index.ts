@@ -15,6 +15,7 @@ export * from './domain/policy'
 export * from './domain/audit'
 export * from './domain/time'
 export * from './domain/money'
+export * from './domain/agreements'
 
 /**
  * Utility to merge Tailwind classes using clsx and tailwind-merge.
