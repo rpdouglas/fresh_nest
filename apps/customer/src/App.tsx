@@ -21,6 +21,7 @@ const ServicePage          = lazy(() => import('@/pages/ServicePage'))
 const ServicesOverview     = lazy(() => import('@/pages/ServicesOverview'))
 const ThankYouPage         = lazy(() => import('@/pages/ThankYouPage'))
 const AdminPage            = lazy(() => import('@/pages/AdminPage'))
+const AgreementPage        = lazy(() => import('@/pages/AgreementPage'))
 const Blog                 = lazy(() => import('@/pages/Blog'))
 const BlogPost             = lazy(() => import('@/pages/BlogPost'))
 const LeaveReviewPage      = lazy(() => import('@/pages/LeaveReviewPage'))
@@ -101,6 +102,9 @@ const router = createBrowserRouter([
       // ── Blog ──
       { path: 'blog',       element: <Blog /> },
       { path: 'blog/:slug', element: <BlogPost /> },
+
+      // ── Client E-Agreements (P3-E39, ADR-021, noindex) ──
+      { path: 'agreement/:token', element: <AgreementPage /> },
 
       // ── Admin ──
       { path: 'admin', element: <AdminPage /> },

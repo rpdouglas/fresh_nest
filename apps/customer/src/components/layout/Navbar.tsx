@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { NavLink, Link } from 'react-router-dom'
+import { NavLink, Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'framer-motion'
 import { cn } from '@/lib/utils/utils'
@@ -15,6 +15,8 @@ const PHONE_HREF = BUSINESS_PHONE_HREF
 
 export default function Navbar() {
   const { t, i18n } = useTranslation()
+  const location = useLocation()
+  const isAgreementSigningPage = location.pathname.startsWith('/agreement/')
   const scrolled = useScrolled(20)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -138,19 +140,21 @@ export default function Navbar() {
               {t('lang.toggle')}
             </button>
 
-            {/* Book Now CTA — Travis P2 requirement: always visible */}
-            <Link
-              to="/booking"
-              id="cta-book-now-nav"
-              className={cn(
-                'bg-slate-brand text-white font-body font-medium text-base rounded',
-                'px-5 min-h-[48px] inline-flex items-center',
-                'hover:bg-slate-dark transition-colors duration-200',
-                'focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2',
-              )}
-            >
-              {t('nav.booking')}
-            </Link>
+            {/* Book Now CTA — Travis P2 requirement (hidden on private signing page per P3-E39) */}
+            {!isAgreementSigningPage && (
+              <Link
+                to="/booking"
+                id="cta-book-now-nav"
+                className={cn(
+                  'bg-slate-brand text-white font-body font-medium text-base rounded',
+                  'px-5 min-h-[48px] inline-flex items-center',
+                  'hover:bg-slate-dark transition-colors duration-200',
+                  'focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2',
+                )}
+              >
+                {t('nav.booking')}
+              </Link>
+            )}
           </div>
 
           {/* ── Mobile right: lang toggle + hamburger ── */}
@@ -287,22 +291,24 @@ export default function Navbar() {
                   </a>
                 </li>
 
-                {/* Book Now CTA in mobile menu */}
-                <li className="pt-2">
-                  <Link
-                    to="/booking"
-                    id="cta-book-now-mobile"
-                    onClick={closeMenu}
-                    className={cn(
-                      'bg-slate-brand text-white font-body font-medium text-base rounded',
-                      'w-full min-h-[48px] flex items-center justify-center',
-                      'hover:bg-slate-dark transition-colors duration-200',
-                      'focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2',
-                    )}
-                  >
-                    {t('nav.booking')}
-                  </Link>
-                </li>
+                {/* Book Now CTA in mobile menu (hidden on private signing page per P3-E39) */}
+                {!isAgreementSigningPage && (
+                  <li className="pt-2">
+                    <Link
+                      to="/booking"
+                      id="cta-book-now-mobile"
+                      onClick={closeMenu}
+                      className={cn(
+                        'bg-slate-brand text-white font-body font-medium text-base rounded',
+                        'w-full min-h-[48px] flex items-center justify-center',
+                        'hover:bg-slate-dark transition-colors duration-200',
+                        'focus:outline-none focus:ring-2 focus:ring-slate-brand focus:ring-offset-2',
+                      )}
+                    >
+                      {t('nav.booking')}
+                    </Link>
+                  </li>
+                )}
               </ul>
             </motion.div>
           )}

@@ -23,6 +23,7 @@ import { GalleryManagerTab } from '@/components/admin/GalleryManagerTab'
 import { AdminSectionNav } from '@/components/admin/AdminSectionNav'
 import { TeamRolesTab } from '@/components/admin/TeamRolesTab'
 import { SettingsTab } from '@/components/admin/SettingsTab'
+import { AgreementsTab } from '@/components/admin/agreements/AgreementsTab'
 import { parseAdminTab, type AdminTab } from '@/components/admin/adminTabs'
 
 export default function AdminPage() {
@@ -154,6 +155,21 @@ export default function AdminPage() {
                     transition={{ duration: 0.2 }}
                   >
                     <BookingsTable {...bookingsState} adminEmail={user.email ?? ''} />
+                  </motion.div>
+                )}
+                {activeTab === 'agreements' && (
+                  <motion.div
+                    key="tab-agreements"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <AgreementsTab
+                      isAuthorized={isAuthorized}
+                      isOwner={isOwner}
+                      bookings={bookingsState.bookings}
+                    />
                   </motion.div>
                 )}
                 {activeTab === 'dispatch' && (

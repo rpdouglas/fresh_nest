@@ -1,7 +1,7 @@
 # P3-E39 Plan — Client E-Agreements: Click-to-Sign by Private Link
 
-**Spec:** [`projects/P3-E39.md`](../projects/P3-E39.md) · **Date:** 2026-11-20 · **Status:** 🟡 Awaiting owner approval. **Recommended: Strategy 2**
-**Source:** [E-Agreement Master Project Plan](../projects/P3-E39-source-e-agreement-plan.md) · [FSM master spec Part 4](../projects/FSM_MASTER_SPEC.md) · **Draft ADR:** [ADR-021](../decisions/ADR-021-public-signing-by-private-link.md)
+**Spec:** [`projects/P3-E39.md`](../projects/P3-E39.md) · **Date:** 2026-11-20 · **Status:** ✅ Approved & implemented (Strategy 2, 2026-11-20)
+**Source:** [E-Agreement Master Project Plan](../projects/P3-E39-source-e-agreement-plan.md) · [FSM master spec Part 4](../projects/FSM_MASTER_SPEC.md) · **ADR:** [ADR-021](../decisions/ADR-021-public-signing-by-private-link.md) (Accepted)
 
 **Primary personas:**
 - P3 Margaret (primary signer);

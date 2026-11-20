@@ -344,4 +344,75 @@ const db = getFirestore('(default)')
 - **Calendar dates and wall times are local to `America/Toronto`.** This covers `preferredDate`, `scheduledDate`, `scheduledStartTime` and `scheduledEndTime`, and also `earningsHistory[].month` (`YYYY-MM`, the Toronto month). Compute them with the `packages/shared/src/domain/time.ts` helpers, never from `toISOString()`, which gives the UTC date.
 - **Instants** (`createdAt`, `checkedInAt`, `completedAt`, `changedAt`, …) are Firestore Timestamps, which are UTC.
 - **Scheduled Functions** run on `America/Toronto` time: reminders at 09:00, the earnings rollover at 00:00 on the 1st, renewals at 02:00.
-- **Money:** integer cents in fields named `…Cents` (`bookings.estimatedPriceCents`, `payRates.amountCents`, `jobs.payRateSnapshot.amountCents`, `staff.financials.{monthlyEarningsLimitCents, currentMonthEarningsCents, earningsHistory[].totalCents}`, and the four `settings/policy` money keys), with tax in a separate `taxCents`; one rounding, half up (`packages/shared/src/domain/money.ts`). Forms take dollars and convert. All legacy dollar fields were migrated and stripped on 2026-10-28 (`functions/scripts/migrate-money-to-cents.cjs`).
+- **Money:** integer cents in fields named `…Cents` (`bookings.estimatedPriceCents`, `payRates.amountCents`, `jobs.payRateSnapshot.amountCents`, `staff.financials.{monthlyEarningsLimitCents, currentMonthEarningsCents, earningsHistory[].totalCents}`, `agreements.terms.{rateCents, lateCancellationFeeCents, lockoutFeeCents}`, and the four `settings/policy` money keys), with tax in a separate `taxCents`; one rounding, half up (`packages/shared/src/domain/money.ts`). Forms take dollars and convert. All legacy dollar fields were migrated and stripped on 2026-10-28 (`functions/scripts/migrate-money-to-cents.cjs`).
+
+---
+
+## Client E-Agreements Collections (P3-E39, Strategy 2, ADR-021)
+
+All collections below allow **office read (`isOffice()` — Owner/Manager)** and **no client writes (`write: false`)**. All reads for signed-out clients and all writes happen server-side via Cloud Functions (`functions/src/callable/agreements.ts`). Signed PDFs live in Cloud Storage at `agreements/{agreementId}/signed.pdf` (and `agreements-dev/{agreementId}/signed.pdf` for `freshnest-dev`), office read-only, server write-only.
+
+### `agreements/{agreementId}`
+- `family`: `'client'`
+- `type`: `'residential' | 'commercial'`
+- `language`: `'en' | 'fr'`
+- `party`: `{ kind: 'booking' | 'client', bookingId: string | null, clientId: string | null, name: string, email: string, phone: string, address: string }`
+- `terms` (frozen at creation from `settings/policy` + office inputs):
+  - `serviceType`: `'standard' | 'deep' | 'moveout' | 'postconstruction' | 'airbnb' | 'commercial'`
+  - `frequency`: `'one-time' | 'weekly' | 'biweekly' | 'monthly'`
+  - `startDate`: `string` (`YYYY-MM-DD`, `America/Toronto`)
+  - `rateType`: `'hourly' | 'flat' | 'monthly'`
+  - `rateCents`: `number` (integer cents, CAD)
+  - `taxExempt`: `boolean`
+  - `cancelWindowHours`: `number`
+  - `lateCancellationFeeCents`: `number`
+  - `lockoutFeeCents`: `number`
+  - `latePaymentBasisPoints`: `number` (default `200` = 2%/month)
+  - `noticePeriodDays`: `number` (default `14` residential / `30` commercial)
+  - `scopeNotes?`: `string`
+- `templateId`: `string` (e.g. `'client-residential'`, `'client-commercial'`)
+- `versionId`: `string` (e.g. `'v1'`)
+- `status`: `'draft' | 'sent' | 'signed' | 'expired' | 'cancelled' | 'active' | 'paused' | 'ending' | 'ended'`
+- `tokenHash`: `string | null` (SHA-256 hex digest of active 32-byte base64url bearer token; `null` once signed/expired)
+- `signedTokenHash?`: `string` (SHA-256 hex digest of token used to sign, for idempotent double-submit protection only)
+- `tokenExpiresAt`: `Timestamp`
+- `linkValidityDays`: `number` (`7 | 14 | 30 | 60`, default `30`)
+- `sentAt`: `Timestamp`
+- `viewedAt`: `Timestamp | null`
+- `signedAt`: `Timestamp | null`
+- `failedAttempts`: `number` (locks link at `10`)
+- `currentSignatureId`: `string | null`
+- `pdfPath`: `string | null`
+- `documentHash`: `string | null` (SHA-256 hex digest of canonical merged text)
+- `redactedAt`: `Timestamp | null`
+- `redactedBy`: `string | null`
+- `createdBy`: `string` (actor email)
+- `createdAt`: `Timestamp`
+- `lastChange`: P3-E37 audit stamp (audited by `auditAgreements`; `tokenHash` is never watched or snapshotted)
+
+### `agreements/{agreementId}/signatures/{signatureId}` (append-only)
+- `signedName`: `string`
+- `consentESign`: `boolean` (`true`)
+- `consentTerms`: `boolean` (`true`)
+- `signedAt`: `Timestamp`
+- `ip`: `string` (first hop of `x-forwarded-for`)
+- `userAgent`: `string`
+- `language`: `'en' | 'fr'`
+- `versionId`: `string`
+- `documentHash`: `string`
+- `answers`: `{ phone, email, entryMethod, pets, hasAlarm, specialInstructions, valuables }`
+- `answersRedactedAt?`: `Timestamp`, `answersRedactedBy?`: `string` (set only when Owner runs privacy redaction)
+
+### `agreements/{agreementId}/private/access` (restricted access record)
+- `entryMethod`: `'present' | 'key' | 'lockbox' | 'door_code' | 'smart_lock' | 'concierge' | 'other'`
+- `doorCode`: `string`
+- `alarmCode`: `string`
+- `keyLocation`: `string`
+- `accessNotes`: `string`
+- `updatedAt`: `Timestamp`
+- `redactedAt?`: `Timestamp`, `redactedBy?`: `string`
+- **Strict rule:** Never copied into `agreements/{id}`, `signatures/{sigId}`, PDFs, emails, or any public callable response.
+
+### `agreementTemplates/{templateId}` & `agreementTemplates/{templateId}/versions/{versionId}`
+- Template doc: `family: 'client'`, `type: 'residential' | 'commercial'`, `nameEn`, `nameFr`, `currentVersionId`
+- Version doc (immutable once `published`): `version`, `status: 'draft' | 'published' | 'retired'`, `bodyEn`, `bodyFr`, `bodyHashEn`, `bodyHashFr`, `publishedAt`, `publishedBy`

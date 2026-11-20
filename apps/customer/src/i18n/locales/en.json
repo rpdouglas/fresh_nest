@@ -771,7 +771,8 @@
         "reviews": "Reviews Moderation",
         "gallery": "Gallery",
         "settings": "Settings & Policies",
-        "team": "Team & roles"
+        "team": "Team & roles",
+        "agreements": "Agreements"
       },
       "analytics": {
         "title": "Performance Analytics Dashboard",
@@ -1042,7 +1043,8 @@
         "reviews": "Review",
         "users": "Sign-in role",
         "settings": "Settings",
-        "admins": "Office access"
+        "admins": "Office access",
+        "agreements": "Agreements"
       },
       "fields": {
         "status": "Status",
@@ -1431,6 +1433,139 @@
         "empty": "No policy versions have been saved yet. Saving above will create Version v1.",
         "noFieldChanges": "Baseline snapshot recorded (no field values changed from defaults)."
       }
+    },
+    "agreements": {
+      "title": "Client E-Agreements",
+      "subtitle": "Create private click-to-sign links, track viewed/signed status, download PDFs, and manage access records.",
+      "newButton": "+ New Agreement",
+      "searchPlaceholder": "Search by client name, email, or address…",
+      "filterStatus": "Filter by status",
+      "filterType": "Filter by type",
+      "allStatuses": "All statuses",
+      "allTypes": "All types",
+      "loading": "Loading agreements…",
+      "loadError": "Could not load agreements. Please refresh and try again.",
+      "empty": "No agreements match your current filters.",
+      "types": {
+        "residential": "Residential",
+        "commercial": "Commercial"
+      },
+      "statuses": {
+        "draft": "Draft",
+        "sent": "Sent",
+        "signed": "Signed",
+        "expired": "Expired",
+        "cancelled": "Cancelled",
+        "active": "Active",
+        "paused": "Paused",
+        "ending": "Ending",
+        "ended": "Ended"
+      },
+      "serviceTypes": {
+        "standard": "Standard Cleaning",
+        "deep": "Deep Cleaning",
+        "moveout": "Move-In / Move-Out",
+        "postconstruction": "Post-Construction",
+        "airbnb": "Airbnb Turnover",
+        "commercial": "Commercial Cleaning"
+      },
+      "frequencies": {
+        "one-time": "One-Time",
+        "weekly": "Weekly",
+        "biweekly": "Bi-Weekly",
+        "monthly": "Monthly"
+      },
+      "rateTypes": {
+        "hourly": "Hourly ($/hr)",
+        "flat": "Flat per visit",
+        "monthly": "Monthly"
+      },
+      "table": {
+        "client": "Client",
+        "type": "Type",
+        "rate": "Rate",
+        "status": "Status",
+        "created": "Created",
+        "actions": "Actions"
+      },
+      "actions": {
+        "viewDetails": "Details",
+        "close": "Close",
+        "cancel": "Cancel",
+        "done": "Done",
+        "copyLink": "Copy Link",
+        "copied": "Copied!",
+        "reissueLink": "Reissue Link",
+        "expireLink": "Expire Link",
+        "downloadPdf": "Download Signed PDF",
+        "revealAccessCodes": "Reveal Access Codes",
+        "hideAccessCodes": "Hide Access Codes",
+        "redactClientData": "Clear Access & Answers",
+        "confirmRedact": "Confirm Redaction"
+      },
+      "modal": {
+        "title": "New Client Agreement",
+        "createdTitle": "Agreement Link Ready",
+        "prefillBookingLabel": "Prefill from an existing booking (optional)",
+        "prefillManualOption": "— Enter client details manually —",
+        "typeLabel": "Agreement Type",
+        "languageLabel": "Agreement Language",
+        "clientNameLabel": "Client Full Name",
+        "clientEmailLabel": "Client Email",
+        "clientPhoneLabel": "Client Phone",
+        "clientAddressLabel": "Service Address",
+        "serviceTypeLabel": "Service Type",
+        "frequencyLabel": "Frequency",
+        "startDateLabel": "Start Date",
+        "rateTypeLabel": "Rate Basis",
+        "rateDollarsLabel": "Agreed Rate (CAD $)",
+        "taxExemptLabel": "Tax-exempt (e.g., status certificate)",
+        "policyTermsHint": "Frozen terms prefilled from Settings & Policies (editable before sending):",
+        "cancelWindowLabel": "Cancel Notice (hrs)",
+        "lateCancelFeeLabel": "Late Cancel Fee ($)",
+        "lockoutFeeLabel": "Lockout Fee ($)",
+        "latePaymentPctLabel": "Late Interest (%/mo)",
+        "noticeDaysLabel": "Termination Notice (days)",
+        "linkValidityLabel": "Link Validity",
+        "daysOption": "{{count}} days",
+        "scopeNotesLabel": "Scope / Schedule Notes (optional)",
+        "sendEmailLabel": "Email signing link to client now (in their language)",
+        "createButton": "Create Agreement & Generate Link",
+        "creating": "Creating…",
+        "validationMissingClient": "Please fill in the client name, email, phone, and address.",
+        "validationInvalidRate": "Please enter a valid non-negative rate.",
+        "createError": "Failed to create agreement. Ensure templates are seeded and try again.",
+        "oneTimeLinkWarning": "Copy this private signing link now. For security, only its hash is stored — it cannot be shown again (you can always reissue a new link).",
+        "signingLinkLabel": "Private signing link",
+        "emailSentConfirmation": "The signing link has also been emailed to the client."
+      },
+      "detail": {
+        "statusLabel": "Status",
+        "viewedBadge": "Viewed",
+        "serviceLabel": "Service & Frequency",
+        "rateLabel": "Agreed Rate",
+        "sentAtLabel": "Sent",
+        "viewedAtLabel": "First Viewed",
+        "signedAtLabel": "Signed",
+        "linkControlsHeading": "Link Management",
+        "reissuedReady": "A new signing link was generated. The previous link is now invalid.",
+        "reissuedAndEmailed": "A new signing link was generated and emailed to the client. The previous link is now invalid.",
+        "expiredSuccess": "This signing link has been expired.",
+        "redactedSuccess": "Access codes and client answers have been cleared. The signed legal record remains intact.",
+        "actionError": "That action could not be completed. Please try again.",
+        "pdfDownloadError": "Could not download the signed PDF. Please try again shortly.",
+        "accessLoadError": "Could not load the restricted access record.",
+        "accessHeading": "Restricted Entry & Alarm Record",
+        "noAccessRecord": "No entry codes or access notes were provided.",
+        "evidenceHeading": "Electronic Signature Evidence",
+        "versionLabel": "Template Version",
+        "hashLabel": "Document SHA-256",
+        "redactedNotice": "Access codes and client answers were cleared by {{by}} on {{at}}. Signed contract evidence is retained per the 7-year policy.",
+        "redactWarning": "This permanently clears stored door/alarm codes, key location, and client answers for a privacy/deletion request while preserving the signed contract & legal evidence.",
+        "redactReasonLabel": "Reason for privacy redaction (audited)",
+        "redactReasonPlaceholder": "e.g., Client Law 25 / PIPEDA deletion request received by email",
+        "redactReasonRequired": "Please enter a reason (at least 3 characters)."
+      }
     }
   },
   "blog": {
@@ -1712,7 +1847,7 @@
     "sections": {
       "1": {
         "title": "1. Information we collect",
-        "content": "When you request a quote or book a cleaning, we collect only what we need to provide the service:\n• Your name, email address, phone number and service address\n• Details about your home or business and the cleaning you need, your preferred date and any notes you add (for example, entry instructions)\n• Your preferred language (English or French)\n• Whether you chose to receive promotional emails, and when\n\nIf you sign in to your customer account, we also keep your sign-in email. If you accept analytics cookies, we collect anonymous information about how the website is used."
+        "content": "When you request a quote or book a cleaning, we collect only what we need to provide the service:\n• Your name, email address, phone number and service address\n• Details about your home or business and the cleaning you need, your preferred date and any notes you add (for example, entry instructions)\n• Your preferred language (English or French)\n• Whether you chose to receive promotional emails, and when\n\nIf you sign in to your customer account, we also keep your sign-in email. If you accept analytics cookies, we collect anonymous information about how the website is used.\n\nWhen you sign a service agreement online, we also record electronic signing evidence (your typed name, server timestamp, IP address, browser details, language, and a cryptographic hash of the signed text) for legal record-keeping. Any door or alarm codes you provide are stored in a restricted access record, excluded from PDFs and emails, and can be cleared upon request while the signed agreement is retained for 7 years."
       },
       "2": {
         "title": "2. How we use it",
@@ -1730,6 +1865,111 @@
         "title": "5. Your rights and how to contact us",
         "content": "You can ask to see the personal information we hold about you, ask us to correct it, or withdraw your consent to promotional emails at any time. Quebec residents have these rights under Law 25, and we extend them to all our clients.\n\nTo make a request or ask a question, contact our privacy officer at hello@freshnestco.ca or (613) 861-8812. We will respond within 30 days.\n\nIf you are not satisfied with our answer, you can contact the Office of the Privacy Commissioner of Canada or, in Quebec, the Commission d'accès à l'information du Québec."
       }
+    }
+  },
+  "agreement": {
+    "meta": {
+      "title": "Service Agreement — Fresh Nest Co.",
+      "description": "Review and sign your private Fresh Nest Co. service agreement."
+    },
+    "headerHelp": "Need help reviewing or signing your agreement? Call our office directly:",
+    "loading": "Loading your service agreement…",
+    "pageTitleResidential": "Residential Service Agreement",
+    "pageTitleCommercial": "Commercial Service Agreement",
+    "pageSubtitle": "Prepared for {{name}}",
+    "needHelp": "Questions or need a new link? Call us anytime:",
+    "callOffice": "Call {{phone}}",
+    "honeypotLabel": "Leave this field blank",
+    "invalid": {
+      "title": "This agreement link is no longer valid",
+      "body": "This private link may have expired, already been used, or been replaced by a newer link. Please contact our office and we will send you a fresh link right away."
+    },
+    "error": {
+      "title": "We could not load your agreement right now",
+      "body": "Please check your internet connection and try again, or call our office for help.",
+      "retry": "Try Again"
+    },
+    "signed": {
+      "title": "Signed — thank you!",
+      "body": "Your service agreement is complete. A signed PDF copy is on its way to your email inbox for your records.",
+      "signedByLabel": "Signed by",
+      "signedAtLabel": "Signed on",
+      "securityNote": "For your security, any door codes, alarm codes, or key locations you shared are stored separately and are never included in your PDF or email."
+    },
+    "details": {
+      "heading": "Your Service Summary",
+      "versionBadge": "Version {{version}}",
+      "clientName": "Client Name",
+      "serviceAddress": "Service Address",
+      "service": "Service",
+      "frequency": "Frequency",
+      "startDate": "Start Date",
+      "agreedRate": "Agreed Rate",
+      "plusTaxes": "plus applicable taxes",
+      "taxExempt": "tax-exempt",
+      "cancelNotice": "Cancellation Notice",
+      "lateCancelFee": "Late Cancellation Fee",
+      "lockoutFee": "Lockout Fee",
+      "latePaymentRate": "Late Payment Interest",
+      "terminationNotice": "Termination Notice",
+      "scopeNotes": "Scope & Schedule Notes",
+      "hoursValue": "{{count}} hours",
+      "daysValue": "{{count}} days",
+      "perMonthValue": "{{rate}} per month"
+    },
+    "terms": {
+      "heading": "Agreement Terms"
+    },
+    "answers": {
+      "heading": "Your Contact & Home Details",
+      "subheading": "Please confirm your details and share any helpful notes before signing.",
+      "phoneLabel": "Phone Number",
+      "emailLabel": "Email Address (for your signed PDF copy)",
+      "entryMethodLabel": "How should our team enter on cleaning days?",
+      "alarmLabel": "Is there a home or building alarm system?",
+      "yes": "Yes",
+      "no": "No",
+      "petsLabel": "Pets in the home (optional)",
+      "petsPlaceholder": "e.g., 1 friendly dog, indoor cat — keep front door closed",
+      "instructionsLabel": "Special cleaning instructions or preferences (optional)",
+      "instructionsPlaceholder": "e.g., fragrance-free products only, island directions, parking tips",
+      "valuablesLabel": "Fragile items or valuables to disclose (optional)",
+      "valuablesPlaceholder": "e.g., antique china cabinet in dining room"
+    },
+    "entryMethods": {
+      "present": "I will be home / on site",
+      "key": "Key provided",
+      "lockbox": "Lockbox",
+      "door_code": "Door / keypad code",
+      "smart_lock": "Smart lock",
+      "concierge": "Concierge / reception",
+      "other": "Other"
+    },
+    "access": {
+      "heading": "Private Entry & Alarm Details (Restricted)",
+      "privacyNote": "Stored in a separate restricted office record only. Never printed in your PDF and never sent by email.",
+      "doorCodeLabel": "Door / Keypad Code (optional)",
+      "alarmCodeLabel": "Alarm Code & Disarm Steps (optional)",
+      "keyLocationLabel": "Key or Lockbox Location (optional)",
+      "accessNotesLabel": "Additional Entry Notes (optional)"
+    },
+    "sign": {
+      "heading": "Electronic Signature",
+      "subheading": "All three items below are required to complete your agreement.",
+      "consentESignLabel": "I agree to sign this agreement electronically and consent to Fresh Nest Co. recording and retaining my signing evidence (typed name, timestamp, IP address, browser details, and document hash) in accordance with PIPEDA and Quebec Law 25.",
+      "consentTermsLabel": "I have read and agree to the service details and full agreement terms above.",
+      "typedNameLabel": "Type your full name as your electronic signature",
+      "typedNamePlaceholder": "First and last name",
+      "submitButton": "Sign Agreement",
+      "submitting": "Signing your agreement…",
+      "submitError": "We could not save your signature right now. Please check your fields and try again, or call our office."
+    },
+    "validation": {
+      "phoneRequired": "Please enter a valid phone number.",
+      "emailInvalid": "Please enter a valid email address so we can send your signed PDF.",
+      "consentESignRequired": "Please confirm your consent to sign electronically and retain signing evidence.",
+      "consentTermsRequired": "Please confirm that you have read and agree to the agreement terms.",
+      "signedNameRequired": "Please type your full name (at least 2 characters)."
     }
   }
 }

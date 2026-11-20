@@ -1,6 +1,6 @@
 # Fresh Nest Co. — Compliance Reference
 
-**Version:** 2.1 | **Updated:** 2026-10-27 (office roles: Owner and Manager, P3-E35 / ADR-017)
+**Version:** 2.2 | **Updated:** 2026-11-20 (client e-agreements, e-signature consent, restricted access codes, and narrow P3-E29 exception — P3-E39 / ADR-021, owner-approved)
 **Status:** Active — Reference before writing any form, email, SMS, or Firestore operation
 
 > [!IMPORTANT]
@@ -113,6 +113,17 @@ Applies to all personal data collected from clients across all provinces.
   - Passing client email or phone to any third-party service not essential to the booking flow
   - Using client data for AI training without explicit consent
 ```
+
+### Client E-Agreements, Electronic Signatures & Access Codes (P3-E39 / ADR-021, Owner-Approved 2026-11-20)
+
+| Requirement | Policy & Implementation |
+|---|---|
+| **Electronic signature consent** | Signing requires three separate, unchecked-by-default controls: (1) explicit consent to sign electronically and to retention of signing evidence under PIPEDA and Quebec Law 25, (2) explicit acceptance of the service details and terms, and (3) typed full name. |
+| **Signing evidence** | Stored append-only in `agreements/{id}/signatures/{sigId}`: typed name, server timestamp, first-hop IP address, user agent, signing language, template `versionId`, and SHA-256 `documentHash` of the exact canonical rendered text. |
+| **Restricted access codes** | Door codes, alarm codes, and key locations are write-only from `/agreement/:token` into `agreements/{id}/private/access` (Owner/Manager read-only via `isOffice()`). They are **strictly excluded** from `agreements/{id}`, `signatures/`, PDFs, emails, audit logs, and every public callable response. |
+| **Retention vs. deletion requests** | Signed agreements and legal evidence are retained for `settings/policy.agreementRetentionYears` (**7 years**). On a client privacy/deletion request, an Owner executes `redactAgreementClientData` (audited with a required reason), which clears `private/access` and non-contract client answers while preserving the signed contract and legal evidence. |
+| **No-public-prices exception (P3-E29)** | Public marketing and quote pages remain strictly price-free. Narrow exception approved 2026-11-20: private, `noindex` `/agreement/:token` pages and their signed PDFs display that specific client's agreed rate and fees from Firestore (`agreement.` excluded in `noPricing.test.ts`; dollar figures are never hardcoded in `en.json`/`fr.json`). |
+| **Token privacy** | Signing links use 32-byte random base64url tokens; only `sha256(token)` is stored, raw tokens are never logged, and Analytics strips `/agreement/<token>` to `/agreement/:token`. |
 
 ---
 

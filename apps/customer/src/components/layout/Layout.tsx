@@ -24,8 +24,12 @@ export default function Layout() {
   }, [i18n.language])
 
   useEffect(() => {
-    // Only logs if consent is granted and analytics is initialized
-    logCustomEvent('page_view', { page_path: location.pathname })
+    // Only logs if consent is granted and analytics is initialized.
+    // P3-E39 (ADR-021): never send raw private agreement bearer tokens to Analytics.
+    const safePath = location.pathname.startsWith('/agreement/')
+      ? '/agreement/:token'
+      : location.pathname
+    logCustomEvent('page_view', { page_path: safePath })
   }, [location.pathname])
 
   return (
