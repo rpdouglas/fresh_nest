@@ -20,6 +20,8 @@ Read in this order: `CLAUDE.md` → this file → [`ACTIVE_CYCLE.md`](ACTIVE_CYC
 | F5 + HOTFIX-11 | E2E suite green on the emulators (29/29) and back on PRs as a non-required trial (ADR-019, Accepted); FSM staff sign-in fixed (was always denied); footer contrast fixed | #54, #55 |
 | P3-E38 (W0-4) | Money and time conventions (ADR-020, Accepted): `America/Toronto` calendar dates & scheduled Functions, shared `time.ts` / `money.ts`, all stored money fields converted to integer `…Cents` (`F22` migrated & stripped on dev + prod, `F23` legacy dollar fields removed) | #57, #58 + F23 |
 | Customer policies | Late fee, lockout and 24 h complaint wording in the FAQ and touchpoints (no amounts shown — P3-E29) | #44 |
+| P3-E39 | Client e-agreements (Strategy 2, ADR-021 Accepted): hashed tokens, server-only callables with App Check (reCAPTCHA Enterprise), signed PDF + EN/FR emails, `/agreement/:token`, Admin → Agreements, Owner-only redaction | #72, #73 |
+| W0-5 | Firestore backups, restore drill & cost budgets: delete protection + daily/weekly native backup schedules on `(default)`, `onDailyFirestoreExport` (`03:00 America/Toronto`) → `gs://freshnest-aa51e-firestore-backups`, live restore drill into `freshnest-dev` (12/12 collections verified), CAD billing budgets (Storage, Maps/Routes, Firestore/Functions) | — |
 
 ### P3-E35 & HOTFIX-10 — Office roles (`owner`, `manager`) & self-healing role sync
 - **PRs #40, #41, #42, #47:** Merged and deployed to production; security rules (`all`) deployed.
@@ -45,18 +47,17 @@ Read in this order: `CLAUDE.md` → this file → [`ACTIVE_CYCLE.md`](ACTIVE_CYC
 | H2 | Business email. **Resend fixed 2026-11-14**: `freshnestco.ca` verified, new `RESEND_API_KEY`, quote alerts go to both office Gmail inboxes (PR #66, test quote received). Still open: Zoho inboxes (`hello@` etc. — root MX points nowhere, so replies to `noreply@` bounce) and Reply-To | ACTIVE_CYCLE F1, P3-E30 |
 | H3 | Confirm `OWNER_PHONE` for Cloud Functions | F2 |
 | H6 | Owner answers still open: **rates** for deep, move-out, post-construction and organizing; Lead/Trainee billing; whether breaks are billed; **island travel times**. Late-cancellation and lockout **fee amounts** and the **backup emergency contact** can now be entered by an Owner in Admin → Settings & Policies (fees default to $0) | Gap analysis §7, P3-E36 |
-| H9 | **P3-E39 e-agreements:** Strategy 2 approved & code complete 2026-11-20 (ADR-021 Accepted, `feat/P3-E39-client-e-agreements`). Remaining human launch steps: merge PR (deploys rules/functions/hosting), run `node functions/scripts/seed-agreement-template.cjs` (and replace placeholder v1 text with lawyer-approved & French-reviewed Draft v3 before pilot), complete W0-5 backups, and run 3-client pilot | [`projects/P3-E39.md`](projects/P3-E39.md), [`reports/P3-E39-close-2026-11-20.md`](reports/P3-E39-close-2026-11-20.md) |
+| H9 | **P3-E39 e-agreements:** Live in production (PR #72 & #73 merged, templates seeded on dev & prod, App Check active, W0-5 backups & restore drill complete 2026-11-21). Remaining human launch steps: publish lawyer-approved & French-reviewed Draft v3 wording in `agreementTemplates` before live clients sign, and run 3-client pilot | [`projects/P3-E39.md`](projects/P3-E39.md), [`reports/P3-E39-close-2026-11-20.md`](reports/P3-E39-close-2026-11-20.md) |
 | H8 | Re-sync `firestore.dev.rules` with production. The dev rules still let the office create staff docs from the app; production blocked that in P3-E27-A2. Needs human approval (rules) | F15 |
 
 ---
 
 ## 3. What to build next (owner-approved order)
 
-All four "Now" defects (N-1 to N-4) are fixed and deployed; W0-1 (roles), W0-2 (settings), W0-3 (audit everywhere, P3-E37 PR 1 & PR 2), and W0-4 (money and time conventions, P3-E38) are done. Remaining wave 0, per gap analysis §5:
+All four "Now" defects (N-1 to N-4) are fixed and deployed; W0-1 (roles), W0-2 (settings), W0-3 (audit everywhere, P3-E37 PR 1 & PR 2), W0-4 (money and time conventions, P3-E38), and **W0-5** (scheduled Firestore backups, live restore drill into `freshnest-dev`, and GCP CAD billing budgets — 2026-11-21) are done. Remaining wave 0, per gap analysis §5:
 
-1. **W0-5** Scheduled Firestore export and a restore drill; budget alerts. Do before real data replaces the test data.
-2. **W0-6** Server-checked schedule write path (`applyScheduleChange` with `rev`). Unblocked now that W0-4 is complete.
-3. **W0-3 PR 3 (`F18`)** Make the `lastChange` stamp required on app saves (~2 weeks after P3-E37 PR 1).
+1. **W0-6** Server-checked schedule write path (`applyScheduleChange` with `rev`). Unblocked now that W0-4 and W0-5 are complete.
+2. **W0-3 PR 3 (`F18`)** Make the `lastChange` stamp required on app saves (~2 weeks after P3-E37 PR 1).
 
 Then wave 1 (clients, sites, employees, availability, agreements, Camelo import). The older Phase 3 backlog (P3-E27 onboarding B2/C/D, P3-E10, P3-E15…) still sits in `ACTIVE_CYCLE.md`; suggestion pending owner decision: fold P3-E27's remaining parts into W1-3.
 
