@@ -3,6 +3,7 @@ import { onDailyReminderCheck } from '../src/scheduled/reminders'
 import { onMonthlyEarningsRollover } from '../src/scheduled/earnings'
 import { onDailyRecurringRenewal } from '../src/scheduled/renewals'
 import { onReviewEmailScheduler } from '../src/scheduled/reviews'
+import { onDailyFirestoreExport } from '../src/scheduled/backup'
 
 // P3-E38 (ADR-020): every scheduled Function runs on Toronto time, so its local hour never moves
 // when the clocks change (Nov 1, 2026).
@@ -18,8 +19,12 @@ describe('scheduled Functions run on Toronto time', () => {
     expect(trigger(onMonthlyEarningsRollover)).toMatchObject({ schedule: '0 0 1 * *', timeZone: 'America/Toronto' })
   })
 
-  it('renewals and review emails', () => {
+  it('renewals, review emails, and daily Firestore backup export (W0-5)', () => {
     expect(trigger(onDailyRecurringRenewal).timeZone).toBe('America/Toronto')
     expect(trigger(onReviewEmailScheduler).timeZone).toBe('America/Toronto')
+    expect(trigger(onDailyFirestoreExport)).toMatchObject({
+      schedule: '0 3 * * *',
+      timeZone: 'America/Toronto',
+    })
   })
 })
