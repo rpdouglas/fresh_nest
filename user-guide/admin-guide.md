@@ -155,6 +155,19 @@ The **Team & roles** tab lists everyone with office access and lets an Owner cha
 - **After any change,** the person needs to **sign out and sign in again** before the new access applies.
 - Every change is recorded in **Audit Logs**: who made it, when, and the old and new role.
 
+## Client E-Agreements Tab
+
+The **Agreements** tab lets **Owners** and **Managers** create private, click-to-sign service agreements (Residential or Commercial, in English or French) and track each agreement from **Sent** → **Viewed** → **Signed**.
+
+- **Create an agreement:** Click **+ New Agreement**. Optionally pick an existing booking to prefill the client's name, email, phone, address, service type, frequency, and language — or enter them by hand. Confirm the agreed rate (`Hourly`, `Flat per visit`, or `Monthly`), tax-exempt option (when applicable), cancellation/lockout terms (prefilled from **Settings & Policies** and frozen on the agreement), and link validity (`7`, `14`, `30`, or `60` days; default `30`).
+- **Deliver the link:** When created, copy the private link (`https://www.freshnestco.ca/agreement/<token>`) right away — for security, only its cryptographic hash is stored so the raw link cannot be viewed again. You can also tick **Email signing link to client now** to send it immediately in the client's language.
+- **Reissue or expire:** Open any unsigned agreement and click **Reissue Link** to generate a fresh link (the old link stops working immediately), or **Expire Link** to cancel it.
+- **Signed PDF & Access Codes:** Once signed, both the client and the office automatically receive a signed PDF copy by email. You can download the PDF anytime from the agreement's detail panel. Any door codes, alarm codes, or key locations entered by the client are stored separately under **Reveal Access Codes** and are **never** printed in the PDF or sent by email.
+- **Privacy deletion requests (Owner only):** Signed agreements are kept for 7 years. If a client requests data deletion (PIPEDA / Quebec Law 25), an **Owner** can click **Clear Access & Answers** and enter a reason to permanently erase door/alarm codes and personal notes while keeping the signed legal record intact.
+- **Audit trail:** Every create, view, reissue, sign, expire, and redaction event appears in the agreement's **Show history** section and in **Audit Logs**.
+
+---
+
 ## Settings & Policies Tab
 
 The **Settings & Policies** tab stores company-wide operational rules in one versioned record (`settings/policy`) so you can adjust buffers, thresholds, and notice windows without waiting for a software release.

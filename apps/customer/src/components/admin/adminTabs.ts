@@ -1,6 +1,7 @@
 // Order and labels match the original hand-written tab buttons (keys and fallbacks unchanged).
 export const ADMIN_TABS = [
   { key: 'bookings', labelKey: 'admin.dashboard.tabs.bookings' },
+  { key: 'agreements', labelKey: 'admin.dashboard.tabs.agreements', fallback: 'Agreements' },
   { key: 'dispatch', labelKey: 'admin.dashboard.tabs.dispatch', fallback: 'Dispatch Board' },
   { key: 'analytics', labelKey: 'admin.dashboard.tabs.analytics' },
   { key: 'staff', labelKey: 'admin.dashboard.tabs.staff' },

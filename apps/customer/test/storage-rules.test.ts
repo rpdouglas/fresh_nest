@@ -117,6 +117,43 @@ describe('office roles (P3-E35)', () => {
   })
 })
 
+describe('client e-agreement PDFs (P3-E39, ADR-021)', () => {
+  const PDF = new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d])
+
+  async function seedPdf(filePath: string) {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await ctx.storage().ref(filePath).put(PDF, { contentType: 'application/pdf' })
+    })
+  }
+
+  it('allows owner and manager to read signed PDFs in prod and dev paths, and blocks all client writes', async () => {
+    for (const filePath of ['agreements/agr-1/signed.pdf', 'agreements-dev/agr-1/signed.pdf']) {
+      await seedPdf(filePath)
+      for (const role of ['owner', 'manager']) {
+        await assertSucceeds(staff(`${role}-1`, role).ref(filePath).getMetadata())
+        await assertFails(upload(staff(`${role}-1`, role), filePath, PDF, 'application/pdf'))
+        await assertFails(staff(`${role}-1`, role).ref(filePath).delete())
+      }
+    }
+  })
+
+  it('blocks signed-out users, customers, staff, supervisors, and legacy admin from reading or writing agreement PDFs', async () => {
+    const filePath = 'agreements/agr-1/signed.pdf'
+    await seedPdf(filePath)
+    const denied = [
+      testEnv.unauthenticatedContext().storage(),
+      staff('c1', 'customer'),
+      staff('b1', 'staff'),
+      staff('s1', 'supervisor'),
+      staff('a1', 'admin'),
+    ]
+    for (const s of denied) {
+      await assertFails(s.ref(filePath).getMetadata())
+      await assertFails(upload(s, filePath, PDF, 'application/pdf'))
+    }
+  })
+})
+
 describe('everything else stays closed', () => {
   it('denies reads and writes outside the matched paths', async () => {
     await assertFails(upload(staff('lauren', 'owner'), 'other/file.jpg', JPEG, 'image/jpeg'))

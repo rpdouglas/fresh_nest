@@ -7,8 +7,10 @@ import { BLOG_POSTS } from '@/lib/data/blogData'
 // Pricing is discussed in the quote follow-up. Adding public pricing back requires a
 // human decision and an update to this test.
 
-// Internal/non-customer namespaces: admin tools, review moderation, and staff wages on Careers.
-const EXCLUDED_PREFIXES = ['admin.', 'reviewsModeration.', 'careersPage.', 'team.']
+// Internal/non-customer namespaces: admin tools, review moderation, staff wages on Careers,
+// and private tokenized client e-agreements (P3-E39, human decision 2026-11-20: rates come
+// from Firestore on /agreement/:token only, never from public marketing pages).
+const EXCLUDED_PREFIXES = ['admin.', 'reviewsModeration.', 'careersPage.', 'team.', 'agreement.']
 
 const PRICE_PATTERN = new RegExp(
   [

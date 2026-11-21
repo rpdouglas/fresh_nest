@@ -11,6 +11,16 @@ import {
   staffWelcomeSubject,
   staffWelcomeHtml,
 } from './emailTemplates'
+import {
+  agreementInviteSubject,
+  agreementInviteHtml,
+  agreementSignedClientSubject,
+  agreementSignedClientHtml,
+  agreementSignedOfficeSubject,
+  agreementSignedOfficeText,
+  type AgreementInviteEmailData,
+  type AgreementSignedEmailData,
+} from './agreementEmailTemplates'
 
 export interface EmailConfig {
   resendApiKey: string
@@ -110,5 +120,68 @@ export async function sendWelcomeEmail(
   })
   if (result.error) {
     throw new Error(`Welcome email failed: ${result.error.message}`)
+  }
+}
+
+export async function sendAgreementInviteEmail(
+  recipientEmail: string,
+  data: AgreementInviteEmailData,
+  config: EmailConfig,
+): Promise<void> {
+  const resend = new Resend(config.resendApiKey)
+  const result = await resend.emails.send({
+    from: config.fromEmail,
+    to: recipientEmail,
+    replyTo: config.replyTo,
+    subject: agreementInviteSubject(data.language),
+    html: agreementInviteHtml(data),
+  })
+  if (result.error) {
+    throw new Error(`Agreement invite email failed: ${result.error.message}`)
+  }
+}
+
+export async function sendAgreementSignedClientEmail(
+  recipientEmail: string,
+  data: AgreementSignedEmailData,
+  pdfBuffer: Buffer,
+  config: EmailConfig,
+): Promise<void> {
+  const resend = new Resend(config.resendApiKey)
+  const filename = `fresh-nest-agreement-${data.agreementId}.pdf`
+  const result = await resend.emails.send({
+    from: config.fromEmail,
+    to: recipientEmail,
+    replyTo: config.replyTo,
+    subject: agreementSignedClientSubject(data.language),
+    html: agreementSignedClientHtml(data),
+    attachments: [{ filename, content: pdfBuffer }],
+  })
+  if (result.error) {
+    throw new Error(`Agreement signed client email failed: ${result.error.message}`)
+  }
+}
+
+export async function sendAgreementSignedOfficeEmail(
+  data: AgreementSignedEmailData,
+  pdfBuffer: Buffer,
+  config: EmailConfig,
+): Promise<void> {
+  const recipients = parseRecipients(config.ownerEmail)
+  if (recipients.length === 0) {
+    throw new Error('Agreement signed office email failed: OWNER_EMAIL is empty')
+  }
+  const resend = new Resend(config.resendApiKey)
+  const filename = `fresh-nest-agreement-${data.agreementId}.pdf`
+  const result = await resend.emails.send({
+    from: config.fromEmail,
+    to: recipients,
+    replyTo: data.clientEmail?.trim() || config.replyTo,
+    subject: agreementSignedOfficeSubject(data),
+    text: agreementSignedOfficeText(data),
+    attachments: [{ filename, content: pdfBuffer }],
+  })
+  if (result.error) {
+    throw new Error(`Agreement signed office email failed: ${result.error.message}`)
   }
 }

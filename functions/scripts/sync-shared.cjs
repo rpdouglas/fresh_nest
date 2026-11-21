@@ -17,7 +17,7 @@ const destDir = path.resolve(__dirname, '../src/shared')
 fs.mkdirSync(destDir, { recursive: true })
 
 for (const entry of fs.readdirSync(srcDir, { withFileTypes: true })) {
-  if (!entry.isFile() || !entry.name.endsWith('.ts')) continue
+  if (!entry.isFile() || !entry.name.endsWith('.ts') || entry.name.endsWith('.test.ts')) continue
   const content = fs.readFileSync(path.join(srcDir, entry.name), 'utf8')
   const banner = '// AUTO-SYNCED FROM packages/shared/src/domain — DO NOT EDIT DIRECTLY.\n'
   fs.writeFileSync(path.join(destDir, entry.name), banner + content, 'utf8')

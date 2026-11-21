@@ -624,3 +624,78 @@ describe('Audit everywhere (P3-E37 / W0-3): locked audit log and the lastChange 
     await assertSucceeds(deleteDoc(doc(db, 'galleryPairs/g1')))
   })
 })
+
+describe('Client E-Agreements (P3-E39, ADR-021)', () => {
+  beforeEach(async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore()
+      await setDoc(doc(db, 'agreements/a1'), {
+        family: 'client',
+        type: 'residential',
+        language: 'en',
+        status: 'sent',
+        tokenHash: 'abc',
+      })
+      await setDoc(doc(db, 'agreements/a1/signatures/s1'), {
+        signedName: 'Margaret Storey',
+        documentHash: 'def',
+      })
+      await setDoc(doc(db, 'agreements/a1/private/access'), {
+        doorCode: '4321',
+        alarmCode: '9999',
+      })
+      await setDoc(doc(db, 'agreementTemplates/client-residential'), {
+        family: 'client',
+        type: 'residential',
+        currentVersionId: 'v1',
+      })
+      await setDoc(doc(db, 'agreementTemplates/client-residential/versions/v1'), {
+        version: 'v1',
+        status: 'published',
+        bodyEn: '# Terms',
+        bodyFr: '# Conditions',
+      })
+    })
+  })
+
+  const as = (role: string) =>
+    testEnv.authenticatedContext(`${role}-1`, { role, email: `${role}@freshnest.test` }).firestore()
+
+  const paths = [
+    'agreements/a1',
+    'agreements/a1/signatures/s1',
+    'agreements/a1/private/access',
+    'agreementTemplates/client-residential',
+    'agreementTemplates/client-residential/versions/v1',
+  ]
+
+  it('denies reads and writes for signed-out visitors, customers, staff, supervisors, and legacy admin', async () => {
+    const contexts = [
+      testEnv.unauthenticatedContext().firestore(),
+      as('customer'),
+      as('staff'),
+      as('supervisor'),
+      as('admin'),
+    ]
+    for (const db of contexts) {
+      for (const p of paths) {
+        await assertFails(getDoc(doc(db, p)))
+        await assertFails(setDoc(doc(db, p), { hacked: true }))
+        await assertFails(updateDoc(doc(db, p), { hacked: true }))
+        await assertFails(deleteDoc(doc(db, p)))
+      }
+    }
+  })
+
+  it('allows office (owner & manager) to read all agreement collections, but blocks every client write', async () => {
+    for (const role of ['owner', 'manager']) {
+      const db = as(role)
+      for (const p of paths) {
+        await assertSucceeds(getDoc(doc(db, p)))
+        await assertFails(setDoc(doc(db, p), { tampered: true }))
+        await assertFails(updateDoc(doc(db, p), { tampered: true }))
+        await assertFails(deleteDoc(doc(db, p)))
+      }
+    }
+  })
+})

@@ -284,6 +284,35 @@ service cloud.firestore {
       }
     }
 
+    // 8. Client E-Agreements (P3-E39, ADR-021, human-approved 2026-11-20)
+    // Signed-out clients access agreements strictly through server callables (never direct Firestore).
+    // Office (Owner / Manager) can read agreements, append-only signatures, restricted access codes,
+    // and versioned templates; all writes happen server-side via Admin SDK callables.
+    match /agreements/{agreementId} {
+      allow read: if isOffice();
+      allow write: if false;
+
+      match /signatures/{signatureId} {
+        allow read: if isOffice();
+        allow write: if false;
+      }
+
+      match /private/{docId} {
+        allow read: if isOffice();
+        allow write: if false;
+      }
+    }
+
+    match /agreementTemplates/{templateId} {
+      allow read: if isOffice();
+      allow write: if false;
+
+      match /versions/{versionId} {
+        allow read: if isOffice();
+        allow write: if false;
+      }
+    }
+
     // Default Deny-All for other collections
     match /{document=**} {
       allow read, write: if false;

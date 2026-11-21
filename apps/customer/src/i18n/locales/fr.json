@@ -771,7 +771,8 @@
         "reviews": "Modération des avis",
         "gallery": "Galerie",
         "settings": "Paramètres et politiques",
-        "team": "Équipe et rôles"
+        "team": "Équipe et rôles",
+        "agreements": "Contrats"
       },
       "analytics": {
         "title": "Tableau de bord des analyses",
@@ -1042,7 +1043,8 @@
         "reviews": "Avis",
         "users": "Rôle de connexion",
         "settings": "Paramètres",
-        "admins": "Accès au bureau"
+        "admins": "Accès au bureau",
+        "agreements": "Contrats"
       },
       "fields": {
         "status": "Statut",
@@ -1431,6 +1433,139 @@
         "empty": "Aucune version n'a encore été enregistrée. Le premier enregistrement créera la Version v1.",
         "noFieldChanges": "Instantané de base enregistré (aucune modification par rapport aux valeurs par défaut)."
       }
+    },
+    "agreements": {
+      "title": "Contrats électroniques clients",
+      "subtitle": "Créez des liens privés de signature, suivez le statut (envoyé, consulté, signé), téléchargez les PDF et gérez les codes d’accès.",
+      "newButton": "+ Nouveau contrat",
+      "searchPlaceholder": "Rechercher par nom, courriel ou adresse…",
+      "filterStatus": "Filtrer par statut",
+      "filterType": "Filtrer par type",
+      "allStatuses": "Tous les statuts",
+      "allTypes": "Tous les types",
+      "loading": "Chargement des contrats…",
+      "loadError": "Impossible de charger les contrats. Veuillez actualiser la page.",
+      "empty": "Aucun contrat ne correspond à vos filtres.",
+      "types": {
+        "residential": "Résidentiel",
+        "commercial": "Commercial"
+      },
+      "statuses": {
+        "draft": "Brouillon",
+        "sent": "Envoyé",
+        "signed": "Signé",
+        "expired": "Expiré",
+        "cancelled": "Annulé",
+        "active": "Actif",
+        "paused": "En pause",
+        "ending": "En résiliation",
+        "ended": "Terminé"
+      },
+      "serviceTypes": {
+        "standard": "Entretien régulier",
+        "deep": "Grand ménage",
+        "moveout": "Déménagement",
+        "postconstruction": "Après construction",
+        "airbnb": "Rotation Airbnb",
+        "commercial": "Entretien commercial"
+      },
+      "frequencies": {
+        "one-time": "Ponctuel",
+        "weekly": "Hebdomadaire",
+        "biweekly": "Aux deux semaines",
+        "monthly": "Mensuel"
+      },
+      "rateTypes": {
+        "hourly": "Horaire ($/h)",
+        "flat": "Forfait par visite",
+        "monthly": "Mensuel"
+      },
+      "table": {
+        "client": "Client",
+        "type": "Type",
+        "rate": "Tarif",
+        "status": "Statut",
+        "created": "Créé le",
+        "actions": "Actions"
+      },
+      "actions": {
+        "viewDetails": "Détails",
+        "close": "Fermer",
+        "cancel": "Annuler",
+        "done": "Terminé",
+        "copyLink": "Copier le lien",
+        "copied": "Copié !",
+        "reissueLink": "Réémettre le lien",
+        "expireLink": "Expirer le lien",
+        "downloadPdf": "Télécharger le PDF signé",
+        "revealAccessCodes": "Afficher les codes d’accès",
+        "hideAccessCodes": "Masquer les codes d’accès",
+        "redactClientData": "Effacer accès et réponses",
+        "confirmRedact": "Confirmer l’effacement"
+      },
+      "modal": {
+        "title": "Nouveau contrat client",
+        "createdTitle": "Lien de signature prêt",
+        "prefillBookingLabel": "Préremplir à partir d’une réservation existante (facultatif)",
+        "prefillManualOption": "— Saisir les coordonnées manuellement —",
+        "typeLabel": "Type de contrat",
+        "languageLabel": "Langue du contrat",
+        "clientNameLabel": "Nom complet du client",
+        "clientEmailLabel": "Courriel du client",
+        "clientPhoneLabel": "Téléphone du client",
+        "clientAddressLabel": "Adresse de service",
+        "serviceTypeLabel": "Type de service",
+        "frequencyLabel": "Fréquence",
+        "startDateLabel": "Date de début",
+        "rateTypeLabel": "Base tarifaire",
+        "rateDollarsLabel": "Tarif convenu ($ CAD)",
+        "taxExemptLabel": "Exonéré de taxes (p. ex. certificat applicable)",
+        "policyTermsHint": "Modalités figées préremplies depuis Paramètres et politiques (modifiables avant l’envoi) :",
+        "cancelWindowLabel": "Préavis annulation (h)",
+        "lateCancelFeeLabel": "Frais annulation tardive ($)",
+        "lockoutFeeLabel": "Frais accès impossible ($)",
+        "latePaymentPctLabel": "Intérêts retard (%/mois)",
+        "noticeDaysLabel": "Préavis résiliation (jours)",
+        "linkValidityLabel": "Validité du lien",
+        "daysOption": "{{count}} jours",
+        "scopeNotesLabel": "Notes de portée / horaire (facultatif)",
+        "sendEmailLabel": "Envoyer le lien par courriel au client maintenant (dans sa langue)",
+        "createButton": "Créer le contrat et générer le lien",
+        "creating": "Création…",
+        "validationMissingClient": "Veuillez remplir le nom, le courriel, le téléphone et l’adresse du client.",
+        "validationInvalidRate": "Veuillez saisir un tarif valide.",
+        "createError": "Échec de la création du contrat. Assurez-vous que les modèles sont initialisés.",
+        "oneTimeLinkWarning": "Copiez ce lien privé maintenant. Par sécurité, seul son hachage est conservé : il ne pourra plus être affiché (vous pouvez toujours réémettre un nouveau lien).",
+        "signingLinkLabel": "Lien privé de signature",
+        "emailSentConfirmation": "Le lien de signature a également été envoyé par courriel au client."
+      },
+      "detail": {
+        "statusLabel": "Statut",
+        "viewedBadge": "Consulté",
+        "serviceLabel": "Service et fréquence",
+        "rateLabel": "Tarif convenu",
+        "sentAtLabel": "Envoyé",
+        "viewedAtLabel": "Consulté le",
+        "signedAtLabel": "Signé le",
+        "linkControlsHeading": "Gestion du lien",
+        "reissuedReady": "Un nouveau lien a été généré. L’ancien lien est désormais invalide.",
+        "reissuedAndEmailed": "Un nouveau lien a été généré et envoyé au client par courriel. L’ancien lien est désormais invalide.",
+        "expiredSuccess": "Ce lien de signature a été expiré.",
+        "redactedSuccess": "Les codes d’accès et réponses du client ont été effacés. Le dossier contractuel signé est conservé.",
+        "actionError": "Impossible d’exécuter cette action. Veuillez réessayer.",
+        "pdfDownloadError": "Impossible de télécharger le PDF signé. Veuillez réessayer sous peu.",
+        "accessLoadError": "Impossible de charger le dossier d’accès restreint.",
+        "accessHeading": "Dossier d’accès et d’alarme (restreint)",
+        "noAccessRecord": "Aucun code d’accès ou note d’entrée n’a été fourni.",
+        "evidenceHeading": "Preuve de signature électronique",
+        "versionLabel": "Version du modèle",
+        "hashLabel": "Empreinte SHA-256",
+        "redactedNotice": "Les codes d’accès et réponses ont été effacés par {{by}} le {{at}}. Les preuves contractuelles sont conservées 7 ans.",
+        "redactWarning": "Cette action efface définitivement les codes de porte/alarme, l’emplacement des clés et les réponses du client suite à une demande de confidentialité, tout en conservant le contrat signé.",
+        "redactReasonLabel": "Motif de l’effacement (journalisé)",
+        "redactReasonPlaceholder": "p. ex. Demande de suppression Loi 25 / LPRPDE reçue par courriel",
+        "redactReasonRequired": "Veuillez saisir un motif (au moins 3 caractères)."
+      }
     }
   },
   "blog": {
@@ -1712,7 +1847,7 @@
     "sections": {
       "1": {
         "title": "1. Renseignements que nous recueillons",
-        "content": "Lorsque vous demandez un devis ou réservez un nettoyage, nous recueillons uniquement ce dont nous avons besoin pour offrir le service :\n• Votre nom, votre adresse courriel, votre numéro de téléphone et l'adresse du service\n• Des détails sur votre maison ou votre entreprise et sur le nettoyage souhaité, la date préférée et les notes que vous ajoutez (par exemple, les instructions d'accès)\n• Votre langue préférée (français ou anglais)\n• Si vous avez choisi de recevoir des courriels promotionnels, et à quel moment\n\nSi vous vous connectez à votre compte client, nous conservons aussi votre courriel de connexion. Si vous acceptez les témoins d'analyse, nous recueillons des renseignements anonymes sur l'utilisation du site."
+        "content": "Lorsque vous demandez un devis ou réservez un nettoyage, nous recueillons uniquement ce dont nous avons besoin pour offrir le service :\n• Votre nom, votre adresse courriel, votre numéro de téléphone et l'adresse du service\n• Des détails sur votre maison ou votre entreprise et sur le nettoyage souhaité, la date préférée et les notes que vous ajoutez (par exemple, les instructions d'accès)\n• Votre langue préférée (français ou anglais)\n• Si vous avez choisi de recevoir des courriels promotionnels, et à quel moment\n\nSi vous vous connectez à votre compte client, nous conservons aussi votre courriel de connexion. Si vous acceptez les témoins d'analyse, nous recueillons des renseignements anonymes sur l'utilisation du site.\n\nLorsque vous signez un contrat de services en ligne, nous enregistrons également les preuves de signature électronique (votre nom saisi, l’horodatage serveur, l’adresse IP, les renseignements sur le navigateur, la langue et une empreinte cryptographique du texte signé) à des fins de conservation légale. Les codes de porte ou d’alarme que vous fournissez sont conservés dans un dossier d’accès restreint, exclus des PDF et des courriels, et peuvent être effacés sur demande tandis que le contrat signé est conservé pendant 7 ans."
       },
       "2": {
         "title": "2. Comment nous les utilisons",
@@ -1730,6 +1865,111 @@
         "title": "5. Vos droits et comment nous joindre",
         "content": "Vous pouvez demander à consulter les renseignements personnels que nous détenons à votre sujet, demander qu'ils soient corrigés ou retirer en tout temps votre consentement aux courriels promotionnels. Les résidents du Québec ont ces droits en vertu de la Loi 25, et nous les accordons à tous nos clients.\n\nPour faire une demande ou poser une question, joignez notre responsable de la protection des renseignements personnels à hello@freshnestco.ca ou au (613) 861-8812. Nous répondrons dans un délai de 30 jours.\n\nSi vous n'êtes pas satisfait de notre réponse, vous pouvez vous adresser au Commissariat à la protection de la vie privée du Canada ou, au Québec, à la Commission d'accès à l'information du Québec."
       }
+    }
+  },
+  "agreement": {
+    "meta": {
+      "title": "Contrat de services — Fresh Nest Co.",
+      "description": "Consultez et signez votre contrat de services privé avec Fresh Nest Co."
+    },
+    "headerHelp": "Besoin d’aide pour lire ou signer votre contrat ? Appelez notre bureau directement :",
+    "loading": "Chargement de votre contrat de services…",
+    "pageTitleResidential": "Contrat de services résidentiels",
+    "pageTitleCommercial": "Contrat de services commerciaux",
+    "pageSubtitle": "Préparé pour {{name}}",
+    "needHelp": "Des questions ou besoin d’un nouveau lien ? Appelez-nous en tout temps :",
+    "callOffice": "Appeler le {{phone}}",
+    "honeypotLabel": "Laissez ce champ vide",
+    "invalid": {
+      "title": "Ce lien de contrat n’est plus valide",
+      "body": "Ce lien privé a peut-être expiré, a déjà été utilisé ou a été remplacé par un nouveau lien. Communiquez avec notre bureau et nous vous enverrons un nouveau lien sans délai."
+    },
+    "error": {
+      "title": "Impossible de charger votre contrat pour le moment",
+      "body": "Veuillez vérifier votre connexion Internet et réessayer, ou appelez notre bureau pour obtenir de l’aide.",
+      "retry": "Réessayer"
+    },
+    "signed": {
+      "title": "Signé — merci !",
+      "body": "Votre contrat de services est maintenant complet. Une copie signée en format PDF sera envoyée à votre adresse courriel pour vos dossiers.",
+      "signedByLabel": "Signé par",
+      "signedAtLabel": "Signé le",
+      "securityNote": "Pour votre sécurité, les codes de porte, codes d’alarme et emplacements de clés sont conservés séparément et ne figurent jamais dans le PDF ni dans les courriels."
+    },
+    "details": {
+      "heading": "Résumé de vos services",
+      "versionBadge": "Version {{version}}",
+      "clientName": "Nom du client",
+      "serviceAddress": "Adresse de service",
+      "service": "Service",
+      "frequency": "Fréquence",
+      "startDate": "Date de début",
+      "agreedRate": "Tarif convenu",
+      "plusTaxes": "plus taxes applicables",
+      "taxExempt": "exonéré de taxes",
+      "cancelNotice": "Préavis d’annulation",
+      "lateCancelFee": "Frais d’annulation tardive",
+      "lockoutFee": "Frais d’accès impossible",
+      "latePaymentRate": "Intérêts de retard",
+      "terminationNotice": "Préavis de résiliation",
+      "scopeNotes": "Notes de portée et d’horaire",
+      "hoursValue": "{{count}} heures",
+      "daysValue": "{{count}} jours",
+      "perMonthValue": "{{rate}} par mois"
+    },
+    "terms": {
+      "heading": "Modalités du contrat"
+    },
+    "answers": {
+      "heading": "Vos coordonnées et renseignements sur la propriété",
+      "subheading": "Veuillez confirmer vos coordonnées et ajouter toute note utile avant de signer.",
+      "phoneLabel": "Numéro de téléphone",
+      "emailLabel": "Adresse courriel (pour recevoir votre copie PDF signée)",
+      "entryMethodLabel": "Comment notre équipe doit-elle accéder aux lieux ?",
+      "alarmLabel": "Y a-t-il un système d’alarme sur place ?",
+      "yes": "Oui",
+      "no": "Non",
+      "petsLabel": "Animaux de compagnie sur place (facultatif)",
+      "petsPlaceholder": "p. ex. 1 chat d’intérieur — bien fermer la porte d’entrée",
+      "instructionsLabel": "Instructions particulières ou préférences (facultatif)",
+      "instructionsPlaceholder": "p. ex. produits sans parfum, consignes de stationnement",
+      "valuablesLabel": "Objets fragiles ou de valeur à signaler (facultatif)",
+      "valuablesPlaceholder": "p. ex. vaisselier ancien dans la salle à manger"
+    },
+    "entryMethods": {
+      "present": "Je serai sur place",
+      "key": "Clé fournie",
+      "lockbox": "Boîte à clés",
+      "door_code": "Code de porte / clavier",
+      "smart_lock": "Serrure intelligente",
+      "concierge": "Conciergerie / réception",
+      "other": "Autre"
+    },
+    "access": {
+      "heading": "Renseignements privés d’accès et d’alarme (Accès restreint)",
+      "privacyNote": "Conservés uniquement dans un dossier de bureau distinct à accès restreint. Jamais imprimés dans le PDF ni envoyés par courriel.",
+      "doorCodeLabel": "Code de porte / clavier (facultatif)",
+      "alarmCodeLabel": "Code d’alarme et consignes (facultatif)",
+      "keyLocationLabel": "Emplacement de la clé ou boîte à clés (facultatif)",
+      "accessNotesLabel": "Notes d’accès supplémentaires (facultatif)"
+    },
+    "sign": {
+      "heading": "Signature électronique",
+      "subheading": "Les trois éléments ci-dessous sont requis pour conclure votre contrat.",
+      "consentESignLabel": "J’accepte de signer ce contrat électroniquement et je consens à ce que Fresh Nest Co. enregistre et conserve les preuves de ma signature (nom saisi, horodatage, adresse IP, renseignements sur le navigateur et empreinte du document) conformément à la LPRPDE et à la Loi 25 du Québec.",
+      "consentTermsLabel": "J’ai lu et j’accepte les détails du service ainsi que l’ensemble des modalités du contrat ci-dessus.",
+      "typedNameLabel": "Saisissez votre nom complet comme signature électronique",
+      "typedNamePlaceholder": "Prénom et nom de famille",
+      "submitButton": "Signer le contrat",
+      "submitting": "Signature en cours…",
+      "submitError": "Impossible d’enregistrer votre signature pour le moment. Veuillez vérifier les champs et réessayer, ou appelez notre bureau."
+    },
+    "validation": {
+      "phoneRequired": "Veuillez entrer un numéro de téléphone valide.",
+      "emailInvalid": "Veuillez entrer une adresse courriel valide afin de recevoir votre PDF signé.",
+      "consentESignRequired": "Veuillez confirmer votre consentement à la signature électronique et à la conservation des preuves.",
+      "consentTermsRequired": "Veuillez confirmer avoir lu et accepté les modalités du contrat.",
+      "signedNameRequired": "Veuillez saisir votre nom complet (au moins 2 caractères)."
     }
   }
 }
