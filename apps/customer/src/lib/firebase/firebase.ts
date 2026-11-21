@@ -1,7 +1,7 @@
 import { getSharedFirebaseApp, getSharedAuth } from '@freshnest/shared'
 import { getFirestore } from 'firebase/firestore'
 import { getFunctions } from 'firebase/functions'
-import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check'
 import { getPerformance } from 'firebase/performance'
 
 const app = getSharedFirebaseApp({
@@ -14,9 +14,14 @@ const app = getSharedFirebaseApp({
   measurementId:     import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 })
 
-if (import.meta.env.VITE_RECAPTCHA_SITE_KEY) {
+// Public reCAPTCHA Enterprise site key (safe to embed in client bundle; secret stays in GCP).
+// Overridable via VITE_RECAPTCHA_SITE_KEY in CI/local env.
+const RECAPTCHA_ENTERPRISE_SITE_KEY =
+  import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6LfzPiouAAAAADv5Z1aDYR6QpmBbCXhxckIVMhIy'
+
+if (RECAPTCHA_ENTERPRISE_SITE_KEY && typeof window !== 'undefined' && import.meta.env.MODE !== 'test') {
   initializeAppCheck(app, {
-    provider: new ReCaptchaV3Provider(import.meta.env.VITE_RECAPTCHA_SITE_KEY),
+    provider: new ReCaptchaEnterpriseProvider(RECAPTCHA_ENTERPRISE_SITE_KEY),
     isTokenAutoRefreshEnabled: true,
   })
 }
