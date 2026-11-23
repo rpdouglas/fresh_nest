@@ -231,5 +231,5 @@ test('every column header has a name, and the sign-in page has a main landmark',
   }
   await page.evaluate(() => sessionStorage.clear())
   await page.goto('/')
-  await expect(page.getByRole('main')).toContainText('Sign in with the Google account')
+  await expect(page.getByRole('main')).toContainText('Sign in with your Fresh Nest Owner or Manager Google account.')
 })
