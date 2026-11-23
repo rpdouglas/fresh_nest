@@ -59,7 +59,7 @@ THIS IS TAILWIND v3. NOT v4.
 
 ## PERSONA-BASED DEVELOPMENT CONTRACT
 
-### Fifteen Personas — Read docs/PERSONAS.md Before Every Epic
+### Sixteen Personas — Read docs/PERSONAS.md Before Every Epic
 
 #### Customer-Facing (P1–P6)
 
@@ -72,7 +72,7 @@ THIS IS TAILWIND v3. NOT v4.
 | P5 | Sophie Tremblay-Gagnon | French UX + eco + Snye QC service | /locations/snye-qc + FR + gallery |
 | P6 | Gallagher (Airbnb) | Turnover reliability + photo proof | /services/airbnb-turnover + priority |
 
-#### Staff-Side / FSM (P7–P15)
+#### Staff-Side / FSM (P7–P16)
 
 | ID | Name | Primary Need | Hard Constraint |
 |---|---|---|---|
@@ -85,6 +85,7 @@ THIS IS TAILWIND v3. NOT v4.
 | P13 | Marcus Oakes | Part-time student / OSAP cap | Earnings bar + self-managed blocked windows |
 | P14 | Sylvie Pilon | Caregiver schedule predictability | Day-before SMS + 2:30pm hard limit + plain-language errors |
 | P15 | Daniel Swamp | Akwesasne community member | Bridge commute buffer + earnings export + no AI Kanien'kéha |
+| P16 | Ryan | Office manager (Manager role) — shares lead handling with Lauren | "My leads" view + assignment alert; no role-granting rights |
 
 ### Rule 1 — No persona, no feature
 Before implementing any feature, identify which persona(s) it serves.

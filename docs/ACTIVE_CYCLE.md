@@ -87,6 +87,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | **P3-E16** | Dynamic Pricing Engine & Conversion Optimisation | L | P3 | ⬜ Not Started — *re-scope or drop: P3-E29 removed public pricing; at most an internal estimate tool* |
 | **P3-E17** | Multi-Tenancy Schema Flag & ADR | S | P3 | ⬜ Not Started |
 | **P3-E26** | Quote-First Booking System | XL | P2 | ⬜ Not Started — *public site already quote-first via P3-E29* |
+| **P3-E40** | Sales Pipeline — lead owner (default Lauren; owner/manager/cleaner/supervisor/contractor), stages New → Contacted → Site visit → Quote sent → Won/Lost, follow-up dates, 2 h / 1 h first-contact targets, lost reasons, pipeline analytics; front half of P3-E26, closes F11 | L | P1 | 🔄 Phase A — plan awaiting approval · [`projects/P3-E40.md`](projects/P3-E40.md) · [`plans/P3-E40_PLAN.md`](plans/P3-E40_PLAN.md) |
 | **P3-E29** | Remove Public Pricing & Discounts (quote follow-up) | M | P1 | ✅ Completed 2026-09-30 |
 | **P3-E27** | Employee Onboarding System | XL | P1 | 🔄 In Progress — A1 ✅ 2026-06-21 · A2 ✅ 2026-06-22 · B1 ✅ 2026-06-22 · B2/C/D pending |
 | **P3-E28** | Cleaner Suggestion & Auto-Assignment Engine v2 | L+M+S+M | P2 | ⬜ Not Started |
@@ -124,7 +125,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | F8 | Optional: redirect `lilypad-freshnest.web.app` to `www.freshnestco.ca` in Firebase Hosting (canonicals already point to www) | Human (console) | SEO-01 | ⬜ Open |
 | F9 | Confirm App Check is **enforced** for Firestore — the public quote form sends an SMS to any number entered (SMS-pumping risk); add a server-side rate limit if not | Human (console) + AI | Quote review | ⬜ Open |
 | F10 | Referral codes are created for every quote request (active, never sent) — rethink when P3-E10 starts | AI | Quote review | → P3-E10 |
-| F11 | Record quoted price, quote sent/accepted — no field holds them today | AI | Quote review | → P3-E26 |
+| F11 | Record quoted price, quote sent/accepted — no field holds them today | AI | Quote review | → P3-E40 |
 | F12 | Privacy policy promises 7-year retention and access/correction rights — nothing enforces them yet; also add the privacy officer's name if wanted (Law 25) | Human + AI | SEO-01 | → P3-E15 |
 | F13 | Tighten the public `bookings` create rule with `keys().hasOnly([...])` | Human approval (rules) | Quote review | ⬜ Open |
 | F14 | Quote form minimum date uses UTC (after ~8 pm ET it skips a day) and isn't checked server-side; owner email lacks the short `Ref #` | AI | Quote review | 🔄 Date fixed in P3-E38 PR 1 (Toronto date, E2E test); server-side check and `Ref #` still open |
