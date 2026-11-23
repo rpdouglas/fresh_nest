@@ -256,7 +256,7 @@ export default function TrendsPanel({ token, today, now, idle, onExpired, graceM
         return
       }
       for (const [n, p] of todo.entries()) {
-        let asked = true
+        let asked: boolean
         for (let attempt = 1; ; attempt++) {
           if (ctrl.signal.aborted) return
           try {

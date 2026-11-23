@@ -116,7 +116,10 @@ async function signedIn(
     }
     return { email: cleaner.email, via: "code", employeeId: cleaner.employeeId };
   }
-  const email = tok && deps.verifyGoogle ? await deps.verifyGoogle(tok).catch(() => null) : null;
+  if (!deps.verifyGoogle) {
+    return { status: 401, body: { error: "Sign in with Google to continue.", reason: "not_signed_in" } };
+  }
+  const email = await deps.verifyGoogle(tok).catch(() => null);
   if (!email) {
     return { status: 401, body: { error: "Sign in with Google to continue.", reason: "not_signed_in" } };
   }
