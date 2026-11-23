@@ -1202,7 +1202,8 @@
       }
     },
     "nav": {
-      "section": "Section"
+      "section": "Section",
+      "operations": "Operations Hub"
     },
     "dialog": {
       "close": "Close"

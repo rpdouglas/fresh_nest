@@ -16,11 +16,29 @@ import type {
 } from "./stores.js";
 import type { PeopleCache } from "./who.js";
 
+/** Verified caller identity returned by Firebase Auth ID token verification (ADR-022 / P3-E41 Strategy 2). */
+export interface VerifiedAuth {
+  email: string;
+  role?: unknown;
+}
+
+export type OfficeAllowlistRole = "owner" | "manager";
+
 export interface Deps {
   camelToken: string;
-  /** Checks a Google ID token and returns its verified email address, or null. */
+  /**
+   * Verifies a Fresh Nest Firebase ID token (`freshnest-aa51e`) and returns its verified email & custom role claim.
+   * Preferred in production (ADR-022 / P3-E41 Strategy 2).
+   */
+  verifyAuth?: (idToken: string) => Promise<VerifiedAuth | null>;
+  /**
+   * Live lookup against `admins/{email}` in Firestore (`owner` or `manager`, or `null` if absent/revoked).
+   * Gives immediate access to pre-approved Managers and immediate revocation when removed in Team & Roles.
+   */
+  resolveOfficeAllowlist?: (email: string) => Promise<OfficeAllowlistRole | null>;
+  /** Legacy/test verifier returning a verified email address, or null (used by unit tests when verifyAuth is unset). */
   verifyGoogle?: (idToken: string) => Promise<string | null>;
-  /** Email addresses allowed to use the site: to see reports and to change timesheets. */
+  /** Legacy/test office email allowlist (used only when resolveOfficeAllowlist is unset). */
   editors?: string[];
   changeLog?: ChangeLog;
   feedback?: FeedbackStore;

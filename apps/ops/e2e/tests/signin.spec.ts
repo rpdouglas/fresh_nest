@@ -66,3 +66,22 @@ test('a cleaner can sign in with a 6-digit emailed Camelo code, lands on My week
   await page.getByRole('button', { name: 'Sign out' }).click()
   await expect(page.getByRole('button', { name: 'Email me a sign-in code' })).toBeVisible()
 })
+
+test('P16 Ryan (Manager) gets full office access and loses it immediately if revoked from admins', async ({ page }) => {
+  await fetch('http://localhost:8787/__test/reset', { method: 'POST' })
+  await page.goto('/')
+  await page.getByRole('textbox', { name: 'Dev sign-in email' }).fill('ryan@example.com')
+  await page.getByRole('button', { name: 'Dev sign-in' }).click()
+  await expect(page.getByRole('heading', { name: 'Needs attention' })).toBeVisible()
+
+  // Revoke Ryan from admins/{email} -> immediate 403 on next API call returns him to the sign-in gate
+  await fetch('http://localhost:8787/__test/admins', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: 'ryan@example.com', role: null }),
+  })
+  await page.getByRole('button', { name: 'Account' }).click()
+  await page.getByRole('button', { name: 'Refresh data' }).click()
+  await expect(page.getByRole('main')).toContainText('ryan@example.com is not on the list of people who can use this site.')
+  await expect(page.getByRole('heading', { name: 'Needs attention' })).toHaveCount(0)
+})

@@ -30,6 +30,7 @@ import {
 import { type Fake, fakeCamelo } from './fake-camelo.ts'
 
 export const TEST_EDITOR = 'dev@example.com'
+export const TEST_MANAGER = 'ryan@example.com'
 const port = Number(process.env.PORT ?? 8787)
 // a refused request is retried at once, so a test of the rate limit does not wait
 cameloRetry.delaysMs = [10, 10]
@@ -37,6 +38,7 @@ cameloRetry.delaysMs = [10, 10]
 interface WorkerState {
   fake: Fake
   deps: Parameters<typeof handleApi>[1]
+  admins: Map<string, 'owner' | 'manager'>
   staffSwitch: string
   signInsAccepted: boolean
   pinned: number | null
@@ -47,15 +49,25 @@ const states = new Map<string, WorkerState>()
 function createWorkerState(today?: unknown, daysBack?: unknown): WorkerState {
   const pinned = typeof today === 'string' ? Date.parse(torontoMidnight(today)) + 12 * 3_600_000 : null
   const fake = fakeCamelo(pinned ?? Date.now(), typeof daysBack === 'number' ? daysBack : undefined)
+  const admins = new Map<string, 'owner' | 'manager'>([
+    [TEST_EDITOR, 'owner'],
+    [TEST_MANAGER, 'manager'],
+  ])
   const state: WorkerState = {
     fake,
+    admins,
     staffSwitch: '*',
     signInsAccepted: true,
     pinned,
     deps: {
       camelToken: 'not-a-real-token',
-      verifyGoogle: async (token: string) => (state.signInsAccepted && token.startsWith('dev:') ? token.slice(4) : null),
-      editors: [TEST_EDITOR],
+      verifyAuth: async (token: string) => {
+        if (!state.signInsAccepted || !token.startsWith('dev:')) return null
+        const email = token.slice(4).trim().toLowerCase()
+        if (!email) return null
+        return { email, role: state.admins.get(email) }
+      },
+      resolveOfficeAllowlist: async (email: string) => state.admins.get(email.trim().toLowerCase()) ?? null,
       get staff() {
         return state.staffSwitch
       },
@@ -146,6 +158,14 @@ createServer(async (req, res) => {
   if (url === '/__test/signins') {
     const s = getWorkerState(workerId)
     s.signInsAccepted = body.accepted !== false
+    return void send(200, { ok: true })
+  }
+
+  if (url === '/__test/admins') {
+    const s = getWorkerState(workerId)
+    const email = String(body.email ?? '').trim().toLowerCase()
+    if (body.role === 'owner' || body.role === 'manager') s.admins.set(email, body.role)
+    else s.admins.delete(email)
     return void send(200, { ok: true })
   }
 

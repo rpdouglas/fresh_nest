@@ -116,4 +116,15 @@ describe('AdminSectionNav', () => {
     expect(parseAdminTab('nope')).toBe('bookings')
     expect(parseAdminTab('gallery')).toBe('gallery')
   })
+
+  it('links to the Operations Hub (ops.freshnestco.ca) for office users (P3-E41)', () => {
+    render(<AdminSectionNav active="bookings" onChange={vi.fn()} />)
+    const links = screen.getAllByRole('link', { name: /admin\.nav\.operations/i })
+    expect(links.length).toBeGreaterThanOrEqual(1)
+    for (const link of links) {
+      expect(link).toHaveAttribute('href', 'https://ops.freshnestco.ca')
+      expect(link).toHaveAttribute('target', '_blank')
+      expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+    }
+  })
 })

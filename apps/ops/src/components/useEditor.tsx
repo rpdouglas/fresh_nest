@@ -1,7 +1,8 @@
-// Sign-in state: someone from the office (Google sign-in, sees every report and can change timesheets) or a
-// cleaner (Google sign-in or a 6-digit Camelo email code, sees My week only; decisions 0037 and 0045).
+// Sign-in state: someone from the office (Fresh Nest Firebase Auth Google sign-in, Owner/Manager) or a
+// cleaner (6-digit Camelo email code, sees My week only; decisions 0037, 0045 and ADR-022).
 // The role kept here only chooses the page; the server decides what is sent.
 import { useCallback, useEffect, useState } from 'react'
+import { refreshFirebaseToken, signOutFirebase } from '../lib/firebase'
 
 export interface Editor {
   token: string
@@ -76,16 +77,30 @@ export function useEditor() {
     store(null)
     setEditor(null)
     setNote(null)
-    // otherwise Google signs the same person straight back in
-    window.google?.accounts.id.disableAutoSelect()
+    void signOutFirebase()
   }, [])
 
-  // An ID token lasts an hour (or 30 days for a cleaner code session): ask again just before it runs out.
+  // A Firebase ID token lasts an hour (30 days for a cleaner c1. session): silently refresh Firebase tokens
+  // just before expiry, and fall back to asking the user to sign in again if refresh is unavailable.
   useEffect(() => {
     const exp = editor && tokenExpiry(editor.token)
-    if (!exp) return
+    if (!exp || !editor) return
     const delay = Math.min(MAX_TIMEOUT_MS, Math.max(0, exp * 1000 - Date.now() - 60_000))
-    const t = setTimeout(() => expire(EXPIRED), delay)
+    const t = setTimeout(() => {
+      if (editor.token.startsWith('c1.') || editor.token.startsWith('dev:')) {
+        expire(EXPIRED)
+        return
+      }
+      void refreshFirebaseToken().then((fresh) => {
+        if (fresh) {
+          const next = { ...editor, token: fresh }
+          store(next)
+          setEditor(next)
+        } else {
+          expire(EXPIRED)
+        }
+      })
+    }, delay)
     return () => clearTimeout(t)
   }, [editor, expire])
 

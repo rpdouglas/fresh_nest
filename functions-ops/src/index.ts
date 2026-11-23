@@ -1,11 +1,13 @@
 import { getApps, initializeApp } from "firebase-admin/app";
+import { getAuth } from "firebase-admin/auth";
+import { getFirestore } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
 import { defineSecret } from "firebase-functions/params";
-import { OAuth2Client } from "google-auth-library";
 import { error as logError } from "firebase-functions/logger";
 import { onRequest } from "firebase-functions/v2/https";
 import { readFileSync } from "node:fs";
-import { PeopleCache, ReadCache, handleApi } from "./core.js";
+import { PeopleCache, ReadCache, allowlistOfficeRole, handleApi } from "./core.js";
+import type { OfficeAllowlistRole, VerifiedAuth } from "./api.js";
 import type { PhotoFiles } from "./stores.js";
 import {
   FirestoreCleanerTokens,
@@ -23,14 +25,10 @@ import {
 
 const CAMELO_TOKEN = defineSecret("CAMELO_TOKEN");
 
-// Comma-separated Google accounts allowed to use the site at all.
-const SCHEDULE_EDITORS = defineSecret("SCHEDULE_EDITORS");
-// The site's OAuth client ID (public; also in web/.env.production).
-const GOOGLE_CLIENT_ID = "793264910505-2eqpc1912efusd4puq5fml0aiu2bb4oe.apps.googleusercontent.com";
-// Who, beyond the office list, is let in as a cleaner: "off", "*" for every active person in Camelo, or a
-// comma-separated list of addresses for a trial (decision 0037; docs/operations.md, Access).
+// Who, beyond the office list (`admins/{email}`), is let in as a cleaner: "off", "*" for every active person in
+// Camelo, or a comma-separated list of addresses for a trial (decision 0037).
+// Office access is controlled by Fresh Nest's `admins/{email}` allowlist (`owner` / `manager`, ADR-017 & ADR-022).
 const SCHEDULE_STAFF = defineSecret("SCHEDULE_STAFF");
-const google = new OAuth2Client();
 // Trial (plan item 1.2.5): Camelo reads kept for a minute, in this instance's memory.
 const readCache = new ReadCache();
 // Camelo's list of people, kept ten minutes, for telling which cleaner has signed in.
@@ -47,24 +45,32 @@ function builtFrom(): string | undefined {
 }
 const build = builtFrom();
 
-/** The verified email behind a Google ID token issued to this site, or null. */
-async function verifyGoogle(idToken: string): Promise<string | null> {
+/** Verifies a Fresh Nest (`freshnest-aa51e`) Firebase ID token and returns its verified email & role claim, or null. */
+async function verifyAuth(idToken: string): Promise<VerifiedAuth | null> {
+  if (!idToken) return null;
   try {
-    const ticket = await google.verifyIdToken({ idToken, audience: GOOGLE_CLIENT_ID });
-    const who = ticket.getPayload();
-    if (who?.email && who.email_verified) return who.email;
-    console.warn("Google sign-in refused: no verified email on the token");
+    const decoded = await getAuth().verifyIdToken(idToken);
+    if (decoded.email && decoded.email_verified !== false) {
+      return { email: decoded.email.trim().toLowerCase(), role: decoded.role };
+    }
+    console.warn("Firebase Auth sign-in refused: no verified email on the token");
   } catch (e) {
-    // The reason only (expired, wrong audience, bad signature); the library's
-    // message can end with the token itself, so cut it off before that.
     console.warn(
-      "Google sign-in refused:",
+      "Firebase Auth sign-in refused:",
       String(e instanceof Error ? e.message : e)
         .split(":")[0]
         .slice(0, 120),
     );
   }
   return null;
+}
+
+/** Live check against `admins/{email}` in `freshnest-aa51e` `(default)` for Owner/Manager access & instant revocation. */
+async function resolveOfficeAllowlist(email: string): Promise<OfficeAllowlistRole | null> {
+  const key = email.trim().toLowerCase();
+  if (!key) return null;
+  const snap = await getFirestore().collection("admins").doc(key).get();
+  return snap.exists ? allowlistOfficeRole(snap.data() as { role?: unknown }) : null;
 }
 
 /** This app's private bucket for photos of clients' homes (decision 0044, migrated under ADR-022 / P3-E41); made by hand, with a one-year lifecycle rule. */
@@ -81,7 +87,7 @@ function bucketFiles(name: string): PhotoFiles {
 }
 
 export const scheduleApi = onRequest(
-  { secrets: [CAMELO_TOKEN, SCHEDULE_EDITORS, SCHEDULE_STAFF], region: "us-central1", maxInstances: 2, timeoutSeconds: 60 },
+  { secrets: [CAMELO_TOKEN, SCHEDULE_STAFF], region: "us-central1", maxInstances: 2, timeoutSeconds: 60 },
   async (req, res) => {
     if (!getApps().length) initializeApp();
     const result = await handleApi(
@@ -106,8 +112,8 @@ export const scheduleApi = onRequest(
       },
       {
         camelToken: CAMELO_TOKEN.value(),
-        verifyGoogle,
-        editors: SCHEDULE_EDITORS.value().split(","),
+        verifyAuth,
+        resolveOfficeAllowlist,
         staff: SCHEDULE_STAFF.value(),
         people,
         changeLog: new FirestoreLog(),

@@ -10,6 +10,13 @@ Navigate to [lilypad-freshnest.web.app/admin](https://lilypad-freshnest.web.app/
 
 **Owner and Manager (P3-E35).** Both have the same access to everything in the admin panel, including pay. The only difference: Owners also see the **Team & roles** tab and are the only ones who can give or take away the Owner and Manager roles. See [Team & Roles](#team--roles-owners-only).
 
+### Operations Hub (`ops.freshnestco.ca` — P3-E41)
+
+Click **Operations Hub ↗** in the admin navigation bar (or open [ops.freshnestco.ca](https://ops.freshnestco.ca)) to open weekly operations: Home dashboard, Live board, Schedule, Hours & pay (timesheet approvals & payroll hours), Billing (invoicing & QuickBooks export), and Clients (pricing & feedback).
+
+- **One sign-in and one office list:** Sign in with the same Owner or Manager Google account you use for `/admin`. Adding or removing a Manager in **Team & roles** controls access to both the Admin Portal and the Operations Hub immediately — there is no separate allowlist to maintain.
+- **Switching back:** Open the **Account** menu in the top-right corner of the Operations Hub and select **Admin Portal ↗**.
+
 The dashboard is split into seven tabs:
 1. **Bookings Management:** Track and manage operational client bookings.
 2. **Visual Dispatch Board:** Visual drag-and-drop daily calendar schedule and dispatch grid for managing cleaner assignments.

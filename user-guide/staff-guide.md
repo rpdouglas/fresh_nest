@@ -41,3 +41,12 @@ Cleaners, lead cleaners, supervisors, and **contractors** who are assigned a sal
 - **Working a lead:** Tap **Call Client** to dial directly, update the stage (**New**, **Contacted**, **Site visit**, **Quote sent**, or **Lost** with a required reason), set a **Next Follow-up Date**, enter an internal quote amount, and log calls, SMS, emails, or notes in the **Contact Log**.
 - **Confirming a booking (Won):** When a client accepts a quote, log a note or mark **Quote sent** — the office (Owner/Manager) marks the lead **Won** to confirm the booking and schedule it on Dispatch.
 - **Contractors:** Accounts with the **Contractor** role see **My Leads** and **Profile** only; Shift Board, My Jobs, and payroll tracking are hidden.
+
+---
+
+## My Week & Clock-In (`ops.freshnestco.ca` — Phase 1)
+
+During Phase 1 of the platform merge (`P3-E41`), weekly visits, clock-in/out with door photos, and before/after visit photos are hosted at **[ops.freshnestco.ca](https://ops.freshnestco.ca)** (replacing the old `fnc-reports.web.app` address).
+
+- **One-time sign-in on the new address:** Because browser sessions are stored per web address, tap **Email me a sign-in code** on `ops.freshnestco.ca`, enter your Camelo work email, and enter the 6-digit code emailed to you. Your session stays signed in for 30 days.
+- **Update your home-screen icon:** If you previously installed `fnc-reports.web.app` on your phone home screen, remove the old icon and add `ops.freshnestco.ca` to your home screen so clock-in always opens the current site.

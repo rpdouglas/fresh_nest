@@ -1,6 +1,6 @@
 # Fresh Nest Co. — Compliance Reference
 
-**Version:** 2.3 | **Updated:** 2026-11-23 (P3-E40 sales pipeline callable-scoped assigned-lead contact access for non-office owners, owner-approved)
+**Version:** 2.4 | **Updated:** 2026-11-23 (P3-E41 / ADR-022 Ops Hub data, photo retention, TTL policies, and unified Owner/Manager access control, owner-approved)
 **Status:** Active — Reference before writing any form, email, SMS, or Firestore operation
 
 > [!IMPORTANT]
@@ -132,6 +132,17 @@ Applies to all personal data collected from clients across all provinces.
 | **Purpose limitation & least privilege** | Direct Firestore reads of `bookings` remain strictly Office-only (`owner`/`manager`) plus the customer's own records. Non-office lead owners (`cleaner`, `lead`, `supervisor`, `contractor`) access **only leads explicitly assigned to their email** through server callables (`listMyLeads`, `getMyLead`, `updateMyLead`, `addMyLeadNote`). |
 | **Address minimization** | Server callables return client name, phone, email, language, service details, and notes for assigned leads. Full street address is returned **only** when `pipeline.needsSiteVisit === true` or `pipeline.stage === 'site_visit'`; otherwise only the area/city is returned. Payment/Stripe fields, marketing consent, and unassigned or other owners' leads are never exposed. |
 | **Action scope & audit trail** | Non-office owners may log contact notes, update follow-up dates, record internal quote amounts (never shown publicly per P3-E29), and advance stages through `contacted`, `site_visit`, `quoted`, and `lost`. Marking `won` (confirming bookings / creating Dispatch jobs) and reassigning leads remain Office-only. Every write stamps `lastChange` (`source: 'staff_app'`) and is recorded in `auditLog`. |
+
+### Ops Hub Data, Visit Photos & Retention (P3-E41 / ADR-022, Owner-Approved 2026-11-23)
+
+| Requirement | Policy & Implementation |
+|---|---|
+| **Server-only collections** | All 11 `schedule*` collections (`scheduleChangeLog`, `scheduleCleanerTokens`, `scheduleClientRates`, `scheduleFeedback`, `scheduleInvoiced`, `scheduleLiveHandled`, `schedulePlaces`, `scheduleSettings`, `scheduleSnapshots`, `scheduleSoloOk`, `scheduleVisitPhotos`) are denied to all client SDKs (`allow read, write: if false` in `firestore.rules` & `firestore.dev.rules`) and accessed solely through `functions-ops` (`scheduleApi`) via the Admin SDK. |
+| **Unified office auth & instant revocation** | Office access to `ops.freshnestco.ca` uses `freshnest-aa51e` Firebase Auth Google Sign-In verified on the server against the live `admins/{email}` allowlist (`owner` or `manager`, ADR-017). Removing an account in Admin → Team & Roles revokes Ops Hub payroll/invoicing access immediately. |
+| **Encrypted cleaner tokens** | Cleaner Camelo tokens in `scheduleCleanerTokens` are encrypted at rest with AES-256-GCM (HKDF key derived from `CAMELO_TOKEN`), never returned to browsers, and auto-deleted by Firestore TTL on `expireAt`. |
+| **Visit photo privacy & 1-year retention** | Before/after visit photos live in the private GCS bucket `freshnest-aa51e-schedule-photos` (`us-central1`, uniform bucket-level access, public-access-prevention) with a 365-day object lifecycle rule, paired with a 1-year Firestore TTL on `scheduleVisitPhotos.expireAt`. Bucket object paths (`visits/...`) are never sent to browsers; cleaners may only view photos on their own visits. |
+| **Timesheet change-log retention (Ontario ESA)** | `scheduleChangeLog` retains every timesheet approval/edit record for **3 years** (Ontario Employment Standards Act) via Firestore TTL on `expireAt`. |
+| **Backups** | Because `schedule*` collections live in `freshnest-aa51e/(default)`, they are automatically covered by W0-5 native daily/weekly backups and `onDailyFirestoreExport`. |
 
 ---
 
