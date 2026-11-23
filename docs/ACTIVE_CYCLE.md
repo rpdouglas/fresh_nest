@@ -88,6 +88,7 @@ Authoritative spec: [`docs/reports/freshnest-master-project-plan-v4.md`](reports
 | **P3-E17** | Multi-Tenancy Schema Flag & ADR | S | P3 | ⬜ Not Started |
 | **P3-E26** | Quote-First Booking System | XL | P2 | ⬜ Not Started — *public site already quote-first via P3-E29* |
 | **P3-E40** | Sales Pipeline — lead owner (default Lauren; owner/manager/cleaner/supervisor/contractor), stages New → Contacted → Site visit → Quote sent → Won/Lost, follow-up dates, 2 h / 1 h first-contact targets, lost reasons, pipeline analytics; front half of P3-E26, closes F11 | L | P1 | 🔄 Phase A — plan awaiting approval · [`projects/P3-E40.md`](projects/P3-E40.md) · [`plans/P3-E40_PLAN.md`](plans/P3-E40_PLAN.md) |
+| **P3-E41** | One Master Solution, phase 1 — move FNC Landing (`rpdouglas/blurb`, fnc-reports) into this repo as `apps/ops` and into `freshnest-aa51e`; one office sign-in (Owner/Manager); Camelo stays the source until the FSM cutover; reverses FNC decision 0046 (option B approved 2026-11-23) | L | P1 | 🔄 Phase A — plan awaiting strategy approval · [`projects/P3-E41.md`](projects/P3-E41.md) · [`plans/P3-E41_PLAN.md`](plans/P3-E41_PLAN.md) · [ADR-022](decisions/ADR-022-merge-fnc-landing-into-fresh-nest.md) (Proposed) |
 | **P3-E29** | Remove Public Pricing & Discounts (quote follow-up) | M | P1 | ✅ Completed 2026-09-30 |
 | **P3-E27** | Employee Onboarding System | XL | P1 | 🔄 In Progress — A1 ✅ 2026-06-21 · A2 ✅ 2026-06-22 · B1 ✅ 2026-06-22 · B2/C/D pending |
 | **P3-E28** | Cleaner Suggestion & Auto-Assignment Engine v2 | L+M+S+M | P2 | ⬜ Not Started |
