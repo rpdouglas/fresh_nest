@@ -96,6 +96,8 @@ service cloud.firestore {
             || request.resource.data.stripePaymentIntentId is string)
         && (!('stripeChargeStatus' in request.resource.data)
             || request.resource.data.stripeChargeStatus == 'hold')
+        // P3-E40: public intake cannot forge pipeline ownership or stage
+        && !('pipeline' in request.resource.data)
         && lastChangeOk();
 
       // Admin Booking Creation (phone-in / walk-in — P3-E3)
@@ -146,6 +148,8 @@ service cloud.firestore {
         && (!('notes' in request.resource.data) || request.resource.data.notes is string)
         // P3-E38 (ADR-020): internal estimate in integer cents
         && (!('estimatedPriceCents' in request.resource.data) || request.resource.data.estimatedPriceCents is int)
+        // P3-E40: optional sales pipeline map
+        && (!('pipeline' in request.resource.data) || request.resource.data.pipeline is map)
         && lastChangeOk();
 
       // Admin and owner read
@@ -161,6 +165,21 @@ service cloud.firestore {
       
       // Permanently deleting bookings is forbidden
       allow delete: if false;
+
+      // P3-E40: append-only lead contact log & internal notes (office direct; non-office via callables)
+      match /leadNotes/{noteId} {
+        allow read: if isOffice();
+        allow create: if isOffice()
+          && request.resource.data.keys().hasAll(['kind', 'body', 'by', 'at'])
+          && request.resource.data.keys().hasOnly(['kind', 'body', 'by', 'at'])
+          && request.resource.data.kind in ['call', 'sms', 'email', 'note']
+          && request.resource.data.body is string
+          && request.resource.data.body.size() > 0
+          && request.resource.data.body.size() <= 2000
+          && request.resource.data.by == request.auth.token.email.lower()
+          && request.resource.data.at == request.time;
+        allow update, delete: if false;
+      }
     }
 
     // 2. Admins Collection

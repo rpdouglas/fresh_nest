@@ -30,3 +30,14 @@ The board refreshes automatically every minute and whenever you come back to the
 If a shift you tap was claimed by someone else a moment earlier, you'll get a message saying it has already been claimed.
 
 If the board can't load (for example, when you're offline), you'll see a message asking you to check your connection and try again.
+
+---
+
+## My Leads (`/leads`)
+
+Cleaners, lead cleaners, supervisors, and **contractors** who are assigned a sales lead can view and follow up on their assigned leads in **My Leads** (available in the navigation menu whenever you have assigned leads, and the home screen for contractors).
+
+- **Privacy & address rules:** You only see leads explicitly assigned to you. For phone/email quotes, only the service area is shown; the full street address appears automatically when an in-person **Site visit** is required.
+- **Working a lead:** Tap **Call Client** to dial directly, update the stage (**New**, **Contacted**, **Site visit**, **Quote sent**, or **Lost** with a required reason), set a **Next Follow-up Date**, enter an internal quote amount, and log calls, SMS, emails, or notes in the **Contact Log**.
+- **Confirming a booking (Won):** When a client accepts a quote, log a note or mark **Quote sent** — the office (Owner/Manager) marks the lead **Won** to confirm the booking and schedule it on Dispatch.
+- **Contractors:** Accounts with the **Contractor** role see **My Leads** and **Profile** only; Shift Board, My Jobs, and payroll tracking are hidden.

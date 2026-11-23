@@ -39,7 +39,7 @@ export const onStaffRegistered = onCall(
       monthlyEarningsLimitCents?: number | null
     }
 
-    const VALID_ROLES = ['cleaner', 'lead', 'supervisor']
+    const VALID_ROLES = ['cleaner', 'lead', 'supervisor', 'contractor']
     const VALID_STATUSES = ['onboarding', 'active', 'inactive']
     const VALID_LANGUAGES = ['en', 'fr']
     const VALID_TRANSPORT = ['personal_vehicle', 'transit', 'rideshare', 'walk']
@@ -48,7 +48,7 @@ export const onStaffRegistered = onCall(
     if (!data.lastName?.trim()) throw new HttpsError('invalid-argument', 'lastName is required.')
     if (!data.email?.trim()) throw new HttpsError('invalid-argument', 'email is required.')
     if (!data.phone?.trim()) throw new HttpsError('invalid-argument', 'phone is required.')
-    if (!data.role || !VALID_ROLES.includes(data.role)) throw new HttpsError('invalid-argument', 'role must be cleaner, lead, or supervisor.')
+    if (!data.role || !VALID_ROLES.includes(data.role)) throw new HttpsError('invalid-argument', 'role must be cleaner, lead, supervisor, or contractor.')
     if (!data.status || !VALID_STATUSES.includes(data.status)) throw new HttpsError('invalid-argument', 'status must be onboarding, active, or inactive.')
     if (!data.language || !VALID_LANGUAGES.includes(data.language)) throw new HttpsError('invalid-argument', 'language must be en or fr.')
     if (!data.transportMode || !VALID_TRANSPORT.includes(data.transportMode)) throw new HttpsError('invalid-argument', 'transportMode is invalid.')

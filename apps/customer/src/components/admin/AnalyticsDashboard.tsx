@@ -14,6 +14,7 @@ import {
 } from 'recharts'
 import type { AnalyticsTimeRange } from './hooks/useAdminAnalytics'
 import { LEAD_COLORS } from './hooks/useAdminAnalytics'
+import { formatCents, type PipelineKpis } from '@freshnest/shared'
 
 interface AnalyticsDashboardProps {
   analyticsTimeRange: AnalyticsTimeRange
@@ -26,6 +27,7 @@ interface AnalyticsDashboardProps {
   channelsPerformance: Array<{ source: string; name: string; volume: number; revenue: number; avgValue: number; share: number }>
   formatCurrency: (val: number) => string
   referredBookingsCount: number
+  pipeline?: PipelineKpis | null
   isLoading?: boolean
   error?: string | null
 }
@@ -41,10 +43,11 @@ export function AnalyticsDashboard({
   channelsPerformance,
   formatCurrency,
   referredBookingsCount,
+  pipeline,
   isLoading,
   error,
 }: AnalyticsDashboardProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   if (isLoading) {
     return (
@@ -321,6 +324,102 @@ export function AnalyticsDashboard({
           </table>
         </div>
       </div>
+
+      {/* P3-E40: Sales Pipeline KPI Card */}
+      {pipeline && (
+        <div className="bg-white border border-sand rounded p-6 shadow-sm space-y-6">
+          <div>
+            <h3 className="font-display text-3xl text-charcoal">
+              {t('admin.pipeline.analytics.title')}
+            </h3>
+            <p className="font-body text-base text-text-muted mt-1">
+              {t('admin.pipeline.analytics.subtitle')}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="bg-cream border border-sand rounded p-4">
+              <p className="font-body text-sm text-text-muted">{t('admin.pipeline.analytics.openLeads')}</p>
+              <p className="font-display text-3xl text-charcoal font-bold">{pipeline.openTotal}</p>
+              <p className="font-body text-sm text-text-muted mt-1">
+                {t('admin.pipeline.stages.new')}: {pipeline.openByStage.new} · {t('admin.pipeline.stages.quoted')}: {pipeline.openByStage.quoted}
+              </p>
+            </div>
+            <div className="bg-cream border border-sand rounded p-4">
+              <p className="font-body text-sm text-text-muted">{t('admin.pipeline.analytics.overdue')}</p>
+              <p className="font-display text-3xl text-red-700 font-bold">{pipeline.overdueCount}</p>
+            </div>
+            <div className="bg-cream border border-sand rounded p-4">
+              <p className="font-body text-sm text-text-muted">{t('admin.pipeline.analytics.medianFirstContact')}</p>
+              <p className="font-display text-3xl text-slate-brand font-bold">
+                {pipeline.medianFirstContactBusinessMinutes !== null
+                  ? t('admin.pipeline.analytics.minutesValue', { count: pipeline.medianFirstContactBusinessMinutes })
+                  : '—'}
+              </p>
+            </div>
+            <div className="bg-cream border border-sand rounded p-4">
+              <p className="font-body text-sm text-text-muted">{t('admin.pipeline.analytics.wonLost')}</p>
+              <p className="font-display text-3xl text-charcoal font-bold">
+                {pipeline.wonCount} / {pipeline.lostCount}
+              </p>
+            </div>
+            <div className="bg-cream border border-sand rounded p-4">
+              <p className="font-body text-sm text-text-muted">{t('admin.pipeline.analytics.wonQuotedValue')}</p>
+              <p className="font-display text-3xl text-green-700 font-bold">
+                {formatCents(pipeline.wonQuotedValueCents, i18n.language)}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div>
+              <h4 className="font-sub text-lg text-charcoal mb-2">{t('admin.pipeline.analytics.bySource')}</h4>
+              <ul className="divide-y divide-sand border border-sand rounded">
+                {pipeline.conversionBySource.map((s) => (
+                  <li key={s.source} className="px-3 py-2 flex justify-between font-body text-base">
+                    <span className="capitalize text-charcoal">{s.source}</span>
+                    <span className="text-text-muted">
+                      {s.won}/{s.total} ({s.conversionRate}%)
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-sub text-lg text-charcoal mb-2">{t('admin.pipeline.analytics.byOwner')}</h4>
+              <ul className="divide-y divide-sand border border-sand rounded">
+                {pipeline.conversionByOwner.map((o) => (
+                  <li key={o.ownerEmail} className="px-3 py-2 flex justify-between gap-2 font-body text-base">
+                    <span className="truncate text-charcoal">
+                      {o.ownerEmail === 'unassigned' ? t('admin.pipeline.unassigned') : o.ownerEmail}
+                    </span>
+                    <span className="shrink-0 text-text-muted">
+                      {o.won}/{o.total} ({o.conversionRate}%)
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-sub text-lg text-charcoal mb-2">{t('admin.pipeline.analytics.lostReasons')}</h4>
+              {pipeline.lostReasons.length === 0 ? (
+                <p className="font-body text-base text-text-muted">{t('admin.pipeline.analytics.noLostLeads')}</p>
+              ) : (
+                <ul className="divide-y divide-sand border border-sand rounded">
+                  {pipeline.lostReasons.map((lr) => (
+                    <li key={lr.reason} className="px-3 py-2 flex justify-between font-body text-base">
+                      <span className="text-charcoal">{t(`admin.pipeline.lostReasons.${lr.reason}`)}</span>
+                      <span className="font-medium text-charcoal">{lr.count}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

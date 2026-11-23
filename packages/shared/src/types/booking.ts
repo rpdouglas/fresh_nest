@@ -1,4 +1,5 @@
 import type { LastChange } from '../domain/audit'
+import type { BookingPipeline } from '../domain/pipeline'
 export type Language = 'en' | 'fr'
 export type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled'
 export type ServiceType =
@@ -43,6 +44,8 @@ export interface Booking {
   createdBy?: string
   // P3-E34: saved checklist chosen for this client's visits; renewals carry it over.
   checklistTemplateId?: string | null
+  // P3-E40: sales pipeline metadata (omitted on recurring renewals)
+  pipeline?: BookingPipeline
 }
 
 export interface Review {

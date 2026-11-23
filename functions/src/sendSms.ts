@@ -1,6 +1,6 @@
 import twilio from 'twilio'
 import { isQuoteRequest, type BookingData } from './emailTemplates'
-import { confirmationSms, reminderSms, onMyWaySms, ownerAlertSms } from './smsTemplates'
+import { confirmationSms, reminderSms, onMyWaySms, ownerAlertSms, leadAssignedSms } from './smsTemplates'
 
 export interface SmsConfig {
   accountSid: string
@@ -68,6 +68,30 @@ export async function sendOnMyWaySms(
   }
   const lang: 'en' | 'fr' = language === 'fr' ? 'fr' : 'en'
   const body = onMyWaySms(cleanerName, lang)
+  const client = twilio(config.accountSid, config.authToken)
+  await client.messages.create({ body, from: config.fromNumber, to })
+}
+
+export async function sendLeadAssignedSms(
+  phone: string,
+  params: {
+    clientName: string
+    clientPhone: string
+    serviceType: string
+    preferredDate: string
+    bookingId: string
+    needsSiteVisit: boolean
+    isNewLead: boolean
+  },
+  lang: 'en' | 'fr',
+  config: SmsConfig,
+): Promise<void> {
+  const to = normalizePhone(phone)
+  if (!to) {
+    console.warn(`[sendLeadAssignedSms] Invalid phone "${phone}" — skipping`)
+    return
+  }
+  const body = leadAssignedSms(params, lang)
   const client = twilio(config.accountSid, config.authToken)
   await client.messages.create({ body, from: config.fromNumber, to })
 }

@@ -1,6 +1,6 @@
 # Fresh Nest Co. — Compliance Reference
 
-**Version:** 2.2 | **Updated:** 2026-11-20 (client e-agreements, e-signature consent, restricted access codes, and narrow P3-E29 exception — P3-E39 / ADR-021, owner-approved)
+**Version:** 2.3 | **Updated:** 2026-11-23 (P3-E40 sales pipeline callable-scoped assigned-lead contact access for non-office owners, owner-approved)
 **Status:** Active — Reference before writing any form, email, SMS, or Firestore operation
 
 > [!IMPORTANT]
@@ -124,6 +124,14 @@ Applies to all personal data collected from clients across all provinces.
 | **Retention vs. deletion requests** | Signed agreements and legal evidence are retained for `settings/policy.agreementRetentionYears` (**7 years**). On a client privacy/deletion request, an Owner executes `redactAgreementClientData` (audited with a required reason), which clears `private/access` and non-contract client answers while preserving the signed contract and legal evidence. |
 | **No-public-prices exception (P3-E29)** | Public marketing and quote pages remain strictly price-free. Narrow exception approved 2026-11-20: private, `noindex` `/agreement/:token` pages and their signed PDFs display that specific client's agreed rate and fees from Firestore (`agreement.` excluded in `noPricing.test.ts`; dollar figures are never hardcoded in `en.json`/`fr.json`). |
 | **Token privacy** | Signing links use 32-byte random base64url tokens; only `sha256(token)` is stored, raw tokens are never logged, and Analytics strips `/agreement/<token>` to `/agreement/:token`. |
+
+### Sales Pipeline — Non-Office Lead Owner Access (P3-E40, Owner-Approved 2026-11-23)
+
+| Requirement | Policy & Implementation |
+|---|---|
+| **Purpose limitation & least privilege** | Direct Firestore reads of `bookings` remain strictly Office-only (`owner`/`manager`) plus the customer's own records. Non-office lead owners (`cleaner`, `lead`, `supervisor`, `contractor`) access **only leads explicitly assigned to their email** through server callables (`listMyLeads`, `getMyLead`, `updateMyLead`, `addMyLeadNote`). |
+| **Address minimization** | Server callables return client name, phone, email, language, service details, and notes for assigned leads. Full street address is returned **only** when `pipeline.needsSiteVisit === true` or `pipeline.stage === 'site_visit'`; otherwise only the area/city is returned. Payment/Stripe fields, marketing consent, and unassigned or other owners' leads are never exposed. |
+| **Action scope & audit trail** | Non-office owners may log contact notes, update follow-up dates, record internal quote amounts (never shown publicly per P3-E29), and advance stages through `contacted`, `site_visit`, `quoted`, and `lost`. Marking `won` (confirming bookings / creating Dispatch jobs) and reassigning leads remain Office-only. Every write stamps `lastChange` (`source: 'staff_app'`) and is recorded in `auditLog`. |
 
 ---
 

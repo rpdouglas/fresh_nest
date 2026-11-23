@@ -153,13 +153,24 @@ The **Team & roles** tab lists everyone with office access and lets an Owner cha
 - **Older entries:** an entry added by hand in the early setup may be saved under an account ID. The tab shows its email instead. If that account no longer exists, it shows as **Unknown account** and you can only remove it. Changing or removing an older entry also tidies it into the normal email form.
 - **You can't change your own role.** Ask another Owner, so there is always at least one Owner.
 - **After any change,** the person needs to **sign out and sign in again** before the new access applies.
+- **Alert phone & language:** Set each office member's mobile number and preferred alert language (EN/FR) directly on their row so lead assignments and daily follow-up digests reach them by SMS and email in their language.
 - Every change is recorded in **Audit Logs**: who made it, when, and the old and new role.
+
+## Sales Pipeline Tab
+
+The **Pipeline** tab tracks every incoming cleaning quote request from first contact to **Won** or **Lost** (recurring renewals are excluded automatically):
+
+- **Views & filters:** Switch between **My leads** (default), **Unassigned**, and **All leads**, filter by stage, **Airbnb only**, or **Site visit only**, and toggle between the **Priority List** (overdue first → due today → oldest uncontacted) and the desktop **Board View** (with keyboard-accessible stage dropdowns on every card).
+- **2-click reassign:** Pick any eligible owner (**Owner**, **Manager**, **Supervisor**, **Lead Cleaner**, **Cleaner**, or **Contractor**) directly on a row or inside the detail panel. The new owner receives an email and SMS in their language (plus an in-app notification for staff/contractors). Assigning a lead to yourself does not send a duplicate alert.
+- **First-contact SLA:** Uncontacted requests are flagged **Overdue** after **2 business hours** (cleaning request) or **1 business hour** (in-person site visit — defaulted on Commercial and Post-Construction, or toggled manually), counted in `America/Toronto` business hours (`Mon–Fri 08:00–18:00`, `Sat 09:00–15:00`, Sunday closed).
+- **Contact log, quotes & outcomes:** Log calls, SMS, emails, and notes (logging your first call/SMS/email automatically records `firstContactAt` and moves `New → Contacted`), record an internal quoted amount (never shown on the public site), open **Create E-Agreement** prefilled from the lead, mark **Won** (confirms the booking and creates the Dispatch job), or mark **Lost** with a required reason (does not send the customer-cancellation SMS).
+- **Daily digest & Analytics:** Every morning at `08:00 America/Toronto`, each owner receives an email digest of leads due or overdue that day. Open **Analytics → Sales Pipeline Metrics** for open leads by stage, median business-hours first contact, conversion by source and owner, won quoted value, and lost reasons.
 
 ## Client E-Agreements Tab
 
 The **Agreements** tab lets **Owners** and **Managers** create private, click-to-sign service agreements (Residential or Commercial, in English or French) and track each agreement from **Sent** → **Viewed** → **Signed**.
 
-- **Create an agreement:** Click **+ New Agreement**. Optionally pick an existing booking to prefill the client's name, email, phone, address, service type, frequency, and language — or enter them by hand. Confirm the agreed rate (`Hourly`, `Flat per visit`, or `Monthly`), tax-exempt option (when applicable), cancellation/lockout terms (prefilled from **Settings & Policies** and frozen on the agreement), and link validity (`7`, `14`, `30`, or `60` days; default `30`).
+- **Create an agreement:** Click **+ New Agreement**. Optionally pick an existing booking to prefill the client's name, email, phone, address, service type, frequency, and language — or enter them by hand. Confirm the agreed rate (`Hourly`, `Flat per visit`, or `Monthly`; defaults to `Hourly` at `$75.00/hr`), tax-exempt option (when applicable), cancellation/lockout terms (prefilled from **Settings & Policies** and frozen on the agreement), and link validity (`7`, `14`, `30`, or `60` days; default `30`).
 - **Deliver the link:** When created, copy the private link (`https://www.freshnestco.ca/agreement/<token>`) right away — for security, only its cryptographic hash is stored so the raw link cannot be viewed again. You can also tick **Email signing link to client now** to send it immediately in the client's language.
 - **Reissue or expire:** Open any unsigned agreement and click **Reissue Link** to generate a fresh link (the old link stops working immediately), or **Expire Link** to cancel it.
 - **Signed PDF & Access Codes:** Once signed, both the client and the office automatically receive a signed PDF copy by email. You can download the PDF anytime from the agreement's detail panel. Any door codes, alarm codes, or key locations entered by the client are stored separately under **Reveal Access Codes** and are **never** printed in the PDF or sent by email.
@@ -178,6 +189,7 @@ The **Settings & Policies** tab stores company-wide operational rules in one ver
   2. **Staff Earnings, Time & Attendance:** Default ODSP monthly earnings cap (`$1,000` CAD, available as a one-click preset when registering new staff), Safe-to-Earn amber caution threshold (`$100` CAD, used live by the staff profile earnings gauge), vacation notice (`14` days), max concurrent staff off (`2`), GPS check-in radius (`250` m), and timesheet variance threshold (`15` min).
   3. **Client Policies & Fees:** Standard/Airbnb cancellation window (`24` h), Deep/Specialty cancellation window (`48` h), service quality re-clean report window (`24` h), late cancellation fee, and client lockout fee.
   4. **Compliance, Retention & Emergency Contacts:** Job verification photo retention (`90` days), signed agreement & tax record retention (`7` years), primary emergency dispatch phone (`(613) 861-8812`), and backup emergency contact name and phone.
+  5. **Sales Pipeline & First-Contact Targets:** Default lead owner email (auto-assigned to every new incoming quote request; blank falls back to `OWNER_EMAIL`) and business-hours first-contact targets for standard (`120` min) and site-visit (`60` min) leads.
 - **Version History & Audit Trail:** Every save increments the policy version (`v1`, `v2`, `v3`…), records an immutable snapshot and field-by-field diff in **Policy Version History** at the bottom of the tab, and writes an entry to **Audit Logs** (`policy_change`).
 
 ## Audit Log and History

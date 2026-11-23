@@ -1,5 +1,6 @@
 // Domain trigger re-exports
 export { onBookingCreated, onBookingStatusConfirmed, onBookingCancelled } from './triggers/booking'
+export { onBookingPipelineUpdated } from './triggers/pipeline'
 export { onJobCreatedTrigger } from './triggers/job.created'
 export { onJobUpdatedTrigger, onJobStatusCompleted } from './triggers/job.updated'
 export { onStaffUpdatedTrigger } from './triggers/staff'
@@ -16,7 +17,8 @@ export {
 export { onUserCreated } from './triggers/auth'
 
 // Domain callable re-exports
-export { setUserRole, resolveOfficeEntries, syncMyRole } from './callable/auth'
+export { setUserRole, resolveOfficeEntries, syncMyRole, updateOfficeContact } from './callable/auth'
+export { listMyLeads, getMyLead, updateMyLead, addMyLeadNote } from './callable/leads'
 export { createPaymentIntent, stripeWebhookHandler } from './callable/payments'
 export { claimJob } from './callable/job'
 export { listOpenShifts } from './callable/shifts'
@@ -38,3 +40,4 @@ export { onDailyRecurringRenewal } from './scheduled/renewals'
 export { onMonthlyEarningsRollover } from './scheduled/earnings'
 export { onReviewEmailScheduler } from './scheduled/reviews'
 export { onDailyFirestoreExport } from './scheduled/backup'
+export { onDailyLeadDigest } from './scheduled/leadDigest'

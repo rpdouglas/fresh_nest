@@ -12,6 +12,14 @@ import {
   staffWelcomeHtml,
 } from './emailTemplates'
 import {
+  leadAssignedSubject,
+  leadAssignedHtml,
+  leadDigestSubject,
+  leadDigestHtml,
+  type LeadAssignedEmailData,
+  type LeadDigestItem,
+} from './leadEmailTemplates'
+import {
   agreementInviteSubject,
   agreementInviteHtml,
   agreementSignedClientSubject,
@@ -120,6 +128,45 @@ export async function sendWelcomeEmail(
   })
   if (result.error) {
     throw new Error(`Welcome email failed: ${result.error.message}`)
+  }
+}
+
+export async function sendLeadAssignedEmail(
+  recipientEmail: string,
+  data: LeadAssignedEmailData,
+  lang: 'en' | 'fr',
+  config: EmailConfig,
+): Promise<void> {
+  const resend = new Resend(config.resendApiKey)
+  const result = await resend.emails.send({
+    from: config.fromEmail,
+    to: recipientEmail,
+    replyTo: data.clientEmail?.trim() || config.replyTo,
+    subject: leadAssignedSubject(data, lang),
+    html: leadAssignedHtml(data, lang),
+  })
+  if (result.error) {
+    throw new Error(`Lead assigned email failed: ${result.error.message}`)
+  }
+}
+
+export async function sendLeadDigestEmail(
+  recipientEmail: string,
+  items: LeadDigestItem[],
+  todayDate: string,
+  lang: 'en' | 'fr',
+  config: EmailConfig,
+): Promise<void> {
+  const resend = new Resend(config.resendApiKey)
+  const result = await resend.emails.send({
+    from: config.fromEmail,
+    to: recipientEmail,
+    replyTo: config.replyTo,
+    subject: leadDigestSubject(items.length, lang),
+    html: leadDigestHtml(items, todayDate, lang),
+  })
+  if (result.error) {
+    throw new Error(`Lead digest email failed: ${result.error.message}`)
   }
 }
 

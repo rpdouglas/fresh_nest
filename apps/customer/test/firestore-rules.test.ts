@@ -699,3 +699,68 @@ describe('Client E-Agreements (P3-E39, ADR-021)', () => {
     }
   })
 })
+
+describe('Sales Pipeline & Lead Notes Rules (P3-E40)', () => {
+  beforeEach(async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore()
+      await setDoc(doc(db, 'bookings', 'lead-1'), {
+        ...validBooking,
+        createdAt: new Date(),
+        pipeline: { stage: 'new', ownerEmail: 'lauren@freshnest.test', ownerRole: 'owner', needsSiteVisit: false },
+      })
+      await setDoc(doc(db, 'bookings/lead-1/leadNotes/n1'), {
+        kind: 'call',
+        body: 'Left voicemail',
+        by: 'lauren@freshnest.test',
+        at: new Date(),
+      })
+    })
+  })
+
+  it('blocks public intake from forging pipeline fields on booking create', async () => {
+    const publicDb = testEnv.unauthenticatedContext().firestore()
+    await assertFails(setDoc(doc(publicDb, 'bookings', 'forged-1'), {
+      ...validBooking,
+      createdAt: serverTimestamp(),
+      pipeline: { stage: 'won', ownerEmail: 'hacker@evil.test', ownerRole: 'owner', needsSiteVisit: false },
+    }))
+  })
+
+  it('allows office to read and append leadNotes, but forbids update, delete, or staff/public access', async () => {
+    const ownerDb = testEnv.authenticatedContext('owner-1', { role: 'owner', email: 'lauren@freshnest.test' }).firestore()
+    const managerDb = testEnv.authenticatedContext('mgr-1', { role: 'manager', email: 'ryan@freshnest.test' }).firestore()
+    const staffDb = testEnv.authenticatedContext('staff-1', { role: 'staff', email: 'cleaner@freshnest.test' }).firestore()
+    const publicDb = testEnv.unauthenticatedContext().firestore()
+
+    await assertSucceeds(getDoc(doc(ownerDb, 'bookings/lead-1/leadNotes/n1')))
+    await assertSucceeds(getDoc(doc(managerDb, 'bookings/lead-1/leadNotes/n1')))
+    await assertFails(getDoc(doc(staffDb, 'bookings/lead-1/leadNotes/n1')))
+    await assertFails(getDoc(doc(publicDb, 'bookings/lead-1/leadNotes/n1')))
+
+    // Append-only create with matching actor email & request.time
+    await assertSucceeds(setDoc(doc(managerDb, 'bookings/lead-1/leadNotes/n2'), {
+      kind: 'sms',
+      body: 'Sent follow-up text',
+      by: 'ryan@freshnest.test',
+      at: serverTimestamp(),
+    }))
+    // Spoofed actor rejected
+    await assertFails(setDoc(doc(managerDb, 'bookings/lead-1/leadNotes/n3'), {
+      kind: 'call',
+      body: 'Spoofed',
+      by: 'lauren@freshnest.test',
+      at: serverTimestamp(),
+    }))
+    // Staff cannot write leadNotes directly (must use addMyLeadNote callable)
+    await assertFails(setDoc(doc(staffDb, 'bookings/lead-1/leadNotes/n4'), {
+      kind: 'call',
+      body: 'Direct staff write',
+      by: 'cleaner@freshnest.test',
+      at: serverTimestamp(),
+    }))
+    // Append-only: update and delete forbidden even for Owner
+    await assertFails(updateDoc(doc(ownerDb, 'bookings/lead-1/leadNotes/n1'), { body: 'Edited' }))
+    await assertFails(deleteDoc(doc(ownerDb, 'bookings/lead-1/leadNotes/n1')))
+  })
+})

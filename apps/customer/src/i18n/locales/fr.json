@@ -772,7 +772,8 @@
         "gallery": "Galerie",
         "settings": "Paramètres et politiques",
         "team": "Équipe et rôles",
-        "agreements": "Contrats"
+        "agreements": "Contrats",
+        "pipeline": "Pipeline"
       },
       "analytics": {
         "title": "Tableau de bord des analyses",
@@ -854,7 +855,8 @@
         "roleOption": {
           "cleaner": "Nettoyeur/Nettoyeuse",
           "lead": "Chef d'équipe",
-          "supervisor": "Superviseur/Superviseuse"
+          "supervisor": "Superviseur/Superviseuse",
+          "contractor": "Sous-traitant (Prospects seulement)"
         },
         "statusOption": {
           "onboarding": "En intégration",
@@ -1279,6 +1281,10 @@
       "addedPending": "{{email}} est préapprouvé·e comme {{role}}. L'accès sera actif à sa première connexion avec ce courriel.",
       "changed": "{{email}} est maintenant {{role}}.",
       "removed": "{{email}} n'a plus accès au bureau.",
+      "alertPhoneLabel": "Téléphone d'alerte SMS",
+      "alertLanguageLabel": "Langue des alertes",
+      "saveContact": "Enregistrer le contact",
+      "contactSaved": "Coordonnées d'alerte enregistrées pour {{email}}.",
       "errors": {
         "load": "Impossible de charger la liste. Veuillez réessayer.",
         "email": "Entrez une adresse courriel valide.",
@@ -1327,6 +1333,10 @@
         "compliance": {
           "title": "4. Conformité, conservation et contacts d'urgence",
           "description": "Durées de conservation des photos et contrats, ainsi que les numéros d'urgence principal et secondaire."
+        },
+        "pipeline": {
+          "title": "5. Pipeline des ventes et cibles de premier contact",
+          "description": "Responsable par défaut des nouvelles demandes de devis et délais cibles en heures ouvrables."
         }
       },
       "fields": {
@@ -1425,6 +1435,18 @@
         "emergencyBackupPhone": {
           "label": "Téléphone du contact d'urgence secondaire",
           "help": "Numéro de téléphone de la personne-ressource secondaire."
+        },
+        "defaultLeadOwnerEmail": {
+          "label": "Courriel du responsable par défaut des prospects",
+          "help": "Adresse courriel assignée automatiquement à chaque nouvelle demande de devis (laisser vide pour utiliser OWNER_EMAIL)."
+        },
+        "leadFirstContactTargetMinutes": {
+          "label": "Cible premier contact — Demande régulière",
+          "help": "Minutes ouvrables avant qu'une demande de devis sans contact soit signalée en retard (défaut : 120 min = 2 heures)."
+        },
+        "leadSiteVisitFirstContactTargetMinutes": {
+          "label": "Cible premier contact — Visite sur place",
+          "help": "Minutes ouvrables avant qu'une demande nécessitant une visite sur place soit signalée en retard (défaut : 60 min = 1 heure)."
         }
       },
       "history": {
@@ -1565,6 +1587,124 @@
         "redactReasonLabel": "Motif de l’effacement (journalisé)",
         "redactReasonPlaceholder": "p. ex. Demande de suppression Loi 25 / LPRPDE reçue par courriel",
         "redactReasonRequired": "Veuillez saisir un motif (au moins 3 caractères)."
+      }
+    },
+    "pipeline": {
+      "title": "Pipeline des ventes",
+      "subtitle": "Assignez les prospects, suivez les relances selon les cibles en heures ouvrables et consignez les devis et résultats.",
+      "unassigned": "Non assigné",
+      "loading": "Chargement du pipeline…",
+      "empty": "Aucun prospect ne correspond à vos filtres.",
+      "searchPlaceholder": "Rechercher par nom, courriel, téléphone ou adresse…",
+      "filterStage": "Filtrer par étape",
+      "views": {
+        "myLeads": "Mes prospects",
+        "unassigned": "Non assignés",
+        "all": "Tous les prospects"
+      },
+      "viewModes": {
+        "list": "Liste prioritaire",
+        "board": "Vue tableau"
+      },
+      "stageFilters": {
+        "open": "Étapes ouvertes",
+        "all": "Toutes les étapes (incl. Gagné/Perdu)"
+      },
+      "filters": {
+        "airbnb": "Airbnb seulement",
+        "siteVisit": "Visite sur place seulement"
+      },
+      "stages": {
+        "new": "Nouveau",
+        "contacted": "Contacté",
+        "site_visit": "Visite sur place",
+        "quoted": "Devis envoyé",
+        "won": "Gagné",
+        "lost": "Perdu"
+      },
+      "roles": {
+        "owner": "Propriétaire",
+        "manager": "Gestionnaire",
+        "supervisor": "Superviseur",
+        "lead": "Chef d'équipe",
+        "cleaner": "Nettoyeur",
+        "contractor": "Sous-traitant"
+      },
+      "lostReasons": {
+        "no_response": "Aucune réponse",
+        "price": "Prix",
+        "chose_competitor": "A choisi un concurrent",
+        "date_unavailable": "Date indisponible",
+        "outside_area": "Hors zone desservie",
+        "duplicate_or_spam": "Doublon ou pourriel",
+        "other": "Autre"
+      },
+      "badges": {
+        "overdue": "En retard",
+        "overdueFirstContact": "En retard — premier contact",
+        "overdueFollowUp": "En retard — suivi",
+        "dueToday": "Prévu aujourd'hui",
+        "siteVisit": "Visite sur place"
+      },
+      "table": {
+        "client": "Client",
+        "stage": "Étape",
+        "owner": "Responsable",
+        "followUp": "Prochain suivi",
+        "quote": "Devis",
+        "actions": "Actions",
+        "reassignAria": "Assigner un responsable pour {{name}}"
+      },
+      "actions": {
+        "open": "Ouvrir"
+      },
+      "detail": {
+        "ownerLabel": "Responsable du prospect",
+        "stageLabel": "Étape de vente",
+        "nextFollowUpLabel": "Date du prochain suivi",
+        "quotedPriceLabel": "Montant du devis ($ CAD, interne seulement)",
+        "needsSiteVisitLabel": "Visite sur place requise (cible premier contact : 1 heure)",
+        "lostReasonLabel": "Motif de perte",
+        "lostNoteLabel": "Note de perte (facultatif)",
+        "lostReasonRequired": "Veuillez choisir un motif de perte avant d'enregistrer.",
+        "invalidQuote": "Veuillez saisir un montant de devis valide.",
+        "slaTarget": "Cible premier contact : {{minutes}} min ouvrables ({{elapsed}} écoulées)",
+        "clientNotes": "Notes du client",
+        "createAgreement": "Créer un contrat",
+        "close": "Fermer",
+        "saveButton": "Enregistrer les modifications",
+        "saving": "Enregistrement…",
+        "saved": "Prospect mis à jour.",
+        "noteAdded": "Note de contact ajoutée.",
+        "saveError": "Impossible d'enregistrer les modifications. Veuillez réessayer."
+      },
+      "notes": {
+        "heading": "Journal de contact et notes",
+        "kindLabel": "Type d'activité",
+        "bodyLabel": "Détails de la note",
+        "placeholder": "Consignez un appel, SMS, courriel ou une note de visite…",
+        "addButton": "Ajouter",
+        "empty": "Aucune note de contact enregistrée pour l'instant.",
+        "kinds": {
+          "call": "Appel",
+          "sms": "SMS",
+          "email": "Courriel",
+          "note": "Note"
+        }
+      },
+      "analytics": {
+        "title": "Indicateurs du pipeline des ventes",
+        "subtitle": "Prospects ouverts par étape, délai de premier contact en heures ouvrables, taux de conversion et motifs de perte.",
+        "openLeads": "Prospects ouverts",
+        "overdue": "Prospects en retard",
+        "medianFirstContact": "1er contact médian",
+        "minutesValue": "{{count}} min",
+        "wonLost": "Gagnés / Perdus",
+        "wonQuotedValue": "Valeur gagnée",
+        "bySource": "Conversion par source",
+        "byOwner": "Conversion par responsable",
+        "lostReasons": "Motifs de perte",
+        "noLostLeads": "Aucun prospect perdu sur cette période."
       }
     }
   },

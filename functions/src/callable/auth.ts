@@ -263,3 +263,51 @@ async function preApprove(
   console.log(`[setUserRole] Pre-approved '${email}' as '${newRole}' (was '${existingRole ?? 'none'}').`)
   return { success: true, pending: true, role: newRole }
 }
+
+/**
+ * P3-E40: Updates mobile phone and preferred language on an `admins/{email}` entry for lead alerts
+ * and daily digests. Owners may update any office member (including themselves); Managers may update
+ * their own entry. Separate from `setUserRole` so Owners can edit their own contact details.
+ */
+export const updateOfficeContact = onCall(async (request) => {
+  const db = getFirestore()
+  const callerRole = await requireOffice(request.auth, db, 'update office contact details')
+  const caller = request.auth!
+  const callerEmail = caller.token.email?.trim().toLowerCase() || ''
+
+  const rawEmail = typeof request.data?.email === 'string' ? request.data.email.trim().toLowerCase() : callerEmail
+  if (!rawEmail || !rawEmail.includes('@') || rawEmail.length > 200) {
+    throw new HttpsError('invalid-argument', 'A valid office email is required.')
+  }
+  if (callerRole !== 'owner' && rawEmail !== callerEmail) {
+    throw new HttpsError('permission-denied', 'Managers can only update their own contact details.')
+  }
+
+  const rawPhone = typeof request.data?.phone === 'string' ? request.data.phone.trim() : ''
+  if (rawPhone.length > 40) {
+    throw new HttpsError('invalid-argument', 'Phone number must be at most 40 characters.')
+  }
+  const rawLang = request.data?.language === 'fr' ? 'fr' : 'en'
+
+  const docRef = db.collection('admins').doc(rawEmail)
+  const snap = await docRef.get()
+  if (!snap.exists) {
+    throw new HttpsError('not-found', `Office member '${rawEmail}' not found on the allowlist.`)
+  }
+  const prev = snap.data() as { phone?: string; language?: string } | undefined
+
+  await docRef.set({ phone: rawPhone, language: rawLang }, { merge: true })
+  await db.collection('auditLog').add({
+    collection: 'admins',
+    documentId: rawEmail,
+    field: 'phone, language',
+    oldValue: { phone: prev?.phone ?? '', language: prev?.language ?? 'en' },
+    newValue: { phone: rawPhone, language: rawLang },
+    changedBy: callerEmail || caller.uid,
+    changedAt: new Date(),
+    reason: null,
+    overrideType: 'office_contact_change',
+  })
+
+  return { success: true, email: rawEmail, phone: rawPhone, language: rawLang }
+})

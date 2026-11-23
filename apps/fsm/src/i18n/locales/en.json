@@ -115,7 +115,8 @@
       "roles": {
         "cleaner": "Cleaner",
         "lead": "Lead Cleaner",
-        "supervisor": "Supervisor"
+        "supervisor": "Supervisor",
+        "contractor": "Contractor"
       },
       "transport": {
         "title": "Transportation & Commute",
@@ -204,7 +205,70 @@
         "shift_assigned": "Shift Assigned",
         "shift_unassigned": "Shift Unassigned",
         "shift_cancelled": "Shift Cancelled",
-        "new_shift_board_posting": "New Shift Available"
+        "new_shift_board_posting": "New Shift Available",
+        "lead_assigned": "Lead Assigned"
+      }
+    },
+    "myLeads": {
+      "navLabel": "My Leads",
+      "title": "My Leads",
+      "subtitle": "Follow up on leads assigned to you, log client contact, and record quotes.",
+      "refresh": "Refresh",
+      "loading": "Loading your leads…",
+      "loadError": "Could not load your leads. Please try again.",
+      "empty": "No leads are currently assigned to you.",
+      "notFound": "This lead could not be found or is no longer assigned to you.",
+      "backToLeads": "Back to My Leads",
+      "callClient": "Call Client",
+      "openLead": "Open Lead",
+      "overdue": "Overdue",
+      "dueToday": "Due today",
+      "followUpOn": "Follow up: {{date}}",
+      "locationLabel": "Location",
+      "addressMinimizedHint": "Only the service area is shown unless an in-person site visit is required.",
+      "clientNotes": "Client notes",
+      "updateHeading": "Update Lead",
+      "wonOfficeOnlyHint": "When a client accepts a quote, log a note or set Quote sent — the office confirms bookings as Won for dispatch.",
+      "alreadyWon": "This lead has been marked Won and confirmed by the office.",
+      "stageLabel": "Stage",
+      "nextFollowUpLabel": "Next Follow-up Date",
+      "quotedPriceLabel": "Quoted Amount (CAD $)",
+      "lostReasonLabel": "Lost Reason",
+      "lostNoteLabel": "Note (optional)",
+      "saveButton": "Save Changes",
+      "saving": "Saving…",
+      "saved": "Lead updated.",
+      "noteAdded": "Contact note saved.",
+      "saveError": "Could not save changes. Please try again.",
+      "invalidQuote": "Please enter a valid non-negative quote amount.",
+      "notesHeading": "Contact Log",
+      "noteKindLabel": "Contact type",
+      "noteBodyLabel": "Contact details",
+      "notePlaceholder": "Add call summary, text, email, or visit note…",
+      "addNoteButton": "Add Note",
+      "noNotes": "No notes logged yet.",
+      "stages": {
+        "new": "New",
+        "contacted": "Contacted",
+        "site_visit": "Site visit",
+        "quoted": "Quote sent",
+        "won": "Won",
+        "lost": "Lost"
+      },
+      "lostReasons": {
+        "no_response": "No response",
+        "price": "Price",
+        "chose_competitor": "Chose competitor",
+        "date_unavailable": "Date unavailable",
+        "outside_area": "Outside area",
+        "duplicate_or_spam": "Duplicate or spam",
+        "other": "Other"
+      },
+      "noteKinds": {
+        "call": "Call",
+        "sms": "SMS",
+        "email": "Email",
+        "note": "Note"
       }
     },
     "compliance": {

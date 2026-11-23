@@ -115,7 +115,8 @@
       "roles": {
         "cleaner": "Nettoyeur/Nettoyeuse",
         "lead": "Chef d'équipe",
-        "supervisor": "Superviseur/Superviseuse"
+        "supervisor": "Superviseur/Superviseuse",
+        "contractor": "Sous-traitant"
       },
       "transport": {
         "title": "Transport et déplacements",
@@ -204,7 +205,70 @@
         "shift_assigned": "Quart assigné",
         "shift_unassigned": "Quart désassigné",
         "shift_cancelled": "Quart annulé",
-        "new_shift_board_posting": "Nouveau quart disponible"
+        "new_shift_board_posting": "Nouveau quart disponible",
+        "lead_assigned": "Prospect assigné"
+      }
+    },
+    "myLeads": {
+      "navLabel": "Mes prospects",
+      "title": "Mes prospects",
+      "subtitle": "Faites le suivi des prospects qui vous sont assignés, consignez vos contacts et enregistrez vos devis.",
+      "refresh": "Actualiser",
+      "loading": "Chargement de vos prospects…",
+      "loadError": "Impossible de charger vos prospects. Veuillez réessayer.",
+      "empty": "Aucun prospect ne vous est assigné pour le moment.",
+      "notFound": "Ce prospect est introuvable ou ne vous est plus assigné.",
+      "backToLeads": "Retour à mes prospects",
+      "callClient": "Appeler le client",
+      "openLead": "Ouvrir le prospect",
+      "overdue": "En retard",
+      "dueToday": "Prévu aujourd'hui",
+      "followUpOn": "Suivi : {{date}}",
+      "locationLabel": "Lieu",
+      "addressMinimizedHint": "Seul le secteur est affiché sauf lorsqu'une visite sur place est requise.",
+      "clientNotes": "Notes du client",
+      "updateHeading": "Mettre à jour le prospect",
+      "wonOfficeOnlyHint": "Lorsqu'un client accepte un devis, ajoutez une note ou choisissez Devis envoyé — le bureau confirme les réservations comme Gagnées pour la répartition.",
+      "alreadyWon": "Ce prospect a été marqué Gagné et confirmé par le bureau.",
+      "stageLabel": "Étape",
+      "nextFollowUpLabel": "Date du prochain suivi",
+      "quotedPriceLabel": "Montant du devis ($ CAD)",
+      "lostReasonLabel": "Motif de perte",
+      "lostNoteLabel": "Note (facultatif)",
+      "saveButton": "Enregistrer",
+      "saving": "Enregistrement…",
+      "saved": "Prospect mis à jour.",
+      "noteAdded": "Note enregistrée.",
+      "saveError": "Impossible d'enregistrer les modifications. Veuillez réessayer.",
+      "invalidQuote": "Veuillez saisir un montant de devis valide.",
+      "notesHeading": "Journal de contact",
+      "noteKindLabel": "Type de contact",
+      "noteBodyLabel": "Détails du contact",
+      "notePlaceholder": "Ajoutez un résumé d'appel, SMS, courriel ou note de visite…",
+      "addNoteButton": "Ajouter une note",
+      "noNotes": "Aucune note enregistrée pour l'instant.",
+      "stages": {
+        "new": "Nouveau",
+        "contacted": "Contacté",
+        "site_visit": "Visite sur place",
+        "quoted": "Devis envoyé",
+        "won": "Gagné",
+        "lost": "Perdu"
+      },
+      "lostReasons": {
+        "no_response": "Aucune réponse",
+        "price": "Prix",
+        "chose_competitor": "A choisi un concurrent",
+        "date_unavailable": "Date indisponible",
+        "outside_area": "Hors secteur",
+        "duplicate_or_spam": "Doublon ou pourriel",
+        "other": "Autre"
+      },
+      "noteKinds": {
+        "call": "Appel",
+        "sms": "SMS",
+        "email": "Courriel",
+        "note": "Note"
       }
     },
     "compliance": {

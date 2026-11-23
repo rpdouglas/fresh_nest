@@ -20,6 +20,7 @@ import {
   type PolicyHistoryEntry,
 } from '../domain/policy'
 import { amountCentsOf, normalizeFinancials } from '../domain/money'
+import type { BookingPipeline, LeadNote } from '../domain/pipeline'
 
 // Helper to convert dynamic values to Date
 export function toDate(val: any): Date {
@@ -72,18 +73,50 @@ function createConverter<T extends { id?: string }>(
 }
 
 // Booking Converter
+function mapPipeline(raw: any): BookingPipeline | undefined {
+  if (!raw || typeof raw !== 'object') return undefined
+  return {
+    ...raw,
+    ownerEmail: typeof raw.ownerEmail === 'string' ? raw.ownerEmail : null,
+    ownerRole: typeof raw.ownerRole === 'string' ? raw.ownerRole : null,
+    ownerAssignedAt: toDateOrNull(raw.ownerAssignedAt),
+    ownerAssignedBy: typeof raw.ownerAssignedBy === 'string' ? raw.ownerAssignedBy : null,
+    needsSiteVisit: Boolean(raw.needsSiteVisit),
+    nextFollowUpDate: typeof raw.nextFollowUpDate === 'string' ? raw.nextFollowUpDate : null,
+    firstContactAt: toDateOrNull(raw.firstContactAt),
+    quotedPriceCents:
+      typeof raw.quotedPriceCents === 'number' && Number.isFinite(raw.quotedPriceCents)
+        ? Math.round(raw.quotedPriceCents)
+        : null,
+    quoteSentAt: toDateOrNull(raw.quoteSentAt),
+    closedAt: toDateOrNull(raw.closedAt),
+    lostReason: typeof raw.lostReason === 'string' ? raw.lostReason : null,
+    lostNote: typeof raw.lostNote === 'string' ? raw.lostNote : null,
+  } as BookingPipeline
+}
+
 export const bookingConverter = createConverter<Booking>((data, id) => {
   const estimatedPriceCents =
     typeof data.estimatedPriceCents === 'number' && Number.isFinite(data.estimatedPriceCents)
       ? Math.round(data.estimatedPriceCents)
       : null
+  const pipeline = mapPipeline(data.pipeline)
   return {
     ...data,
     id,
     createdAt: toDate(data.createdAt),
     ...(estimatedPriceCents !== null ? { estimatedPriceCents } : {}),
+    ...(pipeline ? { pipeline } : {}),
   } as Booking
 })
+
+export const leadNoteConverter = createConverter<LeadNote>((data, id) => ({
+  id,
+  kind: data.kind,
+  body: typeof data.body === 'string' ? data.body : '',
+  by: typeof data.by === 'string' ? data.by : '',
+  at: toDate(data.at),
+}))
 
 // Job Photo Mapper
 function mapJobPhoto(p: any): JobPhoto {
@@ -176,6 +209,9 @@ export const galleryPairConverter = createConverter<GalleryPair>((data, id) => (
 // Collection Factories
 export const bookingsCollection = (db: Firestore): CollectionReference<Booking> =>
   collection(db, 'bookings').withConverter(bookingConverter)
+
+export const leadNotesCollection = (db: Firestore, bookingId: string): CollectionReference<LeadNote> =>
+  collection(db, 'bookings', bookingId, 'leadNotes').withConverter(leadNoteConverter)
 
 export const jobsCollection = (db: Firestore): CollectionReference<Job> =>
   collection(db, 'jobs').withConverter(jobConverter)
