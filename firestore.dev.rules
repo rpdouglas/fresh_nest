@@ -92,6 +92,7 @@ service cloud.firestore {
         && (!('referredBy' in request.resource.data)
             || (request.resource.data.referredBy is string || request.resource.data.referredBy == null))
         && (!('notes' in request.resource.data) || request.resource.data.notes is string)
+        && !('pipeline' in request.resource.data)
         && lastChangeOk();
 
       // Admin and owner read
@@ -107,6 +108,21 @@ service cloud.firestore {
       
       // Permanently deleting bookings is forbidden
       allow delete: if false;
+
+      // P3-E40: append-only lead contact log & internal notes
+      match /leadNotes/{noteId} {
+        allow read: if isOffice();
+        allow create: if isOffice()
+          && request.resource.data.keys().hasAll(['kind', 'body', 'by', 'at'])
+          && request.resource.data.keys().hasOnly(['kind', 'body', 'by', 'at'])
+          && request.resource.data.kind in ['call', 'sms', 'email', 'note']
+          && request.resource.data.body is string
+          && request.resource.data.body.size() > 0
+          && request.resource.data.body.size() <= 2000
+          && request.resource.data.by == request.auth.token.email.lower()
+          && request.resource.data.at == request.time;
+        allow update, delete: if false;
+      }
     }
 
     // 2. Admins Collection

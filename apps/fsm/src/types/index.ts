@@ -34,8 +34,9 @@ export interface Notification {
   id: string
   title: string
   body: string
-  type: 'shift_assigned' | 'shift_unassigned' | 'shift_cancelled' | 'new_shift_board_posting'
+  type: 'shift_assigned' | 'shift_unassigned' | 'shift_cancelled' | 'new_shift_board_posting' | 'lead_assigned'
   jobId: string | null
+  bookingId?: string | null
   read: boolean
   createdAt: Date
 }

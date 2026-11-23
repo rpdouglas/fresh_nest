@@ -271,7 +271,9 @@ export const ProfilePage: React.FC = () => {
             </div>
           </div>
 
-          {/* Card 2: Transit & Commute Constraints */}
+          {/* Card 2: Transit & Commute Constraints (hidden for lead-only contractors) */}
+          {staffProfile.role !== 'contractor' && (
+          <>
           <div className="bg-white border border-sand rounded p-6 shadow-sm flex flex-col gap-6">
             <h2 className="font-sub text-2xl text-charcoal border-b border-sand pb-3">
               {t('fsm.profile.transport.title')}
@@ -542,6 +544,8 @@ export const ProfilePage: React.FC = () => {
               )}
             </button>
           </div>
+          </>
+          )}
 
         </form>
       </div>

@@ -37,6 +37,11 @@ export interface PolicySettingsValues {
   emergencyPrimaryPhone: string
   emergencyBackupName: string
   emergencyBackupPhone: string
+
+  // 5. Sales Pipeline (P3-E40)
+  defaultLeadOwnerEmail: string
+  leadFirstContactTargetMinutes: number
+  leadSiteVisitFirstContactTargetMinutes: number
 }
 
 export interface PolicySettings extends PolicySettingsValues {
@@ -95,11 +100,16 @@ export const DEFAULT_POLICY_SETTINGS: Readonly<PolicySettingsValues> = {
   emergencyPrimaryPhone: '(613) 861-8812',
   emergencyBackupName: '',
   emergencyBackupPhone: '',
+
+  // 5. Sales Pipeline (P3-E40, approved 2026-11-23)
+  defaultLeadOwnerEmail: '',
+  leadFirstContactTargetMinutes: 120,
+  leadSiteVisitFirstContactTargetMinutes: 60,
 }
 
 export type NumericPolicyKey = Exclude<
   keyof PolicySettingsValues,
-  'emergencyPrimaryPhone' | 'emergencyBackupName' | 'emergencyBackupPhone'
+  'emergencyPrimaryPhone' | 'emergencyBackupName' | 'emergencyBackupPhone' | 'defaultLeadOwnerEmail'
 >
 
 export const POLICY_NUMERIC_BOUNDS: Readonly<
@@ -126,6 +136,8 @@ export const POLICY_NUMERIC_BOUNDS: Readonly<
   lockoutFeeCents: { min: 0, max: 100000 },
   photoRetentionDays: { min: 7, max: 3650 },
   agreementRetentionYears: { min: 1, max: 25 },
+  leadFirstContactTargetMinutes: { min: 5, max: 1440 },
+  leadSiteVisitFirstContactTargetMinutes: { min: 5, max: 1440 },
 }
 
 /** P3-E38 (ADR-020): money settings, stored in integer cents and entered in dollars. */
@@ -161,6 +173,9 @@ export const POLICY_SETTING_KEYS: readonly (keyof PolicySettingsValues)[] = [
   'emergencyPrimaryPhone',
   'emergencyBackupName',
   'emergencyBackupPhone',
+  'defaultLeadOwnerEmail',
+  'leadFirstContactTargetMinutes',
+  'leadSiteVisitFirstContactTargetMinutes',
 ]
 
 /** Merges partial or missing Firestore data with `DEFAULT_POLICY_SETTINGS`. */
@@ -186,8 +201,16 @@ export function normalizePolicySettings(
   if (typeof raw.emergencyBackupPhone === 'string') {
     result.emergencyBackupPhone = raw.emergencyBackupPhone
   }
+  if (typeof raw.defaultLeadOwnerEmail === 'string') {
+    result.defaultLeadOwnerEmail = raw.defaultLeadOwnerEmail.trim().toLowerCase()
+  }
   return result
 }
+
+const OPTIONAL_DEFAULTED_NUMERIC_KEYS: readonly NumericPolicyKey[] = [
+  'leadFirstContactTargetMinutes',
+  'leadSiteVisitFirstContactTargetMinutes',
+]
 
 export function validatePolicySettingsInput(
   raw: unknown,
@@ -202,6 +225,10 @@ export function validatePolicySettingsInput(
     [keyof typeof POLICY_NUMERIC_BOUNDS, { min: number; max: number }]
   >) {
     const rawVal = input[key]
+    if (rawVal === undefined && OPTIONAL_DEFAULTED_NUMERIC_KEYS.includes(key)) {
+      values[key] = DEFAULT_POLICY_SETTINGS[key]
+      continue
+    }
     const num = typeof rawVal === 'number' ? rawVal : Number(rawVal)
     const wholeCents = !POLICY_MONEY_KEYS.includes(key) || Number.isInteger(num)
     if (!Number.isFinite(num) || num < bounds.min || num > bounds.max || !wholeCents) {
@@ -239,6 +266,16 @@ export function validatePolicySettingsInput(
     }
   }
   values.emergencyBackupPhone = backupPhone
+
+  const rawDefaultOwner =
+    typeof input.defaultLeadOwnerEmail === 'string' ? input.defaultLeadOwnerEmail.trim().toLowerCase() : ''
+  if (rawDefaultOwner && (rawDefaultOwner.length > 200 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawDefaultOwner))) {
+    return {
+      ok: false,
+      error: 'Invalid value for defaultLeadOwnerEmail: must be a valid email address or blank.',
+    }
+  }
+  values.defaultLeadOwnerEmail = rawDefaultOwner
 
   const rawReason = typeof input.reason === 'string' ? input.reason.trim() : ''
   if (rawReason.length > 300) {

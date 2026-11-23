@@ -33,6 +33,7 @@ export function usePayRates(enabled: boolean) {
       cleaner: null,
       lead: null,
       supervisor: null,
+      contractor: null,
     }
 
     // Go through all rates (already sorted by effectiveFrom desc)

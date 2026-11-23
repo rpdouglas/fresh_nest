@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { httpsCallable } from 'firebase/functions'
+import type { PipelineKpis } from '@freshnest/shared'
 import { functions } from '@/lib/firebase/firebase'
 
 export type AnalyticsTimeRange = 'all' | '30days' | '90days' | 'ytd' | 'month'
@@ -22,6 +23,7 @@ export interface AnalyticsPayload {
   monthlyTrendData: Array<{ monthKey: string; monthName: string; count: number; revenue: number; sortKey: number }>
   channelsPerformance: Array<{ source: string; name: string; volume: number; revenue: number; avgValue: number; share: number }>
   referredBookingsCount: number
+  pipeline?: PipelineKpis
 }
 
 export function useAdminAnalytics() {
@@ -61,6 +63,7 @@ export function useAdminAnalytics() {
     monthlyTrendData: payload?.monthlyTrendData ?? [],
     channelsPerformance: payload?.channelsPerformance ?? [],
     referredBookingsCount: payload?.referredBookingsCount ?? 0,
+    pipeline: payload?.pipeline ?? null,
     formatCurrency,
     isLoading,
     error: error ? String(error) : null,

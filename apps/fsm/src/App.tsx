@@ -1,14 +1,25 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { StaffAuthProvider } from './context/StaffAuthProvider'
 import { OfflineUploadProvider } from './context/OfflineUploadProvider'
 import { ProtectedRoute } from './components/auth/ProtectedRoute'
+import { useStaffAuth } from './hooks/useStaffAuth'
 import FsmLayout from './components/layout/FsmLayout'
 import LoginPage from './pages/LoginPage'
 import ProfilePage from './pages/ProfilePage'
 import ShiftBoardPage from './pages/ShiftBoardPage'
 import MyJobsPage from './pages/MyJobsPage'
 import JobPage from './pages/JobPage'
+import MyLeadsPage from './pages/MyLeadsPage'
+import LeadPage from './pages/LeadPage'
+
+function NonContractorOnly({ children }: { children: React.ReactElement }) {
+  const { staffProfile } = useStaffAuth()
+  if (staffProfile?.role === 'contractor') {
+    return <Navigate to="/leads" replace />
+  }
+  return children
+}
 
 function PlaceholderPage({ titleKey }: { titleKey: string }) {
   const { t } = useTranslation()
@@ -36,19 +47,43 @@ const router = createBrowserRouter([
         children: [
           {
             path: '/',
-            element: <PlaceholderPage titleKey="fsm.dashboard" />,
+            element: (
+              <NonContractorOnly>
+                <PlaceholderPage titleKey="fsm.dashboard" />
+              </NonContractorOnly>
+            ),
           },
           {
             path: '/shifts',
-            element: <ShiftBoardPage />,
+            element: (
+              <NonContractorOnly>
+                <ShiftBoardPage />
+              </NonContractorOnly>
+            ),
           },
           {
             path: '/jobs',
-            element: <MyJobsPage />,
+            element: (
+              <NonContractorOnly>
+                <MyJobsPage />
+              </NonContractorOnly>
+            ),
           },
           {
             path: '/jobs/:id',
-            element: <JobPage />,
+            element: (
+              <NonContractorOnly>
+                <JobPage />
+              </NonContractorOnly>
+            ),
+          },
+          {
+            path: '/leads',
+            element: <MyLeadsPage />,
+          },
+          {
+            path: '/leads/:id',
+            element: <LeadPage />,
           },
           {
             path: '/profile',

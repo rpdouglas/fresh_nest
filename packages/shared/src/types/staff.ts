@@ -1,7 +1,7 @@
 import type { LastChange } from '../domain/audit'
 export type StaffLanguage = 'en' | 'fr'
 export type TransportMode = 'personal_vehicle' | 'transit' | 'rideshare' | 'walk'
-export type StaffRole = 'cleaner' | 'lead' | 'supervisor'
+export type StaffRole = 'cleaner' | 'lead' | 'supervisor' | 'contractor'
 export type StaffStatus = 'onboarding' | 'active' | 'inactive'
 
 export interface BlockedWindow {

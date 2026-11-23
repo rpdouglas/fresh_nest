@@ -1,5 +1,5 @@
 import { onDocumentCreated, onDocumentUpdated } from 'firebase-functions/v2/firestore'
-import { getFirestore } from 'firebase-admin/firestore'
+import { getFirestore, FieldValue, Timestamp } from 'firebase-admin/firestore'
 import Stripe from 'stripe'
 import twilio from 'twilio'
 import {
@@ -12,11 +12,14 @@ import {
   ownerPhone,
   replyToEmail,
 } from '../lib/shared'
-import { sendOwnerNotification, sendClientConfirmation } from '../sendEmail'
+import { sendOwnerNotification, sendClientConfirmation, parseRecipients } from '../sendEmail'
 import { sendSmsConfirmation, sendOwnerAlertSms } from '../sendSms'
 import { isRenewal, isAdminCreated, type BookingData } from '../emailTemplates'
 import { createJobFromBooking } from '../jobs'
 import { serverStamp } from '../lib/audit'
+import { normalizePolicySettings } from '../shared/policy'
+import { defaultNeedsSiteVisit, isRecurringRenewalBooking } from '../shared/pipeline'
+import { dispatchLeadAssignmentAlert, resolveLeadRecipient } from '../lib/leadRouting'
 
 // F03 / E31: Trigger when booking is created
 export const onBookingCreated = onDocumentCreated(
@@ -35,8 +38,10 @@ export const onBookingCreated = onDocumentCreated(
 
     const renewal = isRenewal(booking)
 
+    const db = getFirestore()
+    const rawDoc = event.data?.data() as Record<string, unknown>
+
     if (!booking.referralCode && !renewal) {
-      const db = getFirestore()
       try {
         await db.collection('referrals').doc(refCode).set({
           ownerName: `${booking.firstName} ${booking.lastName ? booking.lastName.charAt(0) + '.' : ''}`,
@@ -64,21 +69,88 @@ export const onBookingCreated = onDocumentCreated(
       fromNumber: TWILIO_PHONE_NUMBER.value(),
     }
 
+    // P3-E40: Initialize sales pipeline metadata on non-renewal bookings and resolve owner recipient.
+    let resolvedRecipient: Awaited<ReturnType<typeof resolveLeadRecipient>> = null
+    let needsSiteVisit = defaultNeedsSiteVisit(booking.serviceType)
+    if (!renewal && !isRecurringRenewalBooking(rawDoc as { createdBy?: string })) {
+      const existingPipeline = (rawDoc.pipeline ?? null) as Record<string, unknown> | null
+      if (existingPipeline && typeof existingPipeline.stage === 'string') {
+        needsSiteVisit = Boolean(existingPipeline.needsSiteVisit)
+        const existingOwner = typeof existingPipeline.ownerEmail === 'string' ? existingPipeline.ownerEmail : null
+        resolvedRecipient = await resolveLeadRecipient(db, existingOwner)
+      } else {
+        try {
+          const policySnap = await db.collection('settings').doc('policy').get().catch(() => null)
+          const policy = normalizePolicySettings(
+            policySnap && policySnap.exists ? (policySnap.data() as Record<string, unknown>) : undefined,
+          )
+          const fallbackOwnerEmail = parseRecipients(emailConfig.ownerEmail)[0]?.toLowerCase() || null
+          const defaultOwnerEmail = policy.defaultLeadOwnerEmail || fallbackOwnerEmail
+          const creatorEmail =
+            isAdminCreated(booking) && typeof rawDoc.createdBy === 'string'
+              ? rawDoc.createdBy.trim().toLowerCase()
+              : null
+          const ownerEmail = creatorEmail || defaultOwnerEmail
+          resolvedRecipient = await resolveLeadRecipient(db, ownerEmail)
+          const isConfirmed = rawDoc.status === 'confirmed'
+          const nowTs = Timestamp.now()
+
+          await db.collection('bookings').doc(docId).update({
+            pipeline: {
+              stage: isConfirmed ? 'won' : 'new',
+              ownerEmail: resolvedRecipient?.email ?? ownerEmail,
+              ownerRole: resolvedRecipient?.role ?? (ownerEmail ? 'owner' : null),
+              ownerAssignedAt: ownerEmail ? nowTs : null,
+              ownerAssignedBy: 'system:onBookingCreated',
+              needsSiteVisit,
+              nextFollowUpDate: null,
+              firstContactAt: isConfirmed ? nowTs : null,
+              quotedPriceCents: null,
+              quoteSentAt: null,
+              closedAt: isConfirmed ? nowTs : null,
+              lostReason: null,
+              lostNote: null,
+            },
+            lastChange: serverStamp('onBookingCreated', { reason: 'Initialized sales pipeline' }),
+          })
+        } catch (err) {
+          logError('[onBookingCreated] Failed to initialize sales pipeline:', err)
+        }
+      }
+    }
+
     // Renewals continue an agreed recurring booking — only the owner is told (to confirm it);
     // the client is not sent another "quote request received" email/SMS.
-    // The owner also gets an SMS for website requests and renewals, so a request is never missed
-    // when email is down (P3-E30). Admin phone-in bookings skip it — the admin entered them.
-    const sends: Array<[string, Promise<void>]> = [
-      ['owner email', sendOwnerNotification(booking, docId, emailConfig)],
-    ]
+    // For new leads with a resolved owner (and not admin-created), alert the assigned owner in
+    // their language; otherwise fall back to the legacy OWNER_EMAIL / OWNER_PHONE alerts.
+    const sends: Array<[string, Promise<void>]> = []
+    if (!renewal && !isAdminCreated(booking) && resolvedRecipient) {
+      sends.push([
+        'lead owner alert',
+        dispatchLeadAssignmentAlert({
+          db,
+          recipient: resolvedRecipient,
+          bookingId: docId,
+          booking,
+          needsSiteVisit,
+          assignedBy: null,
+          isNewLead: true,
+          fallbackPhone: ownerPhone(),
+          emailConfig,
+          smsConfig,
+        }),
+      ])
+    } else {
+      sends.push(['owner email', sendOwnerNotification(booking, docId, emailConfig)])
+      if (!isAdminCreated(booking)) {
+        sends.push(['owner SMS', sendOwnerAlertSms(booking, docId, renewal, ownerPhone(), smsConfig)])
+      }
+    }
     if (!renewal) {
       sends.push(
         ['client email', sendClientConfirmation(booking, emailConfig)],
         ['client SMS', sendSmsConfirmation(booking, smsConfig)],
       )
-    }
-    if (!isAdminCreated(booking)) {
-      sends.push(['owner SMS', sendOwnerAlertSms(booking, docId, renewal, ownerPhone(), smsConfig)])
     }
     const results = await Promise.allSettled(sends.map(([, send]) => send))
 
@@ -111,6 +183,26 @@ export const onBookingStatusConfirmed = onDocumentUpdated(
       await createJobFromBooking(bookingId, after as Parameters<typeof createJobFromBooking>[1])
     } catch (err) {
       logError(`[onBookingStatusConfirmed] Failed to create job for booking '${bookingId}':`, err)
+    }
+
+    // P3-E40: Keep pipeline.stage in sync when confirmed from Bookings tab
+    const afterPipeline = (after.pipeline ?? null) as Record<string, unknown> | null
+    if (
+      !isRecurringRenewalBooking(after as { createdBy?: string }) &&
+      afterPipeline &&
+      afterPipeline.stage !== 'won'
+    ) {
+      try {
+        const nowTs = FieldValue.serverTimestamp()
+        await getFirestore().collection('bookings').doc(bookingId).update({
+          'pipeline.stage': 'won',
+          'pipeline.closedAt': nowTs,
+          ...(!afterPipeline.firstContactAt ? { 'pipeline.firstContactAt': nowTs } : {}),
+          lastChange: serverStamp('onBookingStatusConfirmed', { reason: 'Booking confirmed -> stage won' }),
+        })
+      } catch (syncErr) {
+        logError(`[onBookingStatusConfirmed] Failed to sync pipeline.stage=won for '${bookingId}':`, syncErr)
+      }
     }
 
     const stripePaymentIntentId = after.stripePaymentIntentId as string | undefined
@@ -182,6 +274,33 @@ export const onBookingCancelled = onDocumentUpdated(
         }
       } catch (jobErr) {
         logError(`[onBookingCancelled] Failed to update associated job status:`, jobErr)
+      }
+
+      // P3-E40: Sync pipeline.stage to 'lost' if cancelled outside Pipeline (e.g. Bookings tab or Customer Portal)
+      const afterPipeline = (after.pipeline ?? null) as Record<string, unknown> | null
+      const lastChangeSource =
+        after.lastChange && typeof after.lastChange === 'object'
+          ? (after.lastChange as { source?: unknown }).source
+          : null
+      const wasMarkedLost = afterPipeline?.stage === 'lost'
+      if (!wasMarkedLost && afterPipeline && !isRecurringRenewalBooking(after as { createdBy?: string })) {
+        try {
+          await db.collection('bookings').doc(bookingId).update({
+            'pipeline.stage': 'lost',
+            'pipeline.lostReason': 'other',
+            'pipeline.lostNote': lastChangeSource === 'customer' ? 'Cancelled by customer' : 'Cancelled by office',
+            'pipeline.closedAt': FieldValue.serverTimestamp(),
+            lastChange: serverStamp('onBookingCancelled', { reason: 'Booking cancelled -> stage lost' }),
+          })
+        } catch (syncErr) {
+          logError(`[onBookingCancelled] Failed to sync pipeline.stage=lost for '${bookingId}':`, syncErr)
+        }
+      }
+
+      // P3-E40: Skip the "cancelled by the customer" SMS when marking a lead Lost or cancelled by office/staff
+      if (wasMarkedLost || lastChangeSource === 'admin' || lastChangeSource === 'staff_app') {
+        console.log(`[onBookingCancelled] Skipping customer-cancelled SMS for '${bookingId}' (lost/internal cancel).`)
+        return
       }
 
       const smsConfig = {

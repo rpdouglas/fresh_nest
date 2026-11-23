@@ -60,6 +60,35 @@ const templates = {
 }
 
 /**
+ * P3-E40: Dispatches an in-app `lead_assigned` notification to a staff member or contractor.
+ */
+export async function sendLeadAssignedInAppNotification(
+  db: FirebaseFirestore.Firestore,
+  staffId: string,
+  params: { clientName: string; serviceLabel: string; bookingId: string; language: 'en' | 'fr' },
+): Promise<void> {
+  const isFr = params.language === 'fr'
+  const title = isFr ? 'Nouveau prospect assigné' : 'New Lead Assigned'
+  const body = isFr
+    ? `Le prospect ${params.clientName} (${params.serviceLabel}) vous a été assigné. Ouvrez Mes prospects pour faire le suivi.`
+    : `Lead ${params.clientName} (${params.serviceLabel}) has been assigned to you. Open My Leads to follow up.`
+
+  await db
+    .collection('notifications')
+    .doc(staffId)
+    .collection('messages')
+    .add({
+      title,
+      body,
+      type: 'lead_assigned',
+      jobId: null,
+      bookingId: params.bookingId,
+      read: false,
+      createdAt: new Date(),
+    })
+}
+
+/**
  * Dispatches an in-app notification to the staff member's collection
  */
 export async function sendInAppNotification(
@@ -195,6 +224,8 @@ export async function notifyAllActiveStaff(
     const promises = staffSnap.docs.map(async (docSnap) => {
       const staffId = docSnap.id
       const staffData = docSnap.data()
+      // P3-E40 (Q1): contractors do not receive shift-board notifications
+      if (staffData.role === 'contractor') return
       const language: 'en' | 'fr' = staffData.preferences?.language === 'fr' ? 'fr' : 'en'
 
       // In-app notification for everyone

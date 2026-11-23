@@ -6,6 +6,7 @@ import { LanguageSelectionOverlay } from '../auth/LanguageSelectionOverlay'
 import { TermsConsentOverlay } from '../auth/TermsConsentOverlay'
 import { cn } from '@freshnest/shared'
 import { useNotifications } from '../../hooks/useNotifications'
+import { useMyLeads } from '../../hooks/useMyLeads'
 
 export const FsmLayout: React.FC = () => {
   const { t, i18n } = useTranslation()
@@ -19,6 +20,8 @@ export const FsmLayout: React.FC = () => {
   const [notificationsOpen, setNotificationsOpen] = useState(false)
 
   const { notifications, unreadCount, markAllAsRead } = useNotifications()
+  const { leads: myLeads, openCount: openLeadsCount } = useMyLeads()
+  const isContractor = staffProfile?.role === 'contractor'
 
   const handleLogout = async () => {
     try {
@@ -36,12 +39,20 @@ export const FsmLayout: React.FC = () => {
     void i18n.changeLanguage(nextLng)
   }
 
-  const navLinks = [
-    { to: '/', labelKey: 'fsm.dashboard' },
-    { to: '/shifts', labelKey: 'fsm.shifts' },
-    { to: '/jobs', labelKey: 'fsm.myJobs' },
-    { to: '/profile', labelKey: 'fsm.profile.title', defaultValue: 'Profile' },
-  ]
+  const navLinks = isContractor
+    ? [
+        { to: '/leads', labelKey: 'fsm.myLeads.navLabel', defaultValue: 'My Leads' },
+        { to: '/profile', labelKey: 'fsm.profile.title', defaultValue: 'Profile' },
+      ]
+    : [
+        { to: '/', labelKey: 'fsm.dashboard' },
+        { to: '/shifts', labelKey: 'fsm.shifts.title', defaultValue: 'Shifts' },
+        { to: '/jobs', labelKey: 'fsm.myJobs.title', defaultValue: 'My Jobs' },
+        ...(openLeadsCount > 0 || myLeads.length > 0
+          ? [{ to: '/leads', labelKey: 'fsm.myLeads.navLabel', defaultValue: 'My Leads' }]
+          : []),
+        { to: '/profile', labelKey: 'fsm.profile.title', defaultValue: 'Profile' },
+      ]
 
   return (
     <div className="min-h-screen bg-warm-white flex flex-col font-body">
@@ -149,10 +160,12 @@ export const FsmLayout: React.FC = () => {
                             key={n.id}
                             onClick={() => {
                               setNotificationsOpen(false)
-                              if (n.jobId) {
+                              if (n.type === 'lead_assigned') {
+                                void navigate(n.bookingId ? `/leads/${n.bookingId}` : '/leads')
+                              } else if (n.jobId) {
                                 void navigate(`/jobs/${n.jobId}`)
                               } else {
-                                void navigate('/shifts')
+                                void navigate(isContractor ? '/leads' : '/shifts')
                               }
                             }}
                             className={cn(

@@ -14,6 +14,7 @@ import {
 import { db, auth } from '@/lib/firebase/firebase'
 import {
   bookingsCollection,
+  leadNotesCollection,
   jobsCollection,
   payRatesCollection,
   reviewsCollection,
@@ -21,6 +22,15 @@ import {
   staffCollection,
   changeStamp,
   toCents,
+  defaultNeedsSiteVisit,
+  bookingStatusForPipelineStage,
+  CONTACT_NOTE_KINDS,
+  type BookingPipeline,
+  type LeadNote,
+  type LeadNoteKind,
+  type LeadOwnerRole,
+  type LostReason,
+  type PipelineStage,
 } from '@freshnest/shared'
 import type { BookingFormData, AdminBookingFormData } from '@/lib/schemas/bookingSchema'
 import type { Language, Booking, BookingStatus, Job, ChecklistTemplate, ChecklistTask, ChecklistSource, PayRate, Review } from '@/types'
@@ -122,6 +132,10 @@ export async function createAdminBooking(
     data.frequency,
   )
 
+  const normalizedAdmin = normalizeEmail(adminEmail)
+  const isConfirmed = data.status === 'confirmed'
+  const nowTs = Timestamp.now()
+
   const docData: Record<string, unknown> = {
     ...formFields,
     email:             normalizeEmail(data.email),
@@ -133,6 +147,21 @@ export async function createAdminBooking(
     checklistTemplateId: data.checklistTemplateId || null,
     createdBy:         adminEmail,
     createdAt:         serverTimestamp(),
+    pipeline: {
+      stage: isConfirmed ? 'won' : 'new',
+      ownerEmail: normalizedAdmin || null,
+      ownerRole: normalizedAdmin ? 'owner' : null,
+      ownerAssignedAt: normalizedAdmin ? nowTs : null,
+      ownerAssignedBy: normalizedAdmin || null,
+      needsSiteVisit: defaultNeedsSiteVisit(data.serviceType),
+      nextFollowUpDate: null,
+      firstContactAt: isConfirmed ? nowTs : null,
+      quotedPriceCents: null,
+      quoteSentAt: null,
+      closedAt: isConfirmed ? nowTs : null,
+      lostReason: null,
+      lostNote: null,
+    },
     lastChange:        changeStamp(adminEmail, 'admin'),
   }
 
@@ -149,6 +178,142 @@ export async function createAdminBooking(
 export async function updateBookingStatus(bookingId: string, status: BookingStatus): Promise<void> {
   const docRef = doc(bookingsCollection(db), bookingId)
   await updateDoc(docRef, { status, lastChange: adminStamp() })
+}
+
+export interface LeadPipelinePatch {
+  stage?: PipelineStage
+  ownerEmail?: string | null
+  ownerRole?: LeadOwnerRole | null
+  needsSiteVisit?: boolean
+  nextFollowUpDate?: string | null
+  quotedPriceCents?: number | null
+  lostReason?: LostReason | null
+  lostNote?: string | null
+}
+
+/**
+ * P3-E40: Updates a booking's `pipeline` map (and keeps `bookings.status` synced for `won`/`lost`),
+ * auto-stamping `firstContactAt`, `quoteSentAt`, `ownerAssignedAt`, `closedAt`, and `lastChange`.
+ */
+export async function updateLeadPipeline(
+  bookingId: string,
+  patch: LeadPipelinePatch,
+  currentBooking?: Pick<Booking, 'status' | 'serviceType' | 'pipeline'>,
+  reason?: string,
+): Promise<void> {
+  const actorEmail = normalizeEmail(auth.currentUser?.email ?? '')
+  const prev: BookingPipeline = currentBooking?.pipeline ?? {
+    stage: currentBooking?.status === 'confirmed' || currentBooking?.status === 'completed'
+      ? 'won'
+      : currentBooking?.status === 'cancelled'
+        ? 'lost'
+        : 'new',
+    ownerEmail: null,
+    ownerRole: null,
+    needsSiteVisit: defaultNeedsSiteVisit(currentBooking?.serviceType),
+  }
+
+  const nowTs = Timestamp.now()
+  const nextStage: PipelineStage = patch.stage ?? prev.stage
+  const nextPipeline: Record<string, unknown> = {
+    stage: nextStage,
+    ownerEmail: patch.ownerEmail !== undefined ? (patch.ownerEmail ? normalizeEmail(patch.ownerEmail) : null) : prev.ownerEmail,
+    ownerRole: patch.ownerRole !== undefined ? patch.ownerRole : prev.ownerRole,
+    ownerAssignedAt: prev.ownerAssignedAt ?? null,
+    ownerAssignedBy: prev.ownerAssignedBy ?? null,
+    needsSiteVisit: patch.needsSiteVisit !== undefined ? patch.needsSiteVisit : Boolean(prev.needsSiteVisit),
+    nextFollowUpDate: patch.nextFollowUpDate !== undefined ? (patch.nextFollowUpDate || null) : (prev.nextFollowUpDate ?? null),
+    firstContactAt: prev.firstContactAt ?? null,
+    quotedPriceCents: patch.quotedPriceCents !== undefined ? patch.quotedPriceCents : (prev.quotedPriceCents ?? null),
+    quoteSentAt: prev.quoteSentAt ?? null,
+    closedAt: prev.closedAt ?? null,
+    lostReason: prev.lostReason ?? null,
+    lostNote: prev.lostNote ?? null,
+  }
+
+  if (patch.ownerEmail !== undefined && nextPipeline.ownerEmail !== prev.ownerEmail) {
+    nextPipeline.ownerAssignedAt = nextPipeline.ownerEmail ? nowTs : null
+    nextPipeline.ownerAssignedBy = actorEmail || null
+  }
+  if (nextStage !== 'new' && !nextPipeline.firstContactAt) {
+    nextPipeline.firstContactAt = nowTs
+  }
+  if (
+    (nextStage === 'quoted' || (patch.quotedPriceCents !== undefined && patch.quotedPriceCents !== null)) &&
+    !nextPipeline.quoteSentAt
+  ) {
+    nextPipeline.quoteSentAt = nowTs
+  }
+
+  const updatePayload: Record<string, unknown> = {
+    pipeline: nextPipeline,
+    lastChange: adminStamp(reason ? { reason } : undefined),
+  }
+
+  if (nextStage === 'won') {
+    nextPipeline.closedAt = nowTs
+    nextPipeline.lostReason = null
+    nextPipeline.lostNote = null
+    updatePayload.status = bookingStatusForPipelineStage('won')
+  } else if (nextStage === 'lost') {
+    nextPipeline.closedAt = nowTs
+    nextPipeline.lostReason = patch.lostReason ?? prev.lostReason ?? 'other'
+    nextPipeline.lostNote = patch.lostNote !== undefined ? (patch.lostNote?.trim() || null) : (prev.lostNote ?? null)
+    updatePayload.status = bookingStatusForPipelineStage('lost')
+  } else if (prev.stage === 'lost' || prev.stage === 'won') {
+    nextPipeline.closedAt = null
+    nextPipeline.lostReason = null
+    nextPipeline.lostNote = null
+    if (currentBooking?.status === 'cancelled') {
+      updatePayload.status = 'pending'
+    }
+  }
+
+  const docRef = doc(bookingsCollection(db), bookingId)
+  await updateDoc(docRef, updatePayload)
+}
+
+/**
+ * P3-E40: Appends a note to `bookings/{id}/leadNotes` and auto-stamps `firstContactAt`
+ * (and advances `new -> contacted`) for `call`/`sms`/`email` notes.
+ */
+export async function addLeadNote(
+  bookingId: string,
+  kind: LeadNoteKind,
+  body: string,
+  currentBooking?: Pick<Booking, 'status' | 'serviceType' | 'pipeline'>,
+): Promise<void> {
+  const actorEmail = normalizeEmail(auth.currentUser?.email ?? '')
+  const trimmed = body.trim()
+  if (!trimmed) return
+
+  await addDoc(leadNotesCollection(db, bookingId), {
+    kind,
+    body: trimmed,
+    by: actorEmail,
+    at: serverTimestamp() as unknown as Date,
+  })
+
+  if ((CONTACT_NOTE_KINDS as readonly string[]).includes(kind) && !currentBooking?.pipeline?.firstContactAt) {
+    const prevStage = currentBooking?.pipeline?.stage ?? 'new'
+    const nextStage: PipelineStage = prevStage === 'new' ? 'contacted' : prevStage
+    await updateLeadPipeline(
+      bookingId,
+      { stage: nextStage },
+      currentBooking,
+      `Logged ${kind}`,
+    )
+  }
+}
+
+export function subscribeToLeadNotes(
+  bookingId: string,
+  callback: (notes: LeadNote[]) => void,
+): () => void {
+  const q = query(leadNotesCollection(db, bookingId), orderBy('at', 'desc'))
+  return onSnapshot(q, (snapshot) => {
+    callback(snapshot.docs.map((d) => d.data()))
+  })
 }
 
 export async function updateBookingAssignment(bookingId: string, cleanerName: string | null): Promise<void> {

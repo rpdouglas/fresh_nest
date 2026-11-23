@@ -24,6 +24,7 @@ import { AdminSectionNav } from '@/components/admin/AdminSectionNav'
 import { TeamRolesTab } from '@/components/admin/TeamRolesTab'
 import { SettingsTab } from '@/components/admin/SettingsTab'
 import { AgreementsTab } from '@/components/admin/agreements/AgreementsTab'
+import { PipelineTab } from '@/components/admin/PipelineTab'
 import { parseAdminTab, type AdminTab } from '@/components/admin/adminTabs'
 
 export default function AdminPage() {
@@ -155,6 +156,21 @@ export default function AdminPage() {
                     transition={{ duration: 0.2 }}
                   >
                     <BookingsTable {...bookingsState} adminEmail={user.email ?? ''} />
+                  </motion.div>
+                )}
+                {activeTab === 'pipeline' && (
+                  <motion.div
+                    key="tab-pipeline"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <PipelineTab
+                      isAuthorized={isAuthorized}
+                      adminEmail={user.email ?? ''}
+                      bookings={bookingsState.bookings}
+                    />
                   </motion.div>
                 )}
                 {activeTab === 'agreements' && (
