@@ -66,3 +66,32 @@ export function onMyWaySms(cleanerName: string, lang: 'en' | 'fr'): string {
     : `Fresh Nest Co.: Your cleaner ${cleanerName} is on the way! Estimated arrival is near your scheduled start window. (613) 861-8812`
 }
 
+/** P3-E40: Lead assignment alert SMS in the recipient's language (EN/FR). */
+export function leadAssignedSms(
+  params: {
+    clientName: string
+    clientPhone: string
+    serviceType: string
+    preferredDate: string
+    bookingId: string
+    needsSiteVisit: boolean
+    isNewLead: boolean
+  },
+  lang: 'en' | 'fr',
+): string {
+  const isFr = lang === 'fr'
+  const service = isFr
+    ? (SMS_SERVICE_FR[params.serviceType] ?? params.serviceType)
+    : (SMS_SERVICE_EN[params.serviceType] ?? params.serviceType)
+  const ref = params.bookingId.slice(0, 8).toUpperCase()
+  const target = params.needsSiteVisit
+    ? (isFr ? '1 h (visite sur place)' : '1h (site visit)')
+    : (isFr ? '2 h' : '2h')
+  if (isFr) {
+    const prefix = params.isNewLead ? 'Nouveau prospect' : 'Prospect assigné'
+    return `Fresh Nest Co. : ${prefix} — ${params.clientName}, ${service}, ${params.preferredDate}, ${params.clientPhone}. Réf #${ref}. Cible : ${target}.`
+  }
+  const prefix = params.isNewLead ? 'New lead' : 'Lead assigned'
+  return `Fresh Nest Co.: ${prefix} — ${params.clientName}, ${service}, ${params.preferredDate}, ${params.clientPhone}. Ref #${ref}. Target: ${target}.`
+}
+

@@ -30,7 +30,7 @@ export const AdminBookingModal: React.FC<AdminBookingModalProps> = ({
   const [submitting, setSubmitting] = useState(false)
 
   const { staffList } = useStaff(true)
-  const activeStaff = staffList.filter((s) => s.status === 'active')
+  const activeStaff = staffList.filter((s) => s.status === 'active' && s.role !== 'contractor')
   const { templates } = useChecklistTemplates(isOpen)
   const activeTemplates = templates.filter((tpl) => tpl.active)
 

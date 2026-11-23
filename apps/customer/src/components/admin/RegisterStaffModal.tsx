@@ -14,7 +14,7 @@ const registerStaffSchema = z.object({
   lastName: z.string().min(1, { message: 'Last name is required' }),
   email: z.string().email({ message: 'Invalid email address' }),
   phone: z.string().min(10, { message: 'Phone number must be at least 10 digits' }),
-  role: z.enum(['cleaner', 'lead', 'supervisor']),
+  role: z.enum(['cleaner', 'lead', 'supervisor', 'contractor']),
   status: z.enum(['onboarding', 'active', 'inactive']),
   language: z.enum(['en', 'fr']),
   transportMode: z.enum(['personal_vehicle', 'transit', 'rideshare', 'walk']),
@@ -228,6 +228,7 @@ export const RegisterStaffModal: React.FC<RegisterStaffModalProps> = ({
                 <option value="cleaner">{t('admin.staff.modal.roleOption.cleaner', { defaultValue: 'Cleaner' })}</option>
                 <option value="lead">{t('admin.staff.modal.roleOption.lead', { defaultValue: 'Lead Cleaner' })}</option>
                 <option value="supervisor">{t('admin.staff.modal.roleOption.supervisor', { defaultValue: 'Supervisor' })}</option>
+                <option value="contractor">{t('admin.staff.modal.roleOption.contractor', { defaultValue: 'Contractor (Leads only)' })}</option>
               </select>
             </div>
 

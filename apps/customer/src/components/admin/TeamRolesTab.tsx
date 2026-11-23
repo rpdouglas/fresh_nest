@@ -16,10 +16,13 @@ interface OfficeMember {
   /** null when an old entry's account can't be found. */
   email: string | null
   role: OfficeRole
+  phone: string
+  language: 'en' | 'fr'
 }
 
 type SetUserRole = (data: { email: string; role: string; forceDowngrade?: boolean }) => Promise<{ data?: { pending?: boolean } }>
 type ResolveOfficeEntries = (data: { ids: string[] }) => Promise<{ data?: { emails?: Record<string, string | null> } }>
+type UpdateOfficeContact = (data: { email: string; phone: string; language: 'en' | 'fr' }) => Promise<{ data?: { success?: boolean } }>
 
 const byRoleThenName = (a: OfficeMember, b: OfficeMember) =>
   a.role === b.role ? (a.email ?? a.id).localeCompare(b.email ?? b.id) : a.role === 'owner' ? -1 : 1
@@ -42,6 +45,7 @@ export function TeamRolesTab({ currentEmail }: TeamRolesTabProps) {
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState<{ kind: 'ok' | 'error'; text: string } | null>(null)
   const [pendingRemove, setPendingRemove] = useState<OfficeMember | null>(null)
+  const [contactDrafts, setContactDrafts] = useState<Record<string, { phone: string; language: 'en' | 'fr' }>>({})
 
   const me = currentEmail.trim().toLowerCase()
   const label = (m: OfficeMember) => m.email ?? t('admin.team.unknownAccount')
@@ -51,7 +55,16 @@ export function TeamRolesTab({ currentEmail }: TeamRolesTabProps) {
     try {
       const snap = await getDocs(collection(db, 'admins'))
       const entries = snap.docs
-        .map((d) => ({ id: d.id, email: d.id.includes('@') ? d.id : null, role: allowlistOfficeRole(d.data().role) }))
+        .map((d) => {
+          const data = d.data() as { role?: unknown; phone?: unknown; language?: unknown }
+          return {
+            id: d.id,
+            email: d.id.includes('@') ? d.id : null,
+            role: allowlistOfficeRole(data.role),
+            phone: typeof data.phone === 'string' ? data.phone : '',
+            language: data.language === 'fr' ? 'fr' : 'en',
+          }
+        })
         .filter((m): m is OfficeMember => m.role !== null)
       // Old entries saved under an account ID: look up their email so people see who they are.
       const legacyIds = entries.filter((m) => m.email === null).map((m) => m.id)
@@ -132,6 +145,27 @@ export function TeamRolesTab({ currentEmail }: TeamRolesTabProps) {
     await call({ email: target, role: 'customer', forceDowngrade: true }, () => t('admin.team.removed', { email: label(member) }))
   }
 
+  const handleSaveContact = async (member: OfficeMember) => {
+    if (!member.email) return
+    const draft = contactDrafts[member.id] ?? { phone: member.phone, language: member.language }
+    setBusy(true)
+    setMessage(null)
+    try {
+      await (httpsCallable(functions, 'updateOfficeContact') as unknown as UpdateOfficeContact)({
+        email: member.email,
+        phone: draft.phone.trim(),
+        language: draft.language,
+      })
+      setMessage({ kind: 'ok', text: t('admin.team.contactSaved', { email: member.email }) })
+      await load()
+    } catch (err) {
+      const raw = err instanceof Error ? err.message : ''
+      setMessage({ kind: 'error', text: t('admin.team.errors.save', { reason: raw }) })
+    } finally {
+      setBusy(false)
+    }
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -186,29 +220,82 @@ export function TeamRolesTab({ currentEmail }: TeamRolesTabProps) {
           <ul className="divide-y divide-sand">
             {members.map((member) => {
               const isMe = member.email === me
+              const draft = contactDrafts[member.id] ?? { phone: member.phone, language: member.language }
               return (
-                <li key={member.id} className="flex flex-col md:flex-row md:items-center gap-3 px-6 py-4">
-                  <div className="flex-1 min-w-0">
-                    <p className="font-body text-base text-charcoal break-all">
-                      {label(member)}
-                      {isMe && <span className="text-text-muted"> · {t('admin.team.you')}</span>}
-                    </p>
-                    <p className="font-body text-base text-text-muted">{t(`admin.team.roles.${member.role}`)}</p>
-                  </div>
-                  {!isMe && (
-                    <div className="flex gap-2 flex-wrap">
-                      {member.email && (
-                        <button type="button" disabled={busy} onClick={() => handleChangeRole(member)} className={secondaryButton}>
-                          {t(member.role === 'owner' ? 'admin.team.makeManager' : 'admin.team.makeOwner')}
+                <li key={member.id} className="flex flex-col gap-3 px-6 py-4">
+                  <div className="flex flex-col md:flex-row md:items-center gap-3">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-body text-base text-charcoal break-all">
+                        {label(member)}
+                        {isMe && <span className="text-text-muted"> · {t('admin.team.you')}</span>}
+                      </p>
+                      <p className="font-body text-base text-text-muted">{t(`admin.team.roles.${member.role}`)}</p>
+                    </div>
+                    {!isMe && (
+                      <div className="flex gap-2 flex-wrap">
+                        {member.email && (
+                          <button type="button" disabled={busy} onClick={() => handleChangeRole(member)} className={secondaryButton}>
+                            {t(member.role === 'owner' ? 'admin.team.makeManager' : 'admin.team.makeOwner')}
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          disabled={busy}
+                          onClick={() => setPendingRemove(member)}
+                          className="min-h-[48px] px-4 border border-red-300 text-red-700 font-body font-medium rounded hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-400 disabled:opacity-50"
+                        >
+                          {t('admin.team.remove')}
                         </button>
-                      )}
+                      </div>
+                    )}
+                  </div>
+
+                  {member.email && (
+                    <div className="grid grid-cols-1 sm:grid-cols-[1fr_160px_auto] gap-3 items-end bg-cream border border-sand rounded p-3">
+                      <div className="flex flex-col gap-1">
+                        <label htmlFor={`office-phone-${member.id}`} className="font-body text-sm text-text-muted">
+                          {t('admin.team.alertPhoneLabel')}
+                        </label>
+                        <input
+                          id={`office-phone-${member.id}`}
+                          type="tel"
+                          placeholder="(613) 555-0100"
+                          value={draft.phone}
+                          onChange={(e) =>
+                            setContactDrafts((prev) => ({
+                              ...prev,
+                              [member.id]: { ...draft, phone: e.target.value },
+                            }))
+                          }
+                          className={inputClass}
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label htmlFor={`office-lang-${member.id}`} className="font-body text-sm text-text-muted">
+                          {t('admin.team.alertLanguageLabel')}
+                        </label>
+                        <select
+                          id={`office-lang-${member.id}`}
+                          value={draft.language}
+                          onChange={(e) =>
+                            setContactDrafts((prev) => ({
+                              ...prev,
+                              [member.id]: { ...draft, language: e.target.value as 'en' | 'fr' },
+                            }))
+                          }
+                          className={inputClass}
+                        >
+                          <option value="en">English (EN)</option>
+                          <option value="fr">Français (FR)</option>
+                        </select>
+                      </div>
                       <button
                         type="button"
                         disabled={busy}
-                        onClick={() => setPendingRemove(member)}
-                        className="min-h-[48px] px-4 border border-red-300 text-red-700 font-body font-medium rounded hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-400 disabled:opacity-50"
+                        onClick={() => { void handleSaveContact(member) }}
+                        className={secondaryButton}
                       >
-                        {t('admin.team.remove')}
+                        {t('admin.team.saveContact')}
                       </button>
                     </div>
                   )}

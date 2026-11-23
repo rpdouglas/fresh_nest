@@ -40,6 +40,10 @@ export const listOpenShifts = onCall(async (request): Promise<{ shifts: OpenShif
     if (!staffSnap.exists && !isOffice) {
       throw new HttpsError('not-found', 'Your staff profile was not found.')
     }
+    // P3-E40 (Q1): contractors access My Leads & Profile only — shifts are hidden/forbidden.
+    if (staffSnap.exists && staffSnap.data()?.role === 'contractor' && !isOffice) {
+      throw new HttpsError('permission-denied', 'Contractors cannot access the Shift Board.')
+    }
 
     const policy = normalizePolicySettings(
       policySnap && policySnap.exists ? (policySnap.data() as Record<string, unknown>) : undefined,

@@ -1,12 +1,12 @@
 ---
 epic: P3-E40
 title: Sales Pipeline — Lead Ownership, Lifecycle & Follow-up — Plan
-strategy: pending
+strategy: 3
 ---
 
 # P3-E40 PLAN — Sales Pipeline
 
-**Phase A written:** 2026-11-23 · **Status:** 🔄 Awaiting human approval
+**Phase A written:** 2026-11-23 · **Status:** ✅ Strategy 3 Approved (2026-11-23) — Executing Phase B/C
 **Spec:** [`../projects/P3-E40.md`](../projects/P3-E40.md)
 
 ## Personas
@@ -157,7 +157,14 @@ All `pipeline.*`, `leadNotes`, `admins.phone/language`, the three `settings/poli
 ## Tailwind audit
 No new CSS classes beyond those already used in the admin and FSM apps: `font-body`, `font-display`, `text-base`, `text-charcoal`, `text-text-muted`, `bg-warm-white`, `bg-cream`, `border-sand`, `bg-slate-brand`, `text-slate-dark`, `rounded`, `min-h-[48px]`. Stage and overdue badges reuse the existing status-badge pattern in `BookingsTable.tsx` (`bg-yellow-50 text-yellow-800`, `bg-green-50…`, `bg-red-50…`), which are Tailwind defaults, not design-system tokens — **Brand_Auditor to confirm** (or add status tokens to `design-system.md`). Overdue is always shown with a text label and icon, never colour alone (WCAG 1.4.1).
 
-## Open questions (from the spec)
-Q1 contractor = staff role with sign-in, or alert-only outsider? · Q2 does `lead` count as cleaner? · Q3 2 h / 1 h targets, business or clock hours? · Q4 which requests need a site visit? · Q5 Ryan's mobile number · Q6 approve staff access to assigned-lead contact data (COMPLIANCE.md).
-
-**HALT — awaiting human approval of one strategy.**
+## Approved decisions (2026-11-23)
+- **Strategy:** **Strategy 3** (pipeline on `bookings`; non-office owners work assigned leads via PII-minimized server callables in FSM).
+- **Q1 — Contractor:** New `staff.role: 'contractor'`, signs in to FSM with access to **My Leads & Profile only** (shifts, jobs, earnings, and payroll hidden and blocked server-side).
+- **Q2 — Lead cleaners:** Included (`staff.role: 'lead'`, e.g. P11 Brenda); `pipeline.ownerRole` stores `'lead'` to match `staff.role`.
+- **Non-office owner permissions:** Can log notes (`call`/`sms`/`email`/`note`), set `nextFollowUpDate`, record `quotedPriceCents`, and advance through `contacted` / `site_visit` / `quoted` / `lost` (with required lost reason). Marking **`won`** (confirms booking → Dispatch job + Stripe capture) and reassigning leads stay **Office-only**.
+- **Q3 — Targets:** 2 h (120 min) cleaning request / 1 h (60 min) in-person site visit, counted in **business hours only** (`Mon–Fri 08:00–18:00, Sat 09:00–15:00 America/Toronto`, Sunday closed).
+- **Q4 — Site-visit default:** `needsSiteVisit = true` for `commercial` and `postconstruction`, plus a manual toggle on every lead.
+- **Q5 — Ryan's / Lauren's SMS numbers:** Entered via Admin → Team & roles (`admins/{email}.{phone, language}`) after deploy; never hardcoded. `updateOfficeContact` allows Owners to edit their own phone/language (since `setUserRole` blocks self-role changes).
+- **Q6 — Privacy (`COMPLIANCE.md` §2):** Approved for callable-scoped assigned-lead contact access. `listMyLeads` / `getMyLead` return name, phone, email, language, service details, notes, and **full street address only when `needsSiteVisit === true` or `stage === 'site_visit'`** (otherwise area/city only).
+- **Lifecycle safeguards:** Exclude `system:recurring-renewal` bookings from pipeline & lead alerts; keep `bookings.status` ↔ `pipeline.stage` synced across Bookings/Pipeline/Customer Portal (suppressing `"cancelled by customer"` SMS on Lost/admin cancel); auto-stamp `firstContactAt` on first exit from `new` or first `call`/`sms`/`email` note; suppress self-assignment alerts.
+- **UI views:** Priority List (default) + desktop Board view toggle (accessible stage dropdowns, no drag-only actions) + quick "Create E-Agreement" link from `LeadDetailPanel`.

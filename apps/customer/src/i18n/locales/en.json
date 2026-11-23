@@ -772,7 +772,8 @@
         "gallery": "Gallery",
         "settings": "Settings & Policies",
         "team": "Team & roles",
-        "agreements": "Agreements"
+        "agreements": "Agreements",
+        "pipeline": "Pipeline"
       },
       "analytics": {
         "title": "Performance Analytics Dashboard",
@@ -854,7 +855,8 @@
         "roleOption": {
           "cleaner": "Cleaner",
           "lead": "Lead Cleaner",
-          "supervisor": "Supervisor"
+          "supervisor": "Supervisor",
+          "contractor": "Contractor (Leads only)"
         },
         "statusOption": {
           "onboarding": "Onboarding",
@@ -1279,6 +1281,10 @@
       "addedPending": "{{email}} is pre-approved as {{role}}. They get access the first time they sign in with this email.",
       "changed": "{{email}} is now {{role}}.",
       "removed": "{{email}} no longer has office access.",
+      "alertPhoneLabel": "SMS alert phone",
+      "alertLanguageLabel": "Alert language",
+      "saveContact": "Save contact",
+      "contactSaved": "Saved alert contact details for {{email}}.",
       "errors": {
         "load": "Couldn't load the list. Please try again.",
         "email": "Enter a valid email address.",
@@ -1327,6 +1333,10 @@
         "compliance": {
           "title": "4. Compliance, Retention & Emergency Contacts",
           "description": "Photo and agreement retention periods and primary/backup emergency dispatch contacts."
+        },
+        "pipeline": {
+          "title": "5. Sales Pipeline & First-Contact Targets",
+          "description": "Default lead owner for new incoming quote requests and business-hours first-contact SLA targets."
         }
       },
       "fields": {
@@ -1425,6 +1435,18 @@
         "emergencyBackupPhone": {
           "label": "Backup Emergency Contact Phone",
           "help": "Phone number for the secondary emergency contact."
+        },
+        "defaultLeadOwnerEmail": {
+          "label": "Default Lead Owner Email",
+          "help": "Email of the person automatically assigned to every new incoming quote request (leave blank to fall back to OWNER_EMAIL)."
+        },
+        "leadFirstContactTargetMinutes": {
+          "label": "Standard Lead First-Contact Target",
+          "help": "Business minutes before an uncontacted cleaning quote request is flagged overdue (default 120 min = 2 hours)."
+        },
+        "leadSiteVisitFirstContactTargetMinutes": {
+          "label": "Site-Visit Lead First-Contact Target",
+          "help": "Business minutes before an uncontacted in-person quote request is flagged overdue (default 60 min = 1 hour)."
         }
       },
       "history": {
@@ -1565,6 +1587,124 @@
         "redactReasonLabel": "Reason for privacy redaction (audited)",
         "redactReasonPlaceholder": "e.g., Client Law 25 / PIPEDA deletion request received by email",
         "redactReasonRequired": "Please enter a reason (at least 3 characters)."
+      }
+    },
+    "pipeline": {
+      "title": "Sales Pipeline",
+      "subtitle": "Assign leads, track follow-ups against business-hours response targets, and record quotes and outcomes.",
+      "unassigned": "Unassigned",
+      "loading": "Loading sales pipeline…",
+      "empty": "No leads match your current filters.",
+      "searchPlaceholder": "Search leads by name, email, phone, or address…",
+      "filterStage": "Filter by stage",
+      "views": {
+        "myLeads": "My leads",
+        "unassigned": "Unassigned",
+        "all": "All leads"
+      },
+      "viewModes": {
+        "list": "Priority List",
+        "board": "Board View"
+      },
+      "stageFilters": {
+        "open": "Open stages",
+        "all": "All stages (incl. Won/Lost)"
+      },
+      "filters": {
+        "airbnb": "Airbnb only",
+        "siteVisit": "Site visit only"
+      },
+      "stages": {
+        "new": "New",
+        "contacted": "Contacted",
+        "site_visit": "Site visit",
+        "quoted": "Quote sent",
+        "won": "Won",
+        "lost": "Lost"
+      },
+      "roles": {
+        "owner": "Owner",
+        "manager": "Manager",
+        "supervisor": "Supervisor",
+        "lead": "Lead Cleaner",
+        "cleaner": "Cleaner",
+        "contractor": "Contractor"
+      },
+      "lostReasons": {
+        "no_response": "No response",
+        "price": "Price",
+        "chose_competitor": "Chose competitor",
+        "date_unavailable": "Date unavailable",
+        "outside_area": "Outside service area",
+        "duplicate_or_spam": "Duplicate or spam",
+        "other": "Other"
+      },
+      "badges": {
+        "overdue": "Overdue",
+        "overdueFirstContact": "Overdue — first contact",
+        "overdueFollowUp": "Overdue — follow-up",
+        "dueToday": "Due today",
+        "siteVisit": "Site visit"
+      },
+      "table": {
+        "client": "Client",
+        "stage": "Stage",
+        "owner": "Owner",
+        "followUp": "Next follow-up",
+        "quote": "Quoted",
+        "actions": "Actions",
+        "reassignAria": "Assign owner for {{name}}"
+      },
+      "actions": {
+        "open": "Open"
+      },
+      "detail": {
+        "ownerLabel": "Lead Owner",
+        "stageLabel": "Sales Stage",
+        "nextFollowUpLabel": "Next Follow-up Date",
+        "quotedPriceLabel": "Quoted Amount (CAD $, internal only)",
+        "needsSiteVisitLabel": "Requires in-person site visit (1-hour first-contact target)",
+        "lostReasonLabel": "Lost Reason",
+        "lostNoteLabel": "Lost Note (optional)",
+        "lostReasonRequired": "Please select a lost reason before marking this lead Lost.",
+        "invalidQuote": "Please enter a valid non-negative quote amount.",
+        "slaTarget": "First-contact target: {{minutes}} business min ({{elapsed}} elapsed)",
+        "clientNotes": "Client notes",
+        "createAgreement": "Create E-Agreement",
+        "close": "Close",
+        "saveButton": "Save Lead Changes",
+        "saving": "Saving…",
+        "saved": "Lead updated.",
+        "noteAdded": "Contact note added.",
+        "saveError": "Could not save lead update. Please try again."
+      },
+      "notes": {
+        "heading": "Contact Log & Notes",
+        "kindLabel": "Activity type",
+        "bodyLabel": "Note details",
+        "placeholder": "Log call summary, text, email, or site visit note…",
+        "addButton": "Add Note",
+        "empty": "No contact notes logged yet.",
+        "kinds": {
+          "call": "Call",
+          "sms": "SMS",
+          "email": "Email",
+          "note": "Note"
+        }
+      },
+      "analytics": {
+        "title": "Sales Pipeline Metrics",
+        "subtitle": "Open leads by stage, business-hours first-contact speed, conversion rates, and lost reasons.",
+        "openLeads": "Open Leads",
+        "overdue": "Overdue Leads",
+        "medianFirstContact": "Median 1st Contact",
+        "minutesValue": "{{count}} min",
+        "wonLost": "Won / Lost",
+        "wonQuotedValue": "Won Quoted Value",
+        "bySource": "Conversion by Source",
+        "byOwner": "Conversion by Owner",
+        "lostReasons": "Lost Reasons",
+        "noLostLeads": "No lost leads in this range."
       }
     }
   },

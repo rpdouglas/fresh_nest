@@ -1,5 +1,5 @@
 # Firestore Database Schema Reference
-**Version:** 2.2 | **Updated:** 2026-10-28 (P3-E38 money in integer cents, ADR-020)
+**Version:** 2.3 | **Updated:** 2026-11-23 (P3-E40 sales pipeline fields, leadNotes, office contact fields, contractor role, lead_assigned notification)
 
 ---
 
@@ -44,6 +44,17 @@ Stores residential, commercial, and Airbnb cleaning reservations.
 | `jobId` | `string \| null` | ❌ | Associated job document ID backlink once booking is confirmed |
 | `createdBy` | `string` | ❌ | Admin email that created the booking (phone/walk-in bookings), or `'system:recurring-renewal'` for bookings created by the recurring-renewal cron. Absent on public quote requests. |
 | `checklistTemplateId` | `string \| null` | ❌ | P3-E34: saved checklist (`checklistTemplates` ID) chosen by an admin for this client's visits. The job created from this booking gets that list instead of the service-type match, and the recurring-renewal cron copies the field onto each renewal. `null`/absent = chosen by service type. Admin-only (no public-form field). |
+| `pipeline` | `map` | ❌ | P3-E40: sales pipeline metadata (omitted on `system:recurring-renewal` bookings): `{ stage: 'new' \| 'contacted' \| 'site_visit' \| 'quoted' \| 'won' \| 'lost', ownerEmail: string \| null, ownerRole: 'owner' \| 'manager' \| 'cleaner' \| 'lead' \| 'supervisor' \| 'contractor' \| null, ownerAssignedAt: Timestamp \| null, ownerAssignedBy: string \| null, needsSiteVisit: boolean, nextFollowUpDate: string \| null (YYYY-MM-DD Toronto), firstContactAt: Timestamp \| null, quotedPriceCents: int \| null (internal only, P3-E29), quoteSentAt: Timestamp \| null, closedAt: Timestamp \| null, lostReason: 'no_response' \| 'price' \| 'chose_competitor' \| 'date_unavailable' \| 'outside_area' \| 'duplicate_or_spam' \| 'other' \| null, lostNote: string \| null (≤ 500 chars) }`. Watched by `auditBookings`. |
+
+### Subcollection: `bookings/{bookingId}/leadNotes/{noteId}` (P3-E40, append-only)
+Contact log and internal notes on a lead. Office users (`isOffice()`) may read and create append-only notes; non-office lead owners write/read via server callables (`getMyLead`, `addMyLeadNote`). Updates and deletes are denied (`false`).
+
+| Field Name | Type | Required | Description / Allowed Values |
+| :--- | :--- | :--- | :--- |
+| `kind` | `string` | ✅ | `'call' \| 'sms' \| 'email' \| 'note'` |
+| `body` | `string` | ✅ | Note text (`1` to `2000` characters) |
+| `by` | `string` | ✅ | Lowercased email of author |
+| `at` | `Timestamp` | ✅ | Creation timestamp (`serverTimestamp()` / `request.time`) |
 
 ---
 
@@ -85,7 +96,7 @@ Stores employee profiles, schedule constraints, financial limits, and compliance
 | `lastName` | `string` | ✅ | Employee last name |
 | `email` | `string` | ✅ | Employee email address |
 | `phone` | `string` | ✅ | Employee phone number |
-| `role` | `string` | ✅ | `'cleaner' \| 'lead' \| 'supervisor'` |
+| `role` | `string` | ✅ | `'cleaner' \| 'lead' \| 'supervisor' \| 'contractor'` (`contractor` added in P3-E40: signs in to FSM for My Leads & Profile only; excluded from shifts, Dispatch, and payroll rollover) |
 | `status` | `string` | ✅ | `'onboarding' \| 'active' \| 'inactive'` |
 | `preferences` | `map` | ✅ | Preferences: `{ language: 'en' \| 'fr' }` |
 | `constraints` | `map` | ✅ | Constraints: `{ transportMode: 'personal_vehicle' \| 'transit' \| 'rideshare' \| 'walk', transitBufferMinutes: number, blockedWindows: BlockedWindow[] }` |
@@ -107,6 +118,8 @@ Stores the office allowlist: exactly the people with Owner or Manager access (P3
 | `grantedBy` | `string` | ❌ | Email (or uid) of the Owner who granted the role |
 | `grantedAt` | `Timestamp` | ❌ | When the role was granted |
 | `addedAt` | `Timestamp` | ❌ | Legacy: when administrative access was first granted |
+| `phone` | `string` | ❌ | P3-E40: mobile phone number for lead assignment SMS alerts (updated via `updateOfficeContact` / `setUserRole`) |
+| `language` | `string` | ❌ | P3-E40: `'en' \| 'fr'` preferred language for lead alerts and daily digest (default `'en'`) |
 
 **Role claims (Firebase Auth custom claim `role`, P3-E35):** `owner`, `manager` (office: same data access; only Owners grant or revoke office roles), `supervisor` and `staff` (staff app), `customer` (customer portal). The legacy `admin` claim is no longer accepted (P3-E35 cleanup); an Owner can turn a leftover `admin` account into an Owner from Team & roles. Old office-list entries with no `role` or `role: 'admin'` still read as Owner. Role changes are written to `auditLog` with `overrideType: 'role_change'`.
 
@@ -218,8 +231,9 @@ Stores in-app messages and shift notifications dispatched to staff members.
 | :--- | :--- | :--- | :--- |
 | `title` | `string` | ✅ | Localized notification title |
 | `body` | `string` | ✅ | Localized notification text body |
-| `type` | `string` | ✅ | `'shift_assigned' \| 'shift_unassigned' \| 'shift_cancelled' \| 'new_shift_board_posting'` |
+| `type` | `string` | ✅ | `'shift_assigned' \| 'shift_unassigned' \| 'shift_cancelled' \| 'new_shift_board_posting' \| 'lead_assigned'` (`lead_assigned` added in P3-E40; `bookingId` carries the lead booking ID) |
 | `jobId` | `string \| null` | ✅ | Associated job document ID backlink, or `null` |
+| `bookingId` | `string \| null` | ❌ | P3-E40: associated lead booking ID when `type === 'lead_assigned'` |
 | `read` | `boolean` | ✅ | Read status (`false` initially) |
 | `createdAt` | `Timestamp` | ✅ | Timestamp of notification dispatch |
 
@@ -311,6 +325,9 @@ Operational settings and policy record with append-only version history (**P3-E3
 | `emergencyPrimaryPhone` | `string` | `"(613) 861-8812"` | Primary emergency dispatch phone number |
 | `emergencyBackupName` | `string` | `""` | Secondary emergency contact name |
 | `emergencyBackupPhone` | `string` | `""` | Secondary emergency contact phone number |
+| `defaultLeadOwnerEmail` | `string` | `""` | P3-E40: lowercased email of default owner for incoming leads (Owner-editable; blank falls back to `OWNER_EMAIL`) |
+| `leadFirstContactTargetMinutes` | `number` | `120` | P3-E40: first-contact target in business minutes for standard cleaning quote requests (2 hours) |
+| `leadSiteVisitFirstContactTargetMinutes` | `number` | `60` | P3-E40: first-contact target in business minutes for in-person quote / site-visit requests (1 hour) |
 | `version` | `number` | `1, 2, …` | Monotonically increasing integer version number |
 | `updatedAt` | `Timestamp` | — | Timestamp when this version was saved |
 | `updatedBy` | `string` | — | Lowercased email (or UID) of the Owner who saved this version |

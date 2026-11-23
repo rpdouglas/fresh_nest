@@ -56,6 +56,11 @@ const COMPLIANCE_NUMERIC_FIELDS: NumericFieldMeta[] = [
   { key: 'agreementRetentionYears', unitKey: 'years' },
 ]
 
+const PIPELINE_NUMERIC_FIELDS: NumericFieldMeta[] = [
+  { key: 'leadFirstContactTargetMinutes', unitKey: 'minutes' },
+  { key: 'leadSiteVisitFirstContactTargetMinutes', unitKey: 'minutes' },
+]
+
 const isMoneyKey = (key: NumericPolicyKey) => POLICY_MONEY_KEYS.includes(key)
 
 const inputClass =
@@ -96,7 +101,7 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ isAuthorized, isOwner 
   }
 
   const handleStringChange = (
-    key: 'emergencyPrimaryPhone' | 'emergencyBackupName' | 'emergencyBackupPhone',
+    key: 'emergencyPrimaryPhone' | 'emergencyBackupName' | 'emergencyBackupPhone' | 'defaultLeadOwnerEmail',
     value: string,
   ) => {
     setDraftEdits((prev) => ({
@@ -375,6 +380,40 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ isAuthorized, isOwner 
                 className={inputClass}
               />
             </div>
+          </div>
+        </section>
+
+        {/* Section 5: Sales Pipeline & Lead Targets (P3-E40) */}
+        <section className="bg-white border border-sand rounded p-6 flex flex-col gap-4">
+          <div>
+            <h3 className="font-display text-2xl text-charcoal">
+              {t('admin.settings.sections.pipeline.title')}
+            </h3>
+            <p className="font-body text-base text-text-muted mt-1">
+              {t('admin.settings.sections.pipeline.description')}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+            <div className="flex flex-col gap-1 md:col-span-2">
+              <label
+                htmlFor="policy-defaultLeadOwnerEmail"
+                className="font-body text-base font-medium text-charcoal"
+              >
+                {t('admin.settings.fields.defaultLeadOwnerEmail.label')}
+              </label>
+              <p className="font-body text-base text-text-muted">
+                {t('admin.settings.fields.defaultLeadOwnerEmail.help')}
+              </p>
+              <input
+                id="policy-defaultLeadOwnerEmail"
+                type="email"
+                disabled={!isOwner || saving}
+                value={formValues.defaultLeadOwnerEmail}
+                onChange={(e) => handleStringChange('defaultLeadOwnerEmail', e.target.value)}
+                className={inputClass}
+              />
+            </div>
+            {PIPELINE_NUMERIC_FIELDS.map(renderNumericField)}
           </div>
         </section>
 

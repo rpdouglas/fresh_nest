@@ -11,6 +11,8 @@ import {
 import { logError } from '../lib/shared'
 import { centsToDollars, roundHalfUp, toCents } from '../shared/money'
 import { BUSINESS_TZ, monthKey } from '../shared/time'
+import { computePipelineKpis, type PipelineKpiBookingInput } from '../shared/pipeline'
+import { normalizePolicySettings } from '../shared/policy'
 
 function calculateEstimatedPriceFallback(propertyType: string, serviceType: string, frequency: string): number {
   if (propertyType === 'commercial') {
@@ -114,15 +116,24 @@ export const getAnalyticsKPIs = onCall(async (request) => {
     logError('[getAnalyticsKPIs] Aggregation query failed:', aggErr)
   }
 
-  const snapshot = await bookingsQuery.select(
-    'leadSource',
-    'createdAt',
-    'estimatedPriceCents',
-    'referredBy',
-    'propertyType',
-    'serviceType',
-    'frequency',
-  ).get()
+  const [snapshot, policySnap] = await Promise.all([
+    bookingsQuery.select(
+      'leadSource',
+      'createdAt',
+      'estimatedPriceCents',
+      'referredBy',
+      'propertyType',
+      'serviceType',
+      'frequency',
+      'status',
+      'createdBy',
+      'pipeline',
+    ).get(),
+    db.collection('settings').doc('policy').get().catch(() => null),
+  ])
+  const policy = normalizePolicySettings(
+    policySnap && policySnap.exists ? (policySnap.data() as Record<string, unknown>) : undefined,
+  )
 
   let referredBookingsCount = 0
   let totalRevenueCents = 0
@@ -218,6 +229,15 @@ export const getAnalyticsKPIs = onCall(async (request) => {
     ? centsToDollars(roundHalfUp(totalRevenueCents / analyticsTotalBookings))
     : 0
 
+  const pipeline = computePipelineKpis(
+    snapshot.docs.map((docSnap) => docSnap.data() as PipelineKpiBookingInput),
+    {
+      now,
+      firstContactTargetMinutes: policy.leadFirstContactTargetMinutes,
+      siteVisitTargetMinutes: policy.leadSiteVisitFirstContactTargetMinutes,
+    },
+  )
+
   // Display payload for the admin charts: amounts in dollars, computed from cents.
   const payload = {
     analyticsTotalBookings,
@@ -227,6 +247,7 @@ export const getAnalyticsKPIs = onCall(async (request) => {
     monthlyTrendData,
     referredBookingsCount,
     channelsPerformance,
+    pipeline,
   }
 
   const expiresAtDate = new Date()

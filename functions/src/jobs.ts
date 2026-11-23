@@ -266,6 +266,9 @@ export async function executeClaimJob(
       }
 
       const staffData = staffSnap.data()!
+      if (staffData.role === 'contractor') {
+        throw new Error('CONTRACTOR_SHIFT_FORBIDDEN')
+      }
       if (staffData.status !== 'active') {
         throw new Error('STAFF_INACTIVE')
       }
@@ -357,6 +360,8 @@ export async function rollOverAllStaffEarnings(now: Date = new Date()): Promise<
   let rolloverCount = 0
 
   staffSnap.docs.forEach((docSnap) => {
+    // P3-E40 (Q1): contractors are excluded from shift payroll & earnings rollover
+    if (docSnap.data().role === 'contractor') return
     // P3-E38: cents; history entries saved in dollars are converted as they are rewritten
     const { currentMonthEarningsCents, earningsHistory } = normalizeFinancials(docSnap.data().financials)
     const newHistory = [...earningsHistory, { month: lastMonthStr, totalCents: currentMonthEarningsCents }]

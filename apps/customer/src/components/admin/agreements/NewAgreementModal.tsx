@@ -36,6 +36,8 @@ interface NewAgreementModalProps {
   onCreated: () => void
   bookings: Booking[]
   policy: PolicySettingsValues
+  /** P3-E40: optional booking ID to prefill when opened from Pipeline LeadDetailPanel. */
+  initialBookingId?: string
 }
 
 const INPUT_CLASS =
@@ -47,23 +49,40 @@ export function NewAgreementModal({
   onCreated,
   bookings,
   policy,
+  initialBookingId,
 }: NewAgreementModalProps) {
   const { t } = useTranslation()
+  const initialBooking = initialBookingId ? bookings.find((b) => b.id === initialBookingId) : undefined
+  const initialType: AgreementType = initialBooking?.serviceType === 'commercial' ? 'commercial' : 'residential'
+  const initialService: AgreementServiceType =
+    initialBooking && (AGREEMENT_SERVICE_TYPES as readonly string[]).includes(initialBooking.serviceType)
+      ? initialBooking.serviceType
+      : 'standard'
+  const initialFrequency: AgreementFrequency =
+    initialBooking && (AGREEMENT_FREQUENCIES as readonly string[]).includes(initialBooking.frequency)
+      ? initialBooking.frequency
+      : 'biweekly'
 
-  const [selectedBookingId, setSelectedBookingId] = useState('')
-  const [type, setType] = useState<AgreementType>('residential')
-  const [language, setLanguage] = useState<AgreementLanguage>('en')
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
-  const [address, setAddress] = useState('')
-  const [serviceType, setServiceType] = useState<AgreementServiceType>('standard')
-  const [frequency, setFrequency] = useState<AgreementFrequency>('biweekly')
-  const [startDate, setStartDate] = useState(() => todayInZone())
+  const [selectedBookingId, setSelectedBookingId] = useState(initialBooking?.id ?? '')
+  const [type, setType] = useState<AgreementType>(initialType)
+  const [language, setLanguage] = useState<AgreementLanguage>(initialBooking?.language === 'fr' ? 'fr' : 'en')
+  const [name, setName] = useState(initialBooking ? `${initialBooking.firstName} ${initialBooking.lastName}`.trim() : '')
+  const [email, setEmail] = useState(initialBooking?.email ?? '')
+  const [phone, setPhone] = useState(initialBooking?.phone ?? '')
+  const [address, setAddress] = useState(initialBooking?.address ?? '')
+  const [serviceType, setServiceType] = useState<AgreementServiceType>(initialService)
+  const [frequency, setFrequency] = useState<AgreementFrequency>(initialFrequency)
+  const [startDate, setStartDate] = useState(() =>
+    initialBooking?.preferredDate && /^\d{4}-\d{2}-\d{2}$/.test(initialBooking.preferredDate)
+      ? initialBooking.preferredDate
+      : todayInZone(),
+  )
   const [rateType, setRateType] = useState<AgreementRateType>('flat')
   const [rateDollars, setRateDollars] = useState('180.00')
   const [taxExempt, setTaxExempt] = useState(false)
-  const [cancelWindowHours, setCancelWindowHours] = useState(policy.standardCancelWindowHours)
+  const [cancelWindowHours, setCancelWindowHours] = useState(
+    isDeepCancelService(initialService) ? policy.deepCancelWindowHours : policy.standardCancelWindowHours,
+  )
   const [lateCancelFeeDollars, setLateCancelFeeDollars] = useState(
     centsToDollars(policy.lateCancellationFeeCents).toFixed(2),
   )
@@ -71,7 +90,9 @@ export function NewAgreementModal({
     centsToDollars(policy.lockoutFeeCents).toFixed(2),
   )
   const [latePaymentPct, setLatePaymentPct] = useState('2')
-  const [noticePeriodDays, setNoticePeriodDays] = useState(DEFAULT_RESIDENTIAL_NOTICE_DAYS)
+  const [noticePeriodDays, setNoticePeriodDays] = useState(
+    initialType === 'commercial' ? DEFAULT_COMMERCIAL_NOTICE_DAYS : DEFAULT_RESIDENTIAL_NOTICE_DAYS,
+  )
   const [scopeNotes, setScopeNotes] = useState('')
   const [linkValidityDays, setLinkValidityDays] = useState<AgreementLinkValidityDays>(
     DEFAULT_AGREEMENT_LINK_VALIDITY_DAYS,

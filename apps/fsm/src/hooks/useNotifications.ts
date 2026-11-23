@@ -8,8 +8,9 @@ import type { Notification } from '../types'
 interface RawNotificationDoc {
   title: string
   body: string
-  type: 'shift_assigned' | 'shift_unassigned' | 'shift_cancelled' | 'new_shift_board_posting'
+  type: 'shift_assigned' | 'shift_unassigned' | 'shift_cancelled' | 'new_shift_board_posting' | 'lead_assigned'
   jobId?: string | null
+  bookingId?: string | null
   read?: boolean
   createdAt: unknown
 }
@@ -50,6 +51,7 @@ export function useNotifications() {
             body: docData.body,
             type: docData.type,
             jobId: docData.jobId ?? null,
+            bookingId: docData.bookingId ?? null,
             read: docData.read ?? false,
             createdAt: toDate(docData.createdAt),
           })
