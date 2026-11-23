@@ -4,19 +4,28 @@
   "version": "0.0.0",
   "type": "module",
   "workspaces": [
-    "apps/*",
+    "apps/customer",
+    "apps/fsm",
     "packages/*"
   ],
   "scripts": {
     "dev:customer": "npm --workspace=apps/customer run dev",
     "dev:fsm": "npm --workspace=apps/fsm run dev",
+    "dev:ops": "npm --prefix apps/ops run dev",
+    "dev:ops:api": "npm --prefix functions-ops run dev",
     "build:customer": "npm --workspace=apps/customer run build",
     "build:fsm": "npm --workspace=apps/fsm run build",
+    "build:ops": "npm --prefix apps/ops run build",
+    "build:ops:functions": "npm --prefix functions-ops run build",
     "build": "npm run build:customer && npm run build:fsm",
     "test:customer": "npm --workspace=apps/customer run test",
     "test:customer:rules": "npm --workspace=apps/customer run test:rules",
     "test:customer:e2e": "npm --workspace=apps/customer run test:e2e",
     "test:fsm": "npm --workspace=apps/fsm run test",
+    "test:ops": "npm --prefix apps/ops run test",
+    "test:ops:functions": "npm --prefix functions-ops run test",
+    "test:ops:e2e": "npm --prefix apps/ops/e2e run test",
+    "lint:ops": "npm --prefix apps/ops run lint",
     "lint": "npm --workspaces run lint --if-present"
   },
   "dependencies": {

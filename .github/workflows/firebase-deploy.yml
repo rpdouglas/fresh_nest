@@ -110,7 +110,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm test
-      - name: Deploy Cloud Functions
+      - name: Deploy Cloud Functions (default codebase only — ops deploys manually via deploy-ops.yml per ADR-022)
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
@@ -118,7 +118,7 @@ jobs:
           trap 'rm -f "$SA_FILE"' EXIT
           printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$SA_FILE"
           export GOOGLE_APPLICATION_CREDENTIALS="$SA_FILE"
-          npx -y firebase-tools@15 deploy --only functions --project freshnest-aa51e --non-interactive
+          npx -y firebase-tools@15 deploy --only functions:default --project freshnest-aa51e --non-interactive
 
   customer:
     needs: [changes, functions]

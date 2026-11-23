@@ -32,6 +32,7 @@ jobs:
       fsm: ${{ steps.filter.outputs.fsm }}
       functions: ${{ steps.filter.outputs.functions }}
       rules: ${{ steps.filter.outputs.rules }}
+      ops: ${{ steps.filter.outputs.ops }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -68,6 +69,12 @@ jobs:
               - 'storage.rules'
               - 'apps/customer/test/**'
               - 'apps/customer/vitest.rules.config.ts'
+            ops:
+              - *ci
+              - 'apps/ops/**'
+              - 'functions-ops/**'
+              - 'scripts/ops-migration/**'
+              - 'firebase.json'
 
   customer:
     needs: changes
@@ -221,4 +228,86 @@ jobs:
         with:
           name: e2e-traces
           path: apps/customer/test-results/
+          retention-days: 7
+
+  # Ops hub (apps/ops + functions-ops + migration scripts) — isolated outside root npm workspaces (ADR-022).
+  ops:
+    needs: changes
+    if: needs.changes.outputs.ops == 'true'
+    runs-on: ubuntu-latest
+    permissions: { checks: write, contents: read, pull-requests: write }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            apps/ops/package-lock.json
+            functions-ops/package-lock.json
+      - name: Functions-ops typecheck, unit tests & build
+        working-directory: functions-ops
+        run: |
+          npm ci
+          npx tsc --noEmit -p tsconfig.check.json
+          npm test
+          npm run build
+      - name: Ops web lint, unit tests & build
+        working-directory: apps/ops
+        run: |
+          npm ci
+          npm run lint
+          npm test
+          npm run build
+      - name: Ops migration script tests
+        run: node --test scripts/ops-migration/ops-migration.test.mjs
+      # Enabled once the human creates the `freshnest-ops` Hosting site and sets repo variable OPS_HOSTING_READY=true.
+      - name: Deploy Ops preview
+        if: github.actor != 'dependabot[bot]' && vars.OPS_HOSTING_READY == 'true'
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: freshnest-aa51e
+          target: freshnest-ops
+          expires: 7d
+
+  # Ops browser tests against pretend Camelo (apps/ops/e2e) — zero external credentials needed.
+  ops-e2e:
+    needs: changes
+    if: needs.changes.outputs.ops == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            apps/ops/package-lock.json
+            apps/ops/e2e/package-lock.json
+            functions-ops/package-lock.json
+      - name: Install dependencies (functions-ops, apps/ops, apps/ops/e2e)
+        run: |
+          npm --prefix functions-ops ci
+          npm --prefix apps/ops ci
+          npm --prefix apps/ops/e2e ci
+      - name: Typecheck ops E2E
+        working-directory: apps/ops/e2e
+        run: npm run typecheck
+      - name: Install Playwright Chromium
+        working-directory: apps/ops/e2e
+        run: npx playwright install --with-deps chromium
+      - name: Run ops browser tests (pretend Camelo)
+        working-directory: apps/ops/e2e
+        run: npm test
+        env:
+          CI: true
+      - name: Upload traces of failed ops E2E tests
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ops-e2e-traces
+          path: apps/ops/e2e/test-results/
           retention-days: 7

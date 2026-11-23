@@ -1,0 +1,105 @@
+name: Deploy Ops (Manual — Phase 1)
+# Lockstep manual deploy for apps/ops (freshnest-ops) and functions-ops (codebase: ops) per ADR-022 / P3-E41.
+# Never runs automatically on push during Phase 1; transitions to auto-deploy after the pay gate passes.
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'What to deploy'
+        required: true
+        default: 'both'
+        type: choice
+        options:
+          - both
+          - functions
+          - hosting
+      health_url:
+        description: 'Live /api/health URL for post-deploy smoke check'
+        required: true
+        default: 'https://ops.freshnestco.ca/api/health'
+        type: string
+
+concurrency:
+  group: deploy-ops-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-ops:
+    runs-on: ubuntu-latest
+    permissions: { checks: write, contents: read, pull-requests: write }
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: |
+            apps/ops/package-lock.json
+            functions-ops/package-lock.json
+
+      - name: Install, test, build & stamp functions-ops
+        working-directory: functions-ops
+        run: |
+          npm ci
+          npx tsc --noEmit -p tsconfig.check.json
+          npm test
+          npm run build
+          node scripts/stamp-build.mjs
+
+      - name: Install, lint, test & build apps/ops
+        working-directory: apps/ops
+        run: |
+          npm ci
+          npm run lint
+          npm test
+          npm run build
+
+      - name: Deploy Ops Cloud Functions (codebase ops)
+        if: ${{ inputs.target == 'both' || inputs.target == 'functions' }}
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          SA_FILE="$RUNNER_TEMP/firebase-sa.json"
+          trap 'rm -f "$SA_FILE"' EXIT
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$SA_FILE"
+          export GOOGLE_APPLICATION_CREDENTIALS="$SA_FILE"
+          npx -y firebase-tools@15 deploy --only functions:ops --project freshnest-aa51e --non-interactive
+
+      - name: Deploy Ops Hosting (freshnest-ops)
+        if: ${{ inputs.target == 'both' || inputs.target == 'hosting' }}
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: freshnest-aa51e
+          channelId: live
+          target: freshnest-ops
+
+      - name: Post-deploy /api/health smoke check
+        env:
+          HEALTH_URL: ${{ inputs.health_url }}
+          DEPLOY_TARGET: ${{ inputs.target }}
+        run: |
+          EXPECTED_SHA="$(git rev-parse --short=7 HEAD)"
+          echo "Checking $HEALTH_URL (expected commit: $EXPECTED_SHA)..."
+          BODY=""
+          for attempt in 1 2 3 4 5; do
+            BODY="$(curl -sfS --max-time 15 "$HEALTH_URL" || true)"
+            if echo "$BODY" | grep -q '"ok":true'; then
+              echo "Health OK on attempt $attempt: $BODY"
+              break
+            fi
+            echo "Attempt $attempt failed (body: $BODY); waiting 5s..."
+            sleep 5
+          done
+          echo "$BODY" | grep -q '"ok":true' || { echo "ERROR: /api/health did not return ok:true"; exit 1; }
+          if [ "$DEPLOY_TARGET" = "both" ] || [ "$DEPLOY_TARGET" = "functions" ]; then
+            echo "$BODY" | grep -q "\"build\":\"$EXPECTED_SHA\"" || {
+              echo "ERROR: /api/health build SHA did not match $EXPECTED_SHA (got: $BODY)"
+              exit 1
+            }
+          fi

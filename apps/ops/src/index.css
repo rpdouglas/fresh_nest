@@ -1,0 +1,220 @@
+@import 'tailwindcss';
+
+@import '@fontsource/fraunces/latin-400.css';
+@import '@fontsource/fraunces/latin-600.css';
+@import '@fontsource/jost/latin-400.css';
+@import '@fontsource/jost/latin-500.css';
+@import '@fontsource/jost/latin-600.css';
+@import '@fontsource/caveat/latin-500.css';
+@import '@fontsource/caveat/latin-600.css';
+
+:root,
+[data-theme='light'] {
+  --surface: #f7f1e8;
+  --surface-raised: #fffdf9;
+  --surface-sunken: #e9ddcb;
+  --sage: #dce5d6;
+  --sage-deep: #4a5f4c;
+  --ink: #1f3135;
+  --ink-muted: #4a5e63;
+  --nest-teal: #3d6b75;
+  --nest-teal-deep: #2f5560;
+  --on-nest-teal: #ffffff;
+  --clay: #c17a54;
+  --clay-text: #92502d;
+  --on-clay: #1a0f08;
+  --hairline: #cdbfa9;
+  --outline: #6f8388;
+  --focus-ring: #2f5560;
+  --alert: #a03a2c;
+  --positive: #3f6a4b;
+  --mark-teal: #356a83;
+  --shadow-soft: 0 8px 24px 0 rgba(31, 49, 53, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: #14252a;
+    --surface-raised: #1d3238;
+    --surface-sunken: #0f1d21;
+    --sage: #2a3d33;
+    --sage-deep: #b4ccb3;
+    --ink: #f4ede2;
+    --ink-muted: #b8c7c9;
+    --nest-teal: #86b5bf;
+    --nest-teal-deep: #a9cdd5;
+    --on-nest-teal: #10262b;
+    --clay: #d9946f;
+    --clay-text: #e8ad8e;
+    --on-clay: #14252a;
+    --hairline: #3a5258;
+    --outline: #7f9aa0;
+    --focus-ring: #a9cdd5;
+    --alert: #f0a394;
+    --positive: #9ccba6;
+    --shadow-soft: 0 8px 24px 0 rgba(0, 0, 0, 0.35);
+  }
+}
+
+@theme {
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-sage: var(--sage);
+  --color-sage-deep: var(--sage-deep);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-nest-teal: var(--nest-teal);
+  --color-nest-teal-deep: var(--nest-teal-deep);
+  --color-on-nest-teal: var(--on-nest-teal);
+  --color-clay: var(--clay);
+  --color-clay-text: var(--clay-text);
+  --color-on-clay: var(--on-clay);
+  --color-hairline: var(--hairline);
+  --color-outline: var(--outline);
+  --color-focus-ring: var(--focus-ring);
+  --color-alert: var(--alert);
+  --color-positive: var(--positive);
+  --color-mark-teal: var(--mark-teal);
+
+  /* Brand header band & accents */
+  --color-accent: var(--nest-teal);
+  --color-accent-dark: var(--nest-teal-deep);
+  --color-band: #193844;
+  --color-band-soft: #244957;
+  --color-band-line: #375e6d;
+  --color-band-muted: #a3c2cf;
+
+  /* chart: over / under schedule, light and dark steps (validated for colour-blind separation) */
+  --color-over: #2a78d6;
+  --color-over-dark: #3987e5;
+  --color-under: #e34948;
+  --color-under-dark: #e66767;
+
+  --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-sans: 'Jost', 'Avenir Next', 'Segoe UI', system-ui, sans-serif;
+  --font-script: 'Caveat', 'Segoe Script', cursive;
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 28px;
+  --radius-pill: 999px;
+  --shadow-soft: var(--shadow-soft);
+}
+
+@media print {
+  @page {
+    margin: 12mm;
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--surface);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: normal;
+}
+
+/*
+ * A big grid that scrolls inside its own box, with the header row, the name column
+ * and the total row frozen. Sticky cells need a solid background to cover what
+ * scrolls beneath them. Print shows the whole table, nothing frozen.
+ */
+.frozen-grid {
+  @apply max-h-[75vh] overflow-auto print:max-h-none print:overflow-visible;
+  --frozen-bg: var(--surface-raised);
+  --frozen-line: var(--hairline);
+}
+.frozen-grid thead tr:first-child th,
+.frozen-grid tbody th[scope='row'],
+.frozen-grid tfoot > tr > * {
+  @apply sticky print:static;
+  background-color: var(--frozen-bg);
+}
+.frozen-grid thead tr:first-child th {
+  @apply top-0 z-20;
+  /* the row's own border is lost once it sticks, so draw it as a shadow */
+  box-shadow: inset 0 -1px 0 var(--frozen-line);
+}
+.frozen-grid tbody th[scope='row'],
+.frozen-grid thead tr:first-child th:first-child,
+.frozen-grid tfoot th[scope='row'] {
+  @apply left-0;
+}
+.frozen-grid tbody th[scope='row'] {
+  @apply z-10;
+  /* marks where the frozen column ends once the rest scrolls under it */
+  box-shadow: inset -1px 0 0 var(--frozen-line);
+}
+.frozen-grid thead tr:first-child th:first-child {
+  @apply z-30;
+}
+.frozen-grid tfoot > tr > * {
+  @apply bottom-0 z-20;
+  box-shadow: inset 0 1px 0 var(--frozen-line);
+}
+.frozen-grid tfoot th[scope='row'] {
+  @apply z-30;
+}
+
+/*
+ * A table that becomes a list of cards on a phone: each cell on its own line with
+ * its column name (from data-label) beside it, and cells without a label (the row
+ * of buttons) full width. Desktop and print keep the table.
+ */
+@media screen and (width < 40rem) {
+  .stack-on-phone table {
+    min-width: 0;
+  }
+  .stack-on-phone thead {
+    @apply sr-only;
+  }
+  .stack-on-phone tbody,
+  .stack-on-phone tr,
+  .stack-on-phone th[scope='rowgroup'] {
+    display: block;
+  }
+  .stack-on-phone td[data-label] {
+    @apply flex items-baseline justify-between gap-3 border-0 px-4 py-1 text-right;
+  }
+  .stack-on-phone td[data-label]::before {
+    content: attr(data-label);
+    @apply flex-none text-left text-xs font-semibold tracking-wide text-ink-muted uppercase;
+  }
+  .stack-on-phone tr:has(> td[data-label]) {
+    @apply pt-2;
+  }
+  .stack-on-phone td:not([data-label]) {
+    @apply block px-4 pb-3;
+  }
+  .stack-on-phone td:not([data-label]) button {
+    @apply px-3.5 py-2;
+  }
+  /* a grid of days (pay, hours): a card per person or client, its name on top, only the days worked, then the
+     totals; the totals row is a card of its own (decision 0043) */
+  .stack-on-phone td[data-empty] {
+    display: none;
+  }
+  .stack-on-phone tfoot,
+  .stack-on-phone tbody tr,
+  .stack-on-phone tfoot tr {
+    display: block;
+  }
+  .stack-on-phone tbody tr,
+  .stack-on-phone tfoot tr {
+    @apply border-t border-hairline pb-2;
+  }
+  .stack-on-phone.frozen-grid {
+    @apply max-h-none overflow-visible;
+  }
+  .stack-on-phone.frozen-grid tbody th[scope='row'],
+  .stack-on-phone.frozen-grid tfoot > tr > * {
+    position: static;
+    box-shadow: none;
+  }
+  .stack-on-phone tbody th[scope='row'],
+  .stack-on-phone tfoot th[scope='row'] {
+    @apply block border-0 px-4 pt-3 pb-1 text-left text-base;
+  }
+}

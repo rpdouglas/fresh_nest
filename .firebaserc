@@ -13,6 +13,9 @@
         ],
         "freshnest-fsm": [
           "freshnest-fsm"
+        ],
+        "freshnest-ops": [
+          "freshnest-ops"
         ]
       }
     }
