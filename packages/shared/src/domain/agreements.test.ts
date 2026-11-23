@@ -10,6 +10,8 @@ import {
   normalizeDatabaseId,
   isValidDatabaseId,
   agreementPdfStoragePath,
+  DEFAULT_AGREEMENT_RATE_CENTS,
+  DEFAULT_AGREEMENT_RATE_TYPE,
   DEFAULT_LATE_PAYMENT_BASIS_POINTS,
   DEFAULT_RESIDENTIAL_NOTICE_DAYS,
   DEFAULT_COMMERCIAL_NOTICE_DAYS,
@@ -69,6 +71,10 @@ describe('agreements domain (P3-E39)', () => {
   })
 
   it('formats rates and basis points in EN and FR', () => {
+    expect(DEFAULT_AGREEMENT_RATE_TYPE).toBe('hourly')
+    expect(DEFAULT_AGREEMENT_RATE_CENTS).toBe(7500)
+    expect(formatAgreementRate(DEFAULT_AGREEMENT_RATE_CENTS, DEFAULT_AGREEMENT_RATE_TYPE, 'en')).toContain('75.00/hr')
+    expect(formatAgreementRate(DEFAULT_AGREEMENT_RATE_CENTS, DEFAULT_AGREEMENT_RATE_TYPE, 'fr')).toMatch(/75,00.*\/h/)
     expect(formatAgreementRate(4500, 'hourly', 'en')).toContain('45.00/hr')
     expect(formatAgreementRate(4500, 'hourly', 'fr')).toContain('/h')
     expect(formatAgreementRate(18500, 'flat', 'en')).toContain('per visit')
