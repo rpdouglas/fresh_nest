@@ -7,6 +7,12 @@
       "pattern": "^https://freshnest-aa51e\\.web\\.app"
     },
     {
+      "pattern": "^https://ops\\.freshnestco\\.ca"
+    },
+    {
+      "pattern": "^https://fnc-reports\\.web\\.app"
+    },
+    {
       "pattern": "^https://console\\.firebase\\.google\\.com"
     },
     {
