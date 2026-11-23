@@ -47,6 +47,14 @@ service firebase.storage {
       allow write: if false;
     }
 
+    // P3-E41 (ADR-022): ops visit photos live in the dedicated private GCS bucket
+    // `freshnest-aa51e-schedule-photos` (uniform bucket-level access, public-access-prevention)
+    // and are accessed exclusively by `functions-ops` via Admin SDK. Explicitly denied here as
+    // defense in depth against any client access under `visits/`.
+    match /visits/{allPaths=**} {
+      allow read, write: if false;
+    }
+
     match /{allPaths=**} {
       allow read, write: if false;
     }

@@ -268,6 +268,19 @@ service cloud.firestore {
       }
     }
 
+    // 9. Ops Collections (P3-E41, ADR-022 — strictly server-only via Admin SDK)
+    match /scheduleChangeLog/{docId} { allow read, write: if false; }
+    match /scheduleCleanerTokens/{docId} { allow read, write: if false; }
+    match /scheduleClientRates/{docId} { allow read, write: if false; }
+    match /scheduleFeedback/{docId} { allow read, write: if false; }
+    match /scheduleInvoiced/{docId} { allow read, write: if false; }
+    match /scheduleLiveHandled/{docId} { allow read, write: if false; }
+    match /schedulePlaces/{docId} { allow read, write: if false; }
+    match /scheduleSettings/{docId} { allow read, write: if false; }
+    match /scheduleSnapshots/{docId} { allow read, write: if false; }
+    match /scheduleSoloOk/{docId} { allow read, write: if false; }
+    match /scheduleVisitPhotos/{docId} { allow read, write: if false; }
+
     // Default Deny-All for other collections
     match /{document=**} {
       allow read, write: if false;

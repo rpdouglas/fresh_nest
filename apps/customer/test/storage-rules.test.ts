@@ -154,6 +154,27 @@ describe('client e-agreement PDFs (P3-E39, ADR-021)', () => {
   })
 })
 
+describe('ops visit photos defense-in-depth (P3-E41, ADR-022)', () => {
+  it('blocks all client reads, writes, and deletes under visits/ for every role including owner and manager', async () => {
+    const filePath = 'visits/shift-1/before-1.jpg'
+    await seed(filePath)
+    const allContexts = [
+      testEnv.unauthenticatedContext().storage(),
+      staff('c1', 'customer'),
+      staff('b1', 'staff'),
+      staff('s1', 'supervisor'),
+      staff('a1', 'admin'),
+      staff('m1', 'manager'),
+      staff('o1', 'owner'),
+    ]
+    for (const s of allContexts) {
+      await assertFails(s.ref(filePath).getMetadata())
+      await assertFails(upload(s, filePath, JPEG, 'image/jpeg'))
+      await assertFails(s.ref(filePath).delete())
+    }
+  })
+})
+
 describe('everything else stays closed', () => {
   it('denies reads and writes outside the matched paths', async () => {
     await assertFails(upload(staff('lauren', 'owner'), 'other/file.jpg', JPEG, 'image/jpeg'))

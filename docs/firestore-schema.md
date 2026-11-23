@@ -1,5 +1,5 @@
 # Firestore Database Schema Reference
-**Version:** 2.3 | **Updated:** 2026-11-23 (P3-E40 sales pipeline fields, leadNotes, office contact fields, contractor role, lead_assigned notification)
+**Version:** 2.4 | **Updated:** 2026-11-23 (P3-E41 §17 Ops collections from FNC Landing, ADR-022)
 
 ---
 
@@ -110,7 +110,7 @@ Stores employee profiles, schedule constraints, financial limits, and compliance
 ---
 
 ## 5. Collection: `admins`
-Stores the office allowlist: exactly the people with Owner or Manager access (P3-E35). Doc ID is the lowercased email. Written only by the `setUserRole` Cloud Function; apps can't write it. An entry may exist before the person has an account (pre-approval); `onUserCreated` gives them the role on first sign-in. Some old entries were added by hand under an account ID instead of an email: nothing reads them for access. The Team & roles tab shows their email (via the `resolveOfficeEntries` function), and `setUserRole` deletes them when it updates that account. Office users can read the whole list (Team & roles); anyone else can read only their own entry.
+Stores the office allowlist: exactly the people with Owner or Manager access (P3-E35). Doc ID is the lowercased email. Written only by the `setUserRole` Cloud Function; apps can't write it. An entry may exist before the person has an account (pre-approval); `onUserCreated` gives them the role on first sign-in. Some old entries were added by hand under an account ID instead of an email: nothing reads them for access. The Team & roles tab shows their email (via the `resolveOfficeEntries` function), and `setUserRole` deletes them when it updates that account. Office users can read the whole list (Team & roles); anyone else can read only their own entry. Under **P3-E41 / ADR-022**, `admins/{email}` is also checked live by `functions-ops` (`scheduleApi`) to gate office access to `ops.freshnestco.ca` with immediate revocation.
 
 | Field Name | Type | Required | Description / Allowed Values |
 | :--- | :--- | :--- | :--- |
@@ -433,3 +433,136 @@ All collections below allow **office read (`isOffice()` — Owner/Manager)** and
 ### `agreementTemplates/{templateId}` & `agreementTemplates/{templateId}/versions/{versionId}`
 - Template doc: `family: 'client'`, `type: 'residential' | 'commercial'`, `nameEn`, `nameFr`, `currentVersionId`
 - Version doc (immutable once `published`): `version`, `status: 'draft' | 'published' | 'retired'`, `bodyEn`, `bodyFr`, `bodyHashEn`, `bodyHashFr`, `publishedAt`, `publishedBy`
+
+---
+
+## 17. Ops Collections (from FNC Landing — P3-E41, ADR-022)
+
+Imported verbatim from `rpdouglas/blurb` (`live` tag SHA `f881f49a5f6e41617054e48502b94f4d56c9afda`, `functions/src/firestore.ts` & `stores.ts`). All 11 collections are **strictly server-only** (`allow read, write: if false` in `firestore.rules` and `firestore.dev.rules`) — read and written exclusively by `functions-ops` (`scheduleApi`) via the Firebase Admin SDK.
+
+> **ADR-020 scoped note (ADR-022):** During Phase 1, `scheduleInvoiced.amount` and `scheduleClientRates.rules[].dollars` keep their existing dollar number shapes so payroll and invoicing code stays untouched through the pay gate. Conversion to integer cents happens when reports are rewritten onto Fresh Nest data in Phase 3.
+
+> **Firestore TTL policies (required in `freshnest-aa51e`):** Enable TTL on field `expireAt` for three collection groups:
+> - `scheduleChangeLog` — 3 years after `at` (Ontario Employment Standards Act)
+> - `scheduleVisitPhotos` — 1 year after `takenAt` (matches GCS bucket lifecycle)
+> - `scheduleCleanerTokens` — Camelo token expiry
+
+> **Visit photo storage bucket:** Private GCS bucket `freshnest-aa51e-schedule-photos` (`us-central1`, uniform bucket-level access, public-access-prevention, 1-year lifecycle rule). `scheduleVisitPhotos.path` holds bucket-relative paths (`visits/...`), never exposed to browsers.
+
+### 17.1 `scheduleChangeLog/{autoId}`
+Timesheet approval/edit audit log written by `scheduleApi`. TTL on `expireAt` (3 years).
+- `at`: `number` (ms since epoch)
+- `email`: `string` (actor email)
+- `action`: `string`
+- `timesheetId`: `string`
+- `employee`: `string | null`
+- `sheetFrom`: `string | null` (ISO timestamp of timesheet start)
+- `sheetFromMs`: `number | null` (storage-only query index field; stripped on read)
+- `before`: `map | null`
+- `after`: `map | null`
+- `ok`: `boolean`
+- `message`: `string | null`
+- `expireAt`: `Timestamp` (storage-only TTL field: `at + 3 years`)
+
+### 17.2 `scheduleFeedback/{autoId}`
+Client kudos and complaints recorded by the office.
+- `type`: `'kudos' | 'complaint'`
+- `date`: `string` (`YYYY-MM-DD`, local day)
+- `visitStart`: `string | null`
+- `visitEnd`: `string | null`
+- `timesheetIds`: `string[]`
+- `clientKey`: `string | null`
+- `clientName`: `string`
+- `siteName`: `string | null`
+- `cleaners`: `Array<{ id: string, name: string }>`
+- `text`: `string`
+- `source`: `string`
+- `category`: `string`
+- `status`: `'open' | 'resolved' | null` (complaints only)
+- `resolution`: `string | null`
+- `createdAt`: `number` (ms since epoch)
+- `createdBy`: `string`
+- `updatedAt`: `number | null`
+- `updatedBy`: `string | null`
+- `removedAt`: `number | null` (soft delete; stays stored, excluded from active lists)
+- `removedBy`: `string | null`
+- `passedOnAt?`: `number | null` (kudos only)
+- `passedOnBy?`: `string | null` (kudos only)
+
+### 17.3 `scheduleInvoiced/{date}|{encodeURIComponent(clientKey)}`
+One document per client per day tracking whether billable time has been invoiced.
+- `id`: `string` (`${date}|${encodeURIComponent(clientKey)}`)
+- `date`: `string` (`YYYY-MM-DD`)
+- `clientKey`: `string`
+- `clientName`: `string`
+- `invoiced`: `boolean`
+- `minutes`: `number` (billable minutes when ticked)
+- `amount`: `number` (dollars when ticked — Phase 1 scoped exception under ADR-022)
+- `timesheetIds`: `string[]`
+- `updatedAt`: `number` (ms since epoch)
+- `updatedBy`: `string`
+
+### 17.4 `scheduleClientRates/{encodeURIComponent(clientKey)}`
+Per-client pricing history, updated transactionally (`runTransaction`). Rules are append/replace-by-start-date, oldest first.
+- `clientKey`: `string`
+- `clientName`: `string`
+- `rules`: `Array<{ from: string /* YYYY-MM-DD */, kind: 'hourly' | 'flat', dollars: number, setAt: number, setBy: string }>`
+
+### 17.5 `scheduleSoloOk/{shiftId}`
+Solo visits explicitly marked OK on the schedule check; one document per Camelo shift.
+- `shiftId`: `string`
+- `date`: `string` (`YYYY-MM-DD`)
+- `ok`: `boolean`
+- `updatedAt`: `number` (ms since epoch)
+- `updatedBy`: `string`
+
+### 17.6 `scheduleLiveHandled/{shiftId}`
+Red visits on the live board marked handled; one document per Camelo shift.
+- `shiftId`: `string`
+- `date`: `string` (`YYYY-MM-DD`)
+- `handled`: `boolean`
+- `updatedAt`: `number` (ms since epoch)
+- `updatedBy`: `string`
+
+### 17.7 `scheduleVisitPhotos/{photoId}`
+Before/after home visit photo metadata; image bytes live in `freshnest-aa51e-schedule-photos` at `path`. TTL on `expireAt` (1 year).
+- `id`: `string`
+- `shiftId`: `string`
+- `kind`: `'before' | 'after'`
+- `takenAt`: `number` (ms since epoch)
+- `takenBy`: `string` (actor email)
+- `path`: `string` (bucket-relative object path, e.g. `visits/...`; never sent to browsers)
+- `expireAt`: `Timestamp` (stored as Firestore Timestamp / JS `Date` for TTL; 1 year after `takenAt`)
+
+### 17.8 `scheduleCleanerTokens/{employeeId}`
+Encrypted Camelo tokens for cleaners who connected their account to clock in/out (AES-GCM key derived via HKDF from `CAMELO_TOKEN`). TTL on `expireAt`.
+- `employeeId`: `string`
+- `email`: `string`
+- `ciphertext`: `string`
+- `iv`: `string`
+- `tag`: `string`
+- `connectedAt`: `number` (ms since epoch)
+- `expireAt`: `Timestamp` (stored as Firestore Timestamp / JS `Date` for TTL)
+
+### 17.9 `scheduleSnapshots/{periodStart}`
+Finished pay-period summary figures for dashboard trends; doc ID is the period's Friday (`YYYY-MM-DD`).
+- `v`: `number` (calculation schema version)
+- `periodStart`: `string` (`YYYY-MM-DD`)
+- `totals`: `Record<string, number>` (e.g. `billed`, `onTime`, `noShows`, …)
+- `cleaners`: `Array<{ id: string, name: string } & Record<string, string | number>>`
+- `clients`: `Array<{ key: string, name: string } & Record<string, string | number>>`
+- `savedAt`: `number` (ms since epoch)
+- `savedBy`: `string`
+
+### 17.10 `schedulePlaces/{sha256(placeKey(address))}`
+Geocoded job-site address cache (OpenStreetMap). Doc ID is SHA-256 hex digest of trimmed, single-spaced, lowercased address.
+- `key`: `string` (normalized address)
+- `lat`: `number | null`
+- `lon`: `number | null`
+- `at`: `number` (ms since epoch)
+
+### 17.11 `scheduleSettings/{settingId}`
+Ops hub system settings. Currently holds one document: `scheduleSettings/grace` (shared punctuality & live-board grace window, default 15 minutes).
+- `minutes`: `number`
+- `updatedAt`: `number | null` (ms since epoch)
+- `updatedBy`: `string | null`
