@@ -2760,3 +2760,85 @@ test("POST /api/clock signs an active cleaner in with a 6-digit Camelo code, con
   );
   assert.equal(revokedRes.status, 403);
 });
+
+test("ADR-022 Strategy 2: Firebase Auth + live admins/{email} allowlist enforces full 401/403 matrix and immediate revocation", async () => {
+  const { allowlistOfficeRole } = await import("./core.js");
+
+  // allowlistOfficeRole matches functions/src/lib/roles.ts
+  assert.equal(allowlistOfficeRole({ role: "owner" }), "owner");
+  assert.equal(allowlistOfficeRole({ role: "manager" }), "manager");
+  assert.equal(allowlistOfficeRole({ role: "admin" }), "owner");
+  assert.equal(allowlistOfficeRole({}), "owner");
+  assert.equal(allowlistOfficeRole({ role: "supervisor" }), null);
+  assert.equal(allowlistOfficeRole({ role: "staff" }), null);
+  assert.equal(allowlistOfficeRole({ role: "customer" }), null);
+  assert.equal(allowlistOfficeRole(undefined), null);
+
+  // Live in-memory admins/{email} table simulating Firestore
+  const admins = new Map<string, "owner" | "manager">([
+    ["lauren@freshnest.ca", "owner"],
+    ["ryan@freshnest.ca", "manager"],
+  ]);
+
+  const tokenTable: Record<string, { email: string; role?: unknown }> = {
+    "fb:owner": { email: "lauren@freshnest.ca", role: "owner" },
+    "fb:manager": { email: "ryan@freshnest.ca", role: "manager" },
+    "fb:preapproved-manager": { email: "ryan@freshnest.ca", role: undefined },
+    "fb:supervisor": { email: "sam@freshnest.ca", role: "supervisor" },
+    "fb:staff": { email: "brenda@freshnest.ca", role: "staff" },
+    "fb:customer": { email: "diane@freshnest.ca", role: "customer" },
+    "fb:legacy-admin": { email: "old@freshnest.ca", role: "admin" },
+  };
+
+  const s2Deps = {
+    camelToken: "t",
+    verifyAuth: async (tok: string) => tokenTable[tok] ?? null,
+    resolveOfficeAllowlist: async (email: string) => admins.get(email.trim().toLowerCase()) ?? null,
+    cleanerTokens: new MemoryCleanerTokens(),
+    fetchImpl: fakeFetch([[]]),
+    staff: "*",
+  };
+
+  // Unauthenticated / invalid token -> 401 on every non-health route
+  for (const r of ROUTES.filter((rt) => rt.path !== "health")) {
+    const noTok = await handleApi({ method: "POST", path: `/api/${r.path}`, weekStart: "2026-10-05" }, s2Deps);
+    assert.equal(noTok.status, 401, `missing token should be 401 on ${r.path}`);
+    const badTok = await handleApi({ method: "POST", path: `/api/${r.path}`, googleToken: "fb:expired", weekStart: "2026-10-05" }, s2Deps);
+    assert.equal(badTok.status, 401, `bad token should be 401 on ${r.path}`);
+  }
+  assert.equal((await handleApi({ method: "GET", path: "/api/health" }, s2Deps)).status, 200);
+
+  // Owner (Lauren) & Manager (Ryan) & newly pre-approved Manager (before claim refresh) -> 200
+  for (const [tok, expectedEmail] of [
+    ["fb:owner", "lauren@freshnest.ca"],
+    ["fb:manager", "ryan@freshnest.ca"],
+    ["fb:preapproved-manager", "ryan@freshnest.ca"],
+  ] as const) {
+    const who = await handleApi({ method: "POST", path: "/api/whoami", googleToken: tok }, s2Deps);
+    assert.equal(who.status, 200, tok);
+    assert.deepEqual(who.body, { email: expectedEmail, role: "office" });
+    const shifts = await handleApi({ method: "POST", path: "/api/shifts", googleToken: tok, weekStart: "2026-10-05" }, s2Deps);
+    assert.equal(shifts.status, 200, tok);
+  }
+
+  // Non-office accounts (supervisor, staff, customer, legacy admin) -> 403 on every office route
+  const officeRoutes = ROUTES.filter((rt) => rt.for === "office").map((rt) => rt.path);
+  for (const tok of ["fb:supervisor", "fb:staff", "fb:customer", "fb:legacy-admin"]) {
+    for (const path of officeRoutes) {
+      const res = await handleApi({ method: "POST", path: `/api/${path}`, googleToken: tok, weekStart: "2026-10-05" }, s2Deps);
+      assert.equal(res.status, 403, `${tok} must be 403 on ${path}`);
+    }
+  }
+
+  // Immediate revocation: removing Ryan from admins/{email} blocks access right away even while JWT still holds role: manager
+  admins.delete("ryan@freshnest.ca");
+  const afterRevoke = await handleApi({ method: "POST", path: "/api/shifts", googleToken: "fb:manager", weekStart: "2026-10-05" }, s2Deps);
+  assert.equal(afterRevoke.status, 403);
+
+  // Office emails in admins/{email} are refused cleaner OTP code requests (office stays on Firebase Auth Google Sign-In)
+  const otpForOffice = await handleApi(
+    { method: "POST", path: "/api/clock", payload: { action: "signInRequestCode", email: "lauren@freshnest.ca" } },
+    s2Deps,
+  );
+  assert.equal(otpForOffice.status, 403);
+});

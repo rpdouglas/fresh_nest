@@ -40,10 +40,14 @@ const snapshots = new MemorySnapshots();
 // Address lookups send job-site addresses to OpenStreetMap, and nothing is remembered
 // between runs here, so they are off unless asked for: GEOCODE=on npm run dev
 const places = process.env.GEOCODE === "on" ? new MemoryPlaces() : undefined;
-// Local stand-in for Google sign-in: a token of "dev:someone@example.com" is
-// accepted as that address. This file is never deployed.
-const editors = (process.env.SCHEDULE_EDITORS ?? "dev@example.com").split(",");
-const verifyGoogle = async (token: string) => (token.startsWith("dev:") ? token.slice(4) : null);
+// Local stand-in for Firebase Auth + admins/{email} allowlist: a token of "dev:someone@example.com" is
+// accepted as an Owner (ADR-022 / P3-E41 Strategy 2). This file is never deployed.
+const devOfficeEmails = (process.env.DEV_OFFICE_EMAILS ?? process.env.SCHEDULE_EDITORS ?? "dev@example.com")
+  .split(",")
+  .map((e) => e.trim().toLowerCase())
+  .filter(Boolean);
+const verifyAuth = async (token: string) => (token.startsWith("dev:") ? { email: token.slice(4).trim().toLowerCase(), role: "owner" } : null);
+const resolveOfficeAllowlist = async (email: string) => (devOfficeEmails.includes(email.trim().toLowerCase()) ? ("owner" as const) : null);
 // Cleaners are let in only when asked for: SCHEDULE_STAFF="*" (every active person in Camelo) or a list of addresses.
 const staff = process.env.SCHEDULE_STAFF ?? "";
 const port = Number(process.env.PORT ?? 8787);
@@ -111,8 +115,8 @@ createServer(async (req, res) => {
             },
             {
               camelToken,
-              verifyGoogle,
-              editors,
+              verifyAuth,
+              resolveOfficeAllowlist,
               staff,
               people,
               changeLog,
@@ -135,6 +139,6 @@ createServer(async (req, res) => {
   res.end(JSON.stringify(result.body));
 }).listen(port, () =>
   console.log(
-    `Dev API on http://localhost:${port}/api/shifts (sign in as ${editors[0]}; changes to Camelo are ${cameloWrites ? "ALLOWED" : "refused"})`,
+    `Dev API on http://localhost:${port}/api/shifts (sign in as ${devOfficeEmails[0]}; changes to Camelo are ${cameloWrites ? "ALLOWED" : "refused"})`,
   ),
 );

@@ -102,11 +102,21 @@ export class PeopleCache {
 
 const same = (a: string | null | undefined, b: string) => (a ?? "").trim().toLowerCase() === b;
 
-/** A POST with a sign-in the server vouches for (Google or a `c1.` cleaner session token), or the refusal (405, 401). */
+/**
+ * Normalized office role stored on an `admins/{email}` allowlist doc (matches `functions/src/lib/roles.ts`).
+ * Legacy docs with no role or `'admin'` read as `'owner'`; only `'owner'` and `'manager'` grant office access.
+ */
+export function allowlistOfficeRole(doc: { role?: unknown } | undefined): "owner" | "manager" | null {
+  if (!doc) return null;
+  const raw = doc.role === undefined || doc.role === null || doc.role === "admin" ? "owner" : doc.role;
+  return raw === "owner" || raw === "manager" ? raw : null;
+}
+
+/** A POST with a sign-in the server vouches for (Firebase Auth ID token or `c1.` cleaner session token), or the refusal (405, 401). */
 async function signedIn(
   req: ApiRequest,
   deps: Deps,
-): Promise<{ email: string; via: "google" } | { email: string; via: "code"; employeeId: string } | ApiResponse> {
+): Promise<{ email: string; via: "auth"; role?: unknown } | { email: string; via: "code"; employeeId: string } | ApiResponse> {
   if (req.method !== "POST") return { status: 405, body: { error: "Use POST" } };
   const tok = req.googleToken ?? "";
   if (tok.startsWith("c1.")) {
@@ -116,6 +126,13 @@ async function signedIn(
     }
     return { email: cleaner.email, via: "code", employeeId: cleaner.employeeId };
   }
+  if (deps.verifyAuth) {
+    const verified = await deps.verifyAuth(tok).catch(() => null);
+    if (!verified?.email) {
+      return { status: 401, body: { error: "Sign in with Google to continue.", reason: "not_signed_in" } };
+    }
+    return { email: verified.email.trim().toLowerCase(), via: "auth", role: verified.role };
+  }
   if (!deps.verifyGoogle) {
     return { status: 401, body: { error: "Sign in with Google to continue.", reason: "not_signed_in" } };
   }
@@ -123,14 +140,26 @@ async function signedIn(
   if (!email) {
     return { status: 401, body: { error: "Sign in with Google to continue.", reason: "not_signed_in" } };
   }
-  return { email, via: "google" };
+  return { email, via: "auth" };
 }
 
-const onOfficeList = (email: string, deps: Deps) =>
-  (deps.editors ?? [])
+/**
+ * Checks whether `email` currently holds an Owner or Manager office seat.
+ * In production (ADR-022 / P3-E41 Strategy 2), reads `admins/{email}` via `deps.resolveOfficeAllowlist`
+ * so pre-approved Managers get immediate access and removed accounts lose access immediately.
+ */
+async function isOfficeEmail(email: string, deps: Deps): Promise<boolean> {
+  const key = email.trim().toLowerCase();
+  if (!key) return false;
+  if (deps.resolveOfficeAllowlist) {
+    const role = await deps.resolveOfficeAllowlist(key);
+    return role === "owner" || role === "manager";
+  }
+  return (deps.editors ?? [])
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean)
-    .includes(email.trim().toLowerCase());
+    .includes(key);
+}
 
 const notOnTheList = (email: string): ApiResponse => ({
   status: 403,
@@ -139,8 +168,8 @@ const notOnTheList = (email: string): ApiResponse => ({
 
 /**
  * Checks whether `email` belongs to an active cleaner in Camelo who is allowed by `SCHEDULE_STAFF` and is NOT
- * on the office list (office accounts always sign in with Google). Used both by `requireStaff` and before
- * asking Camelo to email a 6-digit sign-in code.
+ * on the office list (office accounts always sign in with Firebase Auth / Google). Used both by `requireStaff`
+ * and before asking Camelo to email a 6-digit sign-in code.
  */
 export async function resolveActiveCleaner(
   email: string,
@@ -149,7 +178,7 @@ export async function resolveActiveCleaner(
   const key = email.trim().toLowerCase();
   // an address that is blank could otherwise match a person Camelo holds no address for
   if (!key) return notOnTheList(email);
-  if (onOfficeList(key, deps)) return notOnTheList(email);
+  if (await isOfficeEmail(key, deps)) return notOnTheList(email);
   const staff = (deps.staff ?? "").trim().toLowerCase();
   if (!staff || staff === "off") return notOnTheList(email);
   if (staff !== "*" && !staff.split(",").some((e) => e.trim() === key)) return notOnTheList(email);
@@ -168,29 +197,28 @@ export async function resolveActiveCleaner(
 }
 
 /**
- * A POST with a Google sign-in by someone on the office list. Returns their email, or the refusal to send back.
- * 401 means sign in (again): no token, or one that has expired. 403 means signed in but not on the list,
- * which is what a cleaner gets from every route that is not for them. A `c1.` cleaner session token is never
- * accepted for the office. It never asks Camelo anything.
+ * A POST with a Firebase Auth sign-in by an Owner or Manager (`admins/{email}`). Returns their email, or the refusal.
+ * 401 means sign in (again): no token, or one that has expired. 403 means signed in but not an office Owner/Manager,
+ * which is what a cleaner, supervisor, staff, customer, or revoked manager gets from every office route.
+ * A `c1.` cleaner session token is never accepted for the office. It never asks Camelo anything.
  */
 export async function requireOffice(req: ApiRequest, deps: Deps): Promise<{ email: string } | ApiResponse> {
   const who = await signedIn(req, deps);
   if ("status" in who) return who;
-  if (who.via !== "google") return notOnTheList(who.email);
-  return onOfficeList(who.email, deps) ? { email: who.email } : notOnTheList(who.email);
+  if (who.via !== "auth") return notOnTheList(who.email);
+  return (await isOfficeEmail(who.email, deps)) ? { email: who.email } : notOnTheList(who.email);
 }
 
 /**
- * A POST with a sign-in by someone on the office list (via Google) or by a cleaner (via Google or a `c1.`
- * cleaner session token). Returns who they are, or the refusal. Someone on the office list is office only when
- * signed in with Google, and Camelo is not asked. Anyone else is a cleaner only if the switch lets them in and
- * their email is that of exactly one active person in Camelo. If Camelo cannot be asked, nobody is let in as a
- * cleaner (502), never let in on trust.
+ * A POST with a sign-in by an office Owner/Manager (via Firebase Auth) or by a cleaner (via Firebase Auth or a `c1.`
+ * cleaner session token). Returns who they are, or the refusal. Office users are office only when signed in via
+ * Firebase Auth, and Camelo is not asked. Anyone else is a cleaner only if the switch lets them in and their email
+ * is that of exactly one active person in Camelo. If Camelo cannot be asked, nobody is let in as a cleaner (502).
  */
 export async function requireStaff(req: ApiRequest, deps: Deps): Promise<Who | ApiResponse> {
   const who = await signedIn(req, deps);
   if ("status" in who) return who;
-  if (who.via === "google" && onOfficeList(who.email, deps)) return { email: who.email, role: "office" };
+  if (who.via === "auth" && (await isOfficeEmail(who.email, deps))) return { email: who.email, role: "office" };
   const cleaner = await resolveActiveCleaner(who.email, deps);
   if ("status" in cleaner) return cleaner;
   if (who.via === "code" && cleaner.employeeId !== who.employeeId) return notOnTheList(who.email);

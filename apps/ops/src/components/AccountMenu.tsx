@@ -9,7 +9,9 @@ interface Props {
   onSignOut: () => void
 }
 
-/** Who is signed in, Refresh and Sign out: what the old reports menu held besides the reports. */
+const ADMIN_PORTAL_URL = (import.meta.env.VITE_ADMIN_URL ?? '').trim() || 'https://lilypad-freshnest.web.app/admin'
+
+/** Who is signed in, Admin Portal link, Refresh and Sign out (office users only). */
 export default function AccountMenu(p: Props) {
   const [open, setOpen] = useState(false)
   const box = useRef<HTMLDivElement>(null)
@@ -61,6 +63,15 @@ export default function AccountMenu(p: Props) {
               </>
             )}
           </p>
+          <a
+            href={ADMIN_PORTAL_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={item}
+            onClick={() => setOpen(false)}
+          >
+            Admin Portal ↗
+          </a>
           <button
             type="button"
             className={item}

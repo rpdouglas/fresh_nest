@@ -9,9 +9,12 @@ interface AdminSectionNavProps {
   isOwner?: boolean
 }
 
+const OPS_HUB_URL = (import.meta.env.VITE_OPS_URL as string | undefined)?.trim() || 'https://ops.freshnestco.ca'
+
 /**
  * P3-E33: admin section navigation.
  * md+ : the original tab strip, classes unchanged. Phones: one labelled select (any section in 2 taps).
+ * P3-E41 (ADR-022): links directly to the Ops Hub (`ops.freshnestco.ca`) for Owners and Managers.
  */
 export function AdminSectionNav({ active, onChange, isOwner = false }: AdminSectionNavProps) {
   const { t } = useTranslation()
@@ -22,9 +25,19 @@ export function AdminSectionNav({ active, onChange, isOwner = false }: AdminSect
   return (
     <>
       <div className="md:hidden sticky top-16 z-30 -mx-4 px-4 py-3 bg-warm-white border-b border-sand">
-        <label htmlFor="admin-section" className="block font-body text-base font-medium text-charcoal mb-1">
-          {t('admin.nav.section')}
-        </label>
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <label htmlFor="admin-section" className="block font-body text-base font-medium text-charcoal">
+            {t('admin.nav.section')}
+          </label>
+          <a
+            href={OPS_HUB_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center min-h-[48px] px-3 rounded border border-slate-brand font-body text-base font-medium text-slate-brand hover:bg-slate-pale transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand"
+          >
+            {t('admin.nav.operations')} ↗
+          </a>
+        </div>
         <select
           id="admin-section"
           value={active}
@@ -37,7 +50,7 @@ export function AdminSectionNav({ active, onChange, isOwner = false }: AdminSect
         </select>
       </div>
 
-      <div className="flex border-b border-sand gap-2 overflow-x-auto max-md:hidden">
+      <div className="flex items-center border-b border-sand gap-2 overflow-x-auto max-md:hidden">
         {tabs.map((tab) => (
           <button
             key={tab.key}
@@ -52,6 +65,14 @@ export function AdminSectionNav({ active, onChange, isOwner = false }: AdminSect
             {label(tab)}
           </button>
         ))}
+        <a
+          href={OPS_HUB_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ml-auto my-1 min-h-[48px] inline-flex items-center px-4 rounded border border-slate-brand font-body font-medium text-base text-slate-brand hover:bg-slate-pale transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-brand shrink-0"
+        >
+          {t('admin.nav.operations')} ↗
+        </a>
       </div>
     </>
   )
