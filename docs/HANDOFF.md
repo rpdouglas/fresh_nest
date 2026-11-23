@@ -54,9 +54,9 @@ Read in this order: `CLAUDE.md` → this file → [`ACTIVE_CYCLE.md`](ACTIVE_CYC
 
 ## 3. What to build next (owner-approved order)
 
-> **New 2026-11-23 — two epics in Phase A, each awaiting a strategy choice:**
-> - **P3-E40 Sales Pipeline** — [`projects/P3-E40.md`](projects/P3-E40.md), [`plans/P3-E40_PLAN.md`](plans/P3-E40_PLAN.md) (open questions Q1–Q6).
-> - **P3-E41 One Master Solution** — move FNC Landing (`rpdouglas/blurb`) in as `apps/ops`. Option B approved by the owner. [`projects/P3-E41.md`](projects/P3-E41.md), [`plans/P3-E41_PLAN.md`](plans/P3-E41_PLAN.md), [ADR-022](decisions/ADR-022-merge-fnc-landing-into-fresh-nest.md) (Proposed). Background: [`reports/merge-fnc-landing-into-fresh-nest-2026-11-23.md`](reports/merge-fnc-landing-into-fresh-nest-2026-11-23.md). **`blurb` is frozen to fixes only.**
+> **Updated 2026-11-23:**
+> - **P3-E40 Sales Pipeline** — merged to `main` in PR #76 (Strategy 3). [`projects/P3-E40.md`](projects/P3-E40.md), [`reports/P3-E40-close-2026-11-23.md`](reports/P3-E40-close-2026-11-23.md).
+> - **P3-E41 One Master Solution** — move FNC Landing (`rpdouglas/blurb`) in as `apps/ops`. **Option B + Strategy 2 approved; [ADR-022](decisions/ADR-022-merge-fnc-landing-into-fresh-nest.md) Accepted (2026-11-23).** [`projects/P3-E41.md`](projects/P3-E41.md), [`plans/P3-E41_PLAN.md`](plans/P3-E41_PLAN.md). Background: [`reports/merge-fnc-landing-into-fresh-nest-2026-11-23.md`](reports/merge-fnc-landing-into-fresh-nest-2026-11-23.md). **`blurb` is frozen to fixes only.**
 
 All four "Now" defects (N-1 to N-4) are fixed and deployed; W0-1 (roles), W0-2 (settings), W0-3 (audit everywhere, P3-E37 PR 1 & PR 2), W0-4 (money and time conventions, P3-E38), and **W0-5** (scheduled Firestore backups, live restore drill into `freshnest-dev`, and GCP CAD billing budgets — 2026-11-21) are done. Remaining wave 0, per gap analysis §5:
 

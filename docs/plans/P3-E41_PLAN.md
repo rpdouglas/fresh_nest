@@ -1,13 +1,13 @@
 ---
 epic: P3-E41
 title: One Master Solution — move FNC Landing into Fresh Nest (apps/ops) — Plan
-strategy: pending
+strategy: Strategy 2
 ---
 
 # P3-E41 PLAN — Move FNC Landing into Fresh Nest
 
-**Phase A written:** 2026-11-23 · **Status:** 🔄 Awaiting human approval of one strategy
-**Spec:** [`../projects/P3-E41.md`](../projects/P3-E41.md) · **ADR:** [`../decisions/ADR-022-merge-fnc-landing-into-fresh-nest.md`](../decisions/ADR-022-merge-fnc-landing-into-fresh-nest.md)
+**Phase A written:** 2026-11-23 · **Status:** ✅ Approved — Strategy 2 locked (2026-11-23)
+**Spec:** [`../projects/P3-E41.md`](../projects/P3-E41.md) · **ADR:** [`../decisions/ADR-022-merge-fnc-landing-into-fresh-nest.md`](../decisions/ADR-022-merge-fnc-landing-into-fresh-nest.md) (Accepted)
 **Option B (one repo, one project, Camelo phased out) is approved.** These three strategies are ways to do its Phase 1.
 
 ## Personas
@@ -107,10 +107,19 @@ Move and convert in one go: Tailwind v3 and `design-system.md` tokens, routes re
 | French on ops screens | No | No | Yes |
 | Size | M | M–L | XL |
 
-## Recommendation
-**Strategy 2.** It meets the spec's "one sign-in" goal without touching the code that computes pay and invoices. Stack conversion (Tailwind v3, French office screens, cents) is cheaper later, when each report is rewritten anyway to read Fresh Nest data instead of Camelo (phase 3).
+## Approved execution decisions (2026-11-23)
+- **Approved strategy:** **Strategy 2** — lift & shift + unified Fresh Nest office identity (`owner`/`manager` Firebase Auth + live `admins/{email}` verification).
+- **Monorepo isolation:** switch root `package.json` `workspaces` from `"apps/*"` to `["apps/customer", "apps/fsm", "packages/*"]`; keep both `apps/ops/` and `functions-ops/` outside npm hoisting with their own `package-lock.json` and root scripts using `npm --prefix apps/ops ...` / `npm --prefix functions-ops ...`.
+- **Import method:** clean snapshot import pinned to `rpdouglas/blurb`'s `live` tag SHA (`web/` → `apps/ops/`, `functions/` → `functions-ops/`, `e2e/` → `apps/ops/e2e/`, `docs/decisions/` → `docs/decisions/fnc/`).
+- **Auth & revocation (`functions-ops/src/who.ts` & `apps/ops`):** Google Sign-In (`GoogleAuthProvider` + `signInWithPopup` + `syncMyRole`, matching `useAdminAuth.ts`; Google provider is already enabled in `freshnest-aa51e`, only `ops.freshnestco.ca` needs adding to authorized domains). `requireOffice` verifies the `freshnest-aa51e` Firebase ID token AND checks `admins/{email}` (`owner`/`manager`) so pre-approved Managers work on first login and revoked accounts lose access immediately.
+- **CI/CD & deploy safety:** scope existing `firebase-deploy.yml` `functions` job strictly to `--only functions:default` so adding `codebase: "ops"` never auto-deploys `functions-ops`. Add ops unit tests + pretend-Camelo E2E + preview hosting to `firebase-preview.yml`. Deploy `functions:ops` + `hosting:freshnest-ops` together in lockstep via manual `workflow_dispatch` (`deploy-ops.yml`) with a post-deploy `/api/health` smoke check during Phase 1; transition to auto-deploy after the pay gate.
+- **Cutover & pay gate:** switch on the first Friday after `freshnest-dev` staging passes. Put `fnc-reports.web.app` into **full read-only mode** (Camelo + Firestore writes disabled + top banner) immediately before running the final `--apply` Firestore + Storage photo copy. Run an automated payroll & invoicing parity comparison script at pay-period end to generate the cent-for-cent close-report evidence.
+- **Sunset (Q5):** at the pay gate, shut down `blurb`'s `scheduleApi` immediately and deploy a lightweight service-worker-unregistering redirect page on `fnc-reports.web.app` → `ops.freshnestco.ca` for 8 weeks, then disable hosting and archive `rpdouglas/blurb`.
 
-## Execution order (for the approved strategy)
-1. Freeze `blurb` (decision 0047) · 2. ADR-022 Accepted · 3. Schema §17 + rules + rules tests (PR 1, human rules sign-off) · 4. Code import + hosting + function + CI (PR 2) · 5. Identity change (PR 3, S2) · 6. Human: secrets, Google provider, domain, bucket · 7. Copy to `freshnest-dev`, verify; then `(default)` · 8. Deploy, live 401/403 checks · 9. Switch day + parallel pay period · 10. Pay gate comparison → Phase C close.
-
-**HALT — awaiting human approval of one strategy.**
+## Execution order (4-PR sequence)
+- **PR 0 (Phase A approval — this branch):** sync with `main`, mark Strategy 2 Approved & ADR-022 Accepted, merge to `main`.
+- **External prep (`rpdouglas/blurb`):** add `docs/decisions/0047-merged-into-fresh-nest.md` (reversing 0046), park `lead-tracking-spec.md`, add full read-only freeze mode flag ready for switch day, record `live` tag SHA.
+- **PR 1 (Schema + rules — explicit human rules sign-off per ADR-018):** document all 11 `schedule*` collections in `docs/firestore-schema.md` §17 from `blurb`'s `firestore.ts`/`stores.ts`; add explicit server-only deny rules in `firestore.rules`, `firestore.dev.rules`, and `storage.rules`; add emulator rules tests in `apps/customer/test/firestore-rules.test.ts`.
+- **PR 2 (Snapshot import + isolated builds + CI + migration scripts):** import `blurb` `live` snapshot into `apps/ops/`, `functions-ops/`, `apps/ops/e2e/`, `docs/decisions/fnc/`; configure explicit npm workspaces + `firebase.json` (`codebase: "ops"`, `freshnest-ops` hosting target) + `.firebaserc`; scope `firebase-deploy.yml` to `functions:default`; add `deploy-ops.yml` and ops jobs in `firebase-preview.yml`; add `scripts/ops-migration/copy-schedule-collections.cjs`, automated pay-gate parity diff script, and `docs/runbooks/ops-migration.md`.
+- **PR 3 (Strategy 2 office identity + cross-links + docs):** wire `freshnest-aa51e` Google Sign-In (`syncMyRole`) in `apps/ops` and Firebase ID token + `admins/{email}` verification in `functions-ops/src/who.ts`; remove `SCHEDULE_EDITORS`; add unit + E2E tests for the full 401/403 matrix (Owner ✓, Manager ✓, supervisor/staff/customer/revoked 403, unauthenticated 401); add bilingual "Operations" link in `AdminSectionNav.tsx` and back-link in `apps/ops`; update `COMPLIANCE.md` draft notes and `user-guide/`.
+- **Human cutover & Phase C close:** set secrets (`CAMELO_TOKEN`, `SCHEDULE_STAFF`), authorized domain `ops.freshnestco.ca`, Ryan's Manager role, photo bucket → `freshnest-dev` dry run → manual `deploy-ops.yml` + live 401/403 check → Switch Friday full read-only freeze on `fnc-reports.web.app` + final `--apply` copy → one full pay-period parallel run → automated parity check → shut down old `scheduleApi` + deploy 8-week SW-unregistering redirect → Phase C close report.
