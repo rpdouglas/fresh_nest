@@ -79,6 +79,8 @@ export type AllowedDatabaseId = (typeof ALLOWED_DATABASE_IDS)[number]
 export const DEFAULT_LATE_PAYMENT_BASIS_POINTS = 200 // 2.00%
 export const DEFAULT_RESIDENTIAL_NOTICE_DAYS = 14
 export const DEFAULT_COMMERCIAL_NOTICE_DAYS = 30
+export const DEFAULT_AGREEMENT_RATE_TYPE: AgreementRateType = 'hourly'
+export const DEFAULT_AGREEMENT_RATE_CENTS: Cents = 7500 // $75.00/hr
 
 export const TEMPLATE_VERSION_STATUSES = ['draft', 'published', 'retired'] as const
 export type TemplateVersionStatus = (typeof TEMPLATE_VERSION_STATUSES)[number]

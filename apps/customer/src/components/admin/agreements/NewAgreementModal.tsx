@@ -8,6 +8,8 @@ import {
   AGREEMENT_SERVICE_TYPES,
   AGREEMENT_TYPES,
   DEFAULT_AGREEMENT_LINK_VALIDITY_DAYS,
+  DEFAULT_AGREEMENT_RATE_CENTS,
+  DEFAULT_AGREEMENT_RATE_TYPE,
   DEFAULT_COMMERCIAL_NOTICE_DAYS,
   DEFAULT_RESIDENTIAL_NOTICE_DAYS,
   centsToDollars,
@@ -77,8 +79,10 @@ export function NewAgreementModal({
       ? initialBooking.preferredDate
       : todayInZone(),
   )
-  const [rateType, setRateType] = useState<AgreementRateType>('flat')
-  const [rateDollars, setRateDollars] = useState('180.00')
+  const [rateType, setRateType] = useState<AgreementRateType>(DEFAULT_AGREEMENT_RATE_TYPE)
+  const [rateDollars, setRateDollars] = useState(
+    centsToDollars(DEFAULT_AGREEMENT_RATE_CENTS).toFixed(2),
+  )
   const [taxExempt, setTaxExempt] = useState(false)
   const [cancelWindowHours, setCancelWindowHours] = useState(
     isDeepCancelService(initialService) ? policy.deepCancelWindowHours : policy.standardCancelWindowHours,
@@ -126,9 +130,6 @@ export function NewAgreementModal({
     }
     if (booking.preferredDate && /^\d{4}-\d{2}-\d{2}$/.test(booking.preferredDate)) {
       setStartDate(booking.preferredDate)
-    }
-    if (typeof booking.estimatedPriceCents === 'number' && booking.estimatedPriceCents > 0) {
-      setRateDollars(centsToDollars(booking.estimatedPriceCents).toFixed(2))
     }
     setCancelWindowHours(
       isDeepCancelService(nextService) ? policy.deepCancelWindowHours : policy.standardCancelWindowHours,
