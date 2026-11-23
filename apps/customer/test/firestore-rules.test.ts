@@ -764,3 +764,53 @@ describe('Sales Pipeline & Lead Notes Rules (P3-E40)', () => {
     await assertFails(deleteDoc(doc(ownerDb, 'bookings/lead-1/leadNotes/n1')))
   })
 })
+
+describe('Ops Collections (P3-E41, ADR-022): server-only schedule* collections', () => {
+  const opsCollections = [
+    'scheduleChangeLog',
+    'scheduleCleanerTokens',
+    'scheduleClientRates',
+    'scheduleFeedback',
+    'scheduleInvoiced',
+    'scheduleLiveHandled',
+    'schedulePlaces',
+    'scheduleSettings',
+    'scheduleSnapshots',
+    'scheduleSoloOk',
+    'scheduleVisitPhotos',
+  ] as const
+
+  beforeEach(async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore()
+      for (const col of opsCollections) {
+        await setDoc(doc(db, col, 'sample-1'), { seeded: true })
+      }
+    })
+  })
+
+  const as = (role: string) =>
+    testEnv.authenticatedContext(`${role}-ops-1`, { role, email: `${role}@freshnest.test` }).firestore()
+
+  it('denies all client reads, lists, creates, updates, and deletes across all 11 schedule* collections for every role including owner and manager', async () => {
+    const contexts = [
+      testEnv.unauthenticatedContext().firestore(),
+      as('customer'),
+      as('staff'),
+      as('supervisor'),
+      as('admin'),
+      as('manager'),
+      as('owner'),
+    ]
+
+    for (const db of contexts) {
+      for (const col of opsCollections) {
+        await assertFails(getDoc(doc(db, col, 'sample-1')))
+        await assertFails(getDocs(collection(db, col)))
+        await assertFails(setDoc(doc(db, col, 'client-write'), { hacked: true }))
+        await assertFails(updateDoc(doc(db, col, 'sample-1'), { hacked: true }))
+        await assertFails(deleteDoc(doc(db, col, 'sample-1')))
+      }
+    }
+  })
+})
