@@ -19,6 +19,12 @@ export { onUserCreated } from './triggers/auth'
 // Domain callable re-exports
 export { setUserRole, resolveOfficeEntries, syncMyRole, updateOfficeContact } from './callable/auth'
 export { listMyLeads, getMyLead, updateMyLead, addMyLeadNote } from './callable/leads'
+export {
+  prepareLeadForCamelo,
+  pushLeadToCamelo,
+  addCameloClientNote,
+  updateCameloJobSiteNote,
+} from './callable/camelo'
 export { createPaymentIntent, stripeWebhookHandler } from './callable/payments'
 export { claimJob } from './callable/job'
 export { listOpenShifts } from './callable/shifts'

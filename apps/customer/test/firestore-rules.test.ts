@@ -727,6 +727,15 @@ describe('Sales Pipeline & Lead Notes Rules (P3-E40)', () => {
     }))
   })
 
+  it('blocks public intake from forging camelo sync metadata on booking create (P3-E42)', async () => {
+    const publicDb = testEnv.unauthenticatedContext().firestore()
+    await assertFails(setDoc(doc(publicDb, 'bookings', 'forged-camelo-1'), {
+      ...validBooking,
+      createdAt: serverTimestamp(),
+      camelo: { clientId: 'cam-fake', jobSiteId: 'site-fake' },
+    }))
+  })
+
   it('allows office to read and append leadNotes, but forbids update, delete, or staff/public access', async () => {
     const ownerDb = testEnv.authenticatedContext('owner-1', { role: 'owner', email: 'lauren@freshnest.test' }).firestore()
     const managerDb = testEnv.authenticatedContext('mgr-1', { role: 'manager', email: 'ryan@freshnest.test' }).firestore()

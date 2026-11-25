@@ -72,7 +72,7 @@ export const AUDIT_CONFIG: Readonly<Record<string, AuditCollectionConfig>> = {
     fields: [
       'status', 'preferredDate', 'address', 'serviceType', 'frequency', 'addOns', 'notes',
       'assignedTo', 'preferredCleaner', 'checklistTemplateId', 'firstName', 'lastName', 'email', 'phone',
-      'pipeline',
+      'pipeline', 'camelo',
     ],
     label: (d) => joinLabel(`${str(d.firstName)} ${str(d.lastName)}`, d.preferredDate),
   },

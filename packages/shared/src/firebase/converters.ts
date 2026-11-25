@@ -20,6 +20,7 @@ import {
   type PolicyHistoryEntry,
 } from '../domain/policy'
 import { amountCentsOf, normalizeFinancials } from '../domain/money'
+import type { BookingCameloSync } from '../domain/cameloBridge'
 import type { BookingPipeline, LeadNote } from '../domain/pipeline'
 
 // Helper to convert dynamic values to Date
@@ -95,18 +96,43 @@ function mapPipeline(raw: any): BookingPipeline | undefined {
   } as BookingPipeline
 }
 
+function mapCameloSync(raw: any): BookingCameloSync | undefined {
+  if (!raw || typeof raw !== 'object') return undefined
+  if (typeof raw.clientId !== 'string' || typeof raw.jobSiteId !== 'string') return undefined
+  return {
+    ...raw,
+    clientName: typeof raw.clientName === 'string' ? raw.clientName : '',
+    clientCreated: Boolean(raw.clientCreated),
+    jobSiteName: typeof raw.jobSiteName === 'string' ? raw.jobSiteName : '',
+    jobSiteAddress: typeof raw.jobSiteAddress === 'string' ? raw.jobSiteAddress : '',
+    jobSiteNote: typeof raw.jobSiteNote === 'string' ? raw.jobSiteNote : null,
+    scheduleId: typeof raw.scheduleId === 'string' ? raw.scheduleId : '',
+    scheduleName: typeof raw.scheduleName === 'string' ? raw.scheduleName : null,
+    geoLat: typeof raw.geoLat === 'number' ? raw.geoLat : 0,
+    geoLong: typeof raw.geoLong === 'number' ? raw.geoLong : 0,
+    geoSource: raw.geoSource === 'nominatim' || raw.geoSource === 'manual' ? raw.geoSource : 'fallback',
+    initialCommentId: typeof raw.initialCommentId === 'string' ? raw.initialCommentId : null,
+    syncedAt: toDateOrNull(raw.syncedAt),
+    syncedBy: typeof raw.syncedBy === 'string' ? raw.syncedBy : '',
+    lastNoteSyncAt: toDateOrNull(raw.lastNoteSyncAt),
+    lastNoteSyncBy: typeof raw.lastNoteSyncBy === 'string' ? raw.lastNoteSyncBy : null,
+  } as BookingCameloSync
+}
+
 export const bookingConverter = createConverter<Booking>((data, id) => {
   const estimatedPriceCents =
     typeof data.estimatedPriceCents === 'number' && Number.isFinite(data.estimatedPriceCents)
       ? Math.round(data.estimatedPriceCents)
       : null
   const pipeline = mapPipeline(data.pipeline)
+  const camelo = mapCameloSync(data.camelo)
   return {
     ...data,
     id,
     createdAt: toDate(data.createdAt),
     ...(estimatedPriceCents !== null ? { estimatedPriceCents } : {}),
     ...(pipeline ? { pipeline } : {}),
+    ...(camelo ? { camelo } : {}),
   } as Booking
 })
 

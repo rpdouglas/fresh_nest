@@ -1,5 +1,5 @@
 # Firestore Database Schema Reference
-**Version:** 2.4 | **Updated:** 2026-11-23 (P3-E41 §17 Ops collections from FNC Landing, ADR-022)
+**Version:** 2.5 | **Updated:** 2026-11-25 (P3-E42 Won Lead → Camelo bridge sync metadata on `bookings.camelo`)
 
 ---
 
@@ -45,6 +45,7 @@ Stores residential, commercial, and Airbnb cleaning reservations.
 | `createdBy` | `string` | ❌ | Admin email that created the booking (phone/walk-in bookings), or `'system:recurring-renewal'` for bookings created by the recurring-renewal cron. Absent on public quote requests. |
 | `checklistTemplateId` | `string \| null` | ❌ | P3-E34: saved checklist (`checklistTemplates` ID) chosen by an admin for this client's visits. The job created from this booking gets that list instead of the service-type match, and the recurring-renewal cron copies the field onto each renewal. `null`/absent = chosen by service type. Admin-only (no public-form field). |
 | `pipeline` | `map` | ❌ | P3-E40: sales pipeline metadata (omitted on `system:recurring-renewal` bookings): `{ stage: 'new' \| 'contacted' \| 'site_visit' \| 'quoted' \| 'won' \| 'lost', ownerEmail: string \| null, ownerRole: 'owner' \| 'manager' \| 'cleaner' \| 'lead' \| 'supervisor' \| 'contractor' \| null, ownerAssignedAt: Timestamp \| null, ownerAssignedBy: string \| null, needsSiteVisit: boolean, nextFollowUpDate: string \| null (YYYY-MM-DD Toronto), firstContactAt: Timestamp \| null, quotedPriceCents: int \| null (internal only, P3-E29), quoteSentAt: Timestamp \| null, closedAt: Timestamp \| null, lostReason: 'no_response' \| 'price' \| 'chose_competitor' \| 'date_unavailable' \| 'outside_area' \| 'duplicate_or_spam' \| 'other' \| null, lostNote: string \| null (≤ 500 chars) }`. Watched by `auditBookings`. |
+| `camelo` | `map` | ❌ | P3-E42: server-written Camelo Client & Job Site sync link (forbidden on public create): `{ clientId: string, clientName: string, clientCreated: boolean, jobSiteId: string, jobSiteName: string, jobSiteAddress: string, jobSiteNote: string \| null, scheduleId: string, scheduleName: string \| null, geoLat: number, geoLong: number, geoSource: 'nominatim' \| 'manual' \| 'fallback', initialCommentId: string \| null, syncedAt: Timestamp, syncedBy: string, lastNoteSyncAt: Timestamp \| null, lastNoteSyncBy: string \| null }`. Watched by `auditBookings` (P3-E37). |
 
 ### Subcollection: `bookings/{bookingId}/leadNotes/{noteId}` (P3-E40, append-only)
 Contact log and internal notes on a lead. Office users (`isOffice()`) may read and create append-only notes; non-office lead owners write/read via server callables (`getMyLead`, `addMyLeadNote`). Updates and deletes are denied (`false`).

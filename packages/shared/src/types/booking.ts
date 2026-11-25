@@ -1,4 +1,5 @@
 import type { LastChange } from '../domain/audit'
+import type { BookingCameloSync } from '../domain/cameloBridge'
 import type { BookingPipeline } from '../domain/pipeline'
 export type Language = 'en' | 'fr'
 export type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled'
@@ -46,6 +47,8 @@ export interface Booking {
   checklistTemplateId?: string | null
   // P3-E40: sales pipeline metadata (omitted on recurring renewals)
   pipeline?: BookingPipeline
+  // P3-E42: server-written Camelo Client + Job Site sync metadata
+  camelo?: BookingCameloSync
 }
 
 export interface Review {

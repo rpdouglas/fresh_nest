@@ -98,6 +98,8 @@ service cloud.firestore {
             || request.resource.data.stripeChargeStatus == 'hold')
         // P3-E40: public intake cannot forge pipeline ownership or stage
         && !('pipeline' in request.resource.data)
+        // P3-E42: public intake cannot forge Camelo sync links
+        && !('camelo' in request.resource.data)
         && lastChangeOk();
 
       // Admin Booking Creation (phone-in / walk-in — P3-E3)
