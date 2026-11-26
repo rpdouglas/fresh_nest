@@ -546,7 +546,7 @@ export async function runUpdateCameloJobSiteNote(
     throw new HttpsError('failed-precondition', 'Camelo API token is not configured on the server.')
   }
 
-  let updatedNote = note
+  let updatedNote: string
   try {
     const res = await updateCameloJobSiteNoteApi(existing.jobSiteId, note, {
       token,

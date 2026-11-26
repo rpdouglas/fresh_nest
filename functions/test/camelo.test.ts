@@ -17,10 +17,15 @@ function createMemoryDb() {
     let cur = obj
     for (let i = 0; i < parts.length - 1; i++) {
       const k = parts[i]
-      if (!cur[k] || typeof cur[k] !== 'object') cur[k] = {}
+      if (k === '__proto__' || k === 'constructor' || k === 'prototype') return
+      if (!Object.prototype.hasOwnProperty.call(cur, k) || !cur[k] || typeof cur[k] !== 'object') {
+        cur[k] = {}
+      }
       cur = cur[k] as Record<string, unknown>
     }
-    cur[parts[parts.length - 1]] = value
+    const last = parts[parts.length - 1]
+    if (last === '__proto__' || last === 'constructor' || last === 'prototype') return
+    cur[last] = value
   }
 
   function docRef(path: string): any {
@@ -107,11 +112,11 @@ function createPretendServices(opts: { failCreateJobSite?: boolean; nominatimHit
   const comments: Array<{ id: string; commentableId: string; commentableType: string; content: string }> = []
 
   const fetchImpl = (async (url: string | URL, init?: { body?: string }) => {
-    const href = String(url)
+    const parsedUrl = url instanceof URL ? url : new URL(url)
     const json = (body: unknown, status = 200) =>
       new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
 
-    if (href.includes('nominatim.openstreetmap.org')) {
+    if (parsedUrl.hostname === 'nominatim.openstreetmap.org') {
       calls.push('nominatim')
       if (opts.nominatimHit === null) return json([])
       return json([opts.nominatimHit ?? { lat: '45.0251', lon: '-74.7289' }])
