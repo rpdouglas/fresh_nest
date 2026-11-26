@@ -17,6 +17,18 @@ Click **Operations Hub ↗** in the admin navigation bar (or open [ops.freshnest
 - **One sign-in and one office list:** Sign in with the same Owner or Manager Google account you use for `/admin`. Adding or removing a Manager in **Team & roles** controls access to both the Admin Portal and the Operations Hub immediately — there is no separate allowlist to maintain.
 - **Switching back:** Open the **Account** menu in the top-right corner of the Operations Hub and select **Admin Portal ↗**.
 
+### Sending a Won Lead to Camelo (P3-E42)
+
+When you mark a lead **Won** in the **Pipeline** tab, you can push the client, job site, and notes straight to Camelo without re-typing:
+
+1. Open the lead in **Admin → Pipeline** and change its stage to **Won**, then click **Save Lead Changes**. A banner prompts **Review & Send to Camelo** (or click **Send to Camelo** in the lead header at any time on an unsynced Won lead).
+2. **Duplicate check:** Fresh Nest automatically searches existing Camelo clients by email, phone, and name. If a match appears, leave **Link to existing Camelo client** selected to avoid creating a duplicate; otherwise keep **Create new Camelo client**.
+3. **Job site & coordinates:** The **Clients** schedule is selected by default and the address is geocoded automatically via OpenStreetMap (street address only). If a rural address (e.g., Cornwall Island / Akwesasne / Snye, QC) isn't found, you can edit the address, enter latitude/longitude manually, or click **Use Cornwall Area Fallback Pin**.
+4. **Notes:** Review and edit both notes before creating:
+   - **Job Site Note** — visible to cleaners on shifts and **My week** (pre-filled from booking notes and home basics; restricted e-agreement access codes are never copied automatically).
+   - **Initial Camelo Client Comment** — visible to the office on the Camelo Client profile (tick which pipeline contact notes to include).
+5. Click **Create in Camelo**. Once synced, the lead panel shows a **Synced to Camelo** summary card where you can also **Update Camelo Job Site Note** or **Add Camelo Client Comment** later. Every sync and note update is logged in **Audit Logs**.
+
 The dashboard is split into seven tabs:
 1. **Bookings Management:** Track and manage operational client bookings.
 2. **Visual Dispatch Board:** Visual drag-and-drop daily calendar schedule and dispatch grid for managing cleaner assignments.

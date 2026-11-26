@@ -272,11 +272,35 @@ export function fakeCamelo(now = Date.now(), daysBack?: number): Fake {
   const notes: {
     id: string
     commentableId: string
+    commentableType: string
     content: string
     createdAt: string
     systemGenerated: boolean
     author: { name: string }
   }[] = []
+  const extraClients: {
+    id: string
+    name: string
+    clientNumber: string | null
+    phoneNumber: string | null
+    email: string | null
+    billingAddress: string | null
+  }[] = []
+  const extraSites: {
+    id: string
+    name: string
+    address: string
+    note: string | null
+    geoLat: number
+    geoLong: number
+    clients: { id: string }[]
+    schedules: { id: string; name: string }[]
+  }[] = []
+  const SCHEDULES = [
+    { id: 'sch-clients', name: 'Clients' },
+    { id: 'sch-1', name: 'Exampleton' },
+    { id: 'sch-oncall', name: 'On Call' },
+  ]
   let listView = new Map([...world.sheets].map(([k, v]) => [k, { ...v }]))
   let lagReads = 0
   let lagOnNextChange = 0
@@ -510,33 +534,120 @@ export function fakeCamelo(now = Date.now(), daysBack?: number): Fake {
       changed()
       return answer('draftTimesheet', { draftTimesheet: { errors: [], result } })
     }
+    if (/createClient\(/.test(query)) {
+      const inp = variables.input ?? {}
+      const client = {
+        id: `c-new-${extraClients.length + 1}`,
+        name: String(inp.name ?? ''),
+        clientNumber: inp.clientNumber ?? null,
+        phoneNumber: inp.phoneNumber ?? null,
+        email: inp.email ?? null,
+        billingAddress: inp.billingAddress ?? null,
+      }
+      extraClients.push(client)
+      return answer('createClient', { createClient: { errors: [], result: client } })
+    }
+    if (/updateClient\(/.test(query)) {
+      const inp = variables.input ?? {}
+      const hit = extraClients.find((c) => c.id === inp.clientId)
+      if (!hit) {
+        return answer('updateClient', {
+          updateClient: { errors: [{ attribute: 'clientId', fullMessage: 'Client not found', type: 'not_found' }], result: null },
+        })
+      }
+      if (inp.name !== undefined) hit.name = String(inp.name)
+      if (inp.email !== undefined) hit.email = inp.email
+      if (inp.phoneNumber !== undefined) hit.phoneNumber = inp.phoneNumber
+      if (inp.billingAddress !== undefined) hit.billingAddress = inp.billingAddress
+      if (inp.clientNumber !== undefined) hit.clientNumber = inp.clientNumber
+      return answer('updateClient', { updateClient: { errors: [], result: hit } })
+    }
+    if (/destroyClient\(/.test(query)) {
+      const idx = extraClients.findIndex((c) => c.id === variables.input?.clientId)
+      if (idx >= 0) extraClients.splice(idx, 1)
+      return answer('destroyClient', { destroyClient: { errors: [] } })
+    }
+    if (/createJobSite\(/.test(query)) {
+      const inp = variables.input ?? {}
+      const site = {
+        id: `j-new-${extraSites.length + 1}`,
+        name: String(inp.name ?? ''),
+        address: String(inp.address ?? ''),
+        note: inp.note ?? null,
+        geoLat: Number(inp.geoLat ?? 0),
+        geoLong: Number(inp.geoLong ?? 0),
+        clients: ((inp.clientIds as string[] | undefined) ?? []).map((id) => ({ id })),
+        schedules: ((inp.scheduleIds as string[] | undefined) ?? []).map(
+          (id) => SCHEDULES.find((s) => s.id === id) ?? { id, name: 'Clients' },
+        ),
+      }
+      extraSites.push(site)
+      return answer('createJobSite', { createJobSite: { errors: [], result: site } })
+    }
+    if (/updateJobSite\(/.test(query)) {
+      const inp = variables.input ?? {}
+      const hit =
+        extraSites.find((s) => s.id === inp.jobSiteId) ??
+        Object.values(PLACES).find((p) => p.jobSite.id === inp.jobSiteId)?.jobSite
+      if (!hit) {
+        return answer('updateJobSite', {
+          updateJobSite: { errors: [{ attribute: 'jobSiteId', fullMessage: 'Job site not found', type: 'not_found' }], result: null },
+        })
+      }
+      if (inp.note !== undefined) hit.note = inp.note
+      if (inp.name !== undefined) hit.name = String(inp.name)
+      if (inp.address !== undefined) hit.address = String(inp.address)
+      return answer('updateJobSite', { updateJobSite: { errors: [], result: hit } })
+    }
+    if (/destroyJobSite\(/.test(query)) {
+      const idx = extraSites.findIndex((s) => s.id === variables.input?.jobSiteId)
+      if (idx >= 0) extraSites.splice(idx, 1)
+      return answer('destroyJobSite', { destroyJobSite: { errors: [] } })
+    }
     if (/createComment/.test(query)) {
       // kept, and counted on the timesheet, as Camelo does: the page only asks for the notes of a timesheet that has some
-      const { commentableId, content } = variables.input
+      const { commentableId, commentableType, content } = variables.input
       const note = {
         id: `cm-${notes.length + 1}`,
         commentableId,
+        commentableType: String(commentableType ?? 'TIMESHEET'),
         content,
         createdAt: new Date().toISOString(),
         systemGenerated: false,
         author: { name: 'Reports account' },
       }
       notes.push(note)
-      const sheet = world.sheets.get(commentableId)
-      if (sheet) sheet.comments = Number(sheet.comments ?? 0) + 1
-      changed()
+      if (note.commentableType === 'TIMESHEET') {
+        const sheet = world.sheets.get(commentableId)
+        if (sheet) sheet.comments = Number(sheet.comments ?? 0) + 1
+        changed()
+      }
       return answer('createComment', { createComment: { errors: [], result: { id: note.id } } })
     }
-    if (/\bcomments\(/.test(query))
-      return answer('comments', { comments: { nodes: notes.filter((n) => n.commentableId === variables.id) } })
+    if (/\bcomments\(/.test(query)) {
+      const typeMatch = query.match(/commentableType:\s*([A-Z_]+)/)
+      const wantType = typeMatch?.[1] ?? variables.commentableType
+      return answer('comments', {
+        comments: {
+          nodes: notes.filter((n) => n.commentableId === variables.id && (!wantType || n.commentableType === wantType)),
+        },
+      })
+    }
+    if (/\bschedules\(/.test(query)) return answer('schedules', { schedules: page(SCHEDULES) })
     if (/\busers\(/.test(query))
       return answer('users', {
         users: page(Object.values(PEOPLE).map((p) => ({ id: p.id, name: p.name, email: p.email, state: 'ACTIVE' }))),
       })
-    if (/\bclients\(first/.test(query)) return answer('clients', { clients: page(Object.values(PLACES).map((p) => p.client)) })
+    if (/\bclients\(first/.test(query))
+      return answer('clients', {
+        clients: page([...Object.values(PLACES).map((p) => ({ ...p.client, billingAddress: p.jobSite.address })), ...extraClients]),
+      })
     if (/\bjobSites\(first/.test(query))
       return answer('jobSites', {
-        jobSites: page(Object.values(PLACES).map((p) => ({ ...p.jobSite, clients: [{ id: p.client.id }] }))),
+        jobSites: page([
+          ...Object.values(PLACES).map((p) => ({ ...p.jobSite, clients: [{ id: p.client.id }], schedules: [SCHEDULES[0]] })),
+          ...extraSites,
+        ]),
       })
     if (/\btimesheet\(id/.test(query)) return answer('timesheet', { timesheet: world.sheets.get(variables.id) ?? null })
     if (/\bshift\(id/.test(query)) return answer('shift', { shift: world.shifts.get(variables.id) ?? null })

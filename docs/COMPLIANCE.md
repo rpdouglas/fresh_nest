@@ -1,6 +1,6 @@
 # Fresh Nest Co. — Compliance Reference
 
-**Version:** 2.4 | **Updated:** 2026-11-23 (P3-E41 / ADR-022 Ops Hub data, photo retention, TTL policies, and unified Owner/Manager access control, owner-approved)
+**Version:** 2.5 | **Updated:** 2026-11-25 (P3-E42 Won Lead → Camelo bridge privacy & staging isolation rules, owner-approved)
 **Status:** Active — Reference before writing any form, email, SMS, or Firestore operation
 
 > [!IMPORTANT]
@@ -143,6 +143,16 @@ Applies to all personal data collected from clients across all provinces.
 | **Visit photo privacy & 1-year retention** | Before/after visit photos live in the private GCS bucket `freshnest-aa51e-schedule-photos` (`us-central1`, uniform bucket-level access, public-access-prevention) with a 365-day object lifecycle rule, paired with a 1-year Firestore TTL on `scheduleVisitPhotos.expireAt`. Bucket object paths (`visits/...`) are never sent to browsers; cleaners may only view photos on their own visits. |
 | **Timesheet change-log retention (Ontario ESA)** | `scheduleChangeLog` retains every timesheet approval/edit record for **3 years** (Ontario Employment Standards Act) via Firestore TTL on `expireAt`. |
 | **Backups** | Because `schedule*` collections live in `freshnest-aa51e/(default)`, they are automatically covered by W0-5 native daily/weekly backups and `onDailyFirestoreExport`. |
+
+### Won Lead → Camelo Bridge (P3-E42, Owner-Approved 2026-11-25)
+
+| Requirement | Policy & Implementation |
+|---|---|
+| **Office-only authorization** | All four bridge callables (`prepareLeadForCamelo`, `pushLeadToCamelo`, `addCameloClientNote`, `updateCameloJobSiteNote`) enforce `requireOffice` (`owner` or `manager`). Public booking intake is forbidden from forging `camelo` metadata (`!('camelo' in request.resource.data)`). |
+| **Restricted access code isolation** | `agreements/{id}/private/access` door/alarm codes are **never** read or copied into Camelo `jobSite.note` or `CLIENT` comments. Job site notes pre-fill strictly from intake `bookings.notes` and home basics, and are reviewed/edited by Lauren or Ryan before sending. |
+| **Address-only geocoding** | OpenStreetMap Nominatim lookups (`functions/src/lib/geocode.ts`, reusing `schedulePlaces` cache per FNC decision 0009) transmit **only** the street address — never client name, email, or phone. |
+| **Staging isolation (`freshnest-dev`)** | Requests targeting `databaseId === 'freshnest-dev'` never write to production Camelo (`dryRun: true` safe preview), preventing test leads from polluting live Camelo workspaces. |
+| **Audit attribution** | Every Camelo sync and post-sync note update stamps `bookings/{id}.lastChange` (`source: 'admin'`) watched by `auditBookings`, and Camelo `CLIENT` comments append `(<email>, via Fresh Nest)` since Camelo records the workspace API token account as author. |
 
 ---
 

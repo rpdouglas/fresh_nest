@@ -18,6 +18,13 @@ vi.mock('@/lib/firebase/agreements', () => ({
   createClientAgreement: vi.fn(),
 }))
 
+vi.mock('@/lib/firebase/camelo', () => ({
+  prepareLeadForCamelo: vi.fn(),
+  pushLeadToCamelo: vi.fn(),
+  addCameloClientNote: vi.fn(),
+  updateCameloJobSiteNote: vi.fn(),
+}))
+
 vi.mock('./hooks/usePolicySettings', () => ({
   usePolicySettings: () => ({ policy: DEFAULT_POLICY_SETTINGS }),
 }))

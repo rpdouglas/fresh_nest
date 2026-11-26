@@ -93,6 +93,7 @@ service cloud.firestore {
             || (request.resource.data.referredBy is string || request.resource.data.referredBy == null))
         && (!('notes' in request.resource.data) || request.resource.data.notes is string)
         && !('pipeline' in request.resource.data)
+        && !('camelo' in request.resource.data)
         && lastChangeOk();
 
       // Admin and owner read

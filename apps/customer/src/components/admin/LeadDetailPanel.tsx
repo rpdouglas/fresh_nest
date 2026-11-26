@@ -9,13 +9,17 @@ import {
   inferPipelineStageFromBooking,
   toCents,
   type Booking,
+  type BookingCameloSync,
   type LeadNote,
   type LeadNoteKind,
   type LostReason,
   type PipelineStage,
   type PolicySettingsValues,
+  type PushLeadToCameloResult,
 } from '@freshnest/shared'
 import { addLeadNote, subscribeToLeadNotes, updateLeadPipeline } from '@/lib/firebase/firestore'
+import { addCameloClientNote, updateCameloJobSiteNote } from '@/lib/firebase/camelo'
+import { CameloSyncModal } from './CameloSyncModal'
 import { RecordHistory } from './audit/RecordHistory'
 import type { AssignableLeadOwner } from './hooks/useAssignableOwners'
 import { cn } from '@/lib/utils/utils'
@@ -60,6 +64,19 @@ export function LeadDetailPanel({
   const [saving, setSaving] = useState(false)
   const [savingNote, setSavingNote] = useState(false)
   const [feedback, setFeedback] = useState<{ kind: 'ok' | 'error'; text: string } | null>(null)
+
+  // P3-E42: Camelo sync modal, Won-save prompt, and post-sync note editors
+  const [localCamelo, setLocalCamelo] = useState<BookingCameloSync | undefined>(undefined)
+  const [showCameloModal, setShowCameloModal] = useState(false)
+  const [showWonCameloPrompt, setShowWonCameloPrompt] = useState(false)
+  const [cameloClientNoteText, setCameloClientNoteText] = useState('')
+  const [savingCameloClientNote, setSavingCameloClientNote] = useState(false)
+  const [cameloSiteNoteDraft, setCameloSiteNoteDraft] = useState<string | null>(null)
+  const [savingCameloSiteNote, setSavingCameloSiteNote] = useState(false)
+
+  const activeCamelo = lead.camelo ?? localCamelo
+  const cameloSiteNoteText = cameloSiteNoteDraft ?? activeCamelo?.jobSiteNote ?? ''
+  const isWon = currentStage === 'won' || stage === 'won'
 
   useEffect(() => {
     if (!bookingId) return
@@ -132,10 +149,95 @@ export function LeadDetailPanel({
         lead,
       )
       setFeedback({ kind: 'ok', text: t('admin.pipeline.detail.saved') })
+      if (stage === 'won' && currentStage !== 'won' && !activeCamelo) {
+        setShowWonCameloPrompt(true)
+      }
     } catch {
       setFeedback({ kind: 'error', text: t('admin.pipeline.detail.saveError') })
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleCameloSynced = (result: PushLeadToCameloResult) => {
+    setLocalCamelo({
+      clientId: result.clientId,
+      clientName: result.clientName,
+      clientCreated: result.clientCreated,
+      jobSiteId: result.jobSiteId,
+      jobSiteName: result.jobSiteName,
+      jobSiteAddress: result.jobSiteAddress,
+      jobSiteNote: result.jobSiteNote,
+      scheduleId: result.scheduleId,
+      scheduleName: result.scheduleName,
+      geoLat: 0,
+      geoLong: 0,
+      geoSource: 'nominatim',
+      initialCommentId: result.initialCommentId,
+      syncedAt: new Date(result.syncedAtIso),
+      syncedBy: result.syncedBy,
+    })
+    setCameloSiteNoteDraft(null)
+    setShowCameloModal(false)
+    setShowWonCameloPrompt(false)
+    setFeedback({
+      kind: 'ok',
+      text: t('admin.pipeline.camelo.syncedFeedback', {
+        client: result.clientName,
+        site: result.jobSiteName,
+      }),
+    })
+  }
+
+  const handleAddCameloClientNote = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const trimmed = cameloClientNoteText.trim()
+    if (!trimmed || !bookingId) return
+    setSavingCameloClientNote(true)
+    setFeedback(null)
+    try {
+      const res = await addCameloClientNote({ bookingId, content: trimmed })
+      setCameloClientNoteText('')
+      setFeedback({
+        kind: 'ok',
+        text: res.dryRun
+          ? t('admin.pipeline.camelo.dryRunSuccess')
+          : t('admin.pipeline.camelo.clientNoteSaved'),
+      })
+    } catch (err: unknown) {
+      setFeedback({
+        kind: 'error',
+        text: err instanceof Error ? err.message : t('admin.pipeline.camelo.pushError'),
+      })
+    } finally {
+      setSavingCameloClientNote(false)
+    }
+  }
+
+  const handleUpdateCameloSiteNote = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!bookingId) return
+    setSavingCameloSiteNote(true)
+    setFeedback(null)
+    try {
+      const res = await updateCameloJobSiteNote({ bookingId, note: cameloSiteNoteText.trim() })
+      if (!res.dryRun) {
+        if (localCamelo) setLocalCamelo({ ...localCamelo, jobSiteNote: res.note || null })
+        setCameloSiteNoteDraft(res.note)
+      }
+      setFeedback({
+        kind: 'ok',
+        text: res.dryRun
+          ? t('admin.pipeline.camelo.dryRunSuccess')
+          : t('admin.pipeline.camelo.jobSiteNoteSaved'),
+      })
+    } catch (err: unknown) {
+      setFeedback({
+        kind: 'error',
+        text: err instanceof Error ? err.message : t('admin.pipeline.camelo.pushError'),
+      })
+    } finally {
+      setSavingCameloSiteNote(false)
     }
   }
 
@@ -208,6 +310,15 @@ export function LeadDetailPanel({
         </div>
 
         <div className="flex flex-wrap gap-2">
+          {isWon && !activeCamelo && (
+            <button
+              type="button"
+              onClick={() => setShowCameloModal(true)}
+              className="min-h-[48px] px-4 border border-slate-brand text-slate-brand hover:bg-slate-pale font-body font-medium text-base rounded"
+            >
+              {t('admin.pipeline.camelo.sendButton')}
+            </button>
+          )}
           <button
             type="button"
             onClick={() => onCreateAgreement(bookingId)}
@@ -224,6 +335,39 @@ export function LeadDetailPanel({
           </button>
         </div>
       </div>
+
+      {showWonCameloPrompt && !activeCamelo && (
+        <div
+          role="region"
+          aria-label={t('admin.pipeline.camelo.wonPromptTitle')}
+          className="bg-slate-pale border border-slate-brand rounded p-4 flex flex-wrap items-center justify-between gap-4"
+        >
+          <div className="space-y-1">
+            <p className="font-body text-base font-medium text-charcoal">
+              {t('admin.pipeline.camelo.wonPromptTitle')}
+            </p>
+            <p className="font-body text-base text-slate-dark">
+              {t('admin.pipeline.camelo.wonPromptBody')}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => setShowCameloModal(true)}
+              className="min-h-[48px] px-5 bg-slate-brand hover:bg-slate-dark text-white font-body font-medium text-base rounded"
+            >
+              {t('admin.pipeline.camelo.reviewAndSendButton')}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowWonCameloPrompt(false)}
+              className="min-h-[48px] px-4 bg-white border border-sand text-charcoal hover:bg-cream font-body font-medium text-base rounded"
+            >
+              {t('admin.pipeline.camelo.laterButton')}
+            </button>
+          </div>
+        </div>
+      )}
 
       {feedback && (
         <p
@@ -450,11 +594,106 @@ export function LeadDetailPanel({
         )}
       </div>
 
+      {/* P3-E42: Synced to Camelo status + post-sync note actions */}
+      {activeCamelo && (
+        <section
+          aria-label={t('admin.pipeline.camelo.syncedHeading')}
+          className="border-t border-sand pt-5 space-y-4"
+        >
+          <div className="bg-slate-pale border border-slate-brand rounded p-4 space-y-1">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h4 className="font-sub text-xl text-charcoal">{t('admin.pipeline.camelo.syncedHeading')}</h4>
+              <span className="px-2.5 py-0.5 bg-white border border-slate-brand rounded font-body text-sm font-medium text-slate-dark">
+                {activeCamelo.clientCreated
+                  ? t('admin.pipeline.camelo.badgeNewClient')
+                  : t('admin.pipeline.camelo.badgeLinkedClient')}
+              </span>
+            </div>
+            <p className="font-body text-base text-charcoal">
+              <strong>{t('admin.pipeline.camelo.clientLabel')}:</strong> {activeCamelo.clientName}
+            </p>
+            <p className="font-body text-base text-charcoal">
+              <strong>{t('admin.pipeline.camelo.jobSiteLabel')}:</strong> {activeCamelo.jobSiteName} — {activeCamelo.jobSiteAddress}
+            </p>
+            <p className="font-body text-base text-slate-dark">
+              {t('admin.pipeline.camelo.syncedMeta', {
+                by: activeCamelo.syncedBy,
+                date:
+                  activeCamelo.syncedAt instanceof Date
+                    ? formatDateTime(activeCamelo.syncedAt)
+                    : '',
+              })}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <form
+              onSubmit={(e) => { void handleUpdateCameloSiteNote(e) }}
+              className="bg-cream border border-sand rounded p-4 space-y-3"
+            >
+              <label htmlFor="camelo-post-site-note" className="block font-body text-base font-medium text-charcoal">
+                {t('admin.pipeline.camelo.postSiteNoteLabel')}
+              </label>
+              <textarea
+                id="camelo-post-site-note"
+                maxLength={2000}
+                value={cameloSiteNoteText}
+                onChange={(e) => setCameloSiteNoteDraft(e.target.value)}
+                className="w-full min-h-[96px] px-3 py-2 bg-white border border-sand rounded font-body text-base text-charcoal focus:outline-none focus:ring-2 focus:ring-slate-brand"
+              />
+              <button
+                type="submit"
+                disabled={savingCameloSiteNote}
+                className="min-h-[48px] px-4 bg-slate-brand hover:bg-slate-dark disabled:opacity-50 text-white font-body font-medium text-base rounded"
+              >
+                {savingCameloSiteNote
+                  ? t('admin.pipeline.detail.saving')
+                  : t('admin.pipeline.camelo.updateSiteNoteButton')}
+              </button>
+            </form>
+
+            <form
+              onSubmit={(e) => { void handleAddCameloClientNote(e) }}
+              className="bg-cream border border-sand rounded p-4 space-y-3"
+            >
+              <label htmlFor="camelo-post-client-note" className="block font-body text-base font-medium text-charcoal">
+                {t('admin.pipeline.camelo.postClientNoteLabel')}
+              </label>
+              <textarea
+                id="camelo-post-client-note"
+                maxLength={1900}
+                placeholder={t('admin.pipeline.camelo.postClientNotePlaceholder')}
+                value={cameloClientNoteText}
+                onChange={(e) => setCameloClientNoteText(e.target.value)}
+                className="w-full min-h-[96px] px-3 py-2 bg-white border border-sand rounded font-body text-base text-charcoal focus:outline-none focus:ring-2 focus:ring-slate-brand"
+              />
+              <button
+                type="submit"
+                disabled={savingCameloClientNote || !cameloClientNoteText.trim()}
+                className="min-h-[48px] px-4 bg-slate-brand hover:bg-slate-dark disabled:opacity-50 text-white font-body font-medium text-base rounded"
+              >
+                {savingCameloClientNote
+                  ? t('admin.pipeline.detail.saving')
+                  : t('admin.pipeline.camelo.addClientNoteButton')}
+              </button>
+            </form>
+          </div>
+        </section>
+      )}
+
       {/* P3-E37 Audit History */}
       {bookingId && (
         <div className="border-t border-sand pt-4">
           <RecordHistory records={[{ collection: 'bookings', id: bookingId }]} />
         </div>
+      )}
+
+      {showCameloModal && (
+        <CameloSyncModal
+          lead={lead}
+          onClose={() => setShowCameloModal(false)}
+          onSynced={handleCameloSynced}
+        />
       )}
     </div>
   )

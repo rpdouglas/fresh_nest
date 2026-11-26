@@ -17,6 +17,7 @@ export * from './domain/time'
 export * from './domain/money'
 export * from './domain/agreements'
 export * from './domain/pipeline'
+export * from './domain/cameloBridge'
 
 /**
  * Utility to merge Tailwind classes using clsx and tailwind-merge.
